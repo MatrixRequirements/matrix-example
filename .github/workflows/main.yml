@@ -27,5 +27,5 @@ jobs:
 
       - name: Install dependencies and compile
         run: |
-          run npm install
-          run npm run build
+          npm install
+          npm run build
