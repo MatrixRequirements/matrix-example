@@ -2,6 +2,8 @@
 /// <reference path="../lib/admin.d.ts" />
 /// <reference types="jquery" />
 
+console.log("Hello there");
+
 class ExamplePlugin extends ConfigPage {
     private uiNode:JQuery|null = null
 
