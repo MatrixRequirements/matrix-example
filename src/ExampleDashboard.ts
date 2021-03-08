@@ -1,7 +1,10 @@
 /// <reference path="api/Matrix.Labels.ts" />
 
+// Use a namespace to isolate your plugin code
+// This avoids conflicts with other plugins
 namespace ExampleDashboard {
     export class ExampleDashboard implements IPlugin {
+        // Implement to pass back additional pages to be displayed in the tree
         getProjectPages(): IProjectPageParam[] {
             let pages: IProjectPageParam[] = [];
             pages.push({
@@ -20,6 +23,7 @@ namespace ExampleDashboard {
             return pages;
         }
 
+        // Set to true to enable the plugin
         isDefault = true;
 
         getPluginName(): string {
@@ -27,21 +31,23 @@ namespace ExampleDashboard {
         }
 
         getPluginVersion(): string {
-            return "Example Dashboard";
+            return "0.0.1";
         }
     }
 
+    // The possible application states
     interface Loading {
         kind: "loading";
     }
     interface Loaded {
         kind: "loaded";
         data: XRLabelEntry[];
-        openTimes: OpenTimes[];
+        openTimes: OpenTime[];
     }
     type DashboardState = Loading | Loaded;
 
-    interface OpenTimes {
+    // Data we will use for display
+    interface OpenTime {
         id: string;
         time: Date;
     }
@@ -59,61 +65,93 @@ namespace ExampleDashboard {
 
         resizeItem(newWidth?: number, force?: boolean): void {}
 
+        // Set up the page, load data and then render the content
         initPage() {
             this.state = { kind: "loading" };
             this.renderProjectPage();
             Matrix.Labels.projectLabelHistory().then((result) => {
-                this.updateLabels(result);
+                this.state = {
+                    kind: "loaded",
+                    data: result,
+                    openTimes: extractLabelOpenTime(result),
+                };
+                this.renderProjectPage();
             });
         }
 
-        private updateLabels(labels: XRLabelEntry[]) {
-            let openTimes: { id: string; time: Date }[] = [];
-            for (const item of labels) {
-                for (const label of item.labels) {
-                    if (label.label == "OPEN") {
-                        const latestOpen = label.set.reduce((prevDate: Date, set) => {
-                            const newDate = new Date(set.dateIso);
-                            if (newDate > prevDate) {
-                                return newDate;
-                            } else {
-                                return prevDate;
-                            }
-                        }, new Date(0));
-                        openTimes.push({ id: item.itemRef, time: latestOpen });
-                    }
+        private renderProjectPage() {
+            const content = renderContent(this.state);
+            this._root.html(wrapContent(content));
+        }
+    }
+
+    /**
+     * Render the state into an HTML string
+     * @param state UI state to display
+     * @private
+     */
+    function renderContent(state: DashboardState): string {
+        switch (state.kind) {
+            case "loading":
+                return "Loading ...";
+            case "loaded":
+                return renderOpenTimes(state.openTimes);
+        }
+        return "Unknown State";
+    }
+
+    /**
+     * Utility render function to render the common UI wrapper
+     * around stateful content
+     * @param content The HTML content to wrap
+     * @private
+     */
+    function wrapContent(content: string): string {
+        return `            
+            <div>${content}</div>
+        `;
+    }
+
+    /**
+     * Extract the latest time when an item was set into the OPEN state
+     * @param labels The labels to process
+     * @return A set of items and their last open time
+     * @private
+     */
+    function extractLabelOpenTime(labels: XRLabelEntry[]): OpenTime[] {
+        let openTimes: OpenTime[] = [];
+        for (const item of labels) {
+            for (const label of item.labels) {
+                if (label.label == "OPEN") {
+                    const latestOpen = label.set.reduce((prevDate: Date, set) => {
+                        const newDate = new Date(set.dateIso);
+                        if (newDate > prevDate) {
+                            return newDate;
+                        } else {
+                            return prevDate;
+                        }
+                    }, new Date(0));
+                    openTimes.push({ id: item.itemRef, time: latestOpen });
                 }
             }
-            this.state = { kind: "loaded", data: labels, openTimes: openTimes };
-            this.renderProjectPage();
         }
+        return openTimes;
+    }
 
-        private renderProjectPage() {
-            const html = `            
-            <div>${this.htmlContent()}</div>
-            `;
-            this._root.html(html);
-        }
-
-        private htmlContent() {
-            switch (this.state.kind) {
-                case "loading":
-                    return "Loading ...";
-                case "loaded":
-                    return ExampleDashboardControl.renderOpenTimes(this.state.openTimes);
-            }
-            return "Unknown State";
-        }
-
-        private static renderOpenTimes(times: OpenTimes[]): string {
-            const rows = times.map(
-                (time) => `<tr><td>${time.id}</td><td>${time.time.toDateString()}</td></tr>`
-            );
-            return `<table>${rows.join("")}</table>`;
-        }
+    /**
+     * Render open time into a table
+     * @param times Input items
+     * @private
+     */
+    function renderOpenTimes(times: OpenTime[]): string {
+        const rows = times.map(
+            (time) => `<tr><td>${time.id}</td><td>${time.time.toDateString()}</td></tr>`
+        );
+        return `<table>${rows.join("")}</table>`;
     }
 }
 
+// Register the plugin
 $(function () {
     plugins.register(new ExampleDashboard.ExampleDashboard());
 });
