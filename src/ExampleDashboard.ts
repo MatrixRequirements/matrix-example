@@ -3,14 +3,14 @@ interface ILabelDisplay {
     displayString: string;
 }
 
-interface ILabelDashboardRule {
+interface IExampleDashboardRule {
     type: string;
     labels: ILabelDisplay[];
     cat: string;
 }
 
 interface ILabelDashboardRuleArray {
-    [key: string]: ILabelDashboardRule;
+    [key: string]: IExampleDashboardRule;
 }
 
 interface ILabelDashboardGraphData {
@@ -44,16 +44,14 @@ class ExampleDashboard implements IPlugin {
         return new LabelTools().getLabelDefinitions([cat]).length != 0;
     }
 
-    initServerSettings(
-        serverSettings: XRGetProject_StartupInfo_ListProjectAndSettings
-    ) {}
+    initServerSettings(serverSettings: XRGetProject_StartupInfo_ListProjectAndSettings) {}
 
     updateMenu(ul: JQuery, hook: number) {
         let that = this;
 
         if (this.currentFolder != undefined) {
             var menuItem = $(
-                '<li id="LabelDashboardMenuItem"><span class="toolmenu">Labels overview</span></li>'
+                '<li id="ExampleDashboardMenuItem"><span class="toolmenu">Example Dashboard</span></li>'
             );
             let cat = ExampleDashboardabilityOverviewImpl.getCatFromFolderName(
                 this.currentFolder.id
@@ -67,13 +65,10 @@ class ExampleDashboard implements IPlugin {
                 that.dlg = $("<div>").appendTo($("body"));
                 let ui = $("<div style='height:100%;width:100%'>");
 
-                let LabelDashboardabilityOverview = new ExampleDashboardabilityOverviewImpl(
-                    ui
-                );
-                LabelDashboardabilityOverview.popupModeOrControl = true;
-                LabelDashboardabilityOverview.renderProjectPage();
-                let dialogTitle =
-                    "Labels overview for " + that.currentFolder.id;
+                let exampleDashboardOverview = new ExampleDashboardabilityOverviewImpl(ui);
+                exampleDashboardOverview.popupModeOrControl = true;
+                exampleDashboardOverview.renderProjectPage();
+                let dialogTitle = "Example Dashboard overview for " + that.currentFolder.id;
                 ml.UI.showDialog(
                     that.dlg,
                     dialogTitle,
@@ -88,13 +83,8 @@ class ExampleDashboard implements IPlugin {
                         that.dlg.remove();
                     },
                     () => {
-                        LabelDashboardabilityOverview.installCopyButtons(
-                            dialogTitle
-                        );
-                        LabelDashboardabilityOverview.SelectionChanged(
-                            cat,
-                            that.currentFolder.id
-                        ); // TODO : To be changed
+                        exampleDashboardOverview.installCopyButtons(dialogTitle);
+                        exampleDashboardOverview.SelectionChanged(cat, that.currentFolder.id); // TODO : To be changed
                     },
                     () => {}
                 );
@@ -110,13 +100,11 @@ class ExampleDashboard implements IPlugin {
 
     createControl(ctrl: JQuery, options: IBaseControlOptions) {
         let that = this;
-        let o: ILabelDashboardSummaryOptions = <ILabelDashboardSummaryOptions>(
-            options
-        );
+        let o: IExampleDashboardSummaryOptions = <IExampleDashboardSummaryOptions>options;
         o.currentFolder = that.currentFolder;
         o.popupModeOrControl = that.popupModeOrControl;
         //check if the current item has down or uplink
-        ctrl.LabelDashboard_summary(o);
+        ctrl.exampleDashboard_summary(o);
     }
 
     initProject() {}
@@ -132,18 +120,15 @@ class ExampleDashboard implements IPlugin {
         // Only display LabelDashboard for project with labels
         if (ml.LabelTools.getLabelGroups().length > 0) {
             pages.push({
-                id: "LAO",
-                title: "Labels Overview",
+                id: "EXD",
+                title: "Example Dashboard",
                 folder: "DASHBOARDS",
                 order: 3000,
                 icon: "fal fa-tasks-alt",
                 usesFilters: true,
                 render: (options: IPluginPanelOptions) => {
-                    let LabelDashboard = new ExampleDashboardabilityOverviewImpl(
-                        options.control
-                    );
-
-                    LabelDashboard.renderProjectPage();
+                    let exampleDashboard = new ExampleDashboardabilityOverviewImpl(options.control);
+                    exampleDashboard.renderProjectPage();
                 },
             });
         }
@@ -159,19 +144,16 @@ $(function () {
     plugins.register(exampleDashboardabilityOverview);
 });
 
-interface ILabelDashboardSummaryOptions extends IBaseControlOptions {
+interface IExampleDashboardSummaryOptions extends IBaseControlOptions {
     currentFolder: IItem;
     popupModeOrControl: boolean;
 }
 
 interface JQuery {
-    LabelDashboard_summary?: (options: ILabelDashboardSummaryOptions) => JQuery;
+    exampleDashboard_summary?: (options: IExampleDashboardSummaryOptions) => JQuery;
 }
 
-$.fn.LabelDashboard_summary = function (
-    this: JQuery,
-    options: ILabelDashboardSummaryOptions
-) {
+$.fn.exampleDashboard_summary = function (this: JQuery, options: IExampleDashboardSummaryOptions) {
     let baseControl = new ExampleDashboardabilityOverviewImpl(this);
     this.getController = () => {
         return baseControl;
@@ -182,15 +164,12 @@ $.fn.LabelDashboard_summary = function (
 };
 
 class ExampleDashboardabilityOverviewImpl extends BaseControl {
-    currentGroups: ILabelDashboardRule[];
+    currentGroups: IExampleDashboardRule[];
     currentLabels: ILabel[];
     charts: c3.ChartAPI[] = [];
 
     static getCatFromFolderName(folder: string): string {
-        return folder.substring(
-            folder.indexOf("-") + 1,
-            folder.lastIndexOf("-")
-        );
+        return folder.substring(folder.indexOf("-") + 1, folder.lastIndexOf("-"));
     }
 
     //Item == "SPEC-12-v12"
@@ -214,7 +193,7 @@ class ExampleDashboardabilityOverviewImpl extends BaseControl {
 
     destroy(): void {}
 
-    init(options: ILabelDashboardSummaryOptions) {
+    init(options: IExampleDashboardSummaryOptions) {
         if (
             options.controlState == ControlState.FormEdit ||
             options.controlState == ControlState.FormView
@@ -224,14 +203,11 @@ class ExampleDashboardabilityOverviewImpl extends BaseControl {
                 let cat = ExampleDashboardabilityOverviewImpl.getCatFromFolderName(
                     options.currentFolder.id
                 );
-                $("#LabelDashboardMenuItem").hide();
+                $("#ExampleDashboardMenuItem").hide();
 
                 if (ExampleDashboard.canBeDisplayed(cat)) {
                     this.renderProjectPage();
-                    this.SelectionChanged(
-                        options.currentFolder.type,
-                        options.currentFolder.id
-                    );
+                    this.SelectionChanged(options.currentFolder.type, options.currentFolder.id);
                 }
             }
         }
@@ -246,16 +222,13 @@ class ExampleDashboardabilityOverviewImpl extends BaseControl {
         if (cat == undefined) {
             return;
         }
-        if (cat == "")
-            cat = $(
-                "#itemSelectionLabelDashboard .dropdown-menu li:first"
-            ).text();
+        if (cat == "") cat = $("#itemSelectionLabelDashboard .dropdown-menu li:first").text();
 
         that.currentCat = cat;
 
         let groups = ml.LabelTools.getLabelGroups(cat);
 
-        let labels: ILabelDashboardRule[] = [];
+        let labels: IExampleDashboardRule[] = [];
         that.currentLabels = [];
 
         groups.forEach((g) => {
@@ -311,8 +284,7 @@ class ExampleDashboardabilityOverviewImpl extends BaseControl {
         if (folder && folder != "") {
             query.push("folderm=" + folder);
         }
-        let mrqlQuery =
-            "needle?search=mrql:" + query.join(" AND ") + "&labels=1";
+        let mrqlQuery = "needle?search=mrql:" + query.join(" AND ") + "&labels=1";
         var d = restConnection.getProject(mrqlQuery);
         deffered.push(d);
         d.done((result: XRTrimNeedle) => {
@@ -606,25 +578,18 @@ class ExampleDashboardabilityOverviewImpl extends BaseControl {
 
     generateGraphforXor(
         i: number,
-        group: ILabelDashboardRule,
+        group: IExampleDashboardRule,
         inputData: ILabelDashboardGraphData
     ): any {
         let colums: any[] = [];
         let that = this;
         if (!$("#hideNoLabelSet").is(":checked"))
-            colums.push([
-                "No label set",
-                inputData["Other"].length,
-                "Other",
-                that.colors[0],
-            ]);
+            colums.push(["No label set", inputData["Other"].length, "Other", that.colors[0]]);
         let j = 0;
         group.labels.forEach((label) => {
             colums.push([
                 label.displayString,
-                inputData[label.id] != undefined
-                    ? inputData[label.id].length
-                    : 0,
+                inputData[label.id] != undefined ? inputData[label.id].length : 0,
                 label.id,
                 this.colors[(j + 1) % that.colors.length],
             ]);
@@ -675,12 +640,7 @@ class ExampleDashboardabilityOverviewImpl extends BaseControl {
             },
             tooltip: {
                 format: {
-                    value: function (
-                        value: any,
-                        ratio: any,
-                        id: any,
-                        index: any
-                    ) {
+                    value: function (value: any, ratio: any, id: any, index: any) {
                         return value;
                     },
                 },
@@ -692,7 +652,7 @@ class ExampleDashboardabilityOverviewImpl extends BaseControl {
 
     generateGraphforOr(
         i: number,
-        group: ILabelDashboardRule,
+        group: IExampleDashboardRule,
         inputData: ILabelDashboardGraphData
     ): any {
         let colums: any[] = [];
@@ -709,11 +669,7 @@ class ExampleDashboardabilityOverviewImpl extends BaseControl {
         group.labels.forEach((label) => {
             header.push(label.displayString);
             footers.push(label.id);
-            values.push(
-                inputData[label.id] != undefined
-                    ? inputData[label.id].length
-                    : 0
-            );
+            values.push(inputData[label.id] != undefined ? inputData[label.id].length : 0);
         });
         colums.push(header);
         colums.push(values);
@@ -759,12 +715,7 @@ class ExampleDashboardabilityOverviewImpl extends BaseControl {
             },
             tooltip: {
                 format: {
-                    value: function (
-                        value: any,
-                        ratio: any,
-                        id: any,
-                        index: any
-                    ) {
+                    value: function (value: any, ratio: any, id: any, index: any) {
                         return value;
                     },
                 },
