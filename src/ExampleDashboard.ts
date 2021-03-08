@@ -1,4 +1,4 @@
-/// <reference path="api/Matrix.REST.ts" />
+/// <reference path="api/Matrix.Labels.ts" />
 
 namespace ExampleDashboard {
     export class ExampleDashboard implements IPlugin {
