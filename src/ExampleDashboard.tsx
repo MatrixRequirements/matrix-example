@@ -1,7 +1,10 @@
 /// <reference path="api/Matrix.Labels.ts" />
+/// <reference types="react" />
 
 // Use a namespace to isolate your plugin code
 // This avoids conflicts with other plugins
+import { ReactElement } from "react";
+
 namespace ExampleDashboard {
     export class ExampleDashboard implements IPlugin {
         // Implement to pass back additional pages to be displayed in the tree
@@ -15,6 +18,9 @@ namespace ExampleDashboard {
                 icon: "fal fa-lightbulb-on",
                 usesFilters: true,
                 render: (options: IPluginPanelOptions) => {
+                    // @ts-ignore
+                    const element: ReactElement = <ExampleDashboardComp />;
+                    ReactDOM.render(element, options.control);
                     const control = new ExampleDashboardControl(options.control);
                     control.initPage();
                 },
@@ -52,6 +58,21 @@ namespace ExampleDashboard {
         time: Date;
     }
 
+    function ExampleDashboardComp(): ReactElement {
+        const [state, setState] = React.useState<DashboardState>({ kind: "loading" });
+
+        Matrix.Labels.projectLabelHistory().then((result) => {
+            setState({
+                kind: "loaded",
+                data: result,
+                openTimes: extractLabelOpenTime(result),
+            });
+            this.renderProjectPage();
+        });
+
+        return <div>Hallo</div>;
+    }
+
     class ExampleDashboardControl extends BaseControl {
         state: DashboardState = { kind: "loading" };
 
@@ -69,14 +90,6 @@ namespace ExampleDashboard {
         initPage() {
             this.state = { kind: "loading" };
             this.renderProjectPage();
-            Matrix.Labels.projectLabelHistory().then((result) => {
-                this.state = {
-                    kind: "loaded",
-                    data: result,
-                    openTimes: extractLabelOpenTime(result),
-                };
-                this.renderProjectPage();
-            });
         }
 
         private renderProjectPage() {
