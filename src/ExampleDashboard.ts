@@ -145,7 +145,7 @@ namespace ExampleDashboard {
      */
     function renderOpenTimes(times: OpenTime[]): string {
         const rows = times.map(
-            (time) => `<tr><td>${time.id}</td><td>${time.time.toDateString()}</td></tr>`
+            (time) => `<tr><td>ID:${time.id}</td><td>Date:${time.time.toDateString()}</td></tr>`
         );
         return `<table>${rows.join("")}</table>`;
     }
