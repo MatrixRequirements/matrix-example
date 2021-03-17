@@ -126,8 +126,11 @@ namespace CapaStatusDashboard {
     function extractLabelStatusDays(labels: XRLabelEntry[]): LabelStateDaysCountData[] {
         let LabelStateDaysCountDetails: LabelStateDaysCountData[] = [];
         for (const item of labels) {
-            let LabelStateDaysCountData: LabelStateDaysCountData;
-            LabelStateDaysCountData.id = item.itemRef;
+            let LabelStateDaysCountData: LabelStateDaysCountData = {
+                id : item.itemRef,
+                labels: []
+            };
+            //LabelStateDaysCountData.id = item.itemRef;
             for (const label of item.labels) {
                 // if (label.label == "OPEN") {
                 //     const latestOpen = label.set.reduce((prevDate: Date, set) => {
