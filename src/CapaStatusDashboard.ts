@@ -144,7 +144,6 @@ namespace CapaStatusDashboard {
                 //     LabelStateDaysCountDetails.push({ id: item.itemRef, time: latestOpen });
                 // }
                 
-                let LabelStateDays: LabelStateDaysCount;
                 //sorting set array in ascending order based on version
                 label.set.sort((a, b) => a.version - b.version);
 
@@ -179,8 +178,11 @@ namespace CapaStatusDashboard {
 
                 },0);
 
-                LabelStateDays.label = label.label;
-                LabelStateDays.days = labelstateDaysCount;
+                let LabelStateDays: LabelStateDaysCount = {
+                    label : label.label,
+                    days : labelstateDaysCount
+                }
+               
 
                 LabelStateDaysCountData.labels.push(LabelStateDays);
             }
