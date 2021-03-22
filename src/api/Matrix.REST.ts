@@ -2,13 +2,13 @@
 /// <reference path="../../lib/admin.d.ts" />
 
 namespace Matrix {
-    export namespace Request {
+    export namespace REST {
         /**
-         * Perform a REST request with the current user
+         * Perform a REST request with the current user for the current project
          * @param url The request URL
          */
-        export function getRequest(url: string) {
-            restConnection.getProject("");
+        export function projectGETRequest(url: string): JQueryDeferred<IRestResult> {
+            return restConnection.getProject(url);
         }
     }
 }
