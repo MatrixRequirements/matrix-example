@@ -204,7 +204,7 @@ namespace CapaStatusDashboard {
         let container = '<div role="tabpanel"  style="height:100%" class="tabpaneltab tab-pane active" id="capastatustable" >';
 
 
-        let table = "<table class='table table-lined'>";
+        let table = "<table class='table table-lined' id='CSDTable' class='tablesorter'>";
 
         let tbody = "<tbody>";
 
@@ -219,7 +219,7 @@ namespace CapaStatusDashboard {
             (labelData) => {
                 //todo-check its in order open,wait,checked,closed
                 let rowColumn = labelData.labels.map(
-                    (label) => `<td>Days:${label.days}</td>`
+                    (label) => `<td>${label.days}</td>`
                 );
 
                 let tableRow = `<tr><td>${labelData.id}!</td>${rowColumn}</tr>`;
@@ -246,3 +246,9 @@ namespace CapaStatusDashboard {
 $(function () {
     plugins.register(new CapaStatusDashboard.CapaStatusDashboard());
 });
+
+$(document).ready(function() 
+    { 
+        $("#CSDTable").tablesorter(); 
+    } 
+);
