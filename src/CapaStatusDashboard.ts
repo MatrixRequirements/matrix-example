@@ -60,15 +60,15 @@ namespace CapaStatusDashboard {
     class CapaStatusDashboardControl extends BaseControl {
         state: DashboardState = { kind: "loading" };
 
-        destroy(): void {}
+        destroy(): void { }
 
-        getValue(): any {}
+        getValue(): any { }
 
         hasChanged(): boolean {
             return false;
         }
 
-        resizeItem(newWidth?: number, force?: boolean): void {}
+        resizeItem(newWidth?: number, force?: boolean): void { }
 
         // Set up the page, load data and then render the content
         initPage() {
@@ -127,7 +127,7 @@ namespace CapaStatusDashboard {
         let LabelStateDaysCountDetails: LabelStateDaysCountData[] = [];
         for (const item of labels) {
             let LabelStateDaysCountData: LabelStateDaysCountData = {
-                id : item.itemRef,
+                id: item.itemRef,
                 labels: []
             };
             //LabelStateDaysCountData.id = item.itemRef;
@@ -143,46 +143,46 @@ namespace CapaStatusDashboard {
                 //     }, new Date(0));
                 //     LabelStateDaysCountDetails.push({ id: item.itemRef, time: latestOpen });
                 // }
-                
+
                 //sorting set array in ascending order based on version
                 label.set.sort((a, b) => a.version - b.version);
 
                 //sorting reset array in ascending order based on version
                 label.reset.sort((a, b) => a.version - b.version);
-                
-                const labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set)=>{
+
+                const labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
                     let stateDays: number;
-                    if(label.reset[currentIndex]){
+                    if (label.reset[currentIndex]) {
                         const setDate = new Date(currentValue.dateUser);
                         const resetDate = new Date(label.reset[currentIndex].dateUser);
-                        
-                        let time_difference = resetDate.getTime() - setDate.getTime();  
-  
+
+                        let time_difference = resetDate.getTime() - setDate.getTime();
+
                         //calculate days difference by dividing total milliseconds in a day  
-                        let days_difference = time_difference / (1000 * 60 * 60 * 24);  
+                        let days_difference = time_difference / (1000 * 60 * 60 * 24);
 
                         stateDays = Math.floor(days_difference);
-                    }else{
+                    } else {
                         const setDate = new Date(currentValue.dateUser);
                         const resetDate = new Date();
 
-                        let time_difference = resetDate.getTime() - setDate.getTime();  
-  
+                        let time_difference = resetDate.getTime() - setDate.getTime();
+
                         //calculate days difference by dividing total milliseconds in a day  
-                        let days_difference = time_difference / (1000 * 60 * 60 * 24);  
+                        let days_difference = time_difference / (1000 * 60 * 60 * 24);
 
                         stateDays = Math.floor(days_difference);
                     }
 
                     return accumulator + stateDays;
 
-                },0);
+                }, 0);
 
                 let LabelStateDays: LabelStateDaysCount = {
-                    label : label.label,
-                    days : labelstateDaysCount
+                    label: label.label,
+                    days: labelstateDaysCount
                 }
-               
+
 
                 LabelStateDaysCountData.labels.push(LabelStateDays);
             }
@@ -197,21 +197,48 @@ namespace CapaStatusDashboard {
      * @private
      */
     function renderLabelStateDaysCountDetails(labelSateDaysCountDetails: LabelStateDaysCountData[]): string {
+
+        let tabpanel = '<div role="tabpanel" class="tabpanel-container contextFrameContainer" style="top:60px;padding: 5px;">';
+        let tabpanels = '<div class="tab-content">';
+
+        let container = '<div role="tabpanel"  style="height:100%" class="tabpaneltab tab-pane active" id="capastatustable" >';
+
+
+        let table = "<table class='table table-lined'>";
+
+        let tbody = "<tbody>";
+
+
+        // create table with headings and body
+        let thead = $("<thead><tr>"
+            + "<th>Item</th><th>Open</th><th>Wait</th><th>Checked</th><th>Closed</th>"
+            + "</tr></thead>");
+
+
         const rows = labelSateDaysCountDetails.map(
             (labelData) => {
-               
+                //todo-check its in order open,wait,checked,closed
+                let rowColumn = labelData.labels.map(
+                    (label) => `<td>Days:${label.days}</td>`
+                );
 
-               let rowColumn = labelData.labels.map(
-                   (label) =>  `<td>Label:${label.label}</td><td>Days:${label.days}</td>`
-               );
-              
-               let tableRow = `<tr><td>ID:${labelData.id}</td>${rowColumn}</tr>`;
-               
-               return tableRow;
-               
+                let tableRow = `<tr><td>${labelData.id}!</td>${rowColumn}</tr>`;
+
+                return tableRow;
+
             }
         );
-        return `<table>${rows.join("")}</table>`;
+
+        // table.append(thead)
+        //     .append(tbody)
+        //     .appendTo(container).tablesorter();
+
+
+        
+
+        let finalTableRendered = `${tabpanel}${tabpanels}${container}${table}${thead}${tbody}${rows}</tbody></table></div></div></div>`
+
+        return finalTableRendered;
     }
 }
 
