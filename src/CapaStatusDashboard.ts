@@ -132,8 +132,8 @@ class ExampleDashboard implements IPlugin {
         // Only display LabelDashboard for project with labels
         if (ml.LabelTools.getLabelGroups().length > 0) {
             pages.push({
-                id: "LAOED",
-                title: "Labels Overview 1",
+                id: "CSD",
+                title: "csd",
                 folder: "DASHBOARDS",
                 order: 3000,
                 icon: "fal fa-tasks-alt",
