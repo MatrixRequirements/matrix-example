@@ -210,9 +210,9 @@ namespace CapaStatusDashboard {
 
 
         // create table with headings and body
-        let thead = $("<thead><tr>"
+        let thead = "<thead><tr>"
             + "<th>Item</th><th>Open</th><th>Wait</th><th>Checked</th><th>Closed</th>"
-            + "</tr></thead>");
+            + "</tr></thead>";
 
 
         const rows = labelSateDaysCountDetails.map(
