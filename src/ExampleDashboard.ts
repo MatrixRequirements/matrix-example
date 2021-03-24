@@ -2,8 +2,8 @@
 
 // Use a namespace to isolate your plugin code
 // This avoids conflicts with other plugins
-namespace ExampleDashboard {
-    export class ExampleDashboard implements IPlugin {
+namespace ExampleDashboardWithTable {
+    export class ExampleDashboardWithTable implements IPlugin {
         // Implement to pass back additional pages to be displayed in the tree
         getProjectPages(): IProjectPageParam[] {
             let pages: IProjectPageParam[] = [];
@@ -135,5 +135,5 @@ namespace ExampleDashboard {
 
 // Register the plugin
 $(function () {
-    plugins.register(new ExampleDashboard.ExampleDashboard());
+    plugins.register(new ExampleDashboardWithTable.ExampleDashboardWithTable());
 });
