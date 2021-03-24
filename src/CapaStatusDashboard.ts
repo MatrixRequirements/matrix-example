@@ -9,10 +9,10 @@ namespace CapaStatusDashboard {
             let pages: IProjectPageParam[] = [];
             pages.push({
                 id: "CSD",
-                title: "CAPA Status Dashboard",
+                title: "CAPA Status Overview",
                 folder: "DASHBOARDS",
                 order: 3000,
-                icon: "fal fa-lightbulb-on",
+                icon: "fal fa-rocket",
                 usesFilters: true,
                 render: (options: IPluginPanelOptions) => {
                     const control = new CapaStatusDashboardControl(options.control);
@@ -27,7 +27,7 @@ namespace CapaStatusDashboard {
         isDefault = true;
 
         getPluginName(): string {
-            return "CAPA Status Dashboard";
+            return "CAPA Status Overview";
         }
 
         getPluginVersion(): string {
@@ -35,17 +35,7 @@ namespace CapaStatusDashboard {
         }
     }
 
-    // The possible application states
-    interface Loading {
-        kind: "loading";
-    }
-    interface Loaded {
-        kind: "loaded";
-        data: XRLabelEntry[];
-        LabelStateDaysCountDetails: LabelStateDaysCountData[];
-    }
-    type DashboardState = Loading | Loaded;
-
+    // Data we will use for display
     interface LabelStateDaysCount {
         label: string;
         days: number;
@@ -58,91 +48,153 @@ namespace CapaStatusDashboard {
     }
 
     class CapaStatusDashboardControl extends BaseControl {
-        state: DashboardState = { kind: "loading" };
 
-        destroy(): void { }
+        destroy(): void {}
 
-        getValue(): any { }
+        getValue(): any {}
 
         hasChanged(): boolean {
             return false;
         }
 
-        resizeItem(newWidth?: number, force?: boolean): void { }
+        resizeItem(newWidth?: number, force?: boolean): void {}
 
         // Set up the page, load data and then render the content
         initPage() {
-            this.state = { kind: "loading" };
-            this.renderProjectPage();
+            this.renderHTML();
+            //Add a waiting spinning item
+            let spinningWait =ml.UI.getSpinningWait("Loading");
+            $("#waiting",this._root).append(spinningWait);
+            
+            //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
-                this.state = {
-                    kind: "loaded",
-                    data: result,
-                    LabelStateDaysCountDetails: extractLabelStatusDays(result),
-                };
-                this.renderProjectPage();
+                this.renderResult(result);
+            }).then(()=>{
+                //Let's remove the spinning wait
+                spinningWait.remove();
             });
         }
 
-        private renderProjectPage() {
-            const content = renderContent(this.state);
-            this._root.html(wrapContent(content));
+        renderHTML() {
+            //Load the template
+            this._root.html(this.ExampleHTMLDom);
+            //Add the page title
+            ml.UI.getPageTitle("CAPA Status Overview").prependTo(this._root);
         }
-    }
 
-    /**
-     * Render the state into an HTML string
-     * @param state UI state to display
-     * @private
-     */
-    function renderContent(state: DashboardState): string {
-        switch (state.kind) {
-            case "loading":
-                return "Loading ...";
-            case "loaded":
-                return renderLabelStateDaysCountDetails(state.LabelStateDaysCountDetails);
+        private renderResult(result:XRLabelEntry[]) {
+
+            let LabelStateDaysCountDetails: LabelStateDaysCountData[] = extractLabelStatusDays(result);
+        
+            // result.forEach((item)=>{
+
+            //     let clonedTemplate =  $("#itemCapaStatusDashboardList .template",this._root).clone();
+            //     //Remove the template and hidden classes 
+            //     clonedTemplate.attr("class","");
+            //     $(".title",clonedTemplate).text(item.itemRef + "!");
+            //     $(".content",clonedTemplate).text(item.labels.map((l)=>{ return l.label }).join(","));
+            //     clonedTemplate.appendTo($("#itemCapaStatusDashboardList tbody",this._root));
+
+            // })
+
+            LabelStateDaysCountDetails.forEach(
+                (labelData) => {
+                    let clonedTemplate =  $("#itemCapaStatusDashboardList .template",this._root).clone();
+                    //Remove the template and hidden classes 
+                    clonedTemplate.attr("class","");
+                    $(".title",clonedTemplate).text(labelData.id + "!");
+
+                    labelData.labels.forEach(
+                        (label) => {
+                            switch (label.label) {
+                                case 'OPEN':
+                                    $(".opencontent",clonedTemplate).text(label.days);
+                                  break;
+                                case 'WAIT':
+                                    $(".waitcontent",clonedTemplate).text(label.days);
+                                  break;
+                                case 'CHECKED':
+                                    $(".checkedcontent",clonedTemplate).text(label.days);
+                                  break;
+                                case 'CLOSED':
+                                    $(".closedcontent",clonedTemplate).text(label.days);
+                                  break;
+                              }
+                        }
+                    );
+
+                    clonedTemplate.appendTo($("#itemCapaStatusDashboardList tbody",this._root));
+                }
+            );
+
+
+            $("table#itemCapaStatusDashboardList").highlightReferences();
+            $("table#itemCapaStatusDashboardList").tablesorter();
+
+
         }
-        return "Unknown State";
+        
+        
+        
+        
+        // HTML template
+        ExampleHTMLDom = `<div class="panel-body-v-scroll fillHeight">
+        <style>
+        /* If required */
+        </style>
+        <div class="row" id="waiting" class=""></div>
+            <div class="panel-body" id="CapaStatusDashboardPanel">
+                <div id="">   
+                    <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title" id="">Capa Status Overview</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="CapaStatusDashboardPieChart" class="chart">Chart will go here</div>
+                    </div>
+               </div>
+            </div>
+            <div>
+                <table id="itemCapaStatusDashboardList" class="table table-condensed table-borderless table-hover">
+                <thead>
+                    <tr>
+                        <th> Item</th>
+                        <th> Open</th>
+                        <th> Wait</th>
+                        <th> Checked</th>
+                        <th> Closed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr class="template hidden">
+                            <td class="title" >MyITEM : my title  </td>
+                            <td class="opencontent" ></td>
+                            <td class="waitcontent" ></td>
+                            <td class="checkedcontent" ></td>
+                            <td class="closedcontent" ></td>
+                        </tr>
+                    </tbody>
+                </table>
+         </div>
+        </div>
+        `
     }
 
-    /**
-     * Utility render function to render the common UI wrapper
-     * around stateful content
-     * @param content The HTML content to wrap
-     * @private
-     */
-    function wrapContent(content: string): string {
-        return `            
-            <div>${content}</div>
-        `;
-    }
-
-    /**
+     /**
      * Extract the number of days each label state was in
      * @param labels The labels to process
      * @return A set of items and their labels with number of days each label state was in
      * @private
      */
-    function extractLabelStatusDays(labels: XRLabelEntry[]): LabelStateDaysCountData[] {
+      function extractLabelStatusDays(labels: XRLabelEntry[]): LabelStateDaysCountData[] {
         let LabelStateDaysCountDetails: LabelStateDaysCountData[] = [];
         for (const item of labels) {
             let LabelStateDaysCountData: LabelStateDaysCountData = {
                 id: item.itemRef,
                 labels: []
             };
-            //LabelStateDaysCountData.id = item.itemRef;
+           
             for (const label of item.labels) {
-                // if (label.label == "OPEN") {
-                //     const latestOpen = label.set.reduce((prevDate: Date, set) => {
-                //         const newDate = new Date(set.dateIso);
-                //         if (newDate > prevDate) {
-                //             return newDate;
-                //         } else {
-                //             return prevDate;
-                //         }
-                //     }, new Date(0));
-                //     LabelStateDaysCountDetails.push({ id: item.itemRef, time: latestOpen });
-                // }
 
                 //sorting set array in ascending order based on version
                 label.set.sort((a, b) => a.version - b.version);
@@ -191,64 +243,9 @@ namespace CapaStatusDashboard {
         return LabelStateDaysCountDetails;
     }
 
-    /**
-     * Render open time into a table
-     * @param times Input items
-     * @private
-     */
-    function renderLabelStateDaysCountDetails(labelSateDaysCountDetails: LabelStateDaysCountData[]): string {
-
-        let tabpanel = '<div role="tabpanel" class="tabpanel-container contextFrameContainer" style="top:60px;padding: 5px;">';
-        let tabpanels = '<div class="tab-content">';
-
-        let container = '<div role="tabpanel"  style="height:100%" class="tabpaneltab tab-pane active" id="capastatustable" >';
-
-
-        let table = "<table class='table table-lined' id='CSDTable' class='tablesorter'>";
-
-        let tbody = "<tbody>";
-
-
-        // create table with headings and body
-        let thead = "<thead><tr>"
-            + "<th>Item</th><th>Open</th><th>Wait</th><th>Checked</th><th>Closed</th>"
-            + "</tr></thead>";
-
-
-        const rows = labelSateDaysCountDetails.map(
-            (labelData) => {
-                //todo-check its in order open,wait,checked,closed
-                let rowColumn = labelData.labels.map(
-                    (label) => `<td>${label.days}</td>`
-                );
-
-                let tableRow = `<tr><td>${labelData.id}!</td>${rowColumn}</tr>`;
-
-                return tableRow;
-
-            }
-        );
-
-        // table.append(thead)
-        //     .append(tbody)
-        //     .appendTo(container).tablesorter();
-
-
-        
-
-        let finalTableRendered = `${tabpanel}${tabpanels}${container}${table}${thead}${tbody}${rows}</tbody></table></div></div></div>`
-
-        return finalTableRendered;
-    }
 }
 
 // Register the plugin
 $(function () {
     plugins.register(new CapaStatusDashboard.CapaStatusDashboard());
 });
-
-$(document).ready(function() 
-    { 
-        $("#CSDTable").tablesorter(); 
-    } 
-);
