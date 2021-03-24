@@ -55,13 +55,21 @@ namespace ExampleDashboardWithTable {
 
         // Set up the page, load data and then render the content
         initPage() {
-            this.loadTemplate();
+            this.renderHTML();
+            //Add a waiting spinning item
+            let spinningWait =ml.UI.getSpinningWait("Loading");
+            $("#waiting",this._root).append(spinningWait);
+            
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
                 this.renderResult(result);
+            }).then(()=>{
+                //Let's remove the spinning wait
+                spinningWait.remove();
             });
         }
-        loadTemplate() {
+
+        renderHTML() {
             //Load the template
             this._root.html(this.ExampleHTMLDom);
             //Add the page title
@@ -69,9 +77,7 @@ namespace ExampleDashboardWithTable {
         }
 
         private renderResult(result:XRLabelEntry[]) {
-            //Add a waiting spinning item
-            let spinningWait =ml.UI.getSpinningWait("Loading");
-            $("#waitForIt",this._root).append(spinningWait);
+         
 
             result.forEach((item)=>{
 
@@ -86,8 +92,6 @@ namespace ExampleDashboardWithTable {
             $("table#itemExampleDashboardList").highlightReferences();
             $("table#itemExampleDashboardList").tablesorter();
 
-            //Let's remove the spinning wait
-            spinningWait.remove();
 
         }
         
@@ -99,7 +103,7 @@ namespace ExampleDashboardWithTable {
         <style>
         /* If required */
         </style>
-        <div class="row" id="waitForIt" class=""></div>
+        <div class="row" id="waiting" class=""></div>
             <div class="panel-body" id="ExamplePanel">
                 <div id="">   
                     <div class="panel panel-default">
