@@ -8,11 +8,11 @@ namespace ExampleDashboard {
         getProjectPages(): IProjectPageParam[] {
             let pages: IProjectPageParam[] = [];
             pages.push({
-                id: "EXD",
-                title: "Example Dashboard",
+                id: "EXTAB",
+                title: "Example with table",
                 folder: "DASHBOARDS",
                 order: 3000,
-                icon: "fal fa-lightbulb-on",
+                icon: "fal fa-rocket",
                 usesFilters: true,
                 render: (options: IPluginPanelOptions) => {
                     const control = new ExampleDashboardControl(options.control);
@@ -27,24 +27,13 @@ namespace ExampleDashboard {
         isDefault = true;
 
         getPluginName(): string {
-            return "Example Dashboard";
+            return "Example with table";
         }
 
         getPluginVersion(): string {
             return "0.0.1";
         }
     }
-
-    // The possible application states
-    interface Loading {
-        kind: "loading";
-    }
-    interface Loaded {
-        kind: "loaded";
-        data: XRLabelEntry[];
-        openTimes: OpenTime[];
-    }
-    type DashboardState = Loading | Loaded;
 
     // Data we will use for display
     interface OpenTime {
@@ -53,7 +42,6 @@ namespace ExampleDashboard {
     }
 
     class ExampleDashboardControl extends BaseControl {
-        state: DashboardState = { kind: "loading" };
 
         destroy(): void {}
 
@@ -67,88 +55,82 @@ namespace ExampleDashboard {
 
         // Set up the page, load data and then render the content
         initPage() {
-            this.state = { kind: "loading" };
-            this.renderProjectPage();
+            this.loadTemplate();
+            //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
-                this.state = {
-                    kind: "loaded",
-                    data: result,
-                    openTimes: extractLabelOpenTime(result),
-                };
-                this.renderProjectPage();
+                this.renderResult(result);
             });
         }
-
-        private renderProjectPage() {
-            const content = renderContent(this.state);
-            this._root.html(wrapContent(content));
+        loadTemplate() {
+            //Load the template
+            this._root.html(this.ExampleHTMLDom);
+            //Add the page title
+            ml.UI.getPageTitle("Example with table").prependTo(this._root);
         }
-    }
 
-    /**
-     * Render the state into an HTML string
-     * @param state UI state to display
-     * @private
-     */
-    function renderContent(state: DashboardState): string {
-        switch (state.kind) {
-            case "loading":
-                return "Loading ...";
-            case "loaded":
-                return renderOpenTimes(state.openTimes);
+        private renderResult(result:XRLabelEntry[]) {
+            //Add a waiting spinning item
+            let spinningWait =ml.UI.getSpinningWait("Loading");
+            $("#waitForIt",this._root).append(spinningWait);
+
+            result.forEach((item)=>{
+
+                let clonedTemplate =  $("#itemExampleDashboardList .template",this._root).clone();
+                //Remove the template and hidden classes 
+                clonedTemplate.attr("class","");
+                $(".title",clonedTemplate).text(item.itemRef + "!");
+                $(".content",clonedTemplate).text(item.labels.map((l)=>{ return l.label }).join(","));
+                clonedTemplate.appendTo($("#itemExampleDashboardList tbody",this._root));
+
+            })
+            $("table#itemExampleDashboardList").highlightReferences();
+            $("table#itemExampleDashboardList").tablesorter();
+
+            //Let's remove the spinning wait
+            spinningWait.remove();
+
         }
-        return "Unknown State";
+        
+        
+        
+        
+        // HTML template
+        ExampleHTMLDom = `<div class="panel-body-v-scroll fillHeight">
+        <style>
+        /* If required */
+        </style>
+        <div class="row" id="waitForIt" class=""></div>
+            <div class="panel-body" id="ExamplePanel">
+                <div id="">   
+                    <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title" id="">Overview</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="ExampleDashboardPieChart" class="chart">Chart will go here</div>
+                    </div>
+               </div>
+            </div>
+            <div>
+                <table id="itemExampleDashboardList" class="table table-condensed table-borderless table-hover">
+                <thead>
+                    <tr>
+                        <th> Title</th>
+                        <th> Labels</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr class="template hidden">
+                            <td class="title" >MyITEM : my title  </td>
+                            <td class="content" ></td>
+                        </tr>
+                    </tbody>
+                </table>
+         </div>
+        </div>
+        `
     }
 
-    /**
-     * Utility render function to render the common UI wrapper
-     * around stateful content
-     * @param content The HTML content to wrap
-     * @private
-     */
-    function wrapContent(content: string): string {
-        return `            
-            <div>${content}</div>
-        `;
-    }
-
-    /**
-     * Extract the latest time when an item was set into the OPEN state
-     * @param labels The labels to process
-     * @return A set of items and their last open time
-     * @private
-     */
-    function extractLabelOpenTime(labels: XRLabelEntry[]): OpenTime[] {
-        let openTimes: OpenTime[] = [];
-        for (const item of labels) {
-            for (const label of item.labels) {
-                if (label.label == "OPEN") {
-                    const latestOpen = label.set.reduce((prevDate: Date, set) => {
-                        const newDate = new Date(set.dateIso);
-                        if (newDate > prevDate) {
-                            return newDate;
-                        } else {
-                            return prevDate;
-                        }
-                    }, new Date(0));
-                    openTimes.push({ id: item.itemRef, time: latestOpen });
-                }
-            }
-        }
-        return openTimes;
-    }
-
-    /**
-     * Render open time into a table
-     * @param times Input items
-     * @private
-     */
-    function renderOpenTimes(times: OpenTime[]): string {
-        const rows = times.map(
-            (time) => `<tr><td>${time.id}</td><td>${time.time.toDateString()}</td></tr>`
-        );
-        return `<table>${rows.join("")}</table>`;
-    }
 }
 
 // Register the plugin
