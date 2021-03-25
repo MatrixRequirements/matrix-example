@@ -75,11 +75,59 @@ namespace CapaStatusDashboard {
             });
         }
 
+        // renderHTML() {
+        //     //Load the template
+        //     this._root.html(this.ExampleHTMLDom);
+        //     //Add the page title
+        //     ml.UI.getPageTitle("CAPA Status Overview").prependTo(this._root);
+
+        //     let baseControl = $("<div id='itemSelectionLabelDashboard'/>");
+        
+        //     $(".toolbarButtons").append(baseControl);
+
+        //     let select = $(`<div class="dropdown navbar-right" style="">
+        //             <button class="btn btn-xs dropdown-toggle" type="button" data-toggle="dropdown">
+        //                 <span id="selectedCat" >CAT</span>&nbsp;
+        //                 <span class="caret"></span>
+        //             </button>
+        //             <ul class="dropdown-menu">
+        //             </ul>
+        //             </div>`);
+
+                    
+        //     baseControl.append(select);
+
+        //     let categories =  IC.getCategories();
+        //     let index = 0 ;
+    
+        //     categories.forEach(cat => {
+                
+        //         if( ml.LabelTools.getLabelDefinitions([cat]).length > 0)
+        //         {
+        //             let item = $(`<li class="cat" data-cat="${cat}"><a href="javascript:void(0)">${cat}</a></li>`).click(function(){
+        //                 this.SelectionChanged(cat);
+        //             });
+        //             $(".dropdown-menu",select).append(item);
+        //             if( index == 0)
+        //             {
+        //               $("#selectedCat").text(cat);
+        //             }
+        //             index ++;
+    
+        //         }           
+        //      });
+        // }
+
+
+
         renderHTML() {
+
+            let that = this;
+
             //Load the template
-            this._root.html(this.ExampleHTMLDom);
+            that._root.html(that.ExampleHTMLDom);
             //Add the page title
-            ml.UI.getPageTitle("CAPA Status Overview").prependTo(this._root);
+            ml.UI.getPageTitle("CAPA Status Overview").prependTo(that._root);
 
             let baseControl = $("<div id='itemSelectionLabelDashboard'/>");
         
@@ -105,7 +153,7 @@ namespace CapaStatusDashboard {
                 if( ml.LabelTools.getLabelDefinitions([cat]).length > 0)
                 {
                     let item = $(`<li class="cat" data-cat="${cat}"><a href="javascript:void(0)">${cat}</a></li>`).click(function(){
-                        this.SelectionChanged(cat);
+                        that.SelectionChanged(cat);
                     });
                     $(".dropdown-menu",select).append(item);
                     if( index == 0)
@@ -120,7 +168,7 @@ namespace CapaStatusDashboard {
 
         currentCat:string = "";
 
-        private SelectionChanged(cat: string) {
+        public SelectionChanged(cat: string) {
 
             console.log("selected cat:"+cat);
 
