@@ -86,7 +86,6 @@ namespace CapaStatusDashboard {
             $(".toolbarButtons").append(baseControl);
 
             let select = $(`<div class="dropdown navbar-right" style="">
-                    <input type="checkbox" id="hideNoLabelSet" /> <small style="margin-right:20px">Hide items without label</small>
                     <button class="btn btn-xs dropdown-toggle" type="button" data-toggle="dropdown">
                         <span id="selectedCat" >CAT</span>&nbsp;
                         <span class="caret"></span>
@@ -106,7 +105,7 @@ namespace CapaStatusDashboard {
                 if( ml.LabelTools.getLabelDefinitions([cat]).length > 0)
                 {
                     let item = $(`<li class="cat" data-cat="${cat}"><a href="javascript:void(0)">${cat}</a></li>`).click(function(){
-                        console.log("selected cat:"+cat);
+                        this.SelectionChanged(cat);
                     });
                     $(".dropdown-menu",select).append(item);
                     if( index == 0)
@@ -117,6 +116,24 @@ namespace CapaStatusDashboard {
     
                 }           
              });
+        }
+
+        currentCat:string = "";
+
+        private SelectionChanged(cat: string) {
+
+            console.log("selected cat:"+cat);
+
+            if (cat == undefined) {
+                return;
+            }
+            if( cat =="")
+                cat = $("#itemSelectionLabelDashboard .dropdown-menu li:first").text();
+
+            this.currentCat = cat ;   
+            
+            $("#selectedCat", this._root).text(cat);
+
         }
 
         private renderResult(result: XRLabelEntry[]) {
