@@ -133,7 +133,8 @@ namespace CapaStatusDashboard {
 
             //Table filter
             $("#CapaStatusDashboarInputFilter").on("keyup", function (e) {
-                var value = $(e.target).val().toLowerCase();
+                let inputValue = $(e.target).val();
+                let value = inputValue.toLowerCase();
                 $("#itemCapaStatusDashboardList tbody tr").show();
             
                 $("#itemCapaStatusDashboardList tbody tr").each(function (index, elem) {
