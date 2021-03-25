@@ -49,27 +49,27 @@ namespace CapaStatusDashboard {
 
     class CapaStatusDashboardControl extends BaseControl {
 
-        destroy(): void {}
+        destroy(): void { }
 
-        getValue(): any {}
+        getValue(): any { }
 
         hasChanged(): boolean {
             return false;
         }
 
-        resizeItem(newWidth?: number, force?: boolean): void {}
+        resizeItem(newWidth?: number, force?: boolean): void { }
 
         // Set up the page, load data and then render the content
         initPage() {
             this.renderHTML();
             //Add a waiting spinning item
-            let spinningWait =ml.UI.getSpinningWait("Loading");
-            $("#waiting",this._root).append(spinningWait);
-            
+            let spinningWait = ml.UI.getSpinningWait("Loading");
+            $("#waiting", this._root).append(spinningWait);
+
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
                 this.renderResult(result);
-            }).then(()=>{
+            }).then(() => {
                 //Let's remove the spinning wait
                 spinningWait.remove();
             });
@@ -82,10 +82,10 @@ namespace CapaStatusDashboard {
             ml.UI.getPageTitle("CAPA Status Overview").prependTo(this._root);
         }
 
-        private renderResult(result:XRLabelEntry[]) {
+        private renderResult(result: XRLabelEntry[]) {
 
             let LabelStateDaysCountDetails: LabelStateDaysCountData[] = extractLabelStatusDays(result);
-        
+
             // result.forEach((item)=>{
 
             //     let clonedTemplate =  $("#itemCapaStatusDashboardList .template",this._root).clone();
@@ -99,31 +99,31 @@ namespace CapaStatusDashboard {
 
             LabelStateDaysCountDetails.forEach(
                 (labelData) => {
-                    let clonedTemplate =  $("#itemCapaStatusDashboardList .template",this._root).clone();
+                    let clonedTemplate = $("#itemCapaStatusDashboardList .template", this._root).clone();
                     //Remove the template and hidden classes 
-                    clonedTemplate.attr("class","");
-                    $(".title",clonedTemplate).text(labelData.id + "!");
+                    clonedTemplate.attr("class", "");
+                    $(".title", clonedTemplate).text(labelData.id + "!");
 
                     labelData.labels.forEach(
                         (label) => {
                             switch (label.label) {
                                 case 'OPEN':
-                                    $(".opencontent",clonedTemplate).text(label.days);
-                                  break;
+                                    $(".opencontent", clonedTemplate).text(label.days);
+                                    break;
                                 case 'WAIT':
-                                    $(".waitcontent",clonedTemplate).text(label.days);
-                                  break;
+                                    $(".waitcontent", clonedTemplate).text(label.days);
+                                    break;
                                 case 'CHECKED':
-                                    $(".checkedcontent",clonedTemplate).text(label.days);
-                                  break;
+                                    $(".checkedcontent", clonedTemplate).text(label.days);
+                                    break;
                                 case 'CLOSED':
-                                    $(".closedcontent",clonedTemplate).text(label.days);
-                                  break;
-                              }
+                                    $(".closedcontent", clonedTemplate).text(label.days);
+                                    break;
+                            }
                         }
                     );
 
-                    clonedTemplate.appendTo($("#itemCapaStatusDashboardList tbody",this._root));
+                    clonedTemplate.appendTo($("#itemCapaStatusDashboardList tbody", this._root));
                 }
             );
 
@@ -131,12 +131,24 @@ namespace CapaStatusDashboard {
             $("table#itemCapaStatusDashboardList").highlightReferences();
             $("table#itemCapaStatusDashboardList").tablesorter();
 
+            //Table filter
+            $("#CapaStatusDashboarInputFilter").on("keyup", function (e) {
+                var value = $(e.target).val().toLowerCase();
+                $("#itemCapaStatusDashboardList tbody tr").show();
+            
+                $("#itemCapaStatusDashboardList tbody tr").each(function (index, elem) {
+                if(($(elem).text().toLowerCase().indexOf(value) == -1))
+                {
+                        $(elem).hide();
+                }
+                });
+            });
 
         }
-        
-        
-        
-        
+
+
+
+
         // HTML template
         ExampleHTMLDom = `<div class="panel-body-v-scroll fillHeight">
         <style>
@@ -155,6 +167,16 @@ namespace CapaStatusDashboard {
                </div>
             </div>
             <div>
+                <div class="row doNotCopy">
+                    <div class="col-lg-3 ">
+                        <h3 id="LabelDashboardTableHeader">Items list</h3>
+                    </div>
+                    <div class=" col-lg-7">
+                    </div>
+                    <div class=" col-lg-2">
+                    <input type="text" id="CapaStatusDashboarInputFilter" style="margin-bottom:10px;" placeholder="filter..." class="doNotCopy  form-control"></input>
+                    </div>
+                </div>
                 <table id="itemCapaStatusDashboardList" class="table table-condensed table-borderless table-hover">
                 <thead>
                     <tr>
@@ -180,20 +202,20 @@ namespace CapaStatusDashboard {
         `
     }
 
-     /**
-     * Extract the number of days each label state was in
-     * @param labels The labels to process
-     * @return A set of items and their labels with number of days each label state was in
-     * @private
-     */
-      function extractLabelStatusDays(labels: XRLabelEntry[]): LabelStateDaysCountData[] {
+    /**
+    * Extract the number of days each label state was in
+    * @param labels The labels to process
+    * @return A set of items and their labels with number of days each label state was in
+    * @private
+    */
+    function extractLabelStatusDays(labels: XRLabelEntry[]): LabelStateDaysCountData[] {
         let LabelStateDaysCountDetails: LabelStateDaysCountData[] = [];
         for (const item of labels) {
             let LabelStateDaysCountData: LabelStateDaysCountData = {
                 id: item.itemRef,
                 labels: []
             };
-           
+
             for (const label of item.labels) {
 
                 //sorting set array in ascending order based on version
