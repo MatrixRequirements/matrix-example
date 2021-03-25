@@ -80,6 +80,43 @@ namespace CapaStatusDashboard {
             this._root.html(this.ExampleHTMLDom);
             //Add the page title
             ml.UI.getPageTitle("CAPA Status Overview").prependTo(this._root);
+
+            let baseControl = $("<div id='itemSelectionLabelDashboard'/>");
+        
+            $(".toolbarButtons").append(baseControl);
+
+            let select = $(`<div class="dropdown navbar-right" style="">
+                    <input type="checkbox" id="hideNoLabelSet" /> <small style="margin-right:20px">Hide items without label</small>
+                    <button class="btn btn-xs dropdown-toggle" type="button" data-toggle="dropdown">
+                        <span id="selectedCat" >CAT</span>&nbsp;
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                    </ul>
+                    </div>`);
+
+                    
+            baseControl.append(select);
+
+            let categories =  IC.getCategories();
+            let index = 0 ;
+    
+            categories.forEach(cat => {
+                
+                if( ml.LabelTools.getLabelDefinitions([cat]).length > 0)
+                {
+                    let item = $(`<li class="cat" data-cat="${cat}"><a href="javascript:void(0)">${cat}</a></li>`).click(function(){
+                        console.log("selected cat:"+cat);
+                    });
+                    $(".dropdown-menu",select).append(item);
+                    if( index == 0)
+                    {
+                      $("#selectedCat").text(cat);
+                    }
+                    index ++;
+    
+                }           
+             });
         }
 
         private renderResult(result: XRLabelEntry[]) {
