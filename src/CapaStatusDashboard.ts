@@ -41,13 +41,25 @@ namespace CapaStatusDashboard {
         days: number;
     }
 
-    // Data we will use for display
+    
     interface LabelStateDaysCountData {
         id: string;
         labels: LabelStateDaysCount[];
     }
 
+    interface ByCategoryLabelStatesDaysCountData {
+        category: string;
+        LabelStateDaysCountDetails: LabelStateDaysCountData[];
+    }
+
+
+
     class CapaStatusDashboardControl extends BaseControl {
+
+        currentCat:string = "";
+        ByCategoryLabelStatesDaysCountDetails: ByCategoryLabelStatesDaysCountData[] = [];
+
+
 
         destroy(): void { }
 
@@ -74,51 +86,6 @@ namespace CapaStatusDashboard {
                 spinningWait.remove();
             });
         }
-
-        // renderHTML() {
-        //     //Load the template
-        //     this._root.html(this.ExampleHTMLDom);
-        //     //Add the page title
-        //     ml.UI.getPageTitle("CAPA Status Overview").prependTo(this._root);
-
-        //     let baseControl = $("<div id='itemSelectionLabelDashboard'/>");
-        
-        //     $(".toolbarButtons").append(baseControl);
-
-        //     let select = $(`<div class="dropdown navbar-right" style="">
-        //             <button class="btn btn-xs dropdown-toggle" type="button" data-toggle="dropdown">
-        //                 <span id="selectedCat" >CAT</span>&nbsp;
-        //                 <span class="caret"></span>
-        //             </button>
-        //             <ul class="dropdown-menu">
-        //             </ul>
-        //             </div>`);
-
-                    
-        //     baseControl.append(select);
-
-        //     let categories =  IC.getCategories();
-        //     let index = 0 ;
-    
-        //     categories.forEach(cat => {
-                
-        //         if( ml.LabelTools.getLabelDefinitions([cat]).length > 0)
-        //         {
-        //             let item = $(`<li class="cat" data-cat="${cat}"><a href="javascript:void(0)">${cat}</a></li>`).click(function(){
-        //                 this.SelectionChanged(cat);
-        //             });
-        //             $(".dropdown-menu",select).append(item);
-        //             if( index == 0)
-        //             {
-        //               $("#selectedCat").text(cat);
-        //             }
-        //             index ++;
-    
-        //         }           
-        //      });
-        // }
-
-
 
         renderHTML() {
 
@@ -153,7 +120,7 @@ namespace CapaStatusDashboard {
                 if( ml.LabelTools.getLabelDefinitions([cat]).length > 0)
                 {
                     let item = $(`<li class="cat" data-cat="${cat}"><a href="javascript:void(0)">${cat}</a></li>`).click(function(){
-                        that.SelectionChanged(cat);
+                        that.renderCategoryWiseData(cat);
                     });
                     $(".dropdown-menu",select).append(item);
                     if( index == 0)
@@ -164,11 +131,24 @@ namespace CapaStatusDashboard {
     
                 }           
              });
+
+            //Table filter
+            $("#CapaStatusDashboarInputFilter").on("keyup", function (e) {
+                let inputValue = $(e.target).val().toString();
+                let value = inputValue.toLowerCase();
+                $("#itemCapaStatusDashboardList tbody tr").show();
+            
+                $("#itemCapaStatusDashboardList tbody tr").each(function (index, elem) {
+                if(($(elem).text().toLowerCase().indexOf(value) == -1))
+                {
+                        $(elem).hide();
+                }
+                });
+            });
+
         }
 
-        currentCat:string = "";
-
-        public SelectionChanged(cat: string) {
+        public renderCategoryWiseData(cat: string) {
 
             console.log("selected cat:"+cat);
 
@@ -178,32 +158,38 @@ namespace CapaStatusDashboard {
             if( cat =="")
                 cat = $("#itemSelectionLabelDashboard .dropdown-menu li:first").text();
 
-            this.currentCat = cat ;   
+            this.currentCat = cat;   
             
             $("#selectedCat", this._root).text(cat);
 
+
+            // const LabelStateDaysCountDetails: LabelStateDaysCountData[] = []; 
+            // for (const ByCategoryData of this.ByCategoryLabelStatesDaysCountDetails ) {
+                
+            //     if(this.currentCat == ByCategoryData.category){
+            //         LabelStateDaysCountDetails = ByCategoryData.LabelStateDaysCountDetails;
+            //         break;
+            //     }
+            // }
+
+            const LabelStateDaysCountDetails = this.ByCategoryLabelStatesDaysCountDetails
+                                               .find(({ category }) => category === this.currentCat).LabelStateDaysCountDetails;
+            
+            this.renderTable(LabelStateDaysCountDetails);
+
+
         }
 
-        private renderResult(result: XRLabelEntry[]) {
+        private renderTable(LabelStateDaysCountDetails: LabelStateDaysCountData[]){
 
-            let LabelStateDaysCountDetails: LabelStateDaysCountData[] = extractLabelStatusDays(result);
-
-            // result.forEach((item)=>{
-
-            //     let clonedTemplate =  $("#itemCapaStatusDashboardList .template",this._root).clone();
-            //     //Remove the template and hidden classes 
-            //     clonedTemplate.attr("class","");
-            //     $(".title",clonedTemplate).text(item.itemRef + "!");
-            //     $(".content",clonedTemplate).text(item.labels.map((l)=>{ return l.label }).join(","));
-            //     clonedTemplate.appendTo($("#itemCapaStatusDashboardList tbody",this._root));
-
-            // })
-
+            var table = $("#itemCapaStatusDashboardList");
+            $(".addedItem", table).remove();
+                
             LabelStateDaysCountDetails.forEach(
                 (labelData) => {
                     let clonedTemplate = $("#itemCapaStatusDashboardList .template", this._root).clone();
                     //Remove the template and hidden classes 
-                    clonedTemplate.attr("class", "");
+                    clonedTemplate.attr("class", "addedItem");
                     $(".title", clonedTemplate).text(labelData.id + "!");
 
                     labelData.labels.forEach(
@@ -232,25 +218,20 @@ namespace CapaStatusDashboard {
 
             $("table#itemCapaStatusDashboardList").highlightReferences();
             $("table#itemCapaStatusDashboardList").tablesorter();
-
-            //Table filter
-            $("#CapaStatusDashboarInputFilter").on("keyup", function (e) {
-                let inputValue = $(e.target).val().toString();
-                let value = inputValue.toLowerCase();
-                $("#itemCapaStatusDashboardList tbody tr").show();
-            
-                $("#itemCapaStatusDashboardList tbody tr").each(function (index, elem) {
-                if(($(elem).text().toLowerCase().indexOf(value) == -1))
-                {
-                        $(elem).hide();
-                }
-                });
-            });
-
+               
         }
 
 
+       
 
+        private renderResult(result: XRLabelEntry[]) {
+
+
+            this.ByCategoryLabelStatesDaysCountDetails= extractLabelStatusDays(result);
+
+            this.renderCategoryWiseData("");
+
+        }
 
         // HTML template
         ExampleHTMLDom = `<div class="panel-body-v-scroll fillHeight">
@@ -311,8 +292,24 @@ namespace CapaStatusDashboard {
     * @return A set of items and their labels with number of days each label state was in
     * @private
     */
-    function extractLabelStatusDays(labels: XRLabelEntry[]): LabelStateDaysCountData[] {
-        let LabelStateDaysCountDetails: LabelStateDaysCountData[] = [];
+    function extractLabelStatusDays(labels: XRLabelEntry[]): ByCategoryLabelStatesDaysCountData[] {
+
+        let ByCategoryLabelStatesDaysCountDetails: ByCategoryLabelStatesDaysCountData[] = [];
+
+        let categories =  IC.getCategories();
+        let index = 0 ;
+
+        categories.forEach(cat => {
+            let ByCategoryLabelStatesDaysCountData: ByCategoryLabelStatesDaysCountData = {
+                category: cat,
+                LabelStateDaysCountDetails: []
+            };
+            
+            ByCategoryLabelStatesDaysCountDetails.push(ByCategoryLabelStatesDaysCountData)
+         });
+
+
+        //let LabelStateDaysCountDetails: LabelStateDaysCountData[] = [];
         for (const item of labels) {
             let LabelStateDaysCountData: LabelStateDaysCountData = {
                 id: item.itemRef,
@@ -363,9 +360,18 @@ namespace CapaStatusDashboard {
 
                 LabelStateDaysCountData.labels.push(LabelStateDays);
             }
-            LabelStateDaysCountDetails.push(LabelStateDaysCountData);
+            
+            for (const ByCategoryData of ByCategoryLabelStatesDaysCountDetails ) {
+                  
+                let itemCategory = item.itemRef.substring(0,item.itemRef.indexOf('-'));
+                
+                if(itemCategory == ByCategoryData.category){
+                    ByCategoryData.LabelStateDaysCountDetails.push(LabelStateDaysCountData);
+                    break;
+                }
+            }
         }
-        return LabelStateDaysCountDetails;
+        return ByCategoryLabelStatesDaysCountDetails;
     }
 
 }
