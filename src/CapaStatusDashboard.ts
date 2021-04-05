@@ -287,6 +287,76 @@ namespace CapaStatusDashboard {
     }
 
     /**
+    * Get the given state data from item data
+    * @param labelData Label data to process
+    * @param state which sate data to fetch from item data
+    * @return state data
+    * @private
+    */
+     function getStateData(labels: XRLabelChange[], state: string): XRLabelChange {
+
+        let stateData: XRLabelChange = labels.find(({ label }) => label === state);
+
+        return stateData;
+     }
+
+    /**
+    * Check given state is items current state 
+    * @param labelData Label data to check
+    * @return boolean 
+    * @private
+    */
+    function isItemCurrentState(stateData: XRLabelChange): boolean {
+        //if length of set and reset arrays are same its not current state else its current state  
+        return stateData.set.length != stateData.reset.length;
+     }
+
+    /**
+    * Get the current state of an item
+    * @param labelData Label data to process
+    * @return state of item
+    * @private
+    */
+    function getItemCurrentState(labels: XRLabelChange[]): string {
+        
+        let stateData : XRLabelChange;
+        let currentState : string;
+
+        //get closed state data
+        currentState =  "CLOSED"
+        stateData = getStateData(labels, currentState);
+
+        if(isItemCurrentState(stateData)){
+            return currentState;
+        }
+
+        //get checked state data
+        currentState =  "CHECKED"
+        stateData = getStateData(labels, currentState);
+
+        if(isItemCurrentState(stateData)){
+            return currentState;
+        }
+
+        //get wait state data
+        currentState =  "WAIT"
+        stateData = getStateData(labels, currentState);
+
+        if(isItemCurrentState(stateData)){
+            return currentState;
+        }
+
+        //get open state data
+        currentState =  "OPEN"
+        stateData = getStateData(labels, currentState);
+
+        if(isItemCurrentState(stateData)){
+            return currentState;
+        }
+     }
+
+
+    /**
     * Extract the number of days each label state was in
     * @param labels The labels to process
     * @return A set of items and their labels with number of days each label state was in
