@@ -45,11 +45,13 @@ namespace CapaStatusDashboard {
     interface LabelStateDaysCountData {
         id: string;
         labels: LabelStateDaysCount[];
+        currentState: string;
     }
 
     interface ByCategoryLabelStatesDaysCountData {
         category: string;
         LabelStateDaysCountDetails: LabelStateDaysCountData[];
+        itemStateCountChartData: any[];
     }
 
 
@@ -189,7 +191,9 @@ namespace CapaStatusDashboard {
                 (labelData) => {
                     let clonedTemplate = $("#itemCapaStatusDashboardList .template", this._root).clone();
                     //Remove the template and hidden classes 
+                    clonedTemplate.removeClass("template").removeClass("hidden");
                     clonedTemplate.attr("class", "addedItem");
+                    clonedTemplate.attr("class", labelData.currentState);
                     $(".title", clonedTemplate).text(labelData.id + "!");
 
                     labelData.labels.forEach(
@@ -221,8 +225,24 @@ namespace CapaStatusDashboard {
                
         }
 
+        private currentFilter = "";
+        filterByLabel(filter:any)
+        {
+            this.currentFilter = filter.type;
+            if( filter.type == "")
+            {
+                //Show all
+                $("#itemCapaStatusDashboardList tbody tr").show();
+                
+            }
+            else
+            {  
+                $("#itemCapaStatusDashboardList tbody tr").hide();
+                $("#itemCapaStatusDashboardList tbody tr."+filter.type).show();
+            }
+        
 
-       
+        }
 
         private renderResult(result: XRLabelEntry[]) {
 
@@ -372,7 +392,8 @@ namespace CapaStatusDashboard {
         categories.forEach(cat => {
             let ByCategoryLabelStatesDaysCountData: ByCategoryLabelStatesDaysCountData = {
                 category: cat,
-                LabelStateDaysCountDetails: []
+                LabelStateDaysCountDetails: [],
+                itemStateCountChartData: [['OPEN',0],['WAIT',0],['CHECKED',0],['CLOSED',0]]
             };
             
             ByCategoryLabelStatesDaysCountDetails.push(ByCategoryLabelStatesDaysCountData)
@@ -381,9 +402,13 @@ namespace CapaStatusDashboard {
 
         //let LabelStateDaysCountDetails: LabelStateDaysCountData[] = [];
         for (const item of labels) {
+
+            let itemCurrentState = getItemCurrentState(item.labels);
+
             let LabelStateDaysCountData: LabelStateDaysCountData = {
                 id: item.itemRef,
-                labels: []
+                labels: [],
+                currentState: itemCurrentState
             };
 
             for (const label of item.labels) {
@@ -437,6 +462,12 @@ namespace CapaStatusDashboard {
                 
                 if(itemCategory == ByCategoryData.category){
                     ByCategoryData.LabelStateDaysCountDetails.push(LabelStateDaysCountData);
+                    for (const chartItem of ByCategoryData.itemStateCountChartData) {
+                        if(chartItem[0] == itemCurrentState){
+                            chartItem[1] += 1;
+                            break;
+                        }
+                    }
                     break;
                 }
             }
