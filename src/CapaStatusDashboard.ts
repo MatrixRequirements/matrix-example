@@ -385,7 +385,11 @@ namespace CapaStatusDashboard {
     */
     function isItemCurrentState(stateData: XRLabelChange): boolean {
         //if length of set and reset arrays are same its not current state else its current state  
-        return stateData.set.length != stateData.reset.length;
+        if(stateData && stateData.set && stateData.reset){
+           return stateData.set.length != stateData.reset.length;
+        }else{
+            return false;
+        }
      }
 
     /**
