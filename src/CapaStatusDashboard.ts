@@ -175,10 +175,28 @@ namespace CapaStatusDashboard {
             // }
 
             const LabelStateDaysCountDetails = this.ByCategoryLabelStatesDaysCountDetails
-                                               .find(({ category }) => category === this.currentCat).LabelStateDaysCountDetails;
+                                               .find(({ category }) => category === this.currentCat);
             
-            this.renderTable(LabelStateDaysCountDetails);
+            this.renderTable(LabelStateDaysCountDetails.LabelStateDaysCountDetails);
+            this.renderStatusCountChart(LabelStateDaysCountDetails.itemStateCountChartData);
+        }
 
+        private currentFilter = "";
+        filterByLabel(filter:any)
+        {
+            this.currentFilter = filter.type;
+            if( filter.type == "")
+            {
+                //Show all
+                $("#itemCapaStatusDashboardList tbody tr").show();
+                
+            }
+            else
+            {  
+                $("#itemCapaStatusDashboardList tbody tr").hide();
+                $("#itemCapaStatusDashboardList tbody tr."+filter.type).show();
+            }
+        
 
         }
 
@@ -225,25 +243,60 @@ namespace CapaStatusDashboard {
                
         }
 
-        private currentFilter = "";
-        filterByLabel(filter:any)
-        {
-            this.currentFilter = filter.type;
-            if( filter.type == "")
-            {
-                //Show all
-                $("#itemCapaStatusDashboardList tbody tr").show();
-                
-            }
-            else
-            {  
-                $("#itemCapaStatusDashboardList tbody tr").hide();
-                $("#itemCapaStatusDashboardList tbody tr."+filter.type).show();
-            }
-        
 
+        private renderStatusCountChart(itemsStateCountChartData: any[]){
+            let that = this;
+            $("#CapaStatusCountChart div").remove();
+
+            $("#CapaStatusCountChart").append("<div id='statecountgraph'>");
+
+
+            let params:c3.ChartConfiguration = {
+                bindto: '#statecountgraph',
+                size: {
+                    width: 350,
+                },
+                data: {
+                    columns: itemsStateCountChartData,
+                    type :  "donut",
+                    onclick: function (d , i) { 
+                        setTimeout(()=>{
+                          that.filterByLabel({ type: d.id});
+                        },100);
+                    }
+                },
+                donut: {
+                    label: {
+                        format: function (value, ratio, id) {
+                            return (value);
+                        }
+                    },
+                },
+                legend: {
+                
+                    position:'inset',
+                    inset: {
+                        
+                        anchor: "top-right" 
+                    },
+                
+                },
+                tooltip: {
+                    format: {
+                        value: function (value:any, ratio:any, id:any, index:any) { return value; }
+                    }
+                }  
+            };
+
+            let renderedChart = c3.generate(params)
+
+            $("#CapaStatusCountChart svg").click(function(){   
+                that.filterByLabel({type:""})
+            });
+            return;
         }
 
+    
         private renderResult(result: XRLabelEntry[]) {
 
 
@@ -256,7 +309,11 @@ namespace CapaStatusDashboard {
         // HTML template
         ExampleHTMLDom = `<div class="panel-body-v-scroll fillHeight">
         <style>
-        /* If required */
+        .chart {
+            min-height: 350px;
+            cursor:pointer;
+            display: flex;
+        }
         </style>
         <div class="row" id="waiting" class=""></div>
             <div class="panel-body" id="CapaStatusDashboardPanel">
@@ -266,7 +323,7 @@ namespace CapaStatusDashboard {
                         <h3 class="panel-title" id="">Capa Status Overview</h3>
                     </div>
                     <div class="panel-body">
-                        <div id="CapaStatusDashboardPieChart" class="chart">Chart will go here</div>
+                        <div id="CapaStatusCountChart" class="chart"></div>
                     </div>
                </div>
             </div>
