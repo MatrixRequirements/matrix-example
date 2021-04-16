@@ -149,9 +149,9 @@ namespace CapaStatusDashboard {
             });
 
             //Intiating date range selection section
-            let fromDate = $("#fromdate", this._root);
-            let toDate = $("#todate", this._root);
-            let goButton = $("#gobutton", this._root);
+            let fromDate = $("#fromdate", that._root);
+            let toDate = $("#todate", that._root);
+            let goButton = $("#gobutton", that._root);
 
             fromDate.datetimepicker({format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()});
             toDate.datetimepicker({
