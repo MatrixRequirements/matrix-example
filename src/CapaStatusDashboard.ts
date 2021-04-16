@@ -148,6 +148,34 @@ namespace CapaStatusDashboard {
                 });
             });
 
+            //Intiating date range selection section
+            let fromDate = $("#fromdate", this._root);
+            let toDate = $("#todate", this._root);
+            let goButton = $("#gobutton", this._root);
+
+            fromDate.datetimepicker({format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()});
+            toDate.datetimepicker({
+                defaultDate: new Date(),
+                useCurrent: false, //Important! 
+                format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()
+            });
+            ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+
+            fromDate.on("dp.change", function (e:any) {
+                toDate.data("DateTimePicker").minDate(e.date);
+                ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+            });
+            toDate.on("dp.change", function (e:any) {
+                fromDate.data("DateTimePicker").maxDate(e.date);
+                ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+            });
+    
+            goButton.click( function() {
+                console.log("fromdate:" + fromDate.data("DateTimePicker").date());
+                console.log("todate:" + toDate.data("DateTimePicker").date());
+            });
+
+
         }
 
         public renderCategoryWiseData(cat: string) {
@@ -321,6 +349,15 @@ namespace CapaStatusDashboard {
                     <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title" id="">Capa Status Overview</h3>
+                    </div>
+                    <div class="baseControl">
+                    <p>
+                    <span class="">From </span>
+                    <input id="fromdate" type='text' class='form-control redlineDates'>
+                    <span class=""> to </span>
+                    <input id="todate" type='text' class='form-control redlineDates'>
+                    <button id="gobutton" style="margin-left: 12px" type="button" class="btn btn-success">Go</button>
+                    </p>
                     </div>
                     <div class="panel-body">
                         <div id="CapaStatusCountChart" class="chart"></div>
