@@ -80,6 +80,44 @@ namespace CapaStatusDashboard {
             let spinningWait = ml.UI.getSpinningWait("Loading");
             $("#waiting", this._root).append(spinningWait);
 
+
+             //Initiating date range selection section
+            // let fromDate = $("#fromdate", that._root);
+            // let toDate = $("#todate", that._root);
+            // let goButton = $("#gobutton", that._root);
+            
+            let dateControl = $('<div class="baseControl">');
+
+            let bc = $("#datesection").appendTo(dateControl);
+            let p = $("<p>").appendTo(bc);
+            $('<span class="">From </span>').appendTo(p);
+            let fromDate = $("<input type='text' class='form-control redlineDates'>").appendTo(p);
+            $('<span class=""> to </span>').appendTo(p);
+            let toDate = $("<input type='text' class='form-control redlineDates'>").appendTo(p);
+            let goButton = $('<button style="margin-left: 12px" type="button" class="btn btn-success">Compare</button>').appendTo(p);
+
+            fromDate.datetimepicker({format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()});
+            toDate.datetimepicker({
+                defaultDate: new Date(),
+                useCurrent: false, //Important! 
+                format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()
+            });
+            ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+
+            fromDate.on("dp.change", function (e:any) {
+                toDate.data("DateTimePicker").minDate(e.date);
+                ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+            });
+            toDate.on("dp.change", function (e:any) {
+                fromDate.data("DateTimePicker").maxDate(e.date);
+                ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+            });
+    
+            goButton.click( function() {
+                console.log("fromdate:" + fromDate.data("DateTimePicker").date());
+                console.log("todate:" + toDate.data("DateTimePicker").date());
+            });
+
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
                 this.renderResult(result);
@@ -147,44 +185,6 @@ namespace CapaStatusDashboard {
                 }
                 });
             });
-
-            //Initiating date range selection section
-            // let fromDate = $("#fromdate", that._root);
-            // let toDate = $("#todate", that._root);
-            // let goButton = $("#gobutton", that._root);
-            
-            let dateControl = $('<div class="baseControl">');
-
-            let bc = $("#datesection").appendTo(dateControl);
-            let p = $("<p>").appendTo(bc);
-            $('<span class="">From </span>').appendTo(p);
-            let fromDate = $("<input type='text' class='form-control redlineDates'>").appendTo(p);
-            $('<span class=""> to </span>').appendTo(p);
-            let toDate = $("<input type='text' class='form-control redlineDates'>").appendTo(p);
-            let goButton = $('<button style="margin-left: 12px" type="button" class="btn btn-success">Compare</button>').appendTo(p);
-
-            fromDate.datetimepicker({format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()});
-            toDate.datetimepicker({
-                defaultDate: new Date(),
-                useCurrent: false, //Important! 
-                format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()
-            });
-            ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
-
-            fromDate.on("dp.change", function (e:any) {
-                toDate.data("DateTimePicker").minDate(e.date);
-                ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
-            });
-            toDate.on("dp.change", function (e:any) {
-                fromDate.data("DateTimePicker").maxDate(e.date);
-                ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
-            });
-    
-            goButton.click( function() {
-                console.log("fromdate:" + fromDate.data("DateTimePicker").date());
-                console.log("todate:" + toDate.data("DateTimePicker").date());
-            });
-
 
         }
 
