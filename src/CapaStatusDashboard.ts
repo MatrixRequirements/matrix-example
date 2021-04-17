@@ -378,9 +378,6 @@ namespace CapaStatusDashboard {
             <div class="panel-body" id="CapaStatusDashboardPanel">
                 <div id="">   
                     <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title" id="">Capa Status Overview</h3>
-                    </div>
                     <div class="baseControl">
                     <p>
                     <span class="">From </span>
@@ -389,6 +386,9 @@ namespace CapaStatusDashboard {
                     <input id="todate" type='date' class='form-control redlineDates'>
                     <button id="gobutton" style="margin-left: 12px" type="button" class="btn btn-success">Go</button>
                     </p>
+                    </div>
+                    <div class="panel-heading">
+                        <h3 class="panel-title" id="">Capa Status Overview</h3>
                     </div>
                     <div class="panel-body">
                         <div id="CapaStatusCountChart" class="chart"></div>
