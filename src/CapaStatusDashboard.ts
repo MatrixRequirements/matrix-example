@@ -221,11 +221,14 @@ namespace CapaStatusDashboard {
             //     }
             // }
 
-            const LabelStateDaysCountDetails = this.ByCategoryLabelStatesDaysCountDetails
+            let LabelStateDaysCountDetails = this.ByCategoryLabelStatesDaysCountDetails
                                                .find(({ category }) => category === this.currentCat);
             
-            this.renderTable(LabelStateDaysCountDetails.LabelStateDaysCountDetails);
-            this.renderStatusCountChart(LabelStateDaysCountDetails.itemStateCountChartData);
+
+            let labelStateDaysDetailsData = JSON.parse(JSON.stringify(LabelStateDaysCountDetails.LabelStateDaysCountDetails));
+            let labelStateTotalCountData = JSON.parse(JSON.stringify(LabelStateDaysCountDetails.itemStateCountChartData));                                  
+            this.renderTable(labelStateDaysDetailsData);
+            this.renderStatusCountChart(labelStateTotalCountData);
         }
 
         private currentFilter = "";
