@@ -86,37 +86,46 @@ namespace CapaStatusDashboard {
             // let toDate = $("#todate", that._root);
             // let goButton = $("#gobutton", that._root);
             
-            let dateControl = $('<div class="baseControl">');
+            // let dateControl = $('<div class="baseControl">');
 
-            let bc = $("#datesection").appendTo(dateControl);
-            let p = $("<p>").appendTo(bc);
-            $('<span class="">From </span>').appendTo(p);
-            let fromDate = $("<input type='text' class='form-control redlineDates'>").appendTo(p);
-            $('<span class=""> to </span>').appendTo(p);
-            let toDate = $("<input type='text' class='form-control redlineDates'>").appendTo(p);
-            let goButton = $('<button style="margin-left: 12px" type="button" class="btn btn-success">Compare</button>').appendTo(p);
+            // let bc = $("#datesection").appendTo(dateControl);
+            // let p = $("<p>").appendTo(bc);
+            // $('<span class="">From </span>').appendTo(p);
+            // let fromDate = $("<input type='text' class='form-control redlineDates'>").appendTo(p);
+            // $('<span class=""> to </span>').appendTo(p);
+            // let toDate = $("<input type='text' class='form-control redlineDates'>").appendTo(p);
+            // let goButton = $('<button style="margin-left: 12px" type="button" class="btn btn-success">Compare</button>').appendTo(p);
 
-            fromDate.datetimepicker({format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()});
-            toDate.datetimepicker({
-                defaultDate: new Date(),
-                useCurrent: false, //Important! 
-                format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()
-            });
-            ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+            // fromDate.datetimepicker({format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()});
+            // toDate.datetimepicker({
+            //     defaultDate: new Date(),
+            //     useCurrent: false, //Important! 
+            //     format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()
+            // });
+            // ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
 
-            fromDate.on("dp.change", function (e:any) {
-                toDate.data("DateTimePicker").minDate(e.date);
-                ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
-            });
-            toDate.on("dp.change", function (e:any) {
-                fromDate.data("DateTimePicker").maxDate(e.date);
-                ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
-            });
+            // fromDate.on("dp.change", function (e:any) {
+            //     toDate.data("DateTimePicker").minDate(e.date);
+            //     ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+            // });
+            // toDate.on("dp.change", function (e:any) {
+            //     fromDate.data("DateTimePicker").maxDate(e.date);
+            //     ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+            // });
     
-            goButton.click( function() {
-                console.log("fromdate:" + fromDate.data("DateTimePicker").date());
-                console.log("todate:" + toDate.data("DateTimePicker").date());
+            // goButton.click( function() {
+            //     console.log("fromdate:" + fromDate.data("DateTimePicker").date());
+            //     console.log("todate:" + toDate.data("DateTimePicker").date());
+            // });
+
+
+            $('#gobutton').click(function(){
+        
+                console.log("fromdate:"+$('#fromdate').val());
+                console.log("todate:"+$('#todate').val());
+                
             });
+
 
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
@@ -354,6 +363,8 @@ namespace CapaStatusDashboard {
         // </p>
         // </div>
 
+        // <div id="datesection"></div>
+
         // HTML template
         ExampleHTMLDom = `<div class="panel-body-v-scroll fillHeight">
         <style>
@@ -370,7 +381,15 @@ namespace CapaStatusDashboard {
                     <div class="panel-heading">
                         <h3 class="panel-title" id="">Capa Status Overview</h3>
                     </div>
-                    <div id="datesection"></div>
+                    <div class="baseControl">
+                    <p>
+                    <span class="">From </span>
+                    <input id="fromdate" type='date' class='form-control redlineDates'>
+                    <span class=""> to </span>
+                    <input id="todate" type='date' class='form-control redlineDates'>
+                    <button id="gobutton" style="margin-left: 12px" type="button" class="btn btn-success">Go</button>
+                    </p>
+                    </div>
                     <div class="panel-body">
                         <div id="CapaStatusCountChart" class="chart"></div>
                     </div>
