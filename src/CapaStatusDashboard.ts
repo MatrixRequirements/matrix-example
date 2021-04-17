@@ -260,8 +260,10 @@ namespace CapaStatusDashboard {
                     let clonedTemplate = $("#itemCapaStatusDashboardList .template", this._root).clone();
                     //Remove the template and hidden classes 
                     clonedTemplate.removeClass("template").removeClass("hidden");
-                    clonedTemplate.attr("class", "addedItem");
-                    clonedTemplate.attr("class", labelData.currentState);
+                    let classAttr = "addedItem" + " " + labelData.currentState;
+                    clonedTemplate.attr("class", classAttr);
+                    // clonedTemplate.attr("class", "addedItem");
+                    // clonedTemplate.attr("class", labelData.currentState);
                     $(".title", clonedTemplate).text(labelData.id + "!");
 
                     labelData.labels.forEach(
