@@ -292,6 +292,8 @@ namespace CapaStatusDashboard {
 
             $("table#itemCapaStatusDashboardList").highlightReferences();
             $("table#itemCapaStatusDashboardList").tablesorter();
+
+            this.filterByLabel({type:""});
                
         }
 
