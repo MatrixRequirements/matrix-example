@@ -266,6 +266,8 @@ namespace CapaStatusDashboard {
                     // clonedTemplate.attr("class", labelData.currentState);
                     $(".title", clonedTemplate).text(labelData.id + "!");
 
+                    $(".currentstate", clonedTemplate).text(labelData.currentState);
+
                     labelData.labels.forEach(
                         (label) => {
                             switch (label.label) {
@@ -426,6 +428,7 @@ namespace CapaStatusDashboard {
                 <tbody>
                         <tr class="template hidden">
                             <td class="title" >MyITEM : my title  </td>
+                            <td class="currentstate" ></td>
                             <td class="opencontent" ></td>
                             <td class="waitcontent" ></td>
                             <td class="checkedcontent" ></td>
