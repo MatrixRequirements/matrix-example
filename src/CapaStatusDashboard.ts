@@ -60,6 +60,9 @@ namespace CapaStatusDashboard {
 
         currentCat:string = "";
         ByCategoryLabelStatesDaysCountDetails: ByCategoryLabelStatesDaysCountData[] = [];
+        labelHistoryData: XRLabelEntry[] = [];
+        labelHistoryDataFilteredByDate: XRLabelEntry[] = [];
+
 
 
 
@@ -75,10 +78,11 @@ namespace CapaStatusDashboard {
 
         // Set up the page, load data and then render the content
         initPage() {
-            this.renderHTML();
+            let that = this;
+            that.renderHTML();
             //Add a waiting spinning item
             let spinningWait = ml.UI.getSpinningWait("Loading");
-            $("#waiting", this._root).append(spinningWait);
+            $("#waiting", that._root).append(spinningWait);
 
 
              //Initiating date range selection section
@@ -123,17 +127,64 @@ namespace CapaStatusDashboard {
         
                 console.log("fromdate:"+$('#fromdate').val());
                 console.log("todate:"+$('#todate').val());
+
+                let fromDateSelected = $('#fromdate').val();
+                let toDateSelected = $('#todate').val();
+
+                that.renderDataByDateRanges(fromDateSelected, toDateSelected);
                 
             });
 
 
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
+                this.labelHistoryData = result;
                 this.renderResult(result);
             }).then(() => {
                 //Let's remove the spinning wait
                 spinningWait.remove();
             });
+        }
+
+        renderDataByDateRanges(fromDateVal: any, toDateVal: any){
+
+            const fromDate = new Date(fromDateVal);
+            const toDate = new Date(toDateVal);
+            let labelHistoryFilteredData : XRLabelEntry[] = [];
+            
+            this.labelHistoryData.forEach(
+                (labelHistoryRecord) => {
+                    let labelHistoryData = {...labelHistoryRecord};
+                    labelHistoryData.labels.forEach(
+                        (labelStatusHistoryrecord) => {
+                            let labelStatusSetData = {...labelStatusHistoryrecord.set};
+                            let labelStatusFilteredSetData = labelStatusSetData.filter(statusSetRecord => {
+                                let setDate = new Date(statusSetRecord.dateUser);
+                                return (fromDate <= setDate && setDate <=toDate);
+                            });
+                            
+
+                            let labelStatusReSetData = {...labelStatusHistoryrecord.reset};
+                            let labelStatusFilteredReSetData = labelStatusReSetData.filter(statusReSetRecord => {
+                                let reSetDate = new Date(statusReSetRecord.dateUser);
+                                return (fromDate <= reSetDate && reSetDate <=toDate);
+                            });
+                            
+
+                            if(labelStatusFilteredReSetData.length > 0 || labelStatusFilteredSetData.length > 0){
+                                labelStatusHistoryrecord.set = labelStatusFilteredSetData;
+                                labelStatusHistoryrecord.reset = labelStatusFilteredReSetData;
+                                labelHistoryFilteredData.push(labelHistoryData);
+                            }
+                            
+                        }
+                    );
+                }
+            );
+            
+            this.labelHistoryDataFilteredByDate = labelHistoryFilteredData;
+            this.renderResult(this.labelHistoryDataFilteredByDate);
+
         }
 
         renderHTML() {
