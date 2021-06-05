@@ -550,7 +550,10 @@ namespace CapaStatusDashboard {
         
         let stateData : XRLabelChange;
         let currentState : string;
-        let currentSateData : CurrentStateData;
+        let currentStateData : CurrentStateData = {
+            currentState: "",
+            currentStateSetDate: ""
+        };
 
         //get closed state data
         currentState =  "CLOSED"
@@ -558,9 +561,9 @@ namespace CapaStatusDashboard {
 
         if(isItemCurrentState(stateData)){
             
-            currentSateData.currentState = currentState;
-            currentSateData.currentStateSetDate = getCurrentStateSetDate(stateData);
-            return currentSateData;
+            currentStateData.currentState = currentState;
+            currentStateData.currentStateSetDate = getCurrentStateSetDate(stateData);
+            return currentStateData;
         }
 
         //get checked state data
@@ -568,9 +571,9 @@ namespace CapaStatusDashboard {
         stateData = getStateData(labels, currentState);
 
         if(isItemCurrentState(stateData)){
-            currentSateData.currentState = currentState;
-            currentSateData.currentStateSetDate = getCurrentStateSetDate(stateData);
-            return currentSateData;
+            currentStateData.currentState = currentState;
+            currentStateData.currentStateSetDate = getCurrentStateSetDate(stateData);
+            return currentStateData;
         }
 
         //get wait state data
@@ -578,9 +581,9 @@ namespace CapaStatusDashboard {
         stateData = getStateData(labels, currentState);
 
         if(isItemCurrentState(stateData)){
-            currentSateData.currentState = currentState;
-            currentSateData.currentStateSetDate = getCurrentStateSetDate(stateData);
-            return currentSateData;
+            currentStateData.currentState = currentState;
+            currentStateData.currentStateSetDate = getCurrentStateSetDate(stateData);
+            return currentStateData;
         }
 
         //get open state data
@@ -588,9 +591,9 @@ namespace CapaStatusDashboard {
         stateData = getStateData(labels, currentState);
 
         if(isItemCurrentState(stateData)){
-            currentSateData.currentState = currentState;
-            currentSateData.currentStateSetDate = getCurrentStateSetDate(stateData);
-            return currentSateData;
+            currentStateData.currentState = currentState;
+            currentStateData.currentStateSetDate = getCurrentStateSetDate(stateData);
+            return currentStateData;
         }
      }
 
