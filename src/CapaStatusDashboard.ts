@@ -157,15 +157,15 @@ namespace CapaStatusDashboard {
                     let labelHistoryData = {...labelHistoryRecord};
                     labelHistoryData.labels.forEach(
                         (labelStatusHistoryrecord) => {
-                            let labelStatusSetData = {...labelStatusHistoryrecord.set};
-                            let labelStatusFilteredSetData = labelStatusSetData.filter(statusSetRecord => {
+                            //let labelStatusSetData = {...labelStatusHistoryrecord.set};
+                            let labelStatusFilteredSetData = labelStatusHistoryrecord.set.filter(statusSetRecord => {
                                 let setDate = new Date(statusSetRecord.dateUser);
                                 return (fromDate <= setDate && setDate <=toDate);
                             });
                             
 
-                            let labelStatusReSetData = {...labelStatusHistoryrecord.reset};
-                            let labelStatusFilteredReSetData = labelStatusReSetData.filter(statusReSetRecord => {
+                            //let labelStatusReSetData = {...labelStatusHistoryrecord.reset};
+                            let labelStatusFilteredReSetData = labelStatusHistoryrecord.reset.filter(statusReSetRecord => {
                                 let reSetDate = new Date(statusReSetRecord.dateUser);
                                 return (fromDate <= reSetDate && reSetDate <=toDate);
                             });
