@@ -46,12 +46,18 @@ namespace CapaStatusDashboard {
         id: string;
         labels: LabelStateDaysCount[];
         currentState: string;
+        currentStateSetDate: string;
     }
 
     interface ByCategoryLabelStatesDaysCountData {
         category: string;
         LabelStateDaysCountDetails: LabelStateDaysCountData[];
         itemStateCountChartData: any[];
+    }
+
+    interface CurrentStateData {
+        currentState: string;
+        currentStateSetDate: string;
     }
 
 
@@ -125,8 +131,8 @@ namespace CapaStatusDashboard {
 
             $('#gobutton').click(function(){
         
-                console.log("fromdate:"+$('#fromdate').val());
-                console.log("todate:"+$('#todate').val());
+                // console.log("fromdate:"+$('#fromdate').val());
+                // console.log("todate:"+$('#todate').val());
 
                 let fromDateSelected = $('#fromdate').val();
                 let toDateSelected = $('#todate').val();
@@ -250,7 +256,7 @@ namespace CapaStatusDashboard {
 
         public renderCategoryWiseData(cat: string) {
 
-            console.log("selected cat:"+cat);
+            // console.log("selected cat:"+cat);
 
             if (cat == undefined) {
                 return;
@@ -523,22 +529,38 @@ namespace CapaStatusDashboard {
      }
 
     /**
+    * Get the current state set date from item data
+    * @param labelData Label data to check
+    * @return current state set date string
+    * @private
+    */
+    function getCurrentStateSetDate(labelData: XRLabelChange): string {
+       //sorting label set array in descending order based on version 
+       labelData.set.sort((a, b) => b.version - a.version);
+       return labelData.set[0].dateUser;
+     }
+
+    /**
     * Get the current state of an item
     * @param labelData Label data to process
     * @return state of item
     * @private
     */
-    function getItemCurrentState(labels: XRLabelChange[]): string {
+    function getItemCurrentState(labels: XRLabelChange[]): CurrentStateData {
         
         let stateData : XRLabelChange;
         let currentState : string;
+        let currentSateData : CurrentStateData;
 
         //get closed state data
         currentState =  "CLOSED"
         stateData = getStateData(labels, currentState);
 
         if(isItemCurrentState(stateData)){
-            return currentState;
+            
+            currentSateData.currentState = currentState;
+            currentSateData.currentStateSetDate = getCurrentStateSetDate(stateData);
+            return currentSateData;
         }
 
         //get checked state data
@@ -546,7 +568,9 @@ namespace CapaStatusDashboard {
         stateData = getStateData(labels, currentState);
 
         if(isItemCurrentState(stateData)){
-            return currentState;
+            currentSateData.currentState = currentState;
+            currentSateData.currentStateSetDate = getCurrentStateSetDate(stateData);
+            return currentSateData;
         }
 
         //get wait state data
@@ -554,7 +578,9 @@ namespace CapaStatusDashboard {
         stateData = getStateData(labels, currentState);
 
         if(isItemCurrentState(stateData)){
-            return currentState;
+            currentSateData.currentState = currentState;
+            currentSateData.currentStateSetDate = getCurrentStateSetDate(stateData);
+            return currentSateData;
         }
 
         //get open state data
@@ -562,7 +588,9 @@ namespace CapaStatusDashboard {
         stateData = getStateData(labels, currentState);
 
         if(isItemCurrentState(stateData)){
-            return currentState;
+            currentSateData.currentState = currentState;
+            currentSateData.currentStateSetDate = getCurrentStateSetDate(stateData);
+            return currentSateData;
         }
      }
 
@@ -594,12 +622,13 @@ namespace CapaStatusDashboard {
         //let LabelStateDaysCountDetails: LabelStateDaysCountData[] = [];
         for (const item of labels) {
 
-            let itemCurrentState = getItemCurrentState(item.labels);
+            let itemCurrentSateData : CurrentStateData = getItemCurrentState(item.labels);
 
             let LabelStateDaysCountData: LabelStateDaysCountData = {
                 id: item.itemRef,
                 labels: [],
-                currentState: itemCurrentState
+                currentState: itemCurrentSateData.currentState,
+                currentStateSetDate: itemCurrentSateData.currentStateSetDate
             };
 
             for (const label of item.labels) {
@@ -654,7 +683,7 @@ namespace CapaStatusDashboard {
                 if(itemCategory == ByCategoryData.category){
                     ByCategoryData.LabelStateDaysCountDetails.push(LabelStateDaysCountData);
                     for (const chartItem of ByCategoryData.itemStateCountChartData) {
-                        if(chartItem[0] == itemCurrentState){
+                        if(chartItem[0] == itemCurrentSateData.currentState){
                             chartItem[1] += 1;
                             break;
                         }
