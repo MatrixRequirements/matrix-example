@@ -286,6 +286,7 @@ namespace CapaStatusDashboard {
             let labelStateTotalCountData = JSON.parse(JSON.stringify(LabelStateDaysCountDetails.itemStateCountChartData));                                  
             this.renderTable(labelStateDaysDetailsData);
             this.renderStatusCountChart(labelStateTotalCountData);
+            //this.renderStatusTimeSeriesChart(labelStateDaysDetailsData);
         }
 
         private currentFilter = "";
@@ -407,6 +408,92 @@ namespace CapaStatusDashboard {
                 that.filterByLabel({type:""})
             });
             return;
+        }
+
+
+        private prepareCurrentMonthCategories(month, year, _start){
+            let weeks = [],
+            categories = [],
+            firstDate = new Date(year, month, 1),
+            lastDate = new Date(year, month + 1, 0),
+            numDays = lastDate.getDate();
+            let c = Date()
+            let start = 1;
+            let weekIndex = 1;
+            let end = 7 - firstDate.getDay();
+            if (_start == 'monday') {
+                if (firstDate.getDay() === 0) {
+                    end = 1;
+                } else {
+                    end = 7 - firstDate.getDay() + 1;
+                }
+            }
+            
+            while (start <= numDays) {
+
+                let _s = new Date(year, month, start+1).toJSON().slice(0,10);
+                let _e = new Date(year, month, end+1).toJSON().slice(0,10);
+                
+                weeks.push({start: _s, end: _e});
+                categories.push("Week"+ weekIndex + "(" + _s + " to " + _e + ")");
+                weekIndex += 1;
+                start = end + 1;
+                end = end + 7;
+                end = start === 1 && end === 8 ? 1 : end;
+                if (end > numDays) {
+                    end = numDays;
+                }
+            }
+        
+            console.log(categories);
+            console.log(weeks);
+
+            let currentMonthCategoryData = {
+                categories : categories,
+                weeks : weeks
+            };
+            
+            return currentMonthCategoryData;
+        }
+
+        private prepareCurrentWeekCategories(){
+            let currentDate = new Date(); 
+            let currentWeek = [];
+
+            for (let i = 1; i <= 7; i++) {
+                let dateOfWeekDay = currentDate.getDate() - currentDate.getDay() + i ;
+                let formattedDate = new Date(currentDate.setDate(dateOfWeekDay)).toISOString().slice(0, 10);
+                currentWeek.push(formattedDate);
+            }
+
+            console.log(currentWeek);
+            return currentWeek;
+        }
+
+        private renderStatusTimeSeriesChart(LabelStateDaysCountDetails: LabelStateDaysCountData[]){
+
+            //prepare current week categories
+            let currentWeekCategories = this.prepareCurrentWeekCategories();
+
+            //prepare current month categories
+            let currentDate = new Date();
+            let currentMonthCategoryData = this.prepareCurrentMonthCategories(currentDate.getMonth(),currentDate.getFullYear(),'monday');
+
+            //prepare 3 month categories
+            //prepare 6 month categories
+            //prepare YTD categories
+            //prepare >year categories
+
+            //prepare current week columns
+            //prepare current month columns
+            //prepare 3 month columns
+            //prepare 6 month columns
+            //prepare YTD columns
+            //prepare >year columns
+
+            //prepare template
+            //prepare chart config and render
+
         }
 
     
