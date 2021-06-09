@@ -53,6 +53,7 @@ namespace CapaStatusDashboard {
         category: string;
         LabelStateDaysCountDetails: LabelStateDaysCountData[];
         itemStateCountChartData: any[];
+        leastStatusSetDate: string;
     }
 
     interface CurrentStateData {
@@ -286,7 +287,7 @@ namespace CapaStatusDashboard {
             let labelStateTotalCountData = JSON.parse(JSON.stringify(LabelStateDaysCountDetails.itemStateCountChartData));                                  
             this.renderTable(labelStateDaysDetailsData);
             this.renderStatusCountChart(labelStateTotalCountData);
-            //this.renderStatusTimeSeriesChart(labelStateDaysDetailsData);
+            //this.renderStatusTimeSeriesChart(labelStateDaysDetailsData,LabelStateDaysCountDetails.leastStatusSetDate);
         }
 
         private currentFilter = "";
@@ -470,20 +471,94 @@ namespace CapaStatusDashboard {
             return currentWeek;
         }
 
-        private renderStatusTimeSeriesChart(LabelStateDaysCountDetails: LabelStateDaysCountData[]){
+        private getMonthNames(){
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                                "July", "August", "September", "October", "November", "December"];
+
+            return monthNames;              
+        }
+
+        private prepareThreeMonthCategories(month, year){
+
+            let monthNames = this.getMonthNames();
+
+            let threeMonthsCategoryData = [monthNames[month -2] + " " + year, 
+                                           monthNames[month - 1] + " " + year, 
+                                           monthNames[month] + " " + year];
+            
+            return threeMonthsCategoryData;
+        }
+
+        private prepareSixMonthCategories(month, year){
+
+            let monthNames = this.getMonthNames();
+
+            let sixMonthsCategoryData = [monthNames[month - 5] + " " + year, 
+                                         monthNames[month - 4] + " " + year, 
+                                         monthNames[month - 3] + " " + year,
+                                         monthNames[month - 2] + " " + year, 
+                                         monthNames[month - 1] + " " + year, 
+                                         monthNames[month] + " " + year];
+            
+            return sixMonthsCategoryData;
+        }
+
+        private prepareYtdCategories(month, year){
+
+            let monthNames = this.getMonthNames();
+            let ytdCategoryData = [];
+
+            for (let i = 0; i <= month; i++) {
+                ytdCategoryData.push(monthNames[i] + " " + year);
+            }
+            
+            return ytdCategoryData;
+        }
+
+        private prepareMoreThanYearCategories(year,leastStatusSetDate){
+            let leastStatusSetYear = new Date(leastStatusSetDate).getFullYear();
+            let moreThanYearCategoryData = [];
+
+            while(leastStatusSetYear !== year){
+                moreThanYearCategoryData.push(leastStatusSetYear);
+                leastStatusSetYear +=1;
+            }
+
+            moreThanYearCategoryData.push(year);
+
+            return moreThanYearCategoryData;
+
+        }
+
+
+        private renderStatusTimeSeriesChart(LabelStateDaysCountDetails: LabelStateDaysCountData[], leastStatusSetDate: string){
+
+            const monthNames = ["Jan", "Feb", "March", "April", "May", "June",
+                                "July", "August", "Sept", "Oct", "Nov", "Dec"];
+
+            let currentDate = new Date();
+            let currentMonth = currentDate.getMonth();
+            let currentYear = currentDate.getFullYear();
+
 
             //prepare current week categories
             let currentWeekCategories = this.prepareCurrentWeekCategories();
 
             //prepare current month categories
-            let currentDate = new Date();
-            let currentMonthCategoryData = this.prepareCurrentMonthCategories(currentDate.getMonth(),currentDate.getFullYear(),'monday');
+            let currentMonthCategoryData = this.prepareCurrentMonthCategories(currentMonth,currentYear,'monday');
 
             //prepare 3 month categories
+            let threeMonthsCategoryData = this.prepareThreeMonthCategories(currentMonth, currentYear);
+            
             //prepare 6 month categories
+            let sixMonthsCategoryData = this.prepareSixMonthCategories(currentMonth, currentYear);
+            
             //prepare YTD categories
+            let ytdCategoryData = this.prepareYtdCategories(currentMonth, currentYear);
+            
             //prepare >year categories
-
+            let moreThanYearCategoryData = this.prepareMoreThanYearCategories(currentYear, leastStatusSetDate);
+            
             //prepare current week columns
             //prepare current month columns
             //prepare 3 month columns
@@ -702,7 +777,8 @@ namespace CapaStatusDashboard {
             let ByCategoryLabelStatesDaysCountData: ByCategoryLabelStatesDaysCountData = {
                 category: cat,
                 LabelStateDaysCountDetails: [],
-                itemStateCountChartData: [['OPEN',0],['WAIT',0],['CHECKED',0],['CLOSED',0]]
+                itemStateCountChartData: [['OPEN',0],['WAIT',0],['CHECKED',0],['CLOSED',0]],
+                leastStatusSetDate: new Date().toISOString().slice(0, 10)
             };
             
             ByCategoryLabelStatesDaysCountDetails.push(ByCategoryLabelStatesDaysCountData)
@@ -771,6 +847,9 @@ namespace CapaStatusDashboard {
                 let itemCategory = item.itemRef.substring(0,item.itemRef.indexOf('-'));
                 
                 if(itemCategory == ByCategoryData.category){
+                    if(new Date(itemCurrentSateData.currentStateSetDate) < new Date(ByCategoryData.leastStatusSetDate)){
+                        ByCategoryData.leastStatusSetDate = itemCurrentSateData.currentStateSetDate;
+                    }
                     ByCategoryData.LabelStateDaysCountDetails.push(LabelStateDaysCountData);
                     for (const chartItem of ByCategoryData.itemStateCountChartData) {
                         if(chartItem[0] == itemCurrentSateData.currentState){
