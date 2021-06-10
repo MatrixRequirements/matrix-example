@@ -472,8 +472,8 @@ namespace CapaStatusDashboard {
         }
 
         private getMonthNames(){
-            const monthNames = ["January", "February", "March", "April", "May", "June",
-                                "July", "August", "September", "October", "November", "December"];
+            const monthNames = ["Jan", "Feb", "March", "April", "May", "June",
+                                "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
             return monthNames;              
         }
@@ -530,11 +530,69 @@ namespace CapaStatusDashboard {
 
         }
 
+        private prepareInitialColumns(categoiesLength){
+
+            let emptyInitials = Array(categoiesLength).fill(0);
+
+            let initialColumns =  [
+                ['OPEN', ...emptyInitials],
+                ['WAIT', ...emptyInitials],
+                ['CHECKED', ...emptyInitials],
+                ['CLOSED', ...emptyInitials]
+            ];
+
+            return initialColumns;
+
+        }
+
+        private prepareCurrentWeekColumnData(currentStatus,currentStausSetDate,categoriesData,columnsData){
+            
+            let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
+            let currentStatusSetDate = new Date(currentStausSetDate);
+            categoriesData.foreach((categoryData,index)=>{
+                if(currentStatusSetDate <= new Date(categoryData)){
+                    columnsData[statusColumnIndex][index+1] += 1;
+                } 
+            });
+        }
+
+        private prepareCurrentMonthColumnData(currentStatus,currentStausSetDate,categoriesData,columnsData){
+            
+            let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
+            let currentStatusSetDate = new Date(currentStausSetDate);
+            categoriesData.weeks.foreach((categoryData,index)=>{
+                if(currentStatusSetDate <= new Date(categoryData.start) || currentStatusSetDate <= new Date(categoryData.end)){
+                    columnsData[statusColumnIndex][index+1] += 1;
+                } 
+            });
+        }
+
+        private prepareMonthWiseColumnData(currentStatus,currentStausSetDate,categoriesData,columnsData){
+            let monthNames = this.getMonthNames();
+            let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
+            let currentStatusSetDate = new Date(currentStausSetDate);
+            let formattedCurrentStatusSetDate = new Date(monthNames[currentStatusSetDate.getMonth()] + " " + currentStatusSetDate.getFullYear());
+            categoriesData.weeks.foreach((categoryData,index)=>{
+                if(formattedCurrentStatusSetDate <= new Date(categoryData)){
+                    columnsData[statusColumnIndex][index+1] += 1;
+                } 
+            });
+        }
+
+        private prepareMoreThanYearColumnData(currentStatus,currentStausSetDate,categoriesData,columnsData){
+            
+            let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
+            let currentStatusSetYear = new Date(currentStausSetDate).getFullYear;
+           
+            categoriesData.weeks.foreach((categoryData,index)=>{
+                if(currentStatusSetYear <= categoryData){
+                    columnsData[statusColumnIndex][index+1] += 1;
+                } 
+            });
+        }
+
 
         private renderStatusTimeSeriesChart(LabelStateDaysCountDetails: LabelStateDaysCountData[], leastStatusSetDate: string){
-
-            const monthNames = ["Jan", "Feb", "March", "April", "May", "June",
-                                "July", "August", "Sept", "Oct", "Nov", "Dec"];
 
             let currentDate = new Date();
             let currentMonth = currentDate.getMonth();
@@ -542,7 +600,7 @@ namespace CapaStatusDashboard {
 
 
             //prepare current week categories
-            let currentWeekCategories = this.prepareCurrentWeekCategories();
+            let currentWeekCategoryData = this.prepareCurrentWeekCategories();
 
             //prepare current month categories
             let currentMonthCategoryData = this.prepareCurrentMonthCategories(currentMonth,currentYear,'monday');
@@ -559,12 +617,57 @@ namespace CapaStatusDashboard {
             //prepare >year categories
             let moreThanYearCategoryData = this.prepareMoreThanYearCategories(currentYear, leastStatusSetDate);
             
-            //prepare current week columns
-            //prepare current month columns
-            //prepare 3 month columns
-            //prepare 6 month columns
-            //prepare YTD columns
-            //prepare >year columns
+            //prepare intial current week columns
+            let currentWeekColumnsData = this.prepareInitialColumns(currentWeekCategoryData.length);
+            //prepare intial current month columns
+            let currentMonthColumnsData = this.prepareInitialColumns(currentMonthCategoryData.categories.length);
+            //prepare intial 3 month columns
+            let threeMonthsColumnsData = this.prepareInitialColumns(threeMonthsCategoryData.length);
+            //prepare intial 6 month columns
+            let sixMonthsColumnsData = this.prepareInitialColumns(sixMonthsCategoryData.length);
+            //prepare intial YTD columns
+            let ytdColumnsData = this.prepareInitialColumns(ytdCategoryData.length);
+            //prepare intial >year columns
+            let moreThanYearColumnsData = this.prepareInitialColumns(moreThanYearCategoryData.length);
+
+            LabelStateDaysCountDetails.forEach(
+                (labelHistoryRecord) => {
+                   //prepare current week columns
+                   this.prepareCurrentWeekColumnData(labelHistoryRecord.currentState,
+                                                     labelHistoryRecord.currentStateSetDate,
+                                                     currentWeekCategoryData,
+                                                     currentWeekColumnsData);
+                   
+                   //prepare current month columns    
+                   this.prepareCurrentMonthColumnData(labelHistoryRecord.currentState,
+                    labelHistoryRecord.currentStateSetDate,
+                    currentMonthCategoryData,
+                    currentMonthColumnsData);
+
+                   //prepare three month columns    
+                   this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
+                    labelHistoryRecord.currentStateSetDate,
+                    threeMonthsCategoryData,
+                    threeMonthsColumnsData);
+                    
+                   //prepare six month columns    
+                   this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
+                    labelHistoryRecord.currentStateSetDate,
+                    sixMonthsCategoryData,
+                    sixMonthsColumnsData);
+                    
+                   //prepare ytd columns    
+                   this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
+                    labelHistoryRecord.currentStateSetDate,
+                    ytdCategoryData,
+                    ytdColumnsData);
+
+                   //prepare intial >year columns 
+                   this.prepareMoreThanYearColumnData(labelHistoryRecord.currentState,
+                    labelHistoryRecord.currentStateSetDate,
+                    moreThanYearCategoryData,
+                    moreThanYearColumnsData);
+            });
 
             //prepare template
             //prepare chart config and render
