@@ -365,7 +365,6 @@ namespace CapaStatusDashboard {
 
             $("#CapaStatusCountChart").append("<div id='statecountgraph'>");
 
-
             let params:c3.ChartConfiguration = {
                 bindto: '#statecountgraph',
                 size: {
@@ -403,7 +402,7 @@ namespace CapaStatusDashboard {
                 }  
             };
 
-            let renderedChart = c3.generate(params)
+            let renderedChart = c3.generate(params);
 
             $("#CapaStatusCountChart svg").click(function(){   
                 that.filterByLabel({type:""})
@@ -665,9 +664,73 @@ namespace CapaStatusDashboard {
             });
 
             //prepare template
-            //prepare chart config and render
-            console.log("render chart");
+             
+            // let timeSeriesChartparams:c3.ChartConfiguration = {
+            //     bindto: '#stateTimeSeriesGraph',
+            //     size: {
+            //         width: 350,
+            //     },
+            //     data: {
+            //         columns: itemsStateCountChartData,
+            //         type :  "donut",
+            //         onclick: function (d , i) { 
+            //             setTimeout(()=>{
+            //               that.filterByLabel({ type: d.id});
+            //             },100);
+            //         }
+            //     },
+            //     donut: {
+            //         label: {
+            //             format: function (value, ratio, id) {
+            //                 return (value);
+            //             }
+            //         },
+            //     },
+            //     legend: {
+                
+            //         position:'inset',
+            //         inset: {
+                        
+            //             anchor: "top-right" 
+            //         },
+                
+            //     },
+            //     tooltip: {
+            //         format: {
+            //             value: function (value:any, ratio:any, id:any, index:any) { return value; }
+            //         }
+            //     }  
+            // };
+           
+            let timeSeriesChartparams:c3.ChartConfiguration = {
+                bindto: '#stateTimeSeriesGraph',
+                size: {
+                    width: 350,
+                },
+                data: {
+                    columns: currentWeekColumnsData,
+                    type: 'bar',
+                    groups: [
+                        ['OPEN', 'WAIT','CHECKED', 'CLOSED']
+                    ]
+                },
+                axis: {
+                    x: {
+                        type: 'category',
+                        categories: currentWeekCategoryData
+                    },
+                    y: {
+                        show: false
+                    }
+                }
+            };
 
+            //prepare chart config and render
+            $("#CapaStatusTimeSeriesChart div").remove();
+
+            $("#CapaStatusTimeSeriesChart").append("<div id='stateTimeSeriesGraph'>");
+
+            let renderedChart = c3.generate(timeSeriesChartparams);
         }
 
     
@@ -719,6 +782,7 @@ namespace CapaStatusDashboard {
                     </div>
                     <div class="panel-body">
                         <div id="CapaStatusCountChart" class="chart"></div>
+                        <div id="CapaStatusTimeSeriesChart" class="chart"></div>
                     </div>
                </div>
             </div>
