@@ -71,6 +71,21 @@ namespace CapaStatusDashboard {
         labelHistoryDataFilteredByDate: XRLabelEntry[] = [];
 
 
+        currentWeekCategoryData: any[] = [];
+        currentMonthCategoryData: any = {};
+        threeMonthsCategoryData: any[] = [];
+        sixMonthsCategoryData: any[] = [];
+        ytdCategoryData: any[] = [];
+        moreThanYearCategoryData: any[] = [];
+
+        currentWeekColumnsData: any[] = [];
+        currentMonthColumnsData: any[] = [];
+        threeMonthsColumnsData: any[] = [];
+        sixMonthsColumnsData: any[] = [];
+        ytdColumnsData: any[] = [];
+        moreThanYearColumnsData: any[] = [];
+
+
 
 
         destroy(): void { }
@@ -144,11 +159,28 @@ namespace CapaStatusDashboard {
 
 
             $('#weekRange').click(function(){
-        
-                that.renderTimesSeriesChart("week");
-                
+                that.renderStatusTimeSeriesChart(that.currentWeekColumnsData,that.currentWeekCategoryData);
             });
 
+            $('#monthRange').click(function(){
+                that.renderStatusTimeSeriesChart(that.currentMonthColumnsData,that.currentMonthCategoryData);
+            });
+
+            $('#threeMonthsRange').click(function(){
+                that.renderStatusTimeSeriesChart(that.threeMonthsColumnsData,that.threeMonthsCategoryData);
+            });
+
+            $('#sixMonthsRange').click(function(){
+                that.renderStatusTimeSeriesChart(that.sixMonthsColumnsData,that.sixMonthsCategoryData);
+            });
+
+            $('#ytdRange').click(function(){
+                that.renderStatusTimeSeriesChart(that.ytdColumnsData,that.ytdCategoryData);
+            });
+
+            $('#moreThanYearRange').click(function(){
+                that.renderStatusTimeSeriesChart(that.moreThanYearColumnsData,that.moreThanYearCategoryData);
+            });
 
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
@@ -158,10 +190,6 @@ namespace CapaStatusDashboard {
                 //Let's remove the spinning wait
                 spinningWait.remove();
             });
-        }
-
-        renderTimesSeriesChart(timeRange){
-            console.log(timeRange + "chart");
         }
 
         renderDataByDateRanges(fromDateVal: any, toDateVal: any){
@@ -298,7 +326,10 @@ namespace CapaStatusDashboard {
             let labelStateTotalCountData = JSON.parse(JSON.stringify(LabelStateDaysCountDetails.itemStateCountChartData));                                  
             this.renderTable(labelStateDaysDetailsData);
             this.renderStatusCountChart(labelStateTotalCountData);
-            this.renderStatusTimeSeriesChart(labelStateDaysDetailsData,LabelStateDaysCountDetails.leastStatusSetDate);
+
+            this.prepareStatusTimeSeriesChart(labelStateDaysDetailsData,LabelStateDaysCountDetails.leastStatusSetDate);
+
+            this.renderStatusTimeSeriesChart(this.currentWeekColumnsData,this.currentWeekCategoryData);
         }
 
         private currentFilter = "";
@@ -597,135 +628,16 @@ namespace CapaStatusDashboard {
             });
         }
 
+        private renderStatusTimeSeriesChart(chartColumnsData,chartCategoryData){
 
-        private renderStatusTimeSeriesChart(LabelStateDaysCountDetails: LabelStateDaysCountData[], leastStatusSetDate: string){
-
-            let currentDate = new Date();
-            let currentMonth = currentDate.getMonth();
-            let currentYear = currentDate.getFullYear();
-
-
-            //prepare current week categories
-            let currentWeekCategoryData = this.prepareCurrentWeekCategories();
-
-            //prepare current month categories
-            let currentMonthCategoryData = this.prepareCurrentMonthCategories(currentMonth,currentYear,'monday');
-
-            //prepare 3 month categories
-            let threeMonthsCategoryData = this.prepareThreeMonthCategories(currentMonth, currentYear);
-            
-            //prepare 6 month categories
-            let sixMonthsCategoryData = this.prepareSixMonthCategories(currentMonth, currentYear);
-            
-            //prepare YTD categories
-            let ytdCategoryData = this.prepareYtdCategories(currentMonth, currentYear);
-            
-            //prepare >year categories
-            let moreThanYearCategoryData = this.prepareMoreThanYearCategories(currentYear, leastStatusSetDate);
-            
-            //prepare intial current week columns
-            let currentWeekColumnsData = this.prepareInitialColumns(currentWeekCategoryData.length);
-            //prepare intial current month columns
-            let currentMonthColumnsData = this.prepareInitialColumns(currentMonthCategoryData.categories.length);
-            //prepare intial 3 month columns
-            let threeMonthsColumnsData = this.prepareInitialColumns(threeMonthsCategoryData.length);
-            //prepare intial 6 month columns
-            let sixMonthsColumnsData = this.prepareInitialColumns(sixMonthsCategoryData.length);
-            //prepare intial YTD columns
-            let ytdColumnsData = this.prepareInitialColumns(ytdCategoryData.length);
-            //prepare intial >year columns
-            let moreThanYearColumnsData = this.prepareInitialColumns(moreThanYearCategoryData.length);
-
-            LabelStateDaysCountDetails.forEach(
-                (labelHistoryRecord) => {
-                   //prepare current week columns
-                   this.prepareCurrentWeekColumnData(labelHistoryRecord.currentState,
-                                                     labelHistoryRecord.currentStateSetDate,
-                                                     currentWeekCategoryData,
-                                                     currentWeekColumnsData);
-                   
-                   //prepare current month columns    
-                   this.prepareCurrentMonthColumnData(labelHistoryRecord.currentState,
-                    labelHistoryRecord.currentStateSetDate,
-                    currentMonthCategoryData,
-                    currentMonthColumnsData);
-
-                   //prepare three month columns    
-                   this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
-                    labelHistoryRecord.currentStateSetDate,
-                    threeMonthsCategoryData,
-                    threeMonthsColumnsData);
-                    
-                   //prepare six month columns    
-                   this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
-                    labelHistoryRecord.currentStateSetDate,
-                    sixMonthsCategoryData,
-                    sixMonthsColumnsData);
-                    
-                   //prepare ytd columns    
-                   this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
-                    labelHistoryRecord.currentStateSetDate,
-                    ytdCategoryData,
-                    ytdColumnsData);
-
-                   //prepare intial >year columns 
-                   this.prepareMoreThanYearColumnData(labelHistoryRecord.currentState,
-                    labelHistoryRecord.currentStateSetDate,
-                    moreThanYearCategoryData,
-                    moreThanYearColumnsData);
-            });
-
-            //prepare template
-             
-            // let timeSeriesChartparams:c3.ChartConfiguration = {
-            //     bindto: '#stateTimeSeriesGraph',
-            //     size: {
-            //         width: 350,
-            //     },
-            //     data: {
-            //         columns: itemsStateCountChartData,
-            //         type :  "donut",
-            //         onclick: function (d , i) { 
-            //             setTimeout(()=>{
-            //               that.filterByLabel({ type: d.id});
-            //             },100);
-            //         }
-            //     },
-            //     donut: {
-            //         label: {
-            //             format: function (value, ratio, id) {
-            //                 return (value);
-            //             }
-            //         },
-            //     },
-            //     legend: {
-                
-            //         position:'inset',
-            //         inset: {
-                        
-            //             anchor: "top-right" 
-            //         },
-                
-            //     },
-            //     tooltip: {
-            //         format: {
-            //             value: function (value:any, ratio:any, id:any, index:any) { return value; }
-            //         }
-            //     }  
-            // };
-           
-            let timeSeriesChartparams:c3.ChartConfiguration = {
+             //prepare template
+             let timeSeriesChartparams:c3.ChartConfiguration = {
                 bindto: '#stateTimeSeriesGraph',
                 size: {
                     width: 500,
                 },
                 data: {
-                    //columns: currentWeekColumnsData,
-                    columns: currentMonthColumnsData,
-                    //columns: threeMonthsColumnsData,
-                    //columns: sixMonthsColumnsData,
-                    //columns: ytdColumnsData,
-                    //columns: moreThanYearColumnsData,
+                    columns: chartColumnsData,
                     type: 'bar',
                     groups: [
                         ['OPEN', 'WAIT','CHECKED', 'CLOSED']
@@ -734,12 +646,8 @@ namespace CapaStatusDashboard {
                 axis: {
                     x: {
                         type: 'category',
-                        //categories: currentWeekCategoryData
-                        categories: currentMonthCategoryData.categories
-                        //categories: threeMonthsCategoryData
-                        //categories: sixMonthsCategoryData
-                        //categories: ytdCategoryData
-                        //categories: moreThanYearCategoryData
+                        categories: chartCategoryData
+                       
                     },
                     y: {
                         show: false
@@ -753,6 +661,99 @@ namespace CapaStatusDashboard {
             $("#CapaStatusTimeSeriesChart").append("<div id='stateTimeSeriesGraph'>");
 
             let renderedChart = c3.generate(timeSeriesChartparams);
+
+        }
+
+        private prepareStatusTimeSeriesChart(LabelStateDaysCountDetails: LabelStateDaysCountData[], leastStatusSetDate: string){
+
+            let currentDate = new Date();
+            let currentMonth = currentDate.getMonth();
+            let currentYear = currentDate.getFullYear();
+
+            this.currentWeekCategoryData = [];
+            this.currentMonthCategoryData = {};
+            this.threeMonthsCategoryData = [];
+            this.sixMonthsCategoryData = [];
+            this.ytdCategoryData = [];
+            this.moreThanYearCategoryData = [];
+
+            this.currentWeekColumnsData = [];
+            this.currentMonthColumnsData = [];
+            this.threeMonthsColumnsData = [];
+            this.sixMonthsColumnsData = [];
+            this.ytdColumnsData = [];
+            this.moreThanYearColumnsData = [];
+
+            //prepare current week categories
+            this.currentWeekCategoryData = this.prepareCurrentWeekCategories();
+
+            //prepare current month categories
+            this.currentMonthCategoryData = this.prepareCurrentMonthCategories(currentMonth,currentYear,'monday');
+
+            //prepare 3 month categories
+            this.threeMonthsCategoryData = this.prepareThreeMonthCategories(currentMonth, currentYear);
+            
+            //prepare 6 month categories
+            this.sixMonthsCategoryData = this.prepareSixMonthCategories(currentMonth, currentYear);
+            
+            //prepare YTD categories
+            this.ytdCategoryData = this.prepareYtdCategories(currentMonth, currentYear);
+            
+            //prepare >year categories
+            this.moreThanYearCategoryData = this.prepareMoreThanYearCategories(currentYear, leastStatusSetDate);
+            
+            //prepare intial current week columns
+            this.currentWeekColumnsData = this.prepareInitialColumns(this.currentWeekCategoryData.length);
+            //prepare intial current month columns
+            this.currentMonthColumnsData = this.prepareInitialColumns(this.currentMonthCategoryData.categories.length);
+            //prepare intial 3 month columns
+            this.threeMonthsColumnsData = this.prepareInitialColumns(this.threeMonthsCategoryData.length);
+            //prepare intial 6 month columns
+            this.sixMonthsColumnsData = this.prepareInitialColumns(this.sixMonthsCategoryData.length);
+            //prepare intial YTD columns
+            this.ytdColumnsData = this.prepareInitialColumns(this.ytdCategoryData.length);
+            //prepare intial >year columns
+            this.moreThanYearColumnsData = this.prepareInitialColumns(this.moreThanYearCategoryData.length);
+
+            LabelStateDaysCountDetails.forEach(
+                (labelHistoryRecord) => {
+                   //prepare current week columns
+                   this.prepareCurrentWeekColumnData(labelHistoryRecord.currentState,
+                                                     labelHistoryRecord.currentStateSetDate,
+                                                     this.currentWeekCategoryData,
+                                                     this.currentWeekColumnsData);
+                   
+                   //prepare current month columns    
+                   this.prepareCurrentMonthColumnData(labelHistoryRecord.currentState,
+                    labelHistoryRecord.currentStateSetDate,
+                    this.currentMonthCategoryData,
+                    this.currentMonthColumnsData);
+
+                   //prepare three month columns    
+                   this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
+                    labelHistoryRecord.currentStateSetDate,
+                    this.threeMonthsCategoryData,
+                    this.threeMonthsColumnsData);
+                    
+                   //prepare six month columns    
+                   this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
+                    labelHistoryRecord.currentStateSetDate,
+                    this.sixMonthsCategoryData,
+                    this.sixMonthsColumnsData);
+                    
+                   //prepare ytd columns    
+                   this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
+                    labelHistoryRecord.currentStateSetDate,
+                    this.ytdCategoryData,
+                    this.ytdColumnsData);
+
+                   //prepare intial >year columns 
+                   this.prepareMoreThanYearColumnData(labelHistoryRecord.currentState,
+                    labelHistoryRecord.currentStateSetDate,
+                    this.moreThanYearCategoryData,
+                    this.moreThanYearColumnsData);
+            });
+
         }
 
     
@@ -818,19 +819,19 @@ namespace CapaStatusDashboard {
                         <button id="weekRange" class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">Week</button>
                         </div>
                         <div class="btn-group labelTools">
-                        <button class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">Month</button>
+                        <button id="monthRange" class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">Month</button>
                         </div>
                         <div class="btn-group labelTools">
-                        <button class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">3Months</button>
+                        <button id="threeMonthsRange" class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">3Months</button>
                         </div>
                         <div class="btn-group labelTools">
-                        <button class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">6Months</button>
+                        <button id="sixMonthsRange" class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">6Months</button>
                         </div>
                         <div class="btn-group labelTools">
-                        <button class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">YTD</button>
+                        <button id="ytdRange" class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">YTD</button>
                         </div>
                         <div class="btn-group labelTools">
-                        <button class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">>Year</button>
+                        <button id="moreThanYearRange" class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">>Year</button>
                         </div>
                         </div>
                         <div id="CapaStatusTimeSeriesChart" class="chart"></div>
