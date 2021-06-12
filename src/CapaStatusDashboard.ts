@@ -287,7 +287,7 @@ namespace CapaStatusDashboard {
             let labelStateTotalCountData = JSON.parse(JSON.stringify(LabelStateDaysCountDetails.itemStateCountChartData));                                  
             this.renderTable(labelStateDaysDetailsData);
             this.renderStatusCountChart(labelStateTotalCountData);
-            //this.renderStatusTimeSeriesChart(labelStateDaysDetailsData,LabelStateDaysCountDetails.leastStatusSetDate);
+            this.renderStatusTimeSeriesChart(labelStateDaysDetailsData,LabelStateDaysCountDetails.leastStatusSetDate);
         }
 
         private currentFilter = "";
@@ -671,6 +671,7 @@ namespace CapaStatusDashboard {
 
             //prepare template
             //prepare chart config and render
+            console.log("render chart");
 
         }
 
