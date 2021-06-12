@@ -801,7 +801,17 @@ namespace CapaStatusDashboard {
                     </div>
                     <div class="panel-body chartcontainer">
                         <div id="CapaStatusCountChart" class="chart"></div>
+                        <div>
+                        <div id="globalProjectFilter" class="navbar-right">
+                        <div class="btn-group labelTools">
+                        <button class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(255, 0, 0);" data-original-title="" title="">Week</button>
+                        </div>
+                        <div class="btn-group labelTools">
+                        <button class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">Month</button>
+                        </div>
+                        </div>
                         <div id="CapaStatusTimeSeriesChart" class="chart"></div>
+                        <div>
                     </div>
                </div>
             </div>
