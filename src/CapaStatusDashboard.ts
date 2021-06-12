@@ -555,7 +555,8 @@ namespace CapaStatusDashboard {
             let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
             let currentStatusSetDate = new Date(currentStausSetDate);
             categoriesData.weeks.forEach((categoryData,index)=>{
-                if(currentStatusSetDate <= new Date(categoryData.start) || currentStatusSetDate <= new Date(categoryData.end)){
+                if((currentStatusSetDate <= new Date(categoryData.start) || currentStatusSetDate <= new Date(categoryData.end))
+                  && (new Date(categoryData.start) <= new Date())){
                     columnsData[statusColumnIndex][index+1] += 1;
                 } 
             });
@@ -708,8 +709,8 @@ namespace CapaStatusDashboard {
                     width: 500,
                 },
                 data: {
-                    columns: currentWeekColumnsData,
-                    //columns: currentMonthColumnsData,
+                    //columns: currentWeekColumnsData,
+                    columns: currentMonthColumnsData,
                     //columns: threeMonthsColumnsData,
                     //columns: sixMonthsColumnsData,
                     //columns: ytdColumnsData,
@@ -722,8 +723,8 @@ namespace CapaStatusDashboard {
                 axis: {
                     x: {
                         type: 'category',
-                        categories: currentWeekCategoryData
-                        //categories: currentMonthCategoryData.categories
+                        //categories: currentWeekCategoryData
+                        categories: currentMonthCategoryData.categories
                         //categories: threeMonthsCategoryData
                         //categories: sixMonthsCategoryData
                         //categories: ytdCategoryData
