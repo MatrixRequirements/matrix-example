@@ -577,10 +577,10 @@ namespace CapaStatusDashboard {
         private prepareMoreThanYearColumnData(currentStatus,currentStausSetDate,categoriesData,columnsData){
             
             let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
-            let currentStatusSetYear = new Date(currentStausSetDate).getFullYear;
-           
+            let currentStatusSetDate = new Date(currentStausSetDate);
+            let formattedCurrentStatusSetDate = new Date(currentStatusSetDate.getFullYear());
             categoriesData.forEach((categoryData,index)=>{
-                if(currentStatusSetYear <= categoryData){
+                if(formattedCurrentStatusSetDate <= new Date(categoryData)){
                     columnsData[statusColumnIndex][index+1] += 1;
                 } 
             });
