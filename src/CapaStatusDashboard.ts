@@ -544,7 +544,7 @@ namespace CapaStatusDashboard {
             let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
             let currentStatusSetDate = new Date(currentStausSetDate);
             categoriesData.forEach((categoryData,index)=>{
-                if(currentStatusSetDate <= new Date(categoryData)){
+                if((currentStatusSetDate <= new Date(categoryData)) && (new Date(categoryData) <= new Date())){
                     columnsData[statusColumnIndex][index+1] += 1;
                 } 
             });
