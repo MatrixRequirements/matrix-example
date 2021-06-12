@@ -705,7 +705,7 @@ namespace CapaStatusDashboard {
             let timeSeriesChartparams:c3.ChartConfiguration = {
                 bindto: '#stateTimeSeriesGraph',
                 size: {
-                    width: 350,
+                    width: 500,
                 },
                 data: {
                     columns: currentWeekColumnsData,
@@ -763,6 +763,14 @@ namespace CapaStatusDashboard {
             cursor:pointer;
             display: flex;
         }
+        .timeserieschart {
+            min-height: 350px;
+            cursor:pointer;
+            display: flex;
+        }
+        .chartcontainer{
+            display: flex;
+        }
         </style>
         <div class="row" id="waiting" class=""></div>
             <div class="panel-body" id="CapaStatusDashboardPanel">
@@ -780,7 +788,7 @@ namespace CapaStatusDashboard {
                     <div class="panel-heading">
                         <h3 class="panel-title" id="">Capa Status Overview</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body chartcontainer">
                         <div id="CapaStatusCountChart" class="chart"></div>
                         <div id="CapaStatusTimeSeriesChart" class="chart"></div>
                     </div>
