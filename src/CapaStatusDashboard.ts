@@ -711,7 +711,8 @@ namespace CapaStatusDashboard {
                     //columns: currentWeekColumnsData,
                     //columns: currentMonthColumnsData,
                     //columns: threeMonthsColumnsData,
-                    columns: sixMonthsColumnsData,
+                    //columns: sixMonthsColumnsData,
+                    columns: ytdColumnsData,
                     type: 'bar',
                     groups: [
                         ['OPEN', 'WAIT','CHECKED', 'CLOSED']
@@ -723,7 +724,8 @@ namespace CapaStatusDashboard {
                         //categories: currentWeekCategoryData
                         //categories: currentMonthCategoryData.categories
                         //categories: threeMonthsCategoryData
-                        categories: sixMonthsCategoryData
+                        //categories: sixMonthsCategoryData
+                        categories: ytdCategoryData
                     },
                     y: {
                         show: false
