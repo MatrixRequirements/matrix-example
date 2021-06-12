@@ -143,6 +143,13 @@ namespace CapaStatusDashboard {
             });
 
 
+            $('#weekRange').click(function(){
+        
+                that.renderTimesSeriesChart("week");
+                
+            });
+
+
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
                 this.labelHistoryData = result;
@@ -151,6 +158,10 @@ namespace CapaStatusDashboard {
                 //Let's remove the spinning wait
                 spinningWait.remove();
             });
+        }
+
+        renderTimesSeriesChart(timeRange){
+            console.log(timeRange + "chart");
         }
 
         renderDataByDateRanges(fromDateVal: any, toDateVal: any){
@@ -802,9 +813,9 @@ namespace CapaStatusDashboard {
                     <div class="panel-body chartcontainer">
                         <div id="CapaStatusCountChart" class="chart"></div>
                         <div>
-                        <div id="globalProjectFilter" style="display:flex;margin-left: 192px">
+                        <div id="globalProjectFilter" style="display:flex;margin-left: 110px">
                         <div class="btn-group labelTools">
-                        <button class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(255, 0, 0);" data-original-title="" title="">Week</button>
+                        <button id="weekRange" class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">Week</button>
                         </div>
                         <div class="btn-group labelTools">
                         <button class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">Month</button>
@@ -819,7 +830,7 @@ namespace CapaStatusDashboard {
                         <button class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">YTD</button>
                         </div>
                         <div class="btn-group labelTools">
-                        <button class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">Year</button>
+                        <button class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">>Year</button>
                         </div>
                         </div>
                         <div id="CapaStatusTimeSeriesChart" class="chart"></div>
