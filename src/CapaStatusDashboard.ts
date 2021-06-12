@@ -446,9 +446,6 @@ namespace CapaStatusDashboard {
                 }
             }
         
-            console.log(categories);
-            console.log(weeks);
-
             let currentMonthCategoryData = {
                 categories : categories,
                 weeks : weeks
@@ -466,8 +463,6 @@ namespace CapaStatusDashboard {
                 let formattedDate = new Date(currentDate.setDate(dateOfWeekDay)).toISOString().slice(0, 10);
                 currentWeek.push(formattedDate);
             }
-
-            console.log(currentWeek);
             return currentWeek;
         }
 
@@ -549,7 +544,7 @@ namespace CapaStatusDashboard {
             
             let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
             let currentStatusSetDate = new Date(currentStausSetDate);
-            categoriesData.foreach((categoryData,index)=>{
+            categoriesData.forEach((categoryData,index)=>{
                 if(currentStatusSetDate <= new Date(categoryData)){
                     columnsData[statusColumnIndex][index+1] += 1;
                 } 
@@ -560,7 +555,7 @@ namespace CapaStatusDashboard {
             
             let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
             let currentStatusSetDate = new Date(currentStausSetDate);
-            categoriesData.weeks.foreach((categoryData,index)=>{
+            categoriesData.weeks.forEach((categoryData,index)=>{
                 if(currentStatusSetDate <= new Date(categoryData.start) || currentStatusSetDate <= new Date(categoryData.end)){
                     columnsData[statusColumnIndex][index+1] += 1;
                 } 
@@ -572,7 +567,7 @@ namespace CapaStatusDashboard {
             let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
             let currentStatusSetDate = new Date(currentStausSetDate);
             let formattedCurrentStatusSetDate = new Date(monthNames[currentStatusSetDate.getMonth()] + " " + currentStatusSetDate.getFullYear());
-            categoriesData.weeks.foreach((categoryData,index)=>{
+            categoriesData.weeks.forEach((categoryData,index)=>{
                 if(formattedCurrentStatusSetDate <= new Date(categoryData)){
                     columnsData[statusColumnIndex][index+1] += 1;
                 } 
@@ -584,7 +579,7 @@ namespace CapaStatusDashboard {
             let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
             let currentStatusSetYear = new Date(currentStausSetDate).getFullYear;
            
-            categoriesData.weeks.foreach((categoryData,index)=>{
+            categoriesData.weeks.forEach((categoryData,index)=>{
                 if(currentStatusSetYear <= categoryData){
                     columnsData[statusColumnIndex][index+1] += 1;
                 } 
