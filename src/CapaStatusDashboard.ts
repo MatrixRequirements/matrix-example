@@ -163,7 +163,7 @@ namespace CapaStatusDashboard {
             });
 
             $('#monthRange').click(function(){
-                that.renderStatusTimeSeriesChart(that.currentMonthColumnsData,that.currentMonthCategoryData);
+                that.renderStatusTimeSeriesChart(that.currentMonthColumnsData,that.currentMonthCategoryData.categories);
             });
 
             $('#threeMonthsRange').click(function(){
