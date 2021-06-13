@@ -192,6 +192,7 @@ namespace CapaStatusDashboard {
             });
         }
 
+        //if any of set and reset dates of labels falls between date ranges selected consider the item
         renderDataByDateRanges(fromDateVal: any, toDateVal: any){
 
             const fromDate = new Date(fromDateVal);
@@ -201,7 +202,7 @@ namespace CapaStatusDashboard {
             this.labelHistoryData.forEach(
                 (labelHistoryRecord) => {
                     let labelHistoryData_ = {...labelHistoryRecord};
-                    let labelStatusHistoryData = [];
+                    let isItemfallsinRange = false;
                     labelHistoryData_.labels.forEach(
                         (labelStatusHistoryrecord) => {
                             //let labelStatusSetData = {...labelStatusHistoryrecord.set};
@@ -217,19 +218,15 @@ namespace CapaStatusDashboard {
                                 return (fromDate <= reSetDate && reSetDate <=toDate);
                             });
                             
-
-                            //if(labelStatusFilteredReSetData.length > 0 || labelStatusFilteredSetData.length > 0){
-                            if(labelStatusFilteredSetData.length > 0){    
-                                labelStatusHistoryrecord.set = labelStatusFilteredSetData;
-                                labelStatusHistoryrecord.reset = labelStatusFilteredReSetData;
-                                labelStatusHistoryData.push(labelStatusHistoryrecord);
+                            if(labelStatusFilteredReSetData.length > 0 || labelStatusFilteredSetData.length > 0){
+                                isItemfallsinRange = true;
                             }
+
                             
                         }
                     );
-                    
-                    if(labelStatusHistoryData.length > 0){
-                        labelHistoryData_.labels = labelStatusHistoryData;
+
+                    if(isItemfallsinRange){
                         labelHistoryFilteredData.push(labelHistoryData_);
                     }
                    
@@ -240,6 +237,56 @@ namespace CapaStatusDashboard {
             this.renderResult(this.labelHistoryDataFilteredByDate);
 
         }
+
+        //set and reset date falls between date ranges selected filter those dates and consider only them but this logic dosent work
+        // renderDataByDateRanges(fromDateVal: any, toDateVal: any){
+
+        //     const fromDate = new Date(fromDateVal);
+        //     const toDate = new Date(toDateVal);
+        //     let labelHistoryFilteredData : XRLabelEntry[] = [];
+            
+        //     this.labelHistoryData.forEach(
+        //         (labelHistoryRecord) => {
+        //             let labelHistoryData_ = {...labelHistoryRecord};
+        //             let labelStatusHistoryData = [];
+        //             labelHistoryData_.labels.forEach(
+        //                 (labelStatusHistoryrecord) => {
+        //                     //let labelStatusSetData = {...labelStatusHistoryrecord.set};
+        //                     let labelStatusFilteredSetData = labelStatusHistoryrecord.set.filter(statusSetRecord => {
+        //                         let setDate = new Date(statusSetRecord.dateUser);
+        //                         return (fromDate <= setDate && setDate <=toDate);
+        //                     });
+                            
+
+        //                     //let labelStatusReSetData = {...labelStatusHistoryrecord.reset};
+        //                     let labelStatusFilteredReSetData = labelStatusHistoryrecord.reset.filter(statusReSetRecord => {
+        //                         let reSetDate = new Date(statusReSetRecord.dateUser);
+        //                         return (fromDate <= reSetDate && reSetDate <=toDate);
+        //                     });
+                            
+
+        //                     //if(labelStatusFilteredReSetData.length > 0 || labelStatusFilteredSetData.length > 0){
+        //                     if(labelStatusFilteredSetData.length > 0){    
+        //                         labelStatusHistoryrecord.set = labelStatusFilteredSetData;
+        //                         labelStatusHistoryrecord.reset = labelStatusFilteredReSetData;
+        //                         labelStatusHistoryData.push(labelStatusHistoryrecord);
+        //                     }
+                            
+        //                 }
+        //             );
+
+        //             if(labelStatusHistoryData.length > 0){
+        //                 labelHistoryData_.labels = labelStatusHistoryData;
+        //                 labelHistoryFilteredData.push(labelHistoryData_);
+        //             }
+                   
+        //         }
+        //     );
+            
+        //     this.labelHistoryDataFilteredByDate = labelHistoryFilteredData;
+        //     this.renderResult(this.labelHistoryDataFilteredByDate);
+
+        // }
 
         renderHTML() {
 
