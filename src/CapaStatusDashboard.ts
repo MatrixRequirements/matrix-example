@@ -511,7 +511,7 @@ namespace CapaStatusDashboard {
               }
 
             for (let i = 1; i <= 7; i++) {
-                dateOfWeekDay += i;
+                dateOfWeekDay += 1;
                 let formattedDate = new Date(currentDate.setDate(dateOfWeekDay)).toISOString().slice(0, 10);
                 currentWeek.push(formattedDate);
             }
