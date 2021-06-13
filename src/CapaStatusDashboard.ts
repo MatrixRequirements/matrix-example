@@ -200,8 +200,9 @@ namespace CapaStatusDashboard {
             
             this.labelHistoryData.forEach(
                 (labelHistoryRecord) => {
-                    let labelHistoryData = {...labelHistoryRecord};
-                    labelHistoryData.labels.forEach(
+                    let labelHistoryData_ = {...labelHistoryRecord};
+                    let labelStatusHistoryData = [];
+                    labelHistoryData_.labels.forEach(
                         (labelStatusHistoryrecord) => {
                             //let labelStatusSetData = {...labelStatusHistoryrecord.set};
                             let labelStatusFilteredSetData = labelStatusHistoryrecord.set.filter(statusSetRecord => {
@@ -217,14 +218,17 @@ namespace CapaStatusDashboard {
                             });
                             
 
-                            if(labelStatusFilteredReSetData.length > 0 || labelStatusFilteredSetData.length > 0){
+                            //if(labelStatusFilteredReSetData.length > 0 || labelStatusFilteredSetData.length > 0){
+                            if(labelStatusFilteredSetData.length > 0){    
                                 labelStatusHistoryrecord.set = labelStatusFilteredSetData;
                                 labelStatusHistoryrecord.reset = labelStatusFilteredReSetData;
-                                labelHistoryFilteredData.push(labelHistoryData);
+                                labelStatusHistoryData.push(labelStatusHistoryrecord);
                             }
                             
                         }
                     );
+                    labelHistoryData_.labels = labelStatusHistoryData;
+                    labelHistoryFilteredData.push(labelHistoryData_);
                 }
             );
             
@@ -498,9 +502,16 @@ namespace CapaStatusDashboard {
         private prepareCurrentWeekCategories(){
             let currentDate = new Date(); 
             let currentWeek = [];
+            let dateOfWeekDay,formattedDate;
+
+            if(currentDate.getDay() == 0){
+                dateOfWeekDay = currentDate.getDate() - 7;
+              }else{
+                dateOfWeekDay = currentDate.getDate() - currentDate.getDay();
+              }
 
             for (let i = 1; i <= 7; i++) {
-                let dateOfWeekDay = currentDate.getDate() - currentDate.getDay() + i ;
+                dateOfWeekDay += i;
                 let formattedDate = new Date(currentDate.setDate(dateOfWeekDay)).toISOString().slice(0, 10);
                 currentWeek.push(formattedDate);
             }
