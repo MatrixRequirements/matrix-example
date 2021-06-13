@@ -227,8 +227,12 @@ namespace CapaStatusDashboard {
                             
                         }
                     );
-                    labelHistoryData_.labels = labelStatusHistoryData;
-                    labelHistoryFilteredData.push(labelHistoryData_);
+                    
+                    if(labelStatusHistoryData.length > 0){
+                        labelHistoryData_.labels = labelStatusHistoryData;
+                        labelHistoryFilteredData.push(labelHistoryData_);
+                    }
+                   
                 }
             );
             
