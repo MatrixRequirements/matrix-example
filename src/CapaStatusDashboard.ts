@@ -109,9 +109,9 @@ namespace CapaStatusDashboard {
 
 
              //Initiating date range selection section
-            // let fromDate = $("#fromdate", that._root);
-            // let toDate = $("#todate", that._root);
-            // let goButton = $("#gobutton", that._root);
+             let fromDate = $("#fromdate", that._root);
+             let toDate = $("#todate", that._root);
+             let goButton = $("#gobutton", that._root);
             
             // let dateControl = $('<div class="baseControl">');
 
@@ -123,40 +123,40 @@ namespace CapaStatusDashboard {
             // let toDate = $("<input type='text' class='form-control redlineDates'>").appendTo(p);
             // let goButton = $('<button style="margin-left: 12px" type="button" class="btn btn-success">Compare</button>').appendTo(p);
 
-            // fromDate.datetimepicker({format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()});
-            // toDate.datetimepicker({
-            //     defaultDate: new Date(),
-            //     useCurrent: false, //Important! 
-            //     format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()
-            // });
-            // ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
-
-            // fromDate.on("dp.change", function (e:any) {
-            //     toDate.data("DateTimePicker").minDate(e.date);
-            //     ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
-            // });
-            // toDate.on("dp.change", function (e:any) {
-            //     fromDate.data("DateTimePicker").maxDate(e.date);
-            //     ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
-            // });
-    
-            // goButton.click( function() {
-            //     console.log("fromdate:" + fromDate.data("DateTimePicker").date());
-            //     console.log("todate:" + toDate.data("DateTimePicker").date());
-            // });
-
-
-            $('#gobutton').click(function(){
-        
-                // console.log("fromdate:"+$('#fromdate').val());
-                // console.log("todate:"+$('#todate').val());
-
-                let fromDateSelected = $('#fromdate').val();
-                let toDateSelected = $('#todate').val();
-
-                that.renderDataByDateRanges(fromDateSelected, toDateSelected);
-                
+            fromDate.datetimepicker({dateFormat:ml.UI.DateTime.getSimpleDateTimeFormatMoment()});
+            toDate.datetimepicker({
+                defaultDate: new Date(),
+                //useCurrent: false, //Important! 
+                dateFormat:ml.UI.DateTime.getSimpleDateTimeFormatMoment()
             });
+            ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+
+            fromDate.on("dp.change", function (e:any) {
+                toDate.data("DateTimePicker").minDate(e.date);
+                ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+            });
+            toDate.on("dp.change", function (e:any) {
+                fromDate.data("DateTimePicker").maxDate(e.date);
+                ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+            });
+    
+            goButton.click( function() {
+                console.log("fromdate:" + fromDate.data("DateTimePicker").date());
+                console.log("todate:" + toDate.data("DateTimePicker").date());
+            });
+
+
+            // $('#gobutton').click(function(){
+        
+            //     // console.log("fromdate:"+$('#fromdate').val());
+            //     // console.log("todate:"+$('#todate').val());
+
+            //     let fromDateSelected = $('#fromdate').val();
+            //     let toDateSelected = $('#todate').val();
+
+            //     that.renderDataByDateRanges(fromDateSelected, toDateSelected);
+                
+            // });
 
 
             $('#weekRange').click(function(){
@@ -939,9 +939,9 @@ namespace CapaStatusDashboard {
                     <div class="baseControl">
                     <p>
                     <span class="">Create/Modified from </span>
-                    <input id="fromdate" type='date' class='form-control redlineDates'>
+                    <input id="fromdate" type='text' class='form-control redlineDates'>
                     <span class=""> Create/Modified to </span>
-                    <input id="todate" type='date' class='form-control redlineDates'>
+                    <input id="todate" type='text' class='form-control redlineDates'>
                     <button id="gobutton" style="margin-left: 12px" type="button" class="btn btn-success">Go</button>
                     </p>
                     </div>
