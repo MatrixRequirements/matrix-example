@@ -70,6 +70,7 @@ namespace CapaStatusDashboard {
         labelHistoryData: XRLabelEntry[] = [];
         labelHistoryDataFilteredByDate: XRLabelEntry[] = [];
 
+        currentTimeRangeSelected:string = "week";
 
         currentWeekCategoryData: any[] = [];
         currentMonthCategoryData: any = {};
@@ -159,27 +160,93 @@ namespace CapaStatusDashboard {
 
 
             $('#weekRange').click(function(){
-                that.renderStatusTimeSeriesChart(that.currentWeekColumnsData,that.currentWeekCategoryData);
+               
+                if(that.currentTimeRangeSelected !== "week"){
+                   $('#weekRange').removeClass("timerangenormal");
+                   $('#weekRange').addClass("timerangeselected");
+
+                   $('#'+ that.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
+                   $('#'+ that.currentTimeRangeSelected +'Range').addClass("timerangenormal");
+
+                   that.currentTimeRangeSelected = "week";
+                   that.renderStatusTimeSeriesChart(that.currentWeekColumnsData,that.currentWeekCategoryData); 
+                }
+                 
             });
 
             $('#monthRange').click(function(){
-                that.renderStatusTimeSeriesChart(that.currentMonthColumnsData,that.currentMonthCategoryData.categories);
+                
+                if(that.currentTimeRangeSelected !== "month"){
+                   $('#monthRange').removeClass("timerangenormal");
+                   $('#monthRange').addClass("timerangeselected");
+
+                   $('#'+ that.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
+                   $('#'+ that.currentTimeRangeSelected +'Range').addClass("timerangenormal");
+
+                   that.currentTimeRangeSelected = "month";
+                   that.renderStatusTimeSeriesChart(that.currentMonthColumnsData,that.currentMonthCategoryData.categories);
+                }
+               
             });
 
             $('#threeMonthsRange').click(function(){
-                that.renderStatusTimeSeriesChart(that.threeMonthsColumnsData,that.threeMonthsCategoryData);
+                
+                if(that.currentTimeRangeSelected !== "threeMonths"){
+                   $('#threeMonthsRange').removeClass("timerangenormal");
+                   $('#threeMonthsRange').addClass("timerangeselected");
+
+                   $('#'+ that.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
+                   $('#'+ that.currentTimeRangeSelected +'Range').addClass("timerangenormal");
+                   
+                   that.currentTimeRangeSelected = "threeMonths";
+                   that.renderStatusTimeSeriesChart(that.threeMonthsColumnsData,that.threeMonthsCategoryData);
+                }
+                
             });
 
             $('#sixMonthsRange').click(function(){
-                that.renderStatusTimeSeriesChart(that.sixMonthsColumnsData,that.sixMonthsCategoryData);
+                
+                if(that.currentTimeRangeSelected !== "sixMonths"){
+                   $('#sixMonthsRange').removeClass("timerangenormal");
+                   $('#sixMonthsRange').addClass("timerangeselected");
+
+                   $('#'+ that.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
+                   $('#'+ that.currentTimeRangeSelected +'Range').addClass("timerangenormal");
+                   
+                   that.currentTimeRangeSelected = "sixMonths";
+                   that.renderStatusTimeSeriesChart(that.sixMonthsColumnsData,that.sixMonthsCategoryData);
+                }
+                
             });
 
             $('#ytdRange').click(function(){
-                that.renderStatusTimeSeriesChart(that.ytdColumnsData,that.ytdCategoryData);
+                
+                if(that.currentTimeRangeSelected !== "ytd"){
+                   $('#ytdRange').removeClass("timerangenormal");
+                   $('#ytdRange').addClass("timerangeselected");
+                   
+                   $('#'+ that.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
+                   $('#'+ that.currentTimeRangeSelected +'Range').addClass("timerangenormal");
+                   
+                   that.currentTimeRangeSelected = "ytd";
+                   that.renderStatusTimeSeriesChart(that.ytdColumnsData,that.ytdCategoryData);
+                }
+               
             });
 
             $('#moreThanYearRange').click(function(){
-                that.renderStatusTimeSeriesChart(that.moreThanYearColumnsData,that.moreThanYearCategoryData);
+                
+                if(that.currentTimeRangeSelected !== "moreThanYear"){
+                   $('#moreThanYearRange').removeClass("timerangenormal");
+                   $('#moreThanYearRange').addClass("timerangeselected");
+
+                   $('#'+ that.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
+                   $('#'+ that.currentTimeRangeSelected +'Range').addClass("timerangenormal");
+
+                   that.currentTimeRangeSelected = "moreThanYear";
+                   that.renderStatusTimeSeriesChart(that.moreThanYearColumnsData,that.moreThanYearCategoryData);
+                }
+                
             });
 
             //Get the data and render it
@@ -856,6 +923,14 @@ namespace CapaStatusDashboard {
         .chartcontainer{
             display: flex;
         }
+        .timerangenormal{
+            background-color: rgb(255, 255, 255); 
+            color: rgb(0, 128, 0);
+        }
+        .timerangeselected{
+            background-color: #337ab7;
+            color: #f6fbfd;
+        }
         </style>
         <div class="row" id="waiting" class=""></div>
             <div class="panel-body" id="CapaStatusDashboardPanel">
@@ -863,9 +938,9 @@ namespace CapaStatusDashboard {
                     <div class="panel panel-default">
                     <div class="baseControl">
                     <p>
-                    <span class="">From </span>
+                    <span class="">Create/Modified from </span>
                     <input id="fromdate" type='date' class='form-control redlineDates'>
-                    <span class=""> to </span>
+                    <span class=""> Create/Modified to </span>
                     <input id="todate" type='date' class='form-control redlineDates'>
                     <button id="gobutton" style="margin-left: 12px" type="button" class="btn btn-success">Go</button>
                     </p>
@@ -878,22 +953,22 @@ namespace CapaStatusDashboard {
                         <div>
                         <div id="globalProjectFilter" style="display:flex;margin-left: 110px">
                         <div class="btn-group labelTools">
-                        <button id="weekRange" class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">Week</button>
+                        <button id="weekRange" class="btn btn-default btn-xs timerangeselected" data-original-title="" title="">Week</button>
                         </div>
                         <div class="btn-group labelTools">
-                        <button id="monthRange" class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">Month</button>
+                        <button id="monthRange" class="btn btn-default btn-xs timerangenormal"  data-original-title="" title="">Month</button>
                         </div>
                         <div class="btn-group labelTools">
-                        <button id="threeMonthsRange" class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">3Months</button>
+                        <button id="threeMonthsRange" class="btn btn-default btn-xs timerangenormal"  data-original-title="" title="">3Months</button>
                         </div>
                         <div class="btn-group labelTools">
-                        <button id="sixMonthsRange" class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">6Months</button>
+                        <button id="sixMonthsRange" class="btn btn-default btn-xs timerangenormal"  data-original-title="" title="">6Months</button>
                         </div>
                         <div class="btn-group labelTools">
-                        <button id="ytdRange" class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">YTD</button>
+                        <button id="ytdRange" class="btn btn-default btn-xs timerangenormal"  data-original-title="" title="">YTD</button>
                         </div>
                         <div class="btn-group labelTools">
-                        <button id="moreThanYearRange" class="btn btn-default btn-xs " style="background-color: rgb(255, 255, 255); color: rgb(0, 128, 0);" data-original-title="" title="">>Year</button>
+                        <button id="moreThanYearRange" class="btn btn-default btn-xs timerangenormal"  data-original-title="" title="">>Year</button>
                         </div>
                         </div>
                         <div id="CapaStatusTimeSeriesChart" class="chart"></div>
