@@ -207,14 +207,14 @@ namespace CapaStatusDashboard {
                         (labelStatusHistoryrecord) => {
                             //let labelStatusSetData = {...labelStatusHistoryrecord.set};
                             let labelStatusFilteredSetData = labelStatusHistoryrecord.set.filter(statusSetRecord => {
-                                let setDate = new Date(statusSetRecord.dateUser);
+                                let setDate = new Date(new Date(statusSetRecord.dateUser).toISOString().slice(0, 10));
                                 return (fromDate <= setDate && setDate <=toDate);
                             });
                             
 
                             //let labelStatusReSetData = {...labelStatusHistoryrecord.reset};
                             let labelStatusFilteredReSetData = labelStatusHistoryrecord.reset.filter(statusReSetRecord => {
-                                let reSetDate = new Date(statusReSetRecord.dateUser);
+                                let reSetDate = new Date(new Date(statusReSetRecord.dateUser).toISOString().slice(0, 10));
                                 return (fromDate <= reSetDate && reSetDate <=toDate);
                             });
                             
@@ -977,7 +977,8 @@ namespace CapaStatusDashboard {
     function getCurrentStateSetDate(labelData: XRLabelChange): string {
        //sorting label set array in descending order based on version 
        labelData.set.sort((a, b) => b.version - a.version);
-       return labelData.set[0].dateUser;
+       let currentStateSetDate = new Date(labelData.set[0].dateUser).toISOString().slice(0, 10);
+       return currentStateSetDate;
      }
 
     /**
