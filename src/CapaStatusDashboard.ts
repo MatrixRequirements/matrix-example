@@ -123,11 +123,11 @@ namespace CapaStatusDashboard {
             // let toDate = $("<input type='text' class='form-control redlineDates'>").appendTo(p);
             // let goButton = $('<button style="margin-left: 12px" type="button" class="btn btn-success">Compare</button>').appendTo(p);
 
-            fromDate.datetimepicker({dateFormat:ml.UI.DateTime.getSimpleDateTimeFormatMoment()});
+            fromDate.datetimepicker({format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()});
             toDate.datetimepicker({
                 defaultDate: new Date(),
-                //useCurrent: false, //Important! 
-                dateFormat:ml.UI.DateTime.getSimpleDateTimeFormatMoment()
+                useCurrent: false, //Important! 
+                format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()
             });
             ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
 
