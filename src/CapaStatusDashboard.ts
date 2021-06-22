@@ -901,7 +901,7 @@ namespace CapaStatusDashboard {
              $("#dateRangeFilter",copied).remove();
              $("#timeSeriesChartRangeFilter",copied).remove();
              $("#CapaStatusDashboarInputFilter",copied).remove();
-             $("#CapaStatusChartTitle", copied).html("<h1>" + title + "for " + that.currentCat +"</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) +  "<br/>");
+             $("#CapaStatusChartTitle", copied).html("<h1>" + title + " for " + that.currentCat +"</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) +  "<br/>");
     
             }, "",()=>{
                 $("#CapaStatusDashboardPanel svg").each((i,item,)=>{ saveSize.push($(item).width())});
