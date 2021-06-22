@@ -899,6 +899,7 @@ namespace CapaStatusDashboard {
              $(".title", copied).each( (i,item)=>{ $(item).text()  } );
              $(".hidden",copied).remove();
              $("#dateRangeFilter",copied).remove();
+             $("#timeSeriesChartRangeFilter",copied).remove();
              $("#CapaStatusChartTitle", copied).html("<h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) +  "<br/>");
     
             }, "",()=>{
@@ -988,7 +989,7 @@ namespace CapaStatusDashboard {
                         <div class="LabelDashboardTitleForCopy"></div>
                         <div id="CapaStatusCountChart" class="chart"></div>
                         <div>
-                        <div id="globalProjectFilter" style="display:flex;margin-left: 110px">
+                        <div id="timeSeriesChartRangeFilter" style="display:flex;margin-left: 110px">
                         <div class="btn-group labelTools">
                         <button id="weekRange" class="btn btn-default btn-xs timerangeselected" data-original-title="" title="">Week</button>
                         </div>
