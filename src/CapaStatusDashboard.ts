@@ -897,7 +897,7 @@ namespace CapaStatusDashboard {
             ml.UI.copyBuffer($("#CapaStatusChartTitle"), "copy  to clipboard", $(".panel-body-v-scroll"), this._root, (copied: JQuery) => {
              
              ml.UI.fixC3ForCopy(copied);
-             $(".title", copied).each( (i,item)=>{ $(item).text($(item).data("ref") +"!")  } );
+             $(".title", copied).each( (i,item)=>{ $(item).text($(item).data() +"!")  } );
              $(".hidden",copied).remove();
              $("#CapaStatusChartTitle", copied).html("<h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) +  "<br/>");
     
