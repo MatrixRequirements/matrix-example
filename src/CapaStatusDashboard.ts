@@ -69,6 +69,7 @@ namespace CapaStatusDashboard {
         ByCategoryLabelStatesDaysCountDetails: ByCategoryLabelStatesDaysCountData[] = [];
         labelHistoryData: XRLabelEntry[] = [];
         labelHistoryDataFilteredByDate: XRLabelEntry[] = [];
+        charts: c3.ChartAPI[] = [];
 
         currentTimeRangeSelected:string = "week";
 
@@ -248,6 +249,8 @@ namespace CapaStatusDashboard {
                 }
                 
             });
+
+            setTimeout(o => that.installCopyButtons("CAPA Status Overview"), 10);
 
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
@@ -567,6 +570,7 @@ namespace CapaStatusDashboard {
             };
 
             let renderedChart = c3.generate(params);
+            that.charts.push(renderedChart);
 
             $("#CapaStatusCountChart svg").click(function(){   
                 that.filterByLabel({type:""})
@@ -790,6 +794,7 @@ namespace CapaStatusDashboard {
             $("#CapaStatusTimeSeriesChart").append("<div id='stateTimeSeriesGraph'>");
 
             let renderedChart = c3.generate(timeSeriesChartparams);
+            this.charts.push(renderedChart);
 
         }
 
@@ -885,6 +890,37 @@ namespace CapaStatusDashboard {
 
         }
 
+        private installCopyButtons(title: string) {
+            let that = this;
+            //$("#LabelDashboardTableHeader i").remove();
+            let saveSize = [];
+            ml.UI.copyBuffer($("#CapaStatusChartTitle"), "copy  to clipboard", $(".panel-body-v-scroll"), this._root, (copied: JQuery) => {
+             
+             ml.UI.fixC3ForCopy(copied);
+             $(".title", copied).each( (i,item)=>{ $(item).text($(item).data("ref") +"!")  } );
+             $(".hidden",copied).remove();
+             $("#CapaStatusChartTitle", copied).html("<h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) +  "<br/>");
+    
+            }, "",()=>{
+                $("#CapaStatusDashboardPanel svg").each((i,item,)=>{ saveSize.push($(item).width())});
+                that.charts.forEach((chart)=>{ chart.resize({width:590})});
+                /*()=>{
+                savedWidth = $("#overviewPerUser svg").width();
+                that.overviewPerUserChart.resize({width:590});
+            },()=>{
+                that.overviewPerUserChart.resize({width:savedWidth})
+    
+            });*/
+    
+    
+            },()=>{
+                let i = 0; 
+                that.charts.forEach((chart)=>{ chart.resize({width:saveSize[i]}); i++; });
+            });
+    
+    
+        }
+
     
         private renderResult(result: XRLabelEntry[]) {
 
@@ -946,9 +982,10 @@ namespace CapaStatusDashboard {
                     </p>
                     </div>
                     <div class="panel-heading">
-                        <h3 class="panel-title" id="">Capa Status Overview</h3>
+                        <h3 class="panel-title" id="CapaStatusChartTitle">Capa Status Overview</h3>
                     </div>
                     <div class="panel-body chartcontainer">
+                        <div class="LabelDashboardTitleForCopy"></div>
                         <div id="CapaStatusCountChart" class="chart"></div>
                         <div>
                         <div id="globalProjectFilter" style="display:flex;margin-left: 110px">
