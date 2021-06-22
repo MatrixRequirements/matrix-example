@@ -892,7 +892,7 @@ namespace CapaStatusDashboard {
 
         private installCopyButtons(title: string) {
             let that = this;
-            //$("#LabelDashboardTableHeader i").remove();
+            $("#dateRangeFilter").remove();
             let saveSize = [];
             ml.UI.copyBuffer($("#CapaStatusChartTitle"), "copy  to clipboard", $(".panel-body-v-scroll"), this._root, (copied: JQuery) => {
              
@@ -972,7 +972,7 @@ namespace CapaStatusDashboard {
             <div class="panel-body" id="CapaStatusDashboardPanel">
                 <div id="">   
                     <div class="panel panel-default">
-                    <div class="baseControl">
+                    <div class="baseControl" id="dateRangeFilter">
                     <p>
                     <span class="">Create/Modified from </span>
                     <input id="fromdate" type='date' class='form-control redlineDates'>
