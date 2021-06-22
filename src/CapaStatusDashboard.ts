@@ -900,26 +900,16 @@ namespace CapaStatusDashboard {
              $(".hidden",copied).remove();
              $("#dateRangeFilter",copied).remove();
              $("#timeSeriesChartRangeFilter",copied).remove();
-             $("#CapaStatusChartTitle", copied).html("<h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) +  "<br/>");
+             $("#CapaStatusDashboarInputFilter",copied).remove();
+             $("#CapaStatusChartTitle", copied).html("<h1>" + title + "for " + that.currentCat +"</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) +  "<br/>");
     
             }, "",()=>{
                 $("#CapaStatusDashboardPanel svg").each((i,item,)=>{ saveSize.push($(item).width())});
                 that.charts.forEach((chart)=>{ chart.resize({width:590})});
-                /*()=>{
-                savedWidth = $("#overviewPerUser svg").width();
-                that.overviewPerUserChart.resize({width:590});
-            },()=>{
-                that.overviewPerUserChart.resize({width:savedWidth})
-    
-            });*/
-    
-    
             },()=>{
                 let i = 0; 
                 that.charts.forEach((chart)=>{ chart.resize({width:saveSize[i]}); i++; });
             });
-    
-    
         }
 
     
