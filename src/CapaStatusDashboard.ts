@@ -491,6 +491,7 @@ namespace CapaStatusDashboard {
                     // clonedTemplate.attr("class", "addedItem");
                     // clonedTemplate.attr("class", labelData.currentState);
                     $(".title", clonedTemplate).text(labelData.id + "!");
+                    $(".title", clonedTemplate).data("ref", labelData.id+"!");
 
                     $(".currentstate", clonedTemplate).text(labelData.currentState);
 
@@ -902,6 +903,7 @@ namespace CapaStatusDashboard {
                  //console.log("$item:"+$(item));
                  //console.log("$item text:"+$(item).text());
                  console.log("$item data:"+JSON.stringify($(item).data()));
+                 console.log("$item data ref:"+$(item).data("ref"));
                  $(item).text()  
               } );
              $(".hidden",copied).remove();
