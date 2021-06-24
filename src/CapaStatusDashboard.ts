@@ -898,10 +898,10 @@ namespace CapaStatusDashboard {
              ml.UI.fixC3ForCopy(copied);
              $(".title", copied).each( (i,item)=>{ 
                  //$(item).text($(item).data("ref") +"!") 
-                 console.log("item:"+item);
-                 console.log("$item:"+$(item));
-                 console.log("$item text:"+$(item).text());
-                 console.log("$item data:"+$(item).data());
+                 //console.log("item:"+item);
+                 //console.log("$item:"+$(item));
+                 //console.log("$item text:"+$(item).text());
+                 console.log("$item data:"+JSON.stringify($(item).data()));
                  $(item).text()  
               } );
              $(".hidden",copied).remove();
