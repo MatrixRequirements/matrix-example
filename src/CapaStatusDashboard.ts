@@ -461,6 +461,7 @@ namespace CapaStatusDashboard {
         filterByLabel(filter:any)
         {
             this.currentFilter = filter.type;
+            let stateClass = "";
             if( filter.type == "")
             {
                 //Show all
@@ -469,8 +470,13 @@ namespace CapaStatusDashboard {
             }
             else
             {  
+                if(filter.type === "CHECKED BUT NOT CLOSED"){
+                    stateClass = "CHECKED-BUT-NOT-CLOSED";
+                }else{
+                    stateClass = filter.type;
+                }
                 $("#itemCapaStatusDashboardList tbody tr").hide();
-                $("#itemCapaStatusDashboardList tbody tr."+filter.type).show();
+                $("#itemCapaStatusDashboardList tbody tr."+stateClass).show();
             }
         
 
@@ -484,9 +490,15 @@ namespace CapaStatusDashboard {
             LabelStateDaysCountDetails.forEach(
                 (labelData) => {
                     let clonedTemplate = $("#itemCapaStatusDashboardList .template", this._root).clone();
+                    let stateClass = "";
+                    if(labelData.currentState === "CHECKED BUT NOT CLOSED"){
+                        stateClass = "CHECKED-BUT-NOT-CLOSED";
+                    }else{
+                        stateClass = labelData.currentState;
+                    }
                     //Remove the template and hidden classes 
                     clonedTemplate.removeClass("template").removeClass("hidden");
-                    let classAttr = "addedItem" + " " + labelData.currentState;
+                    let classAttr = "addedItem" + " " + stateClass;
                     clonedTemplate.attr("class", classAttr);
                     // clonedTemplate.attr("class", "addedItem");
                     // clonedTemplate.attr("class", labelData.currentState);
