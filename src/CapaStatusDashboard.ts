@@ -1185,9 +1185,9 @@ namespace CapaStatusDashboard {
         for (const item of labels) {
 
             let itemCurrentSateData : CurrentStateData = getItemCurrentState(item.labels);
-            let itemClosedStateDaysCount = 0;
-            let itemCheckedStateDaysCount = 0;
-            let itemCheckedButNotClosedStateDaysCount = 0;
+            let itemClosedStateDaysCount;
+            let itemCheckedStateDaysCount;
+            let itemCheckedButNotClosedStateDaysCount;
 
 
             let LabelStateDaysCountData: LabelStateDaysCountData = {
@@ -1248,11 +1248,13 @@ namespace CapaStatusDashboard {
             }
 
             //check if current state is checked but not closed
-            itemCheckedButNotClosedStateDaysCount = itemCheckedStateDaysCount - itemClosedStateDaysCount;
+            if(itemCheckedStateDaysCount && itemClosedStateDaysCount){
+                itemCheckedButNotClosedStateDaysCount = itemCheckedStateDaysCount - itemClosedStateDaysCount;
 
-            if(itemCheckedButNotClosedStateDaysCount < 0 || itemCheckedButNotClosedStateDaysCount == 0){
-                LabelStateDaysCountData.currentState = "CHECKED BUT NOT CLOSED";
-                itemCurrentSateData.currentState = "CHECKED BUT NOT CLOSED";
+                if(itemCheckedButNotClosedStateDaysCount < 0 || itemCheckedButNotClosedStateDaysCount == 0){
+                    LabelStateDaysCountData.currentState = "CHECKED BUT NOT CLOSED";
+                    itemCurrentSateData.currentState = "CHECKED BUT NOT CLOSED";
+                }
             }
             
             for (const ByCategoryData of ByCategoryLabelStatesDaysCountDetails ) {
