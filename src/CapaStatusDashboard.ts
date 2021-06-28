@@ -708,7 +708,8 @@ namespace CapaStatusDashboard {
                 ['OPEN', ...emptyInitials],
                 ['WAIT', ...emptyInitials],
                 ['CHECKED', ...emptyInitials],
-                ['CLOSED', ...emptyInitials]
+                ['CLOSED', ...emptyInitials],
+                ['CHECKED BUT NOT CLOSED', ...emptyInitials]
             ];
 
             return initialColumns;
@@ -774,7 +775,7 @@ namespace CapaStatusDashboard {
                     columns: chartColumnsData,
                     type: 'bar',
                     groups: [
-                        ['OPEN', 'WAIT','CHECKED', 'CLOSED']
+                        ['OPEN', 'WAIT','CHECKED', 'CLOSED','CHECKED BUT NOT CLOSED']
                     ]
                 },
                 axis: {
@@ -1160,7 +1161,7 @@ namespace CapaStatusDashboard {
             let ByCategoryLabelStatesDaysCountData: ByCategoryLabelStatesDaysCountData = {
                 category: cat,
                 LabelStateDaysCountDetails: [],
-                itemStateCountChartData: [['OPEN',0],['WAIT',0],['CHECKED',0],['CLOSED',0]],
+                itemStateCountChartData: [['OPEN',0],['WAIT',0],['CHECKED',0],['CLOSED',0],['CHECKED BUT NOT CLOSED',0]],
                 leastStatusSetDate: new Date().toISOString().slice(0, 10)
             };
             
@@ -1172,6 +1173,10 @@ namespace CapaStatusDashboard {
         for (const item of labels) {
 
             let itemCurrentSateData : CurrentStateData = getItemCurrentState(item.labels);
+            let itemClosedStateDaysCount = 0;
+            let itemCheckedStateDaysCount = 0;
+            let itemCheckedButNotClosedStateDaysCount = 0;
+
 
             let LabelStateDaysCountData: LabelStateDaysCountData = {
                 id: item.itemRef,
@@ -1221,8 +1226,21 @@ namespace CapaStatusDashboard {
                     days: labelstateDaysCount
                 }
 
-
+                if(label.label === "CHECKED"){
+                    itemCheckedStateDaysCount = labelstateDaysCount;
+                }else if(label.label === "CLOSED"){
+                    itemClosedStateDaysCount = labelstateDaysCount;
+                }
+                
                 LabelStateDaysCountData.labels.push(LabelStateDays);
+            }
+
+            //check if current state is checked but not closed
+            itemCheckedButNotClosedStateDaysCount = itemCheckedStateDaysCount - itemClosedStateDaysCount;
+
+            if(itemCheckedButNotClosedStateDaysCount < 0 || itemCheckedButNotClosedStateDaysCount == 0){
+                LabelStateDaysCountData.currentState = "CHECKED BUT NOT CLOSED";
+                itemCurrentSateData.currentState = "CHECKED BUT NOT CLOSED";
             }
             
             for (const ByCategoryData of ByCategoryLabelStatesDaysCountDetails ) {
