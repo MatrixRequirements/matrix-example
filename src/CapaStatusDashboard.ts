@@ -644,13 +644,15 @@ namespace CapaStatusDashboard {
               }else{
                 dateOfWeekDay = currentDate.getDate() - currentDate.getDay();
               }
+        
+            let startDate = new Date(currentDate.setDate(dateOfWeekDay));
 
             for (let i = 1; i <= 7; i++) {
-                dateOfWeekDay += 1;
-                let formattedDate = new Date(currentDate.setDate(dateOfWeekDay)).toISOString().slice(0, 10);
+                let formattedDate = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().slice(0, 10);
                 currentWeek.push(formattedDate);
             }
-            return currentWeek;
+            
+           return currentWeek;
         }
 
         private getMonthNames(){
