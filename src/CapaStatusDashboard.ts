@@ -470,11 +470,7 @@ namespace CapaStatusDashboard {
             }
             else
             {  
-                if(filter.type === "CHECKED BUT NOT CLOSED"){
-                    stateClass = "CHECKED-BUT-NOT-CLOSED";
-                }else{
-                    stateClass = filter.type;
-                }
+                stateClass = filter.type;
                 $("#itemCapaStatusDashboardList tbody tr").hide();
                 $("#itemCapaStatusDashboardList tbody tr."+stateClass).show();
             }
@@ -490,12 +486,7 @@ namespace CapaStatusDashboard {
             LabelStateDaysCountDetails.forEach(
                 (labelData) => {
                     let clonedTemplate = $("#itemCapaStatusDashboardList .template", this._root).clone();
-                    let stateClass = "";
-                    if(labelData.currentState === "CHECKED BUT NOT CLOSED"){
-                        stateClass = "CHECKED-BUT-NOT-CLOSED";
-                    }else{
-                        stateClass = labelData.currentState;
-                    }
+                    let stateClass = labelData.currentState;
                     //Remove the template and hidden classes 
                     clonedTemplate.removeClass("template").removeClass("hidden");
                     let classAttr = "addedItem" + " " + stateClass;
@@ -722,8 +713,7 @@ namespace CapaStatusDashboard {
                 ['OPEN', ...emptyInitials],
                 ['WAIT', ...emptyInitials],
                 ['CHECKED', ...emptyInitials],
-                ['CLOSED', ...emptyInitials],
-                ['CHECKED BUT NOT CLOSED', ...emptyInitials]
+                ['CLOSED', ...emptyInitials]
             ];
 
             return initialColumns;
@@ -789,7 +779,7 @@ namespace CapaStatusDashboard {
                     columns: chartColumnsData,
                     type: 'bar',
                     groups: [
-                        ['OPEN', 'WAIT','CHECKED', 'CLOSED','CHECKED BUT NOT CLOSED']
+                        ['OPEN', 'WAIT','CHECKED', 'CLOSED']
                     ]
                 },
                 axis: {
@@ -912,7 +902,7 @@ namespace CapaStatusDashboard {
             ml.UI.copyBuffer($("#CapaStatusChartTitle"), "copy  to clipboard", $(".panel-body-v-scroll"), this._root, (copied: JQuery) => {
              
              ml.UI.fixC3ForCopy(copied);
-             $(".title", copied).each( (i,item)=>{$(item).text($(item).data("ref") +"!")});
+             $(".title", copied).each( (i,item)=>{$(item).text($(item).data("ref"))});
              $(".hidden",copied).remove();
              $("#dateRangeFilter",copied).remove();
              $("#timeSeriesChartRangeFilter",copied).remove();
@@ -1175,7 +1165,7 @@ namespace CapaStatusDashboard {
             let ByCategoryLabelStatesDaysCountData: ByCategoryLabelStatesDaysCountData = {
                 category: cat,
                 LabelStateDaysCountDetails: [],
-                itemStateCountChartData: [['OPEN',0],['WAIT',0],['CHECKED',0],['CLOSED',0],['CHECKED BUT NOT CLOSED',0]],
+                itemStateCountChartData: [['OPEN',0],['WAIT',0],['CHECKED',0],['CLOSED',0]],
                 leastStatusSetDate: new Date().toISOString().slice(0, 10)
             };
             
@@ -1189,7 +1179,10 @@ namespace CapaStatusDashboard {
             let itemCurrentSateData : CurrentStateData = getItemCurrentState(item.labels);
             let itemClosedStateDaysCount;
             let itemCheckedStateDaysCount;
-            let itemCheckedButNotClosedStateDaysCount;
+            let itemCheckedAndClosedStateDaysCount;
+            let itemCheckedSateLabelIndex;
+            let itemSateLabelIndex = 0;
+
 
 
             let LabelStateDaysCountData: LabelStateDaysCountData = {
@@ -1242,20 +1235,23 @@ namespace CapaStatusDashboard {
 
                 if(label.label === "CHECKED"){
                     itemCheckedStateDaysCount = labelstateDaysCount;
+                    itemCheckedSateLabelIndex = itemSateLabelIndex;
                 }else if(label.label === "CLOSED"){
                     itemClosedStateDaysCount = labelstateDaysCount;
                 }
                 
                 LabelStateDaysCountData.labels.push(LabelStateDays);
+                itemSateLabelIndex++;
             }
 
             //check if current state is checked but not closed
             if(itemCheckedStateDaysCount && itemClosedStateDaysCount){
-                itemCheckedButNotClosedStateDaysCount = itemCheckedStateDaysCount - itemClosedStateDaysCount;
+                itemCheckedAndClosedStateDaysCount = itemCheckedStateDaysCount - itemClosedStateDaysCount;
 
-                if(itemCheckedButNotClosedStateDaysCount < 0 || itemCheckedButNotClosedStateDaysCount == 0){
-                    LabelStateDaysCountData.currentState = "CHECKED BUT NOT CLOSED";
-                    itemCurrentSateData.currentState = "CHECKED BUT NOT CLOSED";
+                if(itemCheckedAndClosedStateDaysCount < 0 || itemCheckedAndClosedStateDaysCount == 0){
+                    LabelStateDaysCountData.labels[itemCheckedSateLabelIndex].days = 0;
+                }else{
+                    LabelStateDaysCountData.labels[itemCheckedSateLabelIndex].days = itemCheckedAndClosedStateDaysCount;
                 }
             }
             
