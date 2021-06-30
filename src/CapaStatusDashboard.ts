@@ -155,6 +155,8 @@ namespace CapaStatusDashboard {
                 let fromDateSelected = $('#fromdate').val();
                 let toDateSelected = $('#todate').val();
 
+                that.highlighWeekRangeOption();
+
                 that.renderDataByDateRanges(fromDateSelected, toDateSelected);
                 
             });
@@ -260,6 +262,19 @@ namespace CapaStatusDashboard {
                 //Let's remove the spinning wait
                 spinningWait.remove();
             });
+        }
+
+        highlighWeekRangeOption(){
+            if(this.currentTimeRangeSelected !== "week"){
+                $('#weekRange').removeClass("timerangenormal");
+                $('#weekRange').addClass("timerangeselected");
+
+                $('#'+ this.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
+                $('#'+ this.currentTimeRangeSelected +'Range').addClass("timerangenormal");
+
+                this.currentTimeRangeSelected = "week";
+                //this.renderStatusTimeSeriesChart(this.currentWeekColumnsData,this.currentWeekCategoryData); 
+             }
         }
 
         //if any of set and reset dates of labels falls between date ranges selected consider the item
@@ -432,6 +447,8 @@ namespace CapaStatusDashboard {
             this.currentCat = cat;   
             
             $("#selectedCat", this._root).text(cat);
+
+            this.highlighWeekRangeOption();
 
 
             // const LabelStateDaysCountDetails: LabelStateDaysCountData[] = []; 
