@@ -41,7 +41,7 @@ namespace CapaStatusDashboard {
         days: number;
     }
 
-    
+
     interface LabelStateDaysCountData {
         id: string;
         labels: LabelStateDaysCount[];
@@ -65,13 +65,13 @@ namespace CapaStatusDashboard {
 
     class CapaStatusDashboardControl extends BaseControl {
 
-        currentCat:string = "";
+        currentCat: string = "";
         ByCategoryLabelStatesDaysCountDetails: ByCategoryLabelStatesDaysCountData[] = [];
         labelHistoryData: XRLabelEntry[] = [];
         labelHistoryDataFilteredByDate: XRLabelEntry[] = [];
         charts: c3.ChartAPI[] = [];
 
-        currentTimeRangeSelected:string = "week";
+        currentTimeRangeSelected: string = "week";
 
         currentWeekCategoryData: any[] = [];
         currentMonthCategoryData: any = {};
@@ -109,42 +109,65 @@ namespace CapaStatusDashboard {
             $("#waiting", that._root).append(spinningWait);
 
 
-             //Initiating date range selection section
-             let fromDate = $("#fromdate", that._root);
-             let toDate = $("#todate", that._root);
-             let goButton = $("#gobutton", that._root);
+            //Initiating date range selection section
+            let fromDate = $("#fromdate", that._root);
+            let toDate = $("#todate", that._root);
+            let goButton = $("#gobutton", that._root);
 
-             //MM/dd/YYYY 
-             //ml.UI.DateTime.getSimpleDateTimeFormatMoment()
+            //MM/dd/YYYY 
+            //ml.UI.DateTime.getSimpleDateTimeFormatMoment()
             fromDate.datetimepicker({
-                format:'MM/dd/YYYY',
-                maxDate: new Date()
+                format: 'MM/DD/YYYY',
+                maxDate: 'now'
             });
             toDate.datetimepicker({
                 defaultDate: new Date(),
-                maxDate: new Date(),
+                maxDate: 'now',
                 useCurrent: false, //Important! 
-                format:'MM/dd/YYYY'
+                format: 'MM/DD/YYYY'
             });
-            ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+            ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
 
-            fromDate.on("dp.change", function (e:any) {
+            fromDate.on("dp.change", function (e: any) {
                 toDate.data("DateTimePicker").minDate(e.date);
-                ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
             });
-            toDate.on("dp.change", function (e:any) {
+            toDate.on("dp.change", function (e: any) {
                 fromDate.data("DateTimePicker").maxDate(e.date);
-                ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
+                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
             });
-    
-            goButton.click( function() {
-                console.log("fromdate:" + fromDate.data("DateTimePicker").date());
-                console.log("todate:" + toDate.data("DateTimePicker").date());
+
+            goButton.click(function () {
+
+                // let fromDateSelected_ = $('#fromdate').val();
+                // let toDateSelected_ = $('#todate').val();
+
+                // console.log("fromDateSelected_:" + fromDateSelected_);
+                // console.log("fromDateSelected_:" + fromDateSelected_);
+
+                // let fromDate_1 = new Date(fromDateSelected_);
+                // let toDate_1 = new Date(toDateSelected_);
+
+                // console.log("fromDate_1:" + fromDate_1);
+                // console.log("toDate_1:" + toDate_1);
+
+                let fromDateSelected_1 = fromDate.data("DateTimePicker").date();
+                let toDateSelected_1 = toDate.data("DateTimePicker").date();
+
+                console.log("fromDateSelected_1:" + fromDateSelected_1);
+                console.log("toDateSelected_1:" + toDateSelected_1);
+
+                let fromDate_2 = new Date(fromDateSelected_1);
+                let toDate_2 = new Date(toDateSelected_1);
+
+                console.log("fromDate_2:" + fromDate_2);
+                console.log("toDate_2:" + toDate_2);
+
             });
 
 
             // $('#gobutton').click(function(){
-        
+
             //     // console.log("fromdate:"+$('#fromdate').val());
             //     // console.log("todate:"+$('#todate').val());
 
@@ -154,98 +177,98 @@ namespace CapaStatusDashboard {
             //     that.highlighWeekRangeOption();
 
             //     that.renderDataByDateRanges(fromDateSelected, toDateSelected);
-                
+
             // });
 
 
-            $('#weekRange').click(function(){
-               
-                if(that.currentTimeRangeSelected !== "week"){
-                   $('#weekRange').removeClass("timerangenormal");
-                   $('#weekRange').addClass("timerangeselected");
+            $('#weekRange').click(function () {
 
-                   $('#'+ that.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
-                   $('#'+ that.currentTimeRangeSelected +'Range').addClass("timerangenormal");
+                if (that.currentTimeRangeSelected !== "week") {
+                    $('#weekRange').removeClass("timerangenormal");
+                    $('#weekRange').addClass("timerangeselected");
 
-                   that.currentTimeRangeSelected = "week";
-                   that.renderStatusTimeSeriesChart(that.currentWeekColumnsData,that.currentWeekCategoryData); 
+                    $('#' + that.currentTimeRangeSelected + 'Range').removeClass("timerangeselected");
+                    $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
+
+                    that.currentTimeRangeSelected = "week";
+                    that.renderStatusTimeSeriesChart(that.currentWeekColumnsData, that.currentWeekCategoryData);
                 }
-                 
+
             });
 
-            $('#monthRange').click(function(){
-                
-                if(that.currentTimeRangeSelected !== "month"){
-                   $('#monthRange').removeClass("timerangenormal");
-                   $('#monthRange').addClass("timerangeselected");
+            $('#monthRange').click(function () {
 
-                   $('#'+ that.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
-                   $('#'+ that.currentTimeRangeSelected +'Range').addClass("timerangenormal");
+                if (that.currentTimeRangeSelected !== "month") {
+                    $('#monthRange').removeClass("timerangenormal");
+                    $('#monthRange').addClass("timerangeselected");
 
-                   that.currentTimeRangeSelected = "month";
-                   that.renderStatusTimeSeriesChart(that.currentMonthColumnsData,that.currentMonthCategoryData.categories);
+                    $('#' + that.currentTimeRangeSelected + 'Range').removeClass("timerangeselected");
+                    $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
+
+                    that.currentTimeRangeSelected = "month";
+                    that.renderStatusTimeSeriesChart(that.currentMonthColumnsData, that.currentMonthCategoryData.categories);
                 }
-               
+
             });
 
-            $('#threeMonthsRange').click(function(){
-                
-                if(that.currentTimeRangeSelected !== "threeMonths"){
-                   $('#threeMonthsRange').removeClass("timerangenormal");
-                   $('#threeMonthsRange').addClass("timerangeselected");
+            $('#threeMonthsRange').click(function () {
 
-                   $('#'+ that.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
-                   $('#'+ that.currentTimeRangeSelected +'Range').addClass("timerangenormal");
-                   
-                   that.currentTimeRangeSelected = "threeMonths";
-                   that.renderStatusTimeSeriesChart(that.threeMonthsColumnsData,that.threeMonthsCategoryData);
+                if (that.currentTimeRangeSelected !== "threeMonths") {
+                    $('#threeMonthsRange').removeClass("timerangenormal");
+                    $('#threeMonthsRange').addClass("timerangeselected");
+
+                    $('#' + that.currentTimeRangeSelected + 'Range').removeClass("timerangeselected");
+                    $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
+
+                    that.currentTimeRangeSelected = "threeMonths";
+                    that.renderStatusTimeSeriesChart(that.threeMonthsColumnsData, that.threeMonthsCategoryData);
                 }
-                
+
             });
 
-            $('#sixMonthsRange').click(function(){
-                
-                if(that.currentTimeRangeSelected !== "sixMonths"){
-                   $('#sixMonthsRange').removeClass("timerangenormal");
-                   $('#sixMonthsRange').addClass("timerangeselected");
+            $('#sixMonthsRange').click(function () {
 
-                   $('#'+ that.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
-                   $('#'+ that.currentTimeRangeSelected +'Range').addClass("timerangenormal");
-                   
-                   that.currentTimeRangeSelected = "sixMonths";
-                   that.renderStatusTimeSeriesChart(that.sixMonthsColumnsData,that.sixMonthsCategoryData);
+                if (that.currentTimeRangeSelected !== "sixMonths") {
+                    $('#sixMonthsRange').removeClass("timerangenormal");
+                    $('#sixMonthsRange').addClass("timerangeselected");
+
+                    $('#' + that.currentTimeRangeSelected + 'Range').removeClass("timerangeselected");
+                    $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
+
+                    that.currentTimeRangeSelected = "sixMonths";
+                    that.renderStatusTimeSeriesChart(that.sixMonthsColumnsData, that.sixMonthsCategoryData);
                 }
-                
+
             });
 
-            $('#ytdRange').click(function(){
-                
-                if(that.currentTimeRangeSelected !== "ytd"){
-                   $('#ytdRange').removeClass("timerangenormal");
-                   $('#ytdRange').addClass("timerangeselected");
-                   
-                   $('#'+ that.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
-                   $('#'+ that.currentTimeRangeSelected +'Range').addClass("timerangenormal");
-                   
-                   that.currentTimeRangeSelected = "ytd";
-                   that.renderStatusTimeSeriesChart(that.ytdColumnsData,that.ytdCategoryData);
+            $('#ytdRange').click(function () {
+
+                if (that.currentTimeRangeSelected !== "ytd") {
+                    $('#ytdRange').removeClass("timerangenormal");
+                    $('#ytdRange').addClass("timerangeselected");
+
+                    $('#' + that.currentTimeRangeSelected + 'Range').removeClass("timerangeselected");
+                    $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
+
+                    that.currentTimeRangeSelected = "ytd";
+                    that.renderStatusTimeSeriesChart(that.ytdColumnsData, that.ytdCategoryData);
                 }
-               
+
             });
 
-            $('#moreThanYearRange').click(function(){
-                
-                if(that.currentTimeRangeSelected !== "moreThanYear"){
-                   $('#moreThanYearRange').removeClass("timerangenormal");
-                   $('#moreThanYearRange').addClass("timerangeselected");
+            $('#moreThanYearRange').click(function () {
 
-                   $('#'+ that.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
-                   $('#'+ that.currentTimeRangeSelected +'Range').addClass("timerangenormal");
+                if (that.currentTimeRangeSelected !== "moreThanYear") {
+                    $('#moreThanYearRange').removeClass("timerangenormal");
+                    $('#moreThanYearRange').addClass("timerangeselected");
 
-                   that.currentTimeRangeSelected = "moreThanYear";
-                   that.renderStatusTimeSeriesChart(that.moreThanYearColumnsData,that.moreThanYearCategoryData);
+                    $('#' + that.currentTimeRangeSelected + 'Range').removeClass("timerangeselected");
+                    $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
+
+                    that.currentTimeRangeSelected = "moreThanYear";
+                    that.renderStatusTimeSeriesChart(that.moreThanYearColumnsData, that.moreThanYearCategoryData);
                 }
-                
+
             });
 
             setTimeout(o => that.installCopyButtons("CAPA Status Overview"), 10);
@@ -260,60 +283,60 @@ namespace CapaStatusDashboard {
             });
         }
 
-        highlighWeekRangeOption(){
-            if(this.currentTimeRangeSelected !== "week"){
+        highlighWeekRangeOption() {
+            if (this.currentTimeRangeSelected !== "week") {
                 $('#weekRange').removeClass("timerangenormal");
                 $('#weekRange').addClass("timerangeselected");
 
-                $('#'+ this.currentTimeRangeSelected +'Range').removeClass("timerangeselected");
-                $('#'+ this.currentTimeRangeSelected +'Range').addClass("timerangenormal");
+                $('#' + this.currentTimeRangeSelected + 'Range').removeClass("timerangeselected");
+                $('#' + this.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
 
                 this.currentTimeRangeSelected = "week";
                 //this.renderStatusTimeSeriesChart(this.currentWeekColumnsData,this.currentWeekCategoryData); 
-             }
+            }
         }
 
         //if any of set and reset dates of labels falls between date ranges selected consider the item
-        renderDataByDateRanges(fromDateVal: any, toDateVal: any){
+        renderDataByDateRanges(fromDateVal: any, toDateVal: any) {
 
             const fromDate = new Date(fromDateVal);
             const toDate = new Date(toDateVal);
-            let labelHistoryFilteredData : XRLabelEntry[] = [];
-            
+            let labelHistoryFilteredData: XRLabelEntry[] = [];
+
             this.labelHistoryData.forEach(
                 (labelHistoryRecord) => {
-                    let labelHistoryData_ = {...labelHistoryRecord};
+                    let labelHistoryData_ = { ...labelHistoryRecord };
                     let isItemfallsinRange = false;
                     labelHistoryData_.labels.forEach(
                         (labelStatusHistoryrecord) => {
                             //let labelStatusSetData = {...labelStatusHistoryrecord.set};
                             let labelStatusFilteredSetData = labelStatusHistoryrecord.set.filter(statusSetRecord => {
                                 let setDate = new Date(new Date(statusSetRecord.dateUser).toISOString().slice(0, 10));
-                                return (fromDate <= setDate && setDate <=toDate);
+                                return (fromDate <= setDate && setDate <= toDate);
                             });
-                            
+
 
                             //let labelStatusReSetData = {...labelStatusHistoryrecord.reset};
                             let labelStatusFilteredReSetData = labelStatusHistoryrecord.reset.filter(statusReSetRecord => {
                                 let reSetDate = new Date(new Date(statusReSetRecord.dateUser).toISOString().slice(0, 10));
-                                return (fromDate <= reSetDate && reSetDate <=toDate);
+                                return (fromDate <= reSetDate && reSetDate <= toDate);
                             });
-                            
-                            if(labelStatusFilteredReSetData.length > 0 || labelStatusFilteredSetData.length > 0){
+
+                            if (labelStatusFilteredReSetData.length > 0 || labelStatusFilteredSetData.length > 0) {
                                 isItemfallsinRange = true;
                             }
 
-                            
+
                         }
                     );
 
-                    if(isItemfallsinRange){
+                    if (isItemfallsinRange) {
                         labelHistoryFilteredData.push(labelHistoryData_);
                     }
-                   
+
                 }
             );
-            
+
             this.labelHistoryDataFilteredByDate = labelHistoryFilteredData;
             this.renderResult(this.labelHistoryDataFilteredByDate);
 
@@ -330,7 +353,7 @@ namespace CapaStatusDashboard {
             ml.UI.getPageTitle("CAPA Status Overview").prependTo(that._root);
 
             let baseControl = $("<div id='itemSelectionLabelDashboard'/>");
-        
+
             $(".toolbarButtons").append(baseControl);
 
             let select = $(`<div class="dropdown navbar-right" style="">
@@ -342,40 +365,37 @@ namespace CapaStatusDashboard {
                     </ul>
                     </div>`);
 
-                    
+
             baseControl.append(select);
 
-            let categories =  IC.getCategories();
-            let index = 0 ;
-    
+            let categories = IC.getCategories();
+            let index = 0;
+
             categories.forEach(cat => {
-                
-                if( ml.LabelTools.getLabelDefinitions([cat]).length > 0)
-                {
-                    let item = $(`<li class="cat" data-cat="${cat}"><a href="javascript:void(0)">${cat}</a></li>`).click(function(){
+
+                if (ml.LabelTools.getLabelDefinitions([cat]).length > 0) {
+                    let item = $(`<li class="cat" data-cat="${cat}"><a href="javascript:void(0)">${cat}</a></li>`).click(function () {
                         that.renderCategoryWiseData(cat);
                     });
-                    $(".dropdown-menu",select).append(item);
-                    if( index == 0)
-                    {
-                      $("#selectedCat").text(cat);
+                    $(".dropdown-menu", select).append(item);
+                    if (index == 0) {
+                        $("#selectedCat").text(cat);
                     }
-                    index ++;
-    
-                }           
-             });
+                    index++;
+
+                }
+            });
 
             //Table filter
             $("#CapaStatusDashboarInputFilter").on("keyup", function (e) {
                 let inputValue = $(e.target).val().toString();
                 let value = inputValue.toLowerCase();
                 $("#itemCapaStatusDashboardList tbody tr").show();
-            
+
                 $("#itemCapaStatusDashboardList tbody tr").each(function (index, elem) {
-                if(($(elem).text().toLowerCase().indexOf(value) == -1))
-                {
+                    if (($(elem).text().toLowerCase().indexOf(value) == -1)) {
                         $(elem).hide();
-                }
+                    }
                 });
             });
 
@@ -388,11 +408,11 @@ namespace CapaStatusDashboard {
             if (cat == undefined) {
                 return;
             }
-            if( cat =="")
+            if (cat == "")
                 cat = $("#itemSelectionLabelDashboard .dropdown-menu li:first").text();
 
-            this.currentCat = cat;   
-            
+            this.currentCat = cat;
+
             $("#selectedCat", this._root).text(cat);
 
             this.highlighWeekRangeOption();
@@ -400,7 +420,7 @@ namespace CapaStatusDashboard {
 
             // const LabelStateDaysCountDetails: LabelStateDaysCountData[] = []; 
             // for (const ByCategoryData of this.ByCategoryLabelStatesDaysCountDetails ) {
-                
+
             //     if(this.currentCat == ByCategoryData.category){
             //         LabelStateDaysCountDetails = ByCategoryData.LabelStateDaysCountDetails;
             //         break;
@@ -408,45 +428,42 @@ namespace CapaStatusDashboard {
             // }
 
             let LabelStateDaysCountDetails = this.ByCategoryLabelStatesDaysCountDetails
-                                               .find(({ category }) => category === this.currentCat);
-            
+                .find(({ category }) => category === this.currentCat);
+
 
             let labelStateDaysDetailsData = JSON.parse(JSON.stringify(LabelStateDaysCountDetails.LabelStateDaysCountDetails));
-            let labelStateTotalCountData = JSON.parse(JSON.stringify(LabelStateDaysCountDetails.itemStateCountChartData));                                  
+            let labelStateTotalCountData = JSON.parse(JSON.stringify(LabelStateDaysCountDetails.itemStateCountChartData));
             this.renderTable(labelStateDaysDetailsData);
             this.renderStatusCountChart(labelStateTotalCountData);
 
-            this.prepareStatusTimeSeriesChart(labelStateDaysDetailsData,LabelStateDaysCountDetails.leastStatusSetDate);
+            this.prepareStatusTimeSeriesChart(labelStateDaysDetailsData, LabelStateDaysCountDetails.leastStatusSetDate);
 
-            this.renderStatusTimeSeriesChart(this.currentWeekColumnsData,this.currentWeekCategoryData);
+            this.renderStatusTimeSeriesChart(this.currentWeekColumnsData, this.currentWeekCategoryData);
         }
 
         private currentFilter = "";
-        filterByLabel(filter:any)
-        {
+        filterByLabel(filter: any) {
             this.currentFilter = filter.type;
             let stateClass = "";
-            if( filter.type == "")
-            {
+            if (filter.type == "") {
                 //Show all
                 $("#itemCapaStatusDashboardList tbody tr").show();
-                
+
             }
-            else
-            {  
+            else {
                 stateClass = filter.type;
                 $("#itemCapaStatusDashboardList tbody tr").hide();
-                $("#itemCapaStatusDashboardList tbody tr."+stateClass).show();
+                $("#itemCapaStatusDashboardList tbody tr." + stateClass).show();
             }
-        
+
 
         }
 
-        private renderTable(LabelStateDaysCountDetails: LabelStateDaysCountData[]){
+        private renderTable(LabelStateDaysCountDetails: LabelStateDaysCountData[]) {
 
             var table = $("#itemCapaStatusDashboardList");
             $(".addedItem", table).remove();
-                
+
             LabelStateDaysCountDetails.forEach(
                 (labelData) => {
                     let clonedTemplate = $("#itemCapaStatusDashboardList .template", this._root).clone();
@@ -458,7 +475,7 @@ namespace CapaStatusDashboard {
                     // clonedTemplate.attr("class", "addedItem");
                     // clonedTemplate.attr("class", labelData.currentState);
                     $(".title", clonedTemplate).text(labelData.id + "!");
-                    $(".title", clonedTemplate).data("ref", labelData.id+"!");
+                    $(".title", clonedTemplate).data("ref", labelData.id + "!");
 
                     $(".currentstate", clonedTemplate).text(labelData.currentState);
 
@@ -489,29 +506,29 @@ namespace CapaStatusDashboard {
             $("table#itemCapaStatusDashboardList").highlightReferences();
             $("table#itemCapaStatusDashboardList").tablesorter();
 
-            this.filterByLabel({type:""});
-               
+            this.filterByLabel({ type: "" });
+
         }
 
 
-        private renderStatusCountChart(itemsStateCountChartData: any[]){
+        private renderStatusCountChart(itemsStateCountChartData: any[]) {
             let that = this;
             $("#CapaStatusCountChart div").remove();
 
             $("#CapaStatusCountChart").append("<div id='statecountgraph'>");
 
-            let params:c3.ChartConfiguration = {
+            let params: c3.ChartConfiguration = {
                 bindto: '#statecountgraph',
                 size: {
                     width: 350,
                 },
                 data: {
                     columns: itemsStateCountChartData,
-                    type :  "donut",
-                    onclick: function (d , i) { 
-                        setTimeout(()=>{
-                          that.filterByLabel({ type: d.id});
-                        },100);
+                    type: "donut",
+                    onclick: function (d, i) {
+                        setTimeout(() => {
+                            that.filterByLabel({ type: d.id });
+                        }, 100);
                     }
                 },
                 donut: {
@@ -522,37 +539,37 @@ namespace CapaStatusDashboard {
                     },
                 },
                 legend: {
-                
-                    position:'inset',
+
+                    position: 'inset',
                     inset: {
-                        
-                        anchor: "top-right" 
+
+                        anchor: "top-right"
                     },
-                
+
                 },
                 tooltip: {
                     format: {
-                        value: function (value:any, ratio:any, id:any, index:any) { return value; }
+                        value: function (value: any, ratio: any, id: any, index: any) { return value; }
                     }
-                }  
+                }
             };
 
             let renderedChart = c3.generate(params);
             that.charts.push(renderedChart);
 
-            $("#CapaStatusCountChart svg").click(function(){   
-                that.filterByLabel({type:""})
+            $("#CapaStatusCountChart svg").click(function () {
+                that.filterByLabel({ type: "" })
             });
             return;
         }
 
 
-        private prepareCurrentMonthCategories(month, year, _start){
+        private prepareCurrentMonthCategories(month, year, _start) {
             let weeks = [],
-            categories = [],
-            firstDate = new Date(year, month, 1),
-            lastDate = new Date(year, month + 1, 0),
-            numDays = lastDate.getDate();
+                categories = [],
+                firstDate = new Date(year, month, 1),
+                lastDate = new Date(year, month + 1, 0),
+                numDays = lastDate.getDate();
             let c = Date()
             let start = 1;
             let weekIndex = 1;
@@ -564,14 +581,14 @@ namespace CapaStatusDashboard {
                     end = 7 - firstDate.getDay() + 1;
                 }
             }
-            
+
             while (start <= numDays) {
 
-                let _s = new Date(year, month, start+1).toJSON().slice(0,10);
-                let _e = new Date(year, month, end+1).toJSON().slice(0,10);
-                
-                weeks.push({start: _s, end: _e});
-                categories.push("Week"+ weekIndex + "(" + _s + " to " + _e + ")");
+                let _s = new Date(year, month, start + 1).toJSON().slice(0, 10);
+                let _e = new Date(year, month, end + 1).toJSON().slice(0, 10);
+
+                weeks.push({ start: _s, end: _e });
+                categories.push("Week" + weekIndex + "(" + _s + " to " + _e + ")");
                 weekIndex += 1;
                 start = end + 1;
                 end = end + 7;
@@ -580,69 +597,69 @@ namespace CapaStatusDashboard {
                     end = numDays;
                 }
             }
-        
+
             let currentMonthCategoryData = {
-                categories : categories,
-                weeks : weeks
+                categories: categories,
+                weeks: weeks
             };
-            
+
             return currentMonthCategoryData;
         }
 
-        private prepareCurrentWeekCategories(){
-            let currentDate = new Date(); 
+        private prepareCurrentWeekCategories() {
+            let currentDate = new Date();
             let currentWeek = [];
-            let dateOfWeekDay,formattedDate;
+            let dateOfWeekDay, formattedDate;
 
-            if(currentDate.getDay() == 0){
+            if (currentDate.getDay() == 0) {
                 dateOfWeekDay = currentDate.getDate() - 7;
-              }else{
+            } else {
                 dateOfWeekDay = currentDate.getDate() - currentDate.getDay();
-              }
-        
+            }
+
             let startDate = new Date(currentDate.setDate(dateOfWeekDay));
 
             for (let i = 1; i <= 7; i++) {
                 let formattedDate = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().slice(0, 10);
                 currentWeek.push(formattedDate);
             }
-            
-           return currentWeek;
+
+            return currentWeek;
         }
 
-        private getMonthNames(){
+        private getMonthNames() {
             const monthNames = ["Jan", "Feb", "March", "April", "May", "June",
-                                "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+                "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
-            return monthNames;              
+            return monthNames;
         }
 
-        private prepareThreeMonthCategories(month, year){
+        private prepareThreeMonthCategories(month, year) {
 
             let monthNames = this.getMonthNames();
 
-            let threeMonthsCategoryData = [monthNames[month -2] + " " + year, 
-                                           monthNames[month - 1] + " " + year, 
-                                           monthNames[month] + " " + year];
-            
+            let threeMonthsCategoryData = [monthNames[month - 2] + " " + year,
+            monthNames[month - 1] + " " + year,
+            monthNames[month] + " " + year];
+
             return threeMonthsCategoryData;
         }
 
-        private prepareSixMonthCategories(month, year){
+        private prepareSixMonthCategories(month, year) {
 
             let monthNames = this.getMonthNames();
 
-            let sixMonthsCategoryData = [monthNames[month - 5] + " " + year, 
-                                         monthNames[month - 4] + " " + year, 
-                                         monthNames[month - 3] + " " + year,
-                                         monthNames[month - 2] + " " + year, 
-                                         monthNames[month - 1] + " " + year, 
-                                         monthNames[month] + " " + year];
-            
+            let sixMonthsCategoryData = [monthNames[month - 5] + " " + year,
+            monthNames[month - 4] + " " + year,
+            monthNames[month - 3] + " " + year,
+            monthNames[month - 2] + " " + year,
+            monthNames[month - 1] + " " + year,
+            monthNames[month] + " " + year];
+
             return sixMonthsCategoryData;
         }
 
-        private prepareYtdCategories(month, year){
+        private prepareYtdCategories(month, year) {
 
             let monthNames = this.getMonthNames();
             let ytdCategoryData = [];
@@ -650,17 +667,17 @@ namespace CapaStatusDashboard {
             for (let i = 0; i <= month; i++) {
                 ytdCategoryData.push(monthNames[i] + " " + year);
             }
-            
+
             return ytdCategoryData;
         }
 
-        private prepareMoreThanYearCategories(year,leastStatusSetDate){
+        private prepareMoreThanYearCategories(year, leastStatusSetDate) {
             let leastStatusSetYear = new Date(leastStatusSetDate).getFullYear();
             let moreThanYearCategoryData = [];
 
-            while(leastStatusSetYear !== year){
+            while (leastStatusSetYear !== year) {
                 moreThanYearCategoryData.push(leastStatusSetYear);
-                leastStatusSetYear +=1;
+                leastStatusSetYear += 1;
             }
 
             moreThanYearCategoryData.push(year);
@@ -669,11 +686,11 @@ namespace CapaStatusDashboard {
 
         }
 
-        private prepareInitialColumns(categoiesLength){
+        private prepareInitialColumns(categoiesLength) {
 
             let emptyInitials = Array(categoiesLength).fill(0);
 
-            let initialColumns =  [
+            let initialColumns = [
                 ['OPEN', ...emptyInitials],
                 ['WAIT', ...emptyInitials],
                 ['CHECKED', ...emptyInitials],
@@ -684,57 +701,57 @@ namespace CapaStatusDashboard {
 
         }
 
-        private prepareCurrentWeekColumnData(currentStatus,currentStausSetDate,categoriesData,columnsData){
-            
+        private prepareCurrentWeekColumnData(currentStatus, currentStausSetDate, categoriesData, columnsData) {
+
             let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
             let currentStatusSetDate = new Date(currentStausSetDate);
-            categoriesData.forEach((categoryData,index)=>{
-                if((currentStatusSetDate <= new Date(categoryData)) && (new Date(categoryData) <= new Date())){
-                    columnsData[statusColumnIndex][index+1] += 1;
-                } 
+            categoriesData.forEach((categoryData, index) => {
+                if ((currentStatusSetDate <= new Date(categoryData)) && (new Date(categoryData) <= new Date())) {
+                    columnsData[statusColumnIndex][index + 1] += 1;
+                }
             });
         }
 
-        private prepareCurrentMonthColumnData(currentStatus,currentStausSetDate,categoriesData,columnsData){
-            
+        private prepareCurrentMonthColumnData(currentStatus, currentStausSetDate, categoriesData, columnsData) {
+
             let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
             let currentStatusSetDate = new Date(currentStausSetDate);
-            categoriesData.weeks.forEach((categoryData,index)=>{
-                if((currentStatusSetDate <= new Date(categoryData.start) || currentStatusSetDate <= new Date(categoryData.end))
-                  && (new Date(categoryData.start) <= new Date())){
-                    columnsData[statusColumnIndex][index+1] += 1;
-                } 
+            categoriesData.weeks.forEach((categoryData, index) => {
+                if ((currentStatusSetDate <= new Date(categoryData.start) || currentStatusSetDate <= new Date(categoryData.end))
+                    && (new Date(categoryData.start) <= new Date())) {
+                    columnsData[statusColumnIndex][index + 1] += 1;
+                }
             });
         }
 
-        private prepareMonthWiseColumnData(currentStatus,currentStausSetDate,categoriesData,columnsData){
+        private prepareMonthWiseColumnData(currentStatus, currentStausSetDate, categoriesData, columnsData) {
             let monthNames = this.getMonthNames();
             let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
             let currentStatusSetDate = new Date(currentStausSetDate);
             let formattedCurrentStatusSetDate = new Date(monthNames[currentStatusSetDate.getMonth()] + " " + currentStatusSetDate.getFullYear());
-            categoriesData.forEach((categoryData,index)=>{
-                if(formattedCurrentStatusSetDate <= new Date(categoryData)){
-                    columnsData[statusColumnIndex][index+1] += 1;
-                } 
+            categoriesData.forEach((categoryData, index) => {
+                if (formattedCurrentStatusSetDate <= new Date(categoryData)) {
+                    columnsData[statusColumnIndex][index + 1] += 1;
+                }
             });
         }
 
-        private prepareMoreThanYearColumnData(currentStatus,currentStausSetDate,categoriesData,columnsData){
-            
+        private prepareMoreThanYearColumnData(currentStatus, currentStausSetDate, categoriesData, columnsData) {
+
             let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
             let currentStatusSetDate = new Date(currentStausSetDate);
             let formattedCurrentStatusSetDate = new Date(currentStatusSetDate.getFullYear());
-            categoriesData.forEach((categoryData,index)=>{
-                if(formattedCurrentStatusSetDate <= new Date(categoryData)){
-                    columnsData[statusColumnIndex][index+1] += 1;
-                } 
+            categoriesData.forEach((categoryData, index) => {
+                if (formattedCurrentStatusSetDate <= new Date(categoryData)) {
+                    columnsData[statusColumnIndex][index + 1] += 1;
+                }
             });
         }
 
-        private renderStatusTimeSeriesChart(chartColumnsData,chartCategoryData){
+        private renderStatusTimeSeriesChart(chartColumnsData, chartCategoryData) {
 
-             //prepare template
-             let timeSeriesChartparams:c3.ChartConfiguration = {
+            //prepare template
+            let timeSeriesChartparams: c3.ChartConfiguration = {
                 bindto: '#stateTimeSeriesGraph',
                 size: {
                     width: 500,
@@ -743,14 +760,14 @@ namespace CapaStatusDashboard {
                     columns: chartColumnsData,
                     type: 'bar',
                     groups: [
-                        ['OPEN', 'WAIT','CHECKED', 'CLOSED']
+                        ['OPEN', 'WAIT', 'CHECKED', 'CLOSED']
                     ]
                 },
                 axis: {
                     x: {
                         type: 'category',
                         categories: chartCategoryData
-                       
+
                     },
                     y: {
                         show: false
@@ -768,7 +785,7 @@ namespace CapaStatusDashboard {
 
         }
 
-        private prepareStatusTimeSeriesChart(LabelStateDaysCountDetails: LabelStateDaysCountData[], leastStatusSetDate: string){
+        private prepareStatusTimeSeriesChart(LabelStateDaysCountDetails: LabelStateDaysCountData[], leastStatusSetDate: string) {
 
             let currentDate = new Date();
             let currentMonth = currentDate.getMonth();
@@ -792,20 +809,20 @@ namespace CapaStatusDashboard {
             this.currentWeekCategoryData = this.prepareCurrentWeekCategories();
 
             //prepare current month categories
-            this.currentMonthCategoryData = this.prepareCurrentMonthCategories(currentMonth,currentYear,'monday');
+            this.currentMonthCategoryData = this.prepareCurrentMonthCategories(currentMonth, currentYear, 'monday');
 
             //prepare 3 month categories
             this.threeMonthsCategoryData = this.prepareThreeMonthCategories(currentMonth, currentYear);
-            
+
             //prepare 6 month categories
             this.sixMonthsCategoryData = this.prepareSixMonthCategories(currentMonth, currentYear);
-            
+
             //prepare YTD categories
             this.ytdCategoryData = this.prepareYtdCategories(currentMonth, currentYear);
-            
+
             //prepare >year categories
             this.moreThanYearCategoryData = this.prepareMoreThanYearCategories(currentYear, leastStatusSetDate);
-            
+
             //prepare intial current week columns
             this.currentWeekColumnsData = this.prepareInitialColumns(this.currentWeekCategoryData.length);
             //prepare intial current month columns
@@ -821,42 +838,42 @@ namespace CapaStatusDashboard {
 
             LabelStateDaysCountDetails.forEach(
                 (labelHistoryRecord) => {
-                   //prepare current week columns
-                   this.prepareCurrentWeekColumnData(labelHistoryRecord.currentState,
-                                                     labelHistoryRecord.currentStateSetDate,
-                                                     this.currentWeekCategoryData,
-                                                     this.currentWeekColumnsData);
-                   
-                   //prepare current month columns    
-                   this.prepareCurrentMonthColumnData(labelHistoryRecord.currentState,
-                    labelHistoryRecord.currentStateSetDate,
-                    this.currentMonthCategoryData,
-                    this.currentMonthColumnsData);
+                    //prepare current week columns
+                    this.prepareCurrentWeekColumnData(labelHistoryRecord.currentState,
+                        labelHistoryRecord.currentStateSetDate,
+                        this.currentWeekCategoryData,
+                        this.currentWeekColumnsData);
 
-                   //prepare three month columns    
-                   this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
-                    labelHistoryRecord.currentStateSetDate,
-                    this.threeMonthsCategoryData,
-                    this.threeMonthsColumnsData);
-                    
-                   //prepare six month columns    
-                   this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
-                    labelHistoryRecord.currentStateSetDate,
-                    this.sixMonthsCategoryData,
-                    this.sixMonthsColumnsData);
-                    
-                   //prepare ytd columns    
-                   this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
-                    labelHistoryRecord.currentStateSetDate,
-                    this.ytdCategoryData,
-                    this.ytdColumnsData);
+                    //prepare current month columns    
+                    this.prepareCurrentMonthColumnData(labelHistoryRecord.currentState,
+                        labelHistoryRecord.currentStateSetDate,
+                        this.currentMonthCategoryData,
+                        this.currentMonthColumnsData);
 
-                   //prepare intial >year columns 
-                   this.prepareMoreThanYearColumnData(labelHistoryRecord.currentState,
-                    labelHistoryRecord.currentStateSetDate,
-                    this.moreThanYearCategoryData,
-                    this.moreThanYearColumnsData);
-            });
+                    //prepare three month columns    
+                    this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
+                        labelHistoryRecord.currentStateSetDate,
+                        this.threeMonthsCategoryData,
+                        this.threeMonthsColumnsData);
+
+                    //prepare six month columns    
+                    this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
+                        labelHistoryRecord.currentStateSetDate,
+                        this.sixMonthsCategoryData,
+                        this.sixMonthsColumnsData);
+
+                    //prepare ytd columns    
+                    this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
+                        labelHistoryRecord.currentStateSetDate,
+                        this.ytdCategoryData,
+                        this.ytdColumnsData);
+
+                    //prepare intial >year columns 
+                    this.prepareMoreThanYearColumnData(labelHistoryRecord.currentState,
+                        labelHistoryRecord.currentStateSetDate,
+                        this.moreThanYearCategoryData,
+                        this.moreThanYearColumnsData);
+                });
 
         }
 
@@ -864,29 +881,29 @@ namespace CapaStatusDashboard {
             let that = this;
             let saveSize = [];
             ml.UI.copyBuffer($("#CapaStatusChartTitle"), "copy  to clipboard", $(".panel-body-v-scroll"), this._root, (copied: JQuery) => {
-             
-             ml.UI.fixC3ForCopy(copied);
-             $(".title", copied).each( (i,item)=>{$(item).text($(item).data("ref"))});
-             $(".hidden",copied).remove();
-             $("#dateRangeFilter",copied).remove();
-             $("#timeSeriesChartRangeFilter",copied).remove();
-             $("#CapaStatusDashboarInputFilter",copied).remove();
-             $("#CapaStatusChartTitle", copied).html("<h1>" + title + " for " + that.currentCat +"</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) +  "<br/>");
-    
-            }, "",()=>{
-                $("#CapaStatusDashboardPanel svg").each((i,item,)=>{ saveSize.push($(item).width())});
-                that.charts.forEach((chart)=>{ chart.resize({width:590})});
-            },()=>{
-                let i = 0; 
-                that.charts.forEach((chart)=>{ chart.resize({width:saveSize[i]}); i++; });
+
+                ml.UI.fixC3ForCopy(copied);
+                $(".title", copied).each((i, item) => { $(item).text($(item).data("ref")) });
+                $(".hidden", copied).remove();
+                $("#dateRangeFilter", copied).remove();
+                $("#timeSeriesChartRangeFilter", copied).remove();
+                $("#CapaStatusDashboarInputFilter", copied).remove();
+                $("#CapaStatusChartTitle", copied).html("<h1>" + title + " for " + that.currentCat + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) + "<br/>");
+
+            }, "", () => {
+                $("#CapaStatusDashboardPanel svg").each((i, item,) => { saveSize.push($(item).width()) });
+                that.charts.forEach((chart) => { chart.resize({ width: 590 }) });
+            }, () => {
+                let i = 0;
+                that.charts.forEach((chart) => { chart.resize({ width: saveSize[i] }); i++; });
             });
         }
 
-    
+
         private renderResult(result: XRLabelEntry[]) {
 
 
-            this.ByCategoryLabelStatesDaysCountDetails= extractLabelStatusDays(result);
+            this.ByCategoryLabelStatesDaysCountDetails = extractLabelStatusDays(result);
 
             this.renderCategoryWiseData("");
 
@@ -1019,12 +1036,12 @@ namespace CapaStatusDashboard {
     * @return state data
     * @private
     */
-     function getStateData(labels: XRLabelChange[], state: string): XRLabelChange {
+    function getStateData(labels: XRLabelChange[], state: string): XRLabelChange {
 
         let stateData: XRLabelChange = labels.find(({ label }) => label === state);
 
         return stateData;
-     }
+    }
 
     /**
     * Check given state is items current state 
@@ -1034,12 +1051,12 @@ namespace CapaStatusDashboard {
     */
     function isItemCurrentState(stateData: XRLabelChange): boolean {
         //if length of set and reset arrays are same its not current state else its current state  
-        if(stateData && stateData.set && stateData.reset){
-           return stateData.set.length != stateData.reset.length;
-        }else{
+        if (stateData && stateData.set && stateData.reset) {
+            return stateData.set.length != stateData.reset.length;
+        } else {
             return false;
         }
-     }
+    }
 
     /**
     * Get the current state set date from item data
@@ -1048,11 +1065,11 @@ namespace CapaStatusDashboard {
     * @private
     */
     function getCurrentStateSetDate(labelData: XRLabelChange): string {
-       //sorting label set array in descending order based on version 
-       labelData.set.sort((a, b) => b.version - a.version);
-       let currentStateSetDate = new Date(labelData.set[0].dateUser).toISOString().slice(0, 10);
-       return currentStateSetDate;
-     }
+        //sorting label set array in descending order based on version 
+        labelData.set.sort((a, b) => b.version - a.version);
+        let currentStateSetDate = new Date(labelData.set[0].dateUser).toISOString().slice(0, 10);
+        return currentStateSetDate;
+    }
 
     /**
     * Get the current state of an item
@@ -1061,55 +1078,55 @@ namespace CapaStatusDashboard {
     * @private
     */
     function getItemCurrentState(labels: XRLabelChange[]): CurrentStateData {
-        
-        let stateData : XRLabelChange;
-        let currentState : string;
-        let currentStateData : CurrentStateData = {
+
+        let stateData: XRLabelChange;
+        let currentState: string;
+        let currentStateData: CurrentStateData = {
             currentState: "",
             currentStateSetDate: ""
         };
 
         //get closed state data
-        currentState =  "CLOSED"
+        currentState = "CLOSED"
         stateData = getStateData(labels, currentState);
 
-        if(isItemCurrentState(stateData)){
-            
+        if (isItemCurrentState(stateData)) {
+
             currentStateData.currentState = currentState;
             currentStateData.currentStateSetDate = getCurrentStateSetDate(stateData);
             return currentStateData;
         }
 
         //get checked state data
-        currentState =  "CHECKED"
+        currentState = "CHECKED"
         stateData = getStateData(labels, currentState);
 
-        if(isItemCurrentState(stateData)){
+        if (isItemCurrentState(stateData)) {
             currentStateData.currentState = currentState;
             currentStateData.currentStateSetDate = getCurrentStateSetDate(stateData);
             return currentStateData;
         }
 
         //get wait state data
-        currentState =  "WAIT"
+        currentState = "WAIT"
         stateData = getStateData(labels, currentState);
 
-        if(isItemCurrentState(stateData)){
+        if (isItemCurrentState(stateData)) {
             currentStateData.currentState = currentState;
             currentStateData.currentStateSetDate = getCurrentStateSetDate(stateData);
             return currentStateData;
         }
 
         //get open state data
-        currentState =  "OPEN"
+        currentState = "OPEN"
         stateData = getStateData(labels, currentState);
 
-        if(isItemCurrentState(stateData)){
+        if (isItemCurrentState(stateData)) {
             currentStateData.currentState = currentState;
             currentStateData.currentStateSetDate = getCurrentStateSetDate(stateData);
             return currentStateData;
         }
-     }
+    }
 
 
     /**
@@ -1122,25 +1139,25 @@ namespace CapaStatusDashboard {
 
         let ByCategoryLabelStatesDaysCountDetails: ByCategoryLabelStatesDaysCountData[] = [];
 
-        let categories =  IC.getCategories();
-        let index = 0 ;
+        let categories = IC.getCategories();
+        let index = 0;
 
         categories.forEach(cat => {
             let ByCategoryLabelStatesDaysCountData: ByCategoryLabelStatesDaysCountData = {
                 category: cat,
                 LabelStateDaysCountDetails: [],
-                itemStateCountChartData: [['OPEN',0],['WAIT',0],['CHECKED',0],['CLOSED',0]],
+                itemStateCountChartData: [['OPEN', 0], ['WAIT', 0], ['CHECKED', 0], ['CLOSED', 0]],
                 leastStatusSetDate: new Date().toISOString().slice(0, 10)
             };
-            
+
             ByCategoryLabelStatesDaysCountDetails.push(ByCategoryLabelStatesDaysCountData)
-         });
+        });
 
 
         //let LabelStateDaysCountDetails: LabelStateDaysCountData[] = [];
         for (const item of labels) {
 
-            let itemCurrentSateData : CurrentStateData = getItemCurrentState(item.labels);
+            let itemCurrentSateData: CurrentStateData = getItemCurrentState(item.labels);
             let itemClosedStateDaysCount;
             let itemCheckedStateDaysCount;
             let itemCheckedAndClosedStateDaysCount;
@@ -1197,39 +1214,39 @@ namespace CapaStatusDashboard {
                     days: labelstateDaysCount
                 }
 
-                if(label.label === "CHECKED"){
+                if (label.label === "CHECKED") {
                     itemCheckedStateDaysCount = labelstateDaysCount;
                     itemCheckedSateLabelIndex = itemSateLabelIndex;
-                }else if(label.label === "CLOSED"){
+                } else if (label.label === "CLOSED") {
                     itemClosedStateDaysCount = labelstateDaysCount;
                 }
-                
+
                 LabelStateDaysCountData.labels.push(LabelStateDays);
                 itemSateLabelIndex++;
             }
 
             //check if current state is checked but not closed
-            if(itemCheckedStateDaysCount && itemClosedStateDaysCount){
+            if (itemCheckedStateDaysCount && itemClosedStateDaysCount) {
                 itemCheckedAndClosedStateDaysCount = itemCheckedStateDaysCount - itemClosedStateDaysCount;
 
-                if(itemCheckedAndClosedStateDaysCount < 0 || itemCheckedAndClosedStateDaysCount == 0){
+                if (itemCheckedAndClosedStateDaysCount < 0 || itemCheckedAndClosedStateDaysCount == 0) {
                     LabelStateDaysCountData.labels[itemCheckedSateLabelIndex].days = 0;
-                }else{
+                } else {
                     LabelStateDaysCountData.labels[itemCheckedSateLabelIndex].days = itemCheckedAndClosedStateDaysCount;
                 }
             }
-            
-            for (const ByCategoryData of ByCategoryLabelStatesDaysCountDetails ) {
-                  
-                let itemCategory = item.itemRef.substring(0,item.itemRef.indexOf('-'));
-                
-                if(itemCategory == ByCategoryData.category){
-                    if(new Date(itemCurrentSateData.currentStateSetDate) < new Date(ByCategoryData.leastStatusSetDate)){
+
+            for (const ByCategoryData of ByCategoryLabelStatesDaysCountDetails) {
+
+                let itemCategory = item.itemRef.substring(0, item.itemRef.indexOf('-'));
+
+                if (itemCategory == ByCategoryData.category) {
+                    if (new Date(itemCurrentSateData.currentStateSetDate) < new Date(ByCategoryData.leastStatusSetDate)) {
                         ByCategoryData.leastStatusSetDate = itemCurrentSateData.currentStateSetDate;
                     }
                     ByCategoryData.LabelStateDaysCountDetails.push(LabelStateDaysCountData);
                     for (const chartItem of ByCategoryData.itemStateCountChartData) {
-                        if(chartItem[0] == itemCurrentSateData.currentState){
+                        if (chartItem[0] == itemCurrentSateData.currentState) {
                             chartItem[1] += 1;
                             break;
                         }
