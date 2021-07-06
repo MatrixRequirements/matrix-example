@@ -113,22 +113,18 @@ namespace CapaStatusDashboard {
              let fromDate = $("#fromdate", that._root);
              let toDate = $("#todate", that._root);
              let goButton = $("#gobutton", that._root);
-            
-            // let dateControl = $('<div class="baseControl">');
 
-            // let bc = $("#datesection").appendTo(dateControl);
-            // let p = $("<p>").appendTo(bc);
-            // $('<span class="">From </span>').appendTo(p);
-            // let fromDate = $("<input type='text' class='form-control redlineDates'>").appendTo(p);
-            // $('<span class=""> to </span>').appendTo(p);
-            // let toDate = $("<input type='text' class='form-control redlineDates'>").appendTo(p);
-            // let goButton = $('<button style="margin-left: 12px" type="button" class="btn btn-success">Compare</button>').appendTo(p);
-
-            fromDate.datetimepicker({format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()});
+             //MM/dd/YYYY 
+             //ml.UI.DateTime.getSimpleDateTimeFormatMoment()
+            fromDate.datetimepicker({
+                format:'MM/dd/YYYY',
+                maxDate: new Date()
+            });
             toDate.datetimepicker({
                 defaultDate: new Date(),
+                maxDate: new Date(),
                 useCurrent: false, //Important! 
-                format:ml.UI.DateTime.getSimpleDateTimeFormatMoment()
+                format:'MM/dd/YYYY'
             });
             ml.UI.setEnabled( goButton, fromDate.data("DateTimePicker").date() &&  toDate.data("DateTimePicker").date() );
 
