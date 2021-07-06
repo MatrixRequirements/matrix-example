@@ -137,48 +137,48 @@ namespace CapaStatusDashboard {
                 ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
             });
 
-            goButton.click(function () {
+            // goButton.click(function () {
 
-                // let fromDateSelected_ = $('#fromdate').val();
-                // let toDateSelected_ = $('#todate').val();
+            //     // let fromDateSelected_ = $('#fromdate').val();
+            //     // let toDateSelected_ = $('#todate').val();
 
-                // console.log("fromDateSelected_:" + fromDateSelected_);
-                // console.log("fromDateSelected_:" + fromDateSelected_);
+            //     // console.log("fromDateSelected_:" + fromDateSelected_);
+            //     // console.log("fromDateSelected_:" + fromDateSelected_);
 
-                // let fromDate_1 = new Date(fromDateSelected_);
-                // let toDate_1 = new Date(toDateSelected_);
+            //     // let fromDate_1 = new Date(fromDateSelected_);
+            //     // let toDate_1 = new Date(toDateSelected_);
 
-                // console.log("fromDate_1:" + fromDate_1);
-                // console.log("toDate_1:" + toDate_1);
+            //     // console.log("fromDate_1:" + fromDate_1);
+            //     // console.log("toDate_1:" + toDate_1);
 
-                let fromDateSelected_1 = fromDate.data("DateTimePicker").date();
-                let toDateSelected_1 = toDate.data("DateTimePicker").date();
+            //     let fromDateSelected_1 = fromDate.data("DateTimePicker").date();
+            //     let toDateSelected_1 = toDate.data("DateTimePicker").date();
 
-                console.log("fromDateSelected_1:" + fromDateSelected_1);
-                console.log("toDateSelected_1:" + toDateSelected_1);
+            //     console.log("fromDateSelected_1:" + fromDateSelected_1);
+            //     console.log("toDateSelected_1:" + toDateSelected_1);
 
-                let fromDate_2 = new Date(fromDateSelected_1);
-                let toDate_2 = new Date(toDateSelected_1);
+            //     let fromDate_2 = new Date(fromDateSelected_1);
+            //     let toDate_2 = new Date(toDateSelected_1);
 
-                console.log("fromDate_2:" + fromDate_2);
-                console.log("toDate_2:" + toDate_2);
-
-            });
-
-
-            // $('#gobutton').click(function(){
-
-            //     // console.log("fromdate:"+$('#fromdate').val());
-            //     // console.log("todate:"+$('#todate').val());
-
-            //     let fromDateSelected = $('#fromdate').val();
-            //     let toDateSelected = $('#todate').val();
-
-            //     that.highlighWeekRangeOption();
-
-            //     that.renderDataByDateRanges(fromDateSelected, toDateSelected);
+            //     console.log("fromDate_2:" + fromDate_2);
+            //     console.log("toDate_2:" + toDate_2);
 
             // });
+
+
+            $('#gobutton').click(function(){
+
+                // console.log("fromdate:"+$('#fromdate').val());
+                // console.log("todate:"+$('#todate').val());
+
+                let fromDateSelected = fromDate.data("DateTimePicker").date();
+                let toDateSelected = toDate.data("DateTimePicker").date();
+
+                that.highlighWeekRangeOption();
+
+                that.renderDataByDateRanges(fromDateSelected, toDateSelected);
+
+            });
 
 
             $('#weekRange').click(function () {
