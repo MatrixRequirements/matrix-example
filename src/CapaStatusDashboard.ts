@@ -8,7 +8,7 @@ namespace CapaStatusDashboard {
         getProjectPages(): IProjectPageParam[] {
             let pages: IProjectPageParam[] = [];
             pages.push({
-                id: "CSD",
+                id: "CSO",
                 title: "CAPA Status Overview",
                 folder: "DASHBOARDS",
                 order: 3000,
@@ -137,39 +137,9 @@ namespace CapaStatusDashboard {
                 ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
             });
 
-            // goButton.click(function () {
-
-            //     // let fromDateSelected_ = $('#fromdate').val();
-            //     // let toDateSelected_ = $('#todate').val();
-
-            //     // console.log("fromDateSelected_:" + fromDateSelected_);
-            //     // console.log("fromDateSelected_:" + fromDateSelected_);
-
-            //     // let fromDate_1 = new Date(fromDateSelected_);
-            //     // let toDate_1 = new Date(toDateSelected_);
-
-            //     // console.log("fromDate_1:" + fromDate_1);
-            //     // console.log("toDate_1:" + toDate_1);
-
-            //     let fromDateSelected_1 = fromDate.data("DateTimePicker").date();
-            //     let toDateSelected_1 = toDate.data("DateTimePicker").date();
-
-            //     console.log("fromDateSelected_1:" + fromDateSelected_1);
-            //     console.log("toDateSelected_1:" + toDateSelected_1);
-
-            //     let fromDate_2 = new Date(fromDateSelected_1);
-            //     let toDate_2 = new Date(toDateSelected_1);
-
-            //     console.log("fromDate_2:" + fromDate_2);
-            //     console.log("toDate_2:" + toDate_2);
-
-            // });
 
 
             $('#gobutton').click(function(){
-
-                // console.log("fromdate:"+$('#fromdate').val());
-                // console.log("todate:"+$('#todate').val());
 
                 let fromDateSelected = fromDate.data("DateTimePicker").date();
                 let toDateSelected = toDate.data("DateTimePicker").date();
@@ -403,8 +373,6 @@ namespace CapaStatusDashboard {
 
         public renderCategoryWiseData(cat: string) {
 
-            // console.log("selected cat:"+cat);
-
             if (cat == undefined) {
                 return;
             }
@@ -416,16 +384,6 @@ namespace CapaStatusDashboard {
             $("#selectedCat", this._root).text(cat);
 
             this.highlighWeekRangeOption();
-
-
-            // const LabelStateDaysCountDetails: LabelStateDaysCountData[] = []; 
-            // for (const ByCategoryData of this.ByCategoryLabelStatesDaysCountDetails ) {
-
-            //     if(this.currentCat == ByCategoryData.category){
-            //         LabelStateDaysCountDetails = ByCategoryData.LabelStateDaysCountDetails;
-            //         break;
-            //     }
-            // }
 
             let LabelStateDaysCountDetails = this.ByCategoryLabelStatesDaysCountDetails
                 .find(({ category }) => category === this.currentCat);
@@ -472,8 +430,6 @@ namespace CapaStatusDashboard {
                     clonedTemplate.removeClass("template").removeClass("hidden");
                     let classAttr = "addedItem" + " " + stateClass;
                     clonedTemplate.attr("class", classAttr);
-                    // clonedTemplate.attr("class", "addedItem");
-                    // clonedTemplate.attr("class", labelData.currentState);
                     $(".title", clonedTemplate).text(labelData.id + "!");
                     $(".title", clonedTemplate).data("ref", labelData.id + "!");
 
@@ -511,6 +467,7 @@ namespace CapaStatusDashboard {
         }
 
 
+       
         private renderStatusCountChart(itemsStateCountChartData: any[]) {
             let that = this;
             $("#CapaStatusCountChart div").remove();
@@ -530,6 +487,9 @@ namespace CapaStatusDashboard {
                             that.filterByLabel({ type: d.id });
                         }, 100);
                     }
+                },
+                color: {
+                    pattern: ['#d62728','#ff7f0e','#1f77b4','#2ca02c']
                 },
                 donut: {
                     label: {
@@ -772,6 +732,9 @@ namespace CapaStatusDashboard {
                     y: {
                         show: false
                     }
+                },
+                color: {
+                    pattern: ['#d62728','#ff7f0e','#1f77b4','#2ca02c']
                 }
             };
 
@@ -909,17 +872,6 @@ namespace CapaStatusDashboard {
 
         }
 
-        // <div class="baseControl">
-        // <p>
-        // <span class="">From </span>
-        // <input id="fromdate" type='text' class='form-control redlineDates'>
-        // <span class=""> to </span>
-        // <input id="todate" type='text' class='form-control redlineDates'>
-        // <button id="gobutton" style="margin-left: 12px" type="button" class="btn btn-success">Go</button>
-        // </p>
-        // </div>
-
-        // <div id="datesection"></div>
 
         // HTML template
         ExampleHTMLDom = `<div class="panel-body-v-scroll fillHeight">
