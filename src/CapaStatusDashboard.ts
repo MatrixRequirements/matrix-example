@@ -139,7 +139,7 @@ namespace CapaStatusDashboard {
 
 
 
-            $('#gobutton').click(function(){
+            $('#gobutton').click(function () {
 
                 let fromDateSelected = fromDate.data("DateTimePicker").date();
                 let toDateSelected = toDate.data("DateTimePicker").date();
@@ -467,7 +467,7 @@ namespace CapaStatusDashboard {
         }
 
 
-       
+
         private renderStatusCountChart(itemsStateCountChartData: any[]) {
             let that = this;
             $("#CapaStatusCountChart div").remove();
@@ -489,7 +489,7 @@ namespace CapaStatusDashboard {
                     }
                 },
                 color: {
-                    pattern: ['#d62728','#ff7f0e','#1f77b4','#2ca02c']
+                    pattern: ['#d62728', '#ff7f0e', '#1f77b4', '#2ca02c']
                 },
                 donut: {
                     label: {
@@ -594,29 +594,20 @@ namespace CapaStatusDashboard {
             return monthNames;
         }
 
-        private prepareThreeMonthCategories(month, year) {
+        private prepareMonthWiseCategories(previousMonths) {
 
             let monthNames = this.getMonthNames();
 
-            let threeMonthsCategoryData = [monthNames[month - 2] + " " + year,
-            monthNames[month - 1] + " " + year,
-            monthNames[month] + " " + year];
+            let previousMonthsCategoryData = [];
 
-            return threeMonthsCategoryData;
-        }
+            for (let i = previousMonths - 1; i >= 0; i--) {
+                let currentDate = new Date();
+                let currentMonth = currentDate.getMonth();
+                currentDate.setMonth(currentMonth - i);
+                previousMonthsCategoryData.push(monthNames[currentDate.getMonth()] + " " + currentDate.getFullYear())
+            }
 
-        private prepareSixMonthCategories(month, year) {
-
-            let monthNames = this.getMonthNames();
-
-            let sixMonthsCategoryData = [monthNames[month - 5] + " " + year,
-            monthNames[month - 4] + " " + year,
-            monthNames[month - 3] + " " + year,
-            monthNames[month - 2] + " " + year,
-            monthNames[month - 1] + " " + year,
-            monthNames[month] + " " + year];
-
-            return sixMonthsCategoryData;
+            return previousMonthsCategoryData;
         }
 
         private prepareYtdCategories(month, year) {
@@ -734,7 +725,7 @@ namespace CapaStatusDashboard {
                     }
                 },
                 color: {
-                    pattern: ['#d62728','#ff7f0e','#1f77b4','#2ca02c']
+                    pattern: ['#d62728', '#ff7f0e', '#1f77b4', '#2ca02c']
                 }
             };
 
@@ -775,10 +766,10 @@ namespace CapaStatusDashboard {
             this.currentMonthCategoryData = this.prepareCurrentMonthCategories(currentMonth, currentYear, 'monday');
 
             //prepare 3 month categories
-            this.threeMonthsCategoryData = this.prepareThreeMonthCategories(currentMonth, currentYear);
+            this.threeMonthsCategoryData = this.prepareMonthWiseCategories(3);
 
             //prepare 6 month categories
-            this.sixMonthsCategoryData = this.prepareSixMonthCategories(currentMonth, currentYear);
+            this.sixMonthsCategoryData = this.prepareMonthWiseCategories(6);
 
             //prepare YTD categories
             this.ytdCategoryData = this.prepareYtdCategories(currentMonth, currentYear);
