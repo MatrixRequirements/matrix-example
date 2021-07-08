@@ -77,6 +77,7 @@ namespace CapaStatusDashboard {
         currentMonthCategoryData: any = {};
         threeMonthsCategoryData: any[] = [];
         sixMonthsCategoryData: any[] = [];
+        twelveMonthsCategoryData: any[] = [];
         ytdCategoryData: any[] = [];
         moreThanYearCategoryData: any[] = [];
 
@@ -84,6 +85,7 @@ namespace CapaStatusDashboard {
         currentMonthColumnsData: any[] = [];
         threeMonthsColumnsData: any[] = [];
         sixMonthsColumnsData: any[] = [];
+        twelveMonthsColumnsData: any[] = [];
         ytdColumnsData: any[] = [];
         moreThanYearColumnsData: any[] = [];
 
@@ -196,6 +198,7 @@ namespace CapaStatusDashboard {
 
             });
 
+            
             $('#sixMonthsRange').click(function () {
 
                 if (that.currentTimeRangeSelected !== "sixMonths") {
@@ -210,6 +213,23 @@ namespace CapaStatusDashboard {
                 }
 
             });
+
+
+            $('#twelveMonthsRange').click(function () {
+
+                if (that.currentTimeRangeSelected !== "twelveMonths") {
+                    $('#twelveMonthsRange').removeClass("timerangenormal");
+                    $('#twelveMonthsRange').addClass("timerangeselected");
+
+                    $('#' + that.currentTimeRangeSelected + 'Range').removeClass("timerangeselected");
+                    $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
+
+                    that.currentTimeRangeSelected = "twelveMonths";
+                    that.renderStatusTimeSeriesChart(that.twelveMonthsColumnsData, that.twelveMonthsCategoryData);
+                }
+
+            });
+
 
             $('#ytdRange').click(function () {
 
@@ -262,7 +282,6 @@ namespace CapaStatusDashboard {
                 $('#' + this.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
 
                 this.currentTimeRangeSelected = "week";
-                //this.renderStatusTimeSeriesChart(this.currentWeekColumnsData,this.currentWeekCategoryData); 
             }
         }
 
@@ -749,6 +768,7 @@ namespace CapaStatusDashboard {
             this.currentMonthCategoryData = {};
             this.threeMonthsCategoryData = [];
             this.sixMonthsCategoryData = [];
+            this.twelveMonthsCategoryData = [];
             this.ytdCategoryData = [];
             this.moreThanYearCategoryData = [];
 
@@ -756,6 +776,7 @@ namespace CapaStatusDashboard {
             this.currentMonthColumnsData = [];
             this.threeMonthsColumnsData = [];
             this.sixMonthsColumnsData = [];
+            this.twelveMonthsColumnsData = [];
             this.ytdColumnsData = [];
             this.moreThanYearColumnsData = [];
 
@@ -771,6 +792,9 @@ namespace CapaStatusDashboard {
             //prepare 6 month categories
             this.sixMonthsCategoryData = this.prepareMonthWiseCategories(6);
 
+            //prepare 12 month categories
+            this.twelveMonthsCategoryData = this.prepareMonthWiseCategories(12);
+
             //prepare YTD categories
             this.ytdCategoryData = this.prepareYtdCategories(currentMonth, currentYear);
 
@@ -785,6 +809,8 @@ namespace CapaStatusDashboard {
             this.threeMonthsColumnsData = this.prepareInitialColumns(this.threeMonthsCategoryData.length);
             //prepare intial 6 month columns
             this.sixMonthsColumnsData = this.prepareInitialColumns(this.sixMonthsCategoryData.length);
+            //prepare intial 12 month columns
+            this.twelveMonthsColumnsData = this.prepareInitialColumns(this.twelveMonthsCategoryData.length);
             //prepare intial YTD columns
             this.ytdColumnsData = this.prepareInitialColumns(this.ytdCategoryData.length);
             //prepare intial >year columns
@@ -815,6 +841,12 @@ namespace CapaStatusDashboard {
                         labelHistoryRecord.currentStateSetDate,
                         this.sixMonthsCategoryData,
                         this.sixMonthsColumnsData);
+
+                    //prepare twelve month columns    
+                    this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
+                        labelHistoryRecord.currentStateSetDate,
+                        this.twelveMonthsCategoryData,
+                        this.twelveMonthsColumnsData);    
 
                     //prepare ytd columns    
                     this.prepareMonthWiseColumnData(labelHistoryRecord.currentState,
@@ -921,6 +953,9 @@ namespace CapaStatusDashboard {
                         </div>
                         <div class="btn-group labelTools">
                         <button id="sixMonthsRange" class="btn btn-default btn-xs timerangenormal"  data-original-title="" title="">6Months</button>
+                        </div>
+                        <div class="btn-group labelTools">
+                        <button id="twelveMonthsRange" class="btn btn-default btn-xs timerangenormal"  data-original-title="" title="">12Months</button>
                         </div>
                         <div class="btn-group labelTools">
                         <button id="ytdRange" class="btn btn-default btn-xs timerangenormal"  data-original-title="" title="">YTD</button>
