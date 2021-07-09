@@ -984,7 +984,7 @@ namespace CapaStatusDashboard {
                 <thead>
                     <tr>
                         <th> Item</th>
-                        <th> Currernt State</th>
+                        <th> Current State</th>
                         <th> Open</th>
                         <th> Wait</th>
                         <th> Checked</th>
