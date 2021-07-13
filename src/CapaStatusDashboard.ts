@@ -66,6 +66,9 @@ namespace CapaStatusDashboard {
     class CapaStatusDashboardControl extends BaseControl {
 
         currentCat: string = "";
+        isDateFilterClicked: boolean = false;
+        fromDateSelected: any;
+        toDateSelected: any;
         ByCategoryLabelStatesDaysCountDetails: ByCategoryLabelStatesDaysCountData[] = [];
         labelHistoryData: XRLabelEntry[] = [];
         labelHistoryDataFilteredByDate: XRLabelEntry[] = [];
@@ -143,12 +146,14 @@ namespace CapaStatusDashboard {
 
             $('#gobutton').click(function () {
 
-                let fromDateSelected = fromDate.data("DateTimePicker").date();
-                let toDateSelected = toDate.data("DateTimePicker").date();
+                that.fromDateSelected = fromDate.data("DateTimePicker").date();
+                that.toDateSelected = toDate.data("DateTimePicker").date();
+
+                that.isDateFilterClicked = true;
 
                 that.highlighWeekRangeOption();
 
-                that.renderDataByDateRanges(fromDateSelected, toDateSelected);
+                that.renderDataByDateRanges(that.fromDateSelected, that.toDateSelected);
 
             });
 
@@ -413,9 +418,20 @@ namespace CapaStatusDashboard {
             this.renderTable(labelStateDaysDetailsData);
             this.renderStatusCountChart(labelStateTotalCountData);
 
-            this.prepareStatusTimeSeriesChart(labelStateDaysDetailsData, LabelStateDaysCountDetails.leastStatusSetDate);
+            if(this.isDateFilterClicked){
 
-            this.renderStatusTimeSeriesChart(this.currentWeekColumnsData, this.currentWeekCategoryData);
+                this.prepareStatusDateFilterChart(labelStateDaysDetailsData);
+                this.isDateFilterClicked = false;
+                this.fromDateSelected = "";
+                this.toDateSelected = "";
+
+            }else{
+
+                this.prepareStatusTimeSeriesChart(labelStateDaysDetailsData, LabelStateDaysCountDetails.leastStatusSetDate);
+                this.renderStatusTimeSeriesChart(this.currentWeekColumnsData, this.currentWeekCategoryData);
+
+            }
+            
         }
 
         private currentFilter = "";
@@ -863,6 +879,66 @@ namespace CapaStatusDashboard {
 
         }
 
+        private prepareStatusDateFilterChart(LabelStateDaysCountDetails: LabelStateDaysCountData[]){
+
+            let formattedFromDate = new Date(this.fromDateSelected).toISOString().slice(0, 10);
+            let formattedToDate = new Date(this.toDateSelected).toISOString().slice(0, 10);
+
+            let fromDate = new Date(formattedFromDate);
+            let toDate = new Date(formattedToDate);
+
+            let dateFilterChartCategoryData = ['OPEN','WAIT','CHECKED','CLOSED'];
+            let dateFilterChartColumnsData : any = [
+                ['From:'+formattedFromDate, 0, 0,0,0],
+                ['To:'+formattedToDate, 0, 0,0,0]
+            ];
+
+            LabelStateDaysCountDetails.forEach(
+                (labelHistoryRecord) => {
+                    let CurrentStatusSetDate = new Date(labelHistoryRecord.currentStateSetDate);
+                    let statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === labelHistoryRecord.currentState);
+                    
+                    if(CurrentStatusSetDate <= fromDate){
+                        dateFilterChartColumnsData[0][statusColumnIndex + 1] += 1;
+                    }else if(fromDate <= CurrentStatusSetDate && CurrentStatusSetDate <= toDate){
+                        dateFilterChartColumnsData[1][statusColumnIndex + 1] += 1;
+                    }
+            });
+
+            let StatusDateFilterChartParams: c3.ChartConfiguration = {
+                bindto: '#stateTimeSeriesGraph',
+                size: {
+                    width: 500,
+                },
+                data: {
+                    columns: dateFilterChartColumnsData,
+                    type: 'bar'
+                },
+                axis: {
+                    x: {
+                        type: 'category',
+                        categories: dateFilterChartCategoryData
+
+                    },
+                    y: {
+                        show: false
+                    }
+                },
+                color: {
+                    pattern: ['#17becf', '#9467bd']
+                }
+            };
+
+             //prepare chart config and render
+             $("#CapaStatusTimeSeriesChart div").remove();
+             $("#timeSeriesChartRangeFilter").hide();
+
+             $("#CapaStatusTimeSeriesChart").append("<div id='stateTimeSeriesGraph'>");
+ 
+             let renderedChart = c3.generate(StatusDateFilterChartParams);
+             this.charts.push(renderedChart);
+        }
+
         private installCopyButtons(title: string) {
             let that = this;
             let saveSize = [];
@@ -984,7 +1060,7 @@ namespace CapaStatusDashboard {
                 <thead>
                     <tr>
                         <th> Item</th>
-                        <th> Current State</th>
+                        <th> Currernt State</th>
                         <th> Open</th>
                         <th> Wait</th>
                         <th> Checked</th>
