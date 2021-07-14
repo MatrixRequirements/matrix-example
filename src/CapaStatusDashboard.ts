@@ -1051,13 +1051,10 @@ namespace CapaStatusDashboard {
         }
         .filterDates {
             width: 115px;
-            display: inline-block;
             margin: 0 6px;
         }
         
         .date-filter-form-control {
-            display: block;
-            width: 100%;
             height: 20px;
             padding: 6px 12px;
             font-size: 14px;
@@ -1069,13 +1066,11 @@ namespace CapaStatusDashboard {
             border-radius: 4px;
         }
         .date-filter-btn {
-            display: inline-block;
             margin-bottom: 0;
             font-weight: 400;
             text-align: center;
             white-space: nowrap;
             vertical-align: middle;
-            -ms-touch-action: manipulation;
             touch-action: manipulation;
             cursor: pointer;
             background-image: none;
