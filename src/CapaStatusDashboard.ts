@@ -899,11 +899,11 @@ namespace CapaStatusDashboard {
 
         private prepareStatusDateFilterChart(LabelStateDaysCountDetails: LabelStateDaysCountData[]){
 
-            let formattedFromDate = new Date(this.fromDateSelected).toISOString().slice(0, 10);
-            let formattedToDate = new Date(this.toDateSelected).toISOString().slice(0, 10);
+            let fromDate = new Date(this.fromDateSelected);
+            let toDate = new Date(this.toDateSelected);
 
-            let fromDate = new Date(formattedFromDate);
-            let toDate = new Date(formattedToDate);
+            let formattedFromDate = new Date(fromDate).toISOString().slice(0, 10);
+            let formattedToDate = new Date(toDate).toISOString().slice(0, 10);
 
             let dateFilterChartCategoryData = ['OPEN','WAIT','CHECKED','CLOSED'];
             let dateFilterChartColumnsData : any = [
