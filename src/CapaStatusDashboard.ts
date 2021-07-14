@@ -902,8 +902,8 @@ namespace CapaStatusDashboard {
             let fromDate = new Date(this.fromDateSelected);
             let toDate = new Date(this.toDateSelected);
 
-            let formattedFromDate = new Date(fromDate).toISOString().slice(0, 10);
-            let formattedToDate = new Date(toDate).toISOString().slice(0, 10);
+            let formattedFromDate = fromDate.toISOString().slice(0, 10);
+            let formattedToDate = toDate.toISOString().slice(0, 10);
 
             let dateFilterChartCategoryData = ['OPEN','WAIT','CHECKED','CLOSED'];
             let dateFilterChartColumnsData : any = [
