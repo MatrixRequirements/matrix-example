@@ -440,8 +440,8 @@ namespace CapaStatusDashboard {
 
                 this.prepareStatusDateFilterChart(labelStateDaysDetailsData);
                 //this.isDateFilterClicked = false;
-                this.fromDateSelected = "";
-                this.toDateSelected = "";
+                //this.fromDateSelected = "";
+                //this.toDateSelected = "";
 
             }else{
 
