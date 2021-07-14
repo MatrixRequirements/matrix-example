@@ -114,6 +114,7 @@ namespace CapaStatusDashboard {
             //Add a waiting spinning item
             let spinningWait = ml.UI.getSpinningWait("Loading");
             $("#waiting", that._root).append(spinningWait);
+            $("#dateRangeFilter").hide();
 
 
             //Initiating date range selection section
@@ -160,6 +161,7 @@ namespace CapaStatusDashboard {
 
             $('#weekRange').click(function () {
 
+                $("#dateRangeFilter").hide();
                 if (that.currentTimeRangeSelected !== "week") {
                     $('#weekRange').removeClass("timerangenormal");
                     $('#weekRange').addClass("timerangeselected");
@@ -175,6 +177,8 @@ namespace CapaStatusDashboard {
 
             $('#monthRange').click(function () {
 
+                $("#dateRangeFilter").hide();
+
                 if (that.currentTimeRangeSelected !== "month") {
                     $('#monthRange').removeClass("timerangenormal");
                     $('#monthRange').addClass("timerangeselected");
@@ -189,6 +193,8 @@ namespace CapaStatusDashboard {
             });
 
             $('#threeMonthsRange').click(function () {
+
+                $("#dateRangeFilter").hide();
 
                 if (that.currentTimeRangeSelected !== "threeMonths") {
                     $('#threeMonthsRange').removeClass("timerangenormal");
@@ -206,6 +212,8 @@ namespace CapaStatusDashboard {
             
             $('#sixMonthsRange').click(function () {
 
+                $("#dateRangeFilter").hide();
+
                 if (that.currentTimeRangeSelected !== "sixMonths") {
                     $('#sixMonthsRange').removeClass("timerangenormal");
                     $('#sixMonthsRange').addClass("timerangeselected");
@@ -221,6 +229,8 @@ namespace CapaStatusDashboard {
 
 
             $('#twelveMonthsRange').click(function () {
+
+                $("#dateRangeFilter").hide();
 
                 if (that.currentTimeRangeSelected !== "twelveMonths") {
                     $('#twelveMonthsRange').removeClass("timerangenormal");
@@ -238,6 +248,8 @@ namespace CapaStatusDashboard {
 
             $('#ytdRange').click(function () {
 
+                $("#dateRangeFilter").hide();
+
                 if (that.currentTimeRangeSelected !== "ytd") {
                     $('#ytdRange').removeClass("timerangenormal");
                     $('#ytdRange').addClass("timerangeselected");
@@ -253,6 +265,8 @@ namespace CapaStatusDashboard {
 
             $('#moreThanYearRange').click(function () {
 
+                $("#dateRangeFilter").hide();
+
                 if (that.currentTimeRangeSelected !== "moreThanYear") {
                     $('#moreThanYearRange').removeClass("timerangenormal");
                     $('#moreThanYearRange').addClass("timerangeselected");
@@ -265,6 +279,24 @@ namespace CapaStatusDashboard {
                 }
 
             });
+
+            $('#datefilterRange').click(function () {
+
+                $("#dateRangeFilter").show();
+
+                if (that.currentTimeRangeSelected !== "datefilter") {
+                    $('#datefilterRange').removeClass("timerangenormal");
+                    $('#datefilterRange').addClass("timerangeselected");
+
+                    $('#' + that.currentTimeRangeSelected + 'Range').removeClass("timerangeselected");
+                    $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
+
+                    that.currentTimeRangeSelected = "datefilter";
+                    //that.renderStatusTimeSeriesChart(that.moreThanYearColumnsData, that.moreThanYearCategoryData);
+                }
+
+            });
+
 
             setTimeout(o => that.installCopyButtons("CAPA Status Overview"), 10);
 
@@ -992,7 +1024,7 @@ namespace CapaStatusDashboard {
 
         }
 
-
+        
         // HTML template
         ExampleHTMLDom = `<div class="panel-body-v-scroll fillHeight">
         <style>
@@ -1022,15 +1054,6 @@ namespace CapaStatusDashboard {
             <div class="panel-body" id="CapaStatusDashboardPanel">
                 <div id="">   
                     <div class="panel panel-default">
-                    <div class="baseControl" id="dateRangeFilter">
-                    <p>
-                    <span class="">Create/Modified from </span>
-                    <input id="fromdate" type='text' class='form-control redlineDates'>
-                    <span class=""> Create/Modified to </span>
-                    <input id="todate" type='text' class='form-control redlineDates'>
-                    <button id="gobutton" style="margin-left: 12px" type="button" class="btn btn-success">Go</button>
-                    </p>
-                    </div>
                     <div class="panel-heading">
                         <h3 class="panel-title" id="CapaStatusChartTitle">Capa Status Overview</h3>
                     </div>
@@ -1060,16 +1083,28 @@ namespace CapaStatusDashboard {
                         <div class="btn-group labelTools">
                         <button id="moreThanYearRange" class="btn btn-default btn-xs timerangenormal"  data-original-title="" title="">>Year</button>
                         </div>
+                        <div class="btn-group labelTools">
+                        <button id="datefilterRange" class="btn btn-default btn-xs timerangenormal"  data-original-title="" title="">Date Filter</button>
+                        </div>
+                        </div>
+                        <div class="baseControl" id="dateRangeFilter">
+                        <p>
+                        <span class="">Create/Modified from </span>
+                        <input id="fromdate" type='text' class='form-control redlineDates'>
+                        <span class=""> Create/Modified to </span>
+                        <input id="todate" type='text' class='form-control redlineDates'>
+                        <button id="gobutton" style="margin-left: 12px" type="button" class="btn btn-success">Go</button>
+                        </p>
                         </div>
                         <div id="CapaStatusTimeSeriesChart" class="chart"></div>
-                        <div>
+                        </div>
                     </div>
                </div>
             </div>
             <div>
                 <div class="row doNotCopy">
                     <div class="col-lg-3 ">
-                        <h3 id="LabelDashboardTableHeader">Items list</h3>
+                        <h3 id="LabelDashboardTableHeader" style="margin-left: 4px">Items list</h3>
                     </div>
                     <div class=" col-lg-7">
                     </div>
