@@ -1049,6 +1049,42 @@ namespace CapaStatusDashboard {
             background-color: #337ab7;
             color: #f6fbfd;
         }
+        .filterDates {
+            width: 115px;
+            display: inline-block;
+            margin: 0 6px;
+        }
+        
+        .date-filter-form-control {
+            display: block;
+            width: 100%;
+            height: 20px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .date-filter-btn {
+            display: inline-block;
+            margin-bottom: 0;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            -ms-touch-action: manipulation;
+            touch-action: manipulation;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid transparent;
+            padding: 0px 5px;
+            font-size: 12px;
+            line-height: 1.42857143;
+            border-radius: 4px;
+        }
         </style>
         <div class="row" id="waiting" class=""></div>
             <div class="panel-body" id="CapaStatusDashboardPanel">
@@ -1061,7 +1097,7 @@ namespace CapaStatusDashboard {
                         <div class="LabelDashboardTitleForCopy"></div>
                         <div id="CapaStatusCountChart" class="chart"></div>
                         <div>
-                        <div id="timeSeriesChartRangeFilter" style="display:flex;margin-left: 110px">
+                        <div id="timeSeriesChartRangeFilter" style="display:flex;margin-left: 40px">
                         <div class="btn-group labelTools">
                         <button id="weekRange" class="btn btn-default btn-xs timerangeselected" data-original-title="" title="">Week</button>
                         </div>
@@ -1087,13 +1123,13 @@ namespace CapaStatusDashboard {
                         <button id="datefilterRange" class="btn btn-default btn-xs timerangenormal"  data-original-title="" title="">Date Filter</button>
                         </div>
                         </div>
-                        <div id="dateRangeFilter" class="baseControl" style="display:flex;>
+                        <div id="dateRangeFilter" class="baseControl" style="display:flex;margin-left: 80px">
                         <p>
                         <span class="">From</span>
-                        <input id="fromdate" type='text' class='form-control redlineDates'>
+                        <input id="fromdate" type='text' class='date-filter-form-control filterDates'>
                         <span class="">To</span>
-                        <input id="todate" type='text' class='form-control redlineDates'>
-                        <button id="gobutton" style="margin-left: 12px" type="button" class="btn btn-success">Go</button>
+                        <input id="todate" type='text' class='date-filter-form-control filterDates'>
+                        <button id="gobutton" style="margin-left: 12px" type="button" class="date-filter-btn btn-success">Go</button>
                         </p>
                         </div>
                         <div id="CapaStatusTimeSeriesChart" class="chart"></div>
