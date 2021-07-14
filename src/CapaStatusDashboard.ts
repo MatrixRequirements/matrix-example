@@ -1087,11 +1087,11 @@ namespace CapaStatusDashboard {
                         <button id="datefilterRange" class="btn btn-default btn-xs timerangenormal"  data-original-title="" title="">Date Filter</button>
                         </div>
                         </div>
-                        <div class="baseControl" id="dateRangeFilter">
+                        <div id="dateRangeFilter" class="baseControl" style="display:flex;>
                         <p>
-                        <span class="">Create/Modified from </span>
+                        <span class="">From</span>
                         <input id="fromdate" type='text' class='form-control redlineDates'>
-                        <span class=""> Create/Modified to </span>
+                        <span class="">To</span>
                         <input id="todate" type='text' class='form-control redlineDates'>
                         <button id="gobutton" style="margin-left: 12px" type="button" class="btn btn-success">Go</button>
                         </p>
