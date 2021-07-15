@@ -66,14 +66,7 @@ namespace CapaStatusDashboard {
     class CapaStatusDashboardControl extends BaseControl {
 
         currentCat: string = "";
-        //isDateFilterClicked: boolean = false;
-        // fromDateSelected: any;
-        // toDateSelected: any;
         ByCategoryLabelStatesDaysCountDetails: ByCategoryLabelStatesDaysCountData[] = [];
-        // CALabelStatesDaysCountDetails: LabelStateDaysCountData[] = [];
-        // PALabelStatesDaysCountDetails: LabelStateDaysCountData[] = [];
-        // labelHistoryData: XRLabelEntry[] = [];
-        // labelHistoryDataFilteredByDate: XRLabelEntry[] = [];
         charts: c3.ChartAPI[] = [];
 
         currentTimeRangeSelected: string = "week";
@@ -153,10 +146,6 @@ namespace CapaStatusDashboard {
                 let toDateSelected = toDate.data("DateTimePicker").date();
 
                 that.prepareStatusDateFilterChart(fromDateSelected,toDateSelected);
-
-                //that.highlighWeekRangeOption();
-
-                //that.renderDataByDateRanges(that.fromDateSelected, that.toDateSelected);
 
             });
 
@@ -304,7 +293,6 @@ namespace CapaStatusDashboard {
 
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
-                //this.labelHistoryData = result;
                 this.renderResult(result);
             }).then(() => {
                 //Let's remove the spinning wait
@@ -323,65 +311,6 @@ namespace CapaStatusDashboard {
                 this.currentTimeRangeSelected = "week";
             }
         }
-
-        //if any of set and reset dates of labels falls between date ranges selected consider the item
-        // renderDataByDateRanges(fromDateVal: any, toDateVal: any) {
-
-        //     const fromDate = new Date(fromDateVal);
-        //     const toDate = new Date(toDateVal);
-        //     let labelHistoryFilteredData: XRLabelEntry[] = [];
-
-        //     if(!this.isDateFilterClicked){
-        //         this.ByCategoryLabelStatesDaysCountDetails.forEach((labelStateData) => {
-        //             if(labelStateData.category == "CA"){
-        //                 this.CALabelStatesDaysCountDetails = JSON.parse(JSON.stringify(labelStateData.LabelStateDaysCountDetails));
-        //             }else if(labelStateData.category == "PA"){
-        //                 this.PALabelStatesDaysCountDetails = JSON.parse(JSON.stringify(labelStateData.LabelStateDaysCountDetails));
-        //             }
-        //         });
-        //     }
-
-        //     this.isDateFilterClicked = true;
-           
-        //     this.labelHistoryData.forEach(
-        //         (labelHistoryRecord) => {
-        //             let labelHistoryData_ = { ...labelHistoryRecord };
-        //             let isItemfallsinRange = false;
-        //             labelHistoryData_.labels.forEach(
-        //                 (labelStatusHistoryrecord) => {
-        //                     //let labelStatusSetData = {...labelStatusHistoryrecord.set};
-        //                     let labelStatusFilteredSetData = labelStatusHistoryrecord.set.filter(statusSetRecord => {
-        //                         let setDate = new Date(new Date(statusSetRecord.dateUser).toISOString().slice(0, 10));
-        //                         return (fromDate <= setDate && setDate <= toDate);
-        //                     });
-
-
-        //                     //let labelStatusReSetData = {...labelStatusHistoryrecord.reset};
-        //                     let labelStatusFilteredReSetData = labelStatusHistoryrecord.reset.filter(statusReSetRecord => {
-        //                         let reSetDate = new Date(new Date(statusReSetRecord.dateUser).toISOString().slice(0, 10));
-        //                         return (fromDate <= reSetDate && reSetDate <= toDate);
-        //                     });
-
-        //                     if (labelStatusFilteredReSetData.length > 0 || labelStatusFilteredSetData.length > 0) {
-        //                         isItemfallsinRange = true;
-        //                     }
-
-
-        //                 }
-        //             );
-
-        //             if (isItemfallsinRange) {
-        //                 labelHistoryFilteredData.push(labelHistoryData_);
-        //             }
-
-        //         }
-        //     );
-
-        //     this.labelHistoryDataFilteredByDate = labelHistoryFilteredData;
-        //     this.renderResult(this.labelHistoryDataFilteredByDate);
-
-        // }
-
 
         renderHTML() {
 
@@ -468,26 +397,6 @@ namespace CapaStatusDashboard {
 
             this.prepareStatusTimeSeriesChart(labelStateDaysDetailsData, LabelStateDaysCountDetails.leastStatusSetDate);
             this.renderStatusTimeSeriesChart(this.currentWeekColumnsData, this.currentWeekCategoryData);
-
-            // if(this.isDateFilterClicked){
-
-            //     if(this.currentCat == "CA"){
-            //         labelStateDaysDetailsData = this.CALabelStatesDaysCountDetails;
-            //     }else if(this.currentCat == "PA"){
-            //         labelStateDaysDetailsData = this.PALabelStatesDaysCountDetails;
-            //     }
-
-            //     this.prepareStatusDateFilterChart(labelStateDaysDetailsData);
-            //     //this.isDateFilterClicked = false;
-            //     //this.fromDateSelected = "";
-            //     //this.toDateSelected = "";
-
-            // }else{
-
-            //     this.prepareStatusTimeSeriesChart(labelStateDaysDetailsData, LabelStateDaysCountDetails.leastStatusSetDate);
-            //     this.renderStatusTimeSeriesChart(this.currentWeekColumnsData, this.currentWeekCategoryData);
-
-            // }
             
         }
 
@@ -941,9 +850,6 @@ namespace CapaStatusDashboard {
             let fromDate = new Date(fromDateSelected);
             let toDate = new Date(toDateSelected);
 
-            // let formattedFromDate = fromDate.toISOString().slice(0, 10);
-            // let formattedToDate = toDate.toISOString().slice(0, 10);
-
             let formattedFromDate = new Date(fromDate.setDate(fromDate.getDate() + 1)).toISOString().slice(0, 10);
             let formattedToDate = new Date(toDate.setDate(toDate.getDate() + 1)).toISOString().slice(0, 10);
 
@@ -1306,8 +1212,6 @@ namespace CapaStatusDashboard {
             ByCategoryLabelStatesDaysCountDetails.push(ByCategoryLabelStatesDaysCountData)
         });
 
-
-        //let LabelStateDaysCountDetails: LabelStateDaysCountData[] = [];
         for (const item of labels) {
 
             let itemCurrentSateData: CurrentStateData = getItemCurrentState(item.labels);
