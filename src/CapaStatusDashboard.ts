@@ -453,7 +453,9 @@ namespace CapaStatusDashboard {
 
             $("#selectedCat", this._root).text(cat);
 
+            $("#dateRangeFilter").hide();
             this.highlighWeekRangeOption();
+           
 
             let LabelStateDaysCountDetails = this.ByCategoryLabelStatesDaysCountDetails
                 .find(({ category }) => category === this.currentCat);
@@ -995,7 +997,6 @@ namespace CapaStatusDashboard {
 
              //prepare chart config and render
              $("#CapaStatusTimeSeriesChart div").remove();
-             //$("#timeSeriesChartRangeFilter").hide();
 
              $("#CapaStatusTimeSeriesChart").append("<div id='stateTimeSeriesGraph'>");
  
