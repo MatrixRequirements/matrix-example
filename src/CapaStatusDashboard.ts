@@ -66,14 +66,14 @@ namespace CapaStatusDashboard {
     class CapaStatusDashboardControl extends BaseControl {
 
         currentCat: string = "";
-        isDateFilterClicked: boolean = false;
-        fromDateSelected: any;
-        toDateSelected: any;
+        //isDateFilterClicked: boolean = false;
+        // fromDateSelected: any;
+        // toDateSelected: any;
         ByCategoryLabelStatesDaysCountDetails: ByCategoryLabelStatesDaysCountData[] = [];
-        CALabelStatesDaysCountDetails: LabelStateDaysCountData[] = [];
-        PALabelStatesDaysCountDetails: LabelStateDaysCountData[] = [];
-        labelHistoryData: XRLabelEntry[] = [];
-        labelHistoryDataFilteredByDate: XRLabelEntry[] = [];
+        // CALabelStatesDaysCountDetails: LabelStateDaysCountData[] = [];
+        // PALabelStatesDaysCountDetails: LabelStateDaysCountData[] = [];
+        // labelHistoryData: XRLabelEntry[] = [];
+        // labelHistoryDataFilteredByDate: XRLabelEntry[] = [];
         charts: c3.ChartAPI[] = [];
 
         currentTimeRangeSelected: string = "week";
@@ -149,12 +149,14 @@ namespace CapaStatusDashboard {
 
             $('#gobutton').click(function () {
 
-                that.fromDateSelected = fromDate.data("DateTimePicker").date();
-                that.toDateSelected = toDate.data("DateTimePicker").date();
+                let fromDateSelected = fromDate.data("DateTimePicker").date();
+                let toDateSelected = toDate.data("DateTimePicker").date();
 
-                that.highlighWeekRangeOption();
+                that.prepareStatusDateFilterChart(fromDateSelected,toDateSelected);
 
-                that.renderDataByDateRanges(that.fromDateSelected, that.toDateSelected);
+                //that.highlighWeekRangeOption();
+
+                //that.renderDataByDateRanges(that.fromDateSelected, that.toDateSelected);
 
             });
 
@@ -302,7 +304,7 @@ namespace CapaStatusDashboard {
 
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
-                this.labelHistoryData = result;
+                //this.labelHistoryData = result;
                 this.renderResult(result);
             }).then(() => {
                 //Let's remove the spinning wait
@@ -323,62 +325,62 @@ namespace CapaStatusDashboard {
         }
 
         //if any of set and reset dates of labels falls between date ranges selected consider the item
-        renderDataByDateRanges(fromDateVal: any, toDateVal: any) {
+        // renderDataByDateRanges(fromDateVal: any, toDateVal: any) {
 
-            const fromDate = new Date(fromDateVal);
-            const toDate = new Date(toDateVal);
-            let labelHistoryFilteredData: XRLabelEntry[] = [];
+        //     const fromDate = new Date(fromDateVal);
+        //     const toDate = new Date(toDateVal);
+        //     let labelHistoryFilteredData: XRLabelEntry[] = [];
 
-            if(!this.isDateFilterClicked){
-                this.ByCategoryLabelStatesDaysCountDetails.forEach((labelStateData) => {
-                    if(labelStateData.category == "CA"){
-                        this.CALabelStatesDaysCountDetails = JSON.parse(JSON.stringify(labelStateData.LabelStateDaysCountDetails));
-                    }else if(labelStateData.category == "PA"){
-                        this.PALabelStatesDaysCountDetails = JSON.parse(JSON.stringify(labelStateData.LabelStateDaysCountDetails));
-                    }
-                });
-            }
+        //     if(!this.isDateFilterClicked){
+        //         this.ByCategoryLabelStatesDaysCountDetails.forEach((labelStateData) => {
+        //             if(labelStateData.category == "CA"){
+        //                 this.CALabelStatesDaysCountDetails = JSON.parse(JSON.stringify(labelStateData.LabelStateDaysCountDetails));
+        //             }else if(labelStateData.category == "PA"){
+        //                 this.PALabelStatesDaysCountDetails = JSON.parse(JSON.stringify(labelStateData.LabelStateDaysCountDetails));
+        //             }
+        //         });
+        //     }
 
-            this.isDateFilterClicked = true;
+        //     this.isDateFilterClicked = true;
            
-            this.labelHistoryData.forEach(
-                (labelHistoryRecord) => {
-                    let labelHistoryData_ = { ...labelHistoryRecord };
-                    let isItemfallsinRange = false;
-                    labelHistoryData_.labels.forEach(
-                        (labelStatusHistoryrecord) => {
-                            //let labelStatusSetData = {...labelStatusHistoryrecord.set};
-                            let labelStatusFilteredSetData = labelStatusHistoryrecord.set.filter(statusSetRecord => {
-                                let setDate = new Date(new Date(statusSetRecord.dateUser).toISOString().slice(0, 10));
-                                return (fromDate <= setDate && setDate <= toDate);
-                            });
+        //     this.labelHistoryData.forEach(
+        //         (labelHistoryRecord) => {
+        //             let labelHistoryData_ = { ...labelHistoryRecord };
+        //             let isItemfallsinRange = false;
+        //             labelHistoryData_.labels.forEach(
+        //                 (labelStatusHistoryrecord) => {
+        //                     //let labelStatusSetData = {...labelStatusHistoryrecord.set};
+        //                     let labelStatusFilteredSetData = labelStatusHistoryrecord.set.filter(statusSetRecord => {
+        //                         let setDate = new Date(new Date(statusSetRecord.dateUser).toISOString().slice(0, 10));
+        //                         return (fromDate <= setDate && setDate <= toDate);
+        //                     });
 
 
-                            //let labelStatusReSetData = {...labelStatusHistoryrecord.reset};
-                            let labelStatusFilteredReSetData = labelStatusHistoryrecord.reset.filter(statusReSetRecord => {
-                                let reSetDate = new Date(new Date(statusReSetRecord.dateUser).toISOString().slice(0, 10));
-                                return (fromDate <= reSetDate && reSetDate <= toDate);
-                            });
+        //                     //let labelStatusReSetData = {...labelStatusHistoryrecord.reset};
+        //                     let labelStatusFilteredReSetData = labelStatusHistoryrecord.reset.filter(statusReSetRecord => {
+        //                         let reSetDate = new Date(new Date(statusReSetRecord.dateUser).toISOString().slice(0, 10));
+        //                         return (fromDate <= reSetDate && reSetDate <= toDate);
+        //                     });
 
-                            if (labelStatusFilteredReSetData.length > 0 || labelStatusFilteredSetData.length > 0) {
-                                isItemfallsinRange = true;
-                            }
+        //                     if (labelStatusFilteredReSetData.length > 0 || labelStatusFilteredSetData.length > 0) {
+        //                         isItemfallsinRange = true;
+        //                     }
 
 
-                        }
-                    );
+        //                 }
+        //             );
 
-                    if (isItemfallsinRange) {
-                        labelHistoryFilteredData.push(labelHistoryData_);
-                    }
+        //             if (isItemfallsinRange) {
+        //                 labelHistoryFilteredData.push(labelHistoryData_);
+        //             }
 
-                }
-            );
+        //         }
+        //     );
 
-            this.labelHistoryDataFilteredByDate = labelHistoryFilteredData;
-            this.renderResult(this.labelHistoryDataFilteredByDate);
+        //     this.labelHistoryDataFilteredByDate = labelHistoryFilteredData;
+        //     this.renderResult(this.labelHistoryDataFilteredByDate);
 
-        }
+        // }
 
 
         renderHTML() {
@@ -462,25 +464,28 @@ namespace CapaStatusDashboard {
             this.renderTable(labelStateDaysDetailsData);
             this.renderStatusCountChart(labelStateTotalCountData);
 
-            if(this.isDateFilterClicked){
+            this.prepareStatusTimeSeriesChart(labelStateDaysDetailsData, LabelStateDaysCountDetails.leastStatusSetDate);
+            this.renderStatusTimeSeriesChart(this.currentWeekColumnsData, this.currentWeekCategoryData);
 
-                if(this.currentCat == "CA"){
-                    labelStateDaysDetailsData = this.CALabelStatesDaysCountDetails;
-                }else if(this.currentCat == "PA"){
-                    labelStateDaysDetailsData = this.PALabelStatesDaysCountDetails;
-                }
+            // if(this.isDateFilterClicked){
 
-                this.prepareStatusDateFilterChart(labelStateDaysDetailsData);
-                //this.isDateFilterClicked = false;
-                //this.fromDateSelected = "";
-                //this.toDateSelected = "";
+            //     if(this.currentCat == "CA"){
+            //         labelStateDaysDetailsData = this.CALabelStatesDaysCountDetails;
+            //     }else if(this.currentCat == "PA"){
+            //         labelStateDaysDetailsData = this.PALabelStatesDaysCountDetails;
+            //     }
 
-            }else{
+            //     this.prepareStatusDateFilterChart(labelStateDaysDetailsData);
+            //     //this.isDateFilterClicked = false;
+            //     //this.fromDateSelected = "";
+            //     //this.toDateSelected = "";
 
-                this.prepareStatusTimeSeriesChart(labelStateDaysDetailsData, LabelStateDaysCountDetails.leastStatusSetDate);
-                this.renderStatusTimeSeriesChart(this.currentWeekColumnsData, this.currentWeekCategoryData);
+            // }else{
 
-            }
+            //     this.prepareStatusTimeSeriesChart(labelStateDaysDetailsData, LabelStateDaysCountDetails.leastStatusSetDate);
+            //     this.renderStatusTimeSeriesChart(this.currentWeekColumnsData, this.currentWeekCategoryData);
+
+            // }
             
         }
 
@@ -929,10 +934,10 @@ namespace CapaStatusDashboard {
 
         }
 
-        private prepareStatusDateFilterChart(LabelStateDaysCountDetails: LabelStateDaysCountData[]){
+        private prepareStatusDateFilterChart(fromDateSelected,toDateSelected){
 
-            let fromDate = new Date(this.fromDateSelected);
-            let toDate = new Date(this.toDateSelected);
+            let fromDate = new Date(fromDateSelected);
+            let toDate = new Date(toDateSelected);
 
             // let formattedFromDate = fromDate.toISOString().slice(0, 10);
             // let formattedToDate = toDate.toISOString().slice(0, 10);
@@ -946,7 +951,13 @@ namespace CapaStatusDashboard {
                 ['To:'+formattedToDate, 0, 0,0,0]
             ];
 
-            LabelStateDaysCountDetails.forEach(
+            let LabelStateDaysCountDetails = this.ByCategoryLabelStatesDaysCountDetails
+                .find(({ category }) => category === this.currentCat);
+
+
+            let labelStateDaysDetailsData = JSON.parse(JSON.stringify(LabelStateDaysCountDetails.LabelStateDaysCountDetails));
+
+            labelStateDaysDetailsData.forEach(
                 (labelHistoryRecord) => {
                     let CurrentStatusSetDate = new Date(labelHistoryRecord.currentStateSetDate);
                     let statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === labelHistoryRecord.currentState);
