@@ -995,7 +995,7 @@ namespace CapaStatusDashboard {
 
              //prepare chart config and render
              $("#CapaStatusTimeSeriesChart div").remove();
-             $("#timeSeriesChartRangeFilter").hide();
+             //$("#timeSeriesChartRangeFilter").hide();
 
              $("#CapaStatusTimeSeriesChart").append("<div id='stateTimeSeriesGraph'>");
  
