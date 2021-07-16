@@ -373,20 +373,30 @@ namespace CapaStatusDashboard {
                                 }
                             );
 
-                            fromDateLabels.push(fromDateLabelStatusData);
-                            toDateLabels.push(toDateLabelStatusData)
+                            if(fromDateLabelStatusData.set.length > 0 || fromDateLabelStatusData.reset.length > 0){
+                                fromDateLabels.push(fromDateLabelStatusData);
+                            }
+
+                            if(toDateLabelStatusData.set.length > 0 || toDateLabelStatusData.reset.length > 0){
+                                toDateLabels.push(toDateLabelStatusData);
+                            }
 
                         }
                     );
 
-                    let fromDateLabelsCurrentSate: CurrentStateData = getItemCurrentState(fromDateLabels);
-                    let toDateLabelsCurrentSate: CurrentStateData = getItemCurrentState(toDateLabels);
+                    let statusColumnIndex;
 
-                    let statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === fromDateLabelsCurrentSate.currentState);
-                    dateFilterChartColumnsData[0][statusColumnIndex + 1] += 1;
-
-                    statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === toDateLabelsCurrentSate.currentState);
-                    dateFilterChartColumnsData[1][statusColumnIndex + 1] += 1;
+                    if(fromDateLabels.length > 0){
+                        let fromDateLabelsCurrentSate: CurrentStateData = getItemCurrentState(fromDateLabels);
+                        statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === fromDateLabelsCurrentSate.currentState);
+                        dateFilterChartColumnsData[0][statusColumnIndex + 1] += 1;
+                    }
+                    
+                    if(toDateLabels.length > 0){
+                        let toDateLabelsCurrentSate: CurrentStateData = getItemCurrentState(toDateLabels);
+                        statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === toDateLabelsCurrentSate.currentState);
+                        dateFilterChartColumnsData[1][statusColumnIndex + 1] += 1;
+                    }
             
                 }
             );
