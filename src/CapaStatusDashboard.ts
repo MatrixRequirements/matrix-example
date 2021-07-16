@@ -65,6 +65,7 @@ namespace CapaStatusDashboard {
 
     class CapaStatusDashboardControl extends BaseControl {
 
+        labelHistoryData: XRLabelEntry[] = [];
         currentCat: string = "";
         ByCategoryLabelStatesDaysCountDetails: ByCategoryLabelStatesDaysCountData[] = [];
         charts: c3.ChartAPI[] = [];
@@ -145,7 +146,7 @@ namespace CapaStatusDashboard {
                 let fromDateSelected = fromDate.data("DateTimePicker").date();
                 let toDateSelected = toDate.data("DateTimePicker").date();
 
-                that.prepareStatusDateFilterChart(fromDateSelected,toDateSelected);
+                that.renderDataByDateRanges(fromDateSelected, toDateSelected);
 
             });
 
@@ -293,6 +294,7 @@ namespace CapaStatusDashboard {
 
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
+                this.labelHistoryData = result;
                 this.renderResult(result);
             }).then(() => {
                 //Let's remove the spinning wait
@@ -310,6 +312,87 @@ namespace CapaStatusDashboard {
 
                 this.currentTimeRangeSelected = "week";
             }
+        }
+
+        renderDataByDateRanges(fromDateVal: any, toDateVal: any) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            let formattedFromDate = new Date(fromDate.setDate(fromDate.getDate() + 1)).toISOString().slice(0, 10);
+            let formattedToDate = new Date(toDate.setDate(toDate.getDate() + 1)).toISOString().slice(0, 10);
+
+            let dateFilterChartCategoryData = ['OPEN','WAIT','CHECKED','CLOSED'];
+            let dateFilterChartColumnsData : any = [
+                ['From:'+formattedFromDate, 0, 0,0,0],
+                ['To:'+formattedToDate, 0, 0,0,0]
+            ];
+
+            this.labelHistoryData.forEach(
+                (labelHistoryRecord) => {
+                    let labelHistoryData_ = { ...labelHistoryRecord };
+                    let fromDateLabels: any[] = [];
+                    let toDateLabels: any[] = [];
+
+                    labelHistoryData_.labels.forEach(
+                        (labelStatusHistoryrecord) => {
+                            let fromDateLabelStatusData = {...labelStatusHistoryrecord};
+                            let toDateLabelStatusData = {...labelStatusHistoryrecord};
+
+                            fromDateLabelStatusData.set = [];
+                            fromDateLabelStatusData.reset = [];
+
+                            toDateLabelStatusData.set = [];
+                            toDateLabelStatusData.reset = [];
+
+                            labelStatusHistoryrecord.set.forEach(
+                                (setDateRecord)=>{
+                                    let dateRecord = new Date(new Date(setDateRecord.dateUser).toISOString().slice(0, 10));
+
+                                    if(dateRecord <= fromDate){
+                                        fromDateLabelStatusData.set.push(setDateRecord);
+                                    }
+
+                                    if(dateRecord <= toDate){
+                                        toDateLabelStatusData.set.push(setDateRecord);
+                                    }
+                                }
+                            );
+                            
+                            labelStatusHistoryrecord.reset.forEach(
+                                (resetDateRecord)=>{
+                                    let dateRecord = new Date(new Date(resetDateRecord.dateUser).toISOString().slice(0, 10));
+
+                                    if(dateRecord <= fromDate){
+                                        fromDateLabelStatusData.reset.push(resetDateRecord);
+                                    }
+
+                                    if(dateRecord <= toDate){
+                                        toDateLabelStatusData.reset.push(resetDateRecord);
+                                    }
+                                }
+                            );
+
+                            fromDateLabels.push(fromDateLabelStatusData);
+                            toDateLabels.push(toDateLabelStatusData)
+
+                        }
+                    );
+
+                    let fromDateLabelsCurrentSate: CurrentStateData = getItemCurrentState(fromDateLabels);
+                    let toDateLabelsCurrentSate: CurrentStateData = getItemCurrentState(toDateLabels);
+
+                    let statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === fromDateLabelsCurrentSate.currentState);
+                    dateFilterChartColumnsData[0][statusColumnIndex + 1] += 1;
+
+                    statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === toDateLabelsCurrentSate.currentState);
+                    dateFilterChartColumnsData[1][statusColumnIndex + 1] += 1;
+            
+                }
+            );
+
+
+            this.prepareStatusDateFilterChart(dateFilterChartCategoryData,dateFilterChartColumnsData);
         }
 
         renderHTML() {
@@ -845,37 +928,7 @@ namespace CapaStatusDashboard {
 
         }
 
-        private prepareStatusDateFilterChart(fromDateSelected,toDateSelected){
-
-            let fromDate = new Date(fromDateSelected);
-            let toDate = new Date(toDateSelected);
-
-            let formattedFromDate = new Date(fromDate.setDate(fromDate.getDate() + 1)).toISOString().slice(0, 10);
-            let formattedToDate = new Date(toDate.setDate(toDate.getDate() + 1)).toISOString().slice(0, 10);
-
-            let dateFilterChartCategoryData = ['OPEN','WAIT','CHECKED','CLOSED'];
-            let dateFilterChartColumnsData : any = [
-                ['From:'+formattedFromDate, 0, 0,0,0],
-                ['To:'+formattedToDate, 0, 0,0,0]
-            ];
-
-            let LabelStateDaysCountDetails = this.ByCategoryLabelStatesDaysCountDetails
-                .find(({ category }) => category === this.currentCat);
-
-
-            let labelStateDaysDetailsData = JSON.parse(JSON.stringify(LabelStateDaysCountDetails.LabelStateDaysCountDetails));
-
-            labelStateDaysDetailsData.forEach(
-                (labelHistoryRecord) => {
-                    let CurrentStatusSetDate = new Date(labelHistoryRecord.currentStateSetDate);
-                    let statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === labelHistoryRecord.currentState);
-                    
-                    if(CurrentStatusSetDate <= fromDate){
-                        dateFilterChartColumnsData[0][statusColumnIndex + 1] += 1;
-                    }else if(fromDate < CurrentStatusSetDate && CurrentStatusSetDate <= toDate){
-                        dateFilterChartColumnsData[1][statusColumnIndex + 1] += 1;
-                    }
-            });
+        private prepareStatusDateFilterChart(dateFilterChartCategoryData,dateFilterChartColumnsData){
 
             let StatusDateFilterChartParams: c3.ChartConfiguration = {
                 bindto: '#stateTimeSeriesGraph',
