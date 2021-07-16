@@ -330,74 +330,76 @@ namespace CapaStatusDashboard {
 
             this.labelHistoryData.forEach(
                 (labelHistoryRecord) => {
-                    let labelHistoryData_ = { ...labelHistoryRecord };
-                    let fromDateLabels: any[] = [];
-                    let toDateLabels: any[] = [];
+                    let itemCategory = labelHistoryRecord.itemRef.substring(0, labelHistoryRecord.itemRef.indexOf('-'));
+                    if(itemCategory == this.currentCat){
+                        let labelHistoryData_ = { ...labelHistoryRecord };
+                        let fromDateLabels: any[] = [];
+                        let toDateLabels: any[] = [];
 
-                    labelHistoryData_.labels.forEach(
-                        (labelStatusHistoryrecord) => {
-                            let fromDateLabelStatusData = {...labelStatusHistoryrecord};
-                            let toDateLabelStatusData = {...labelStatusHistoryrecord};
+                        labelHistoryData_.labels.forEach(
+                            (labelStatusHistoryrecord) => {
+                                let fromDateLabelStatusData = {...labelStatusHistoryrecord};
+                                let toDateLabelStatusData = {...labelStatusHistoryrecord};
 
-                            fromDateLabelStatusData.set = [];
-                            fromDateLabelStatusData.reset = [];
+                                fromDateLabelStatusData.set = [];
+                                fromDateLabelStatusData.reset = [];
 
-                            toDateLabelStatusData.set = [];
-                            toDateLabelStatusData.reset = [];
+                                toDateLabelStatusData.set = [];
+                                toDateLabelStatusData.reset = [];
 
-                            labelStatusHistoryrecord.set.forEach(
-                                (setDateRecord)=>{
-                                    let dateRecord = new Date(new Date(setDateRecord.dateUser).toISOString().slice(0, 10));
+                                labelStatusHistoryrecord.set.forEach(
+                                    (setDateRecord)=>{
+                                        let dateRecord = new Date(new Date(setDateRecord.dateUser).toISOString().slice(0, 10));
 
-                                    if(dateRecord <= fromDate){
-                                        fromDateLabelStatusData.set.push(setDateRecord);
+                                        if(dateRecord <= fromDate){
+                                            fromDateLabelStatusData.set.push(setDateRecord);
+                                        }
+
+                                        if(dateRecord <= toDate){
+                                            toDateLabelStatusData.set.push(setDateRecord);
+                                        }
                                     }
+                                );
+                                
+                                labelStatusHistoryrecord.reset.forEach(
+                                    (resetDateRecord)=>{
+                                        let dateRecord = new Date(new Date(resetDateRecord.dateUser).toISOString().slice(0, 10));
 
-                                    if(dateRecord <= toDate){
-                                        toDateLabelStatusData.set.push(setDateRecord);
+                                        if(dateRecord <= fromDate){
+                                            fromDateLabelStatusData.reset.push(resetDateRecord);
+                                        }
+
+                                        if(dateRecord <= toDate){
+                                            toDateLabelStatusData.reset.push(resetDateRecord);
+                                        }
                                     }
+                                );
+
+                                if(fromDateLabelStatusData.set.length > 0 || fromDateLabelStatusData.reset.length > 0){
+                                    fromDateLabels.push(fromDateLabelStatusData);
                                 }
-                            );
-                            
-                            labelStatusHistoryrecord.reset.forEach(
-                                (resetDateRecord)=>{
-                                    let dateRecord = new Date(new Date(resetDateRecord.dateUser).toISOString().slice(0, 10));
 
-                                    if(dateRecord <= fromDate){
-                                        fromDateLabelStatusData.reset.push(resetDateRecord);
-                                    }
-
-                                    if(dateRecord <= toDate){
-                                        toDateLabelStatusData.reset.push(resetDateRecord);
-                                    }
+                                if(toDateLabelStatusData.set.length > 0 || toDateLabelStatusData.reset.length > 0){
+                                    toDateLabels.push(toDateLabelStatusData);
                                 }
-                            );
 
-                            if(fromDateLabelStatusData.set.length > 0 || fromDateLabelStatusData.reset.length > 0){
-                                fromDateLabels.push(fromDateLabelStatusData);
                             }
+                        );
 
-                            if(toDateLabelStatusData.set.length > 0 || toDateLabelStatusData.reset.length > 0){
-                                toDateLabels.push(toDateLabelStatusData);
-                            }
+                        let statusColumnIndex;
 
+                        if(fromDateLabels.length > 0){
+                            let fromDateLabelsCurrentSate: CurrentStateData = getItemCurrentState(fromDateLabels);
+                            statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === fromDateLabelsCurrentSate.currentState);
+                            dateFilterChartColumnsData[0][statusColumnIndex + 1] += 1;
                         }
-                    );
-
-                    let statusColumnIndex;
-
-                    if(fromDateLabels.length > 0){
-                        let fromDateLabelsCurrentSate: CurrentStateData = getItemCurrentState(fromDateLabels);
-                        statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === fromDateLabelsCurrentSate.currentState);
-                        dateFilterChartColumnsData[0][statusColumnIndex + 1] += 1;
-                    }
-                    
-                    if(toDateLabels.length > 0){
-                        let toDateLabelsCurrentSate: CurrentStateData = getItemCurrentState(toDateLabels);
-                        statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === toDateLabelsCurrentSate.currentState);
-                        dateFilterChartColumnsData[1][statusColumnIndex + 1] += 1;
-                    }
-            
+                        
+                        if(toDateLabels.length > 0){
+                            let toDateLabelsCurrentSate: CurrentStateData = getItemCurrentState(toDateLabels);
+                            statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === toDateLabelsCurrentSate.currentState);
+                            dateFilterChartColumnsData[1][statusColumnIndex + 1] += 1;
+                        }
+                   }
                 }
             );
 
