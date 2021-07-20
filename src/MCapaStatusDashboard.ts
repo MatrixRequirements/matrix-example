@@ -2,8 +2,8 @@
 
 // Use a namespace to isolate your plugin code
 // This avoids conflicts with other plugins
-namespace CapaStatusDashboard {
-    export class CapaStatusDashboard implements IPlugin {
+namespace MCapaStatusDashboard {
+    export class MCapaStatusDashboard implements IPlugin {
         // Implement to pass back additional pages to be displayed in the tree
         getProjectPages(): IProjectPageParam[] {
             let pages: IProjectPageParam[] = [];
@@ -15,7 +15,7 @@ namespace CapaStatusDashboard {
                 icon: "fal fa-rocket",
                 usesFilters: true,
                 render: (options: IPluginPanelOptions) => {
-                    const control = new CapaStatusDashboardControl(options.control);
+                    const control = new MCapaStatusDashboardControl(options.control);
                     control.initPage();
                 },
             });
@@ -36,7 +36,7 @@ namespace CapaStatusDashboard {
     }
 
    
-    class CapaStatusDashboardControl extends BaseControl {
+    class MCapaStatusDashboardControl extends BaseControl {
 
         destroy(): void { }
 
@@ -133,5 +133,5 @@ namespace CapaStatusDashboard {
 
 // Register the plugin
 $(function () {
-    plugins.register(new CapaStatusDashboard.CapaStatusDashboard());
+    plugins.register(new MCapaStatusDashboard.MCapaStatusDashboard());
 });
