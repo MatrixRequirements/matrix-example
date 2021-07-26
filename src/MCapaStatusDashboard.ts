@@ -63,6 +63,7 @@ namespace MCapaStatusDashboard {
             Matrix.Labels.projectLabelHistory().then((result) => {
                 console.log("Check the result");
                 $(".spinningWait", that._root).hide();
+                $("#MCSONoItems", that._root).hide();
                 that.renderCharts();
             }).then(() => {
                 //Let's remove the spinning wait
