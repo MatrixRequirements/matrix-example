@@ -294,7 +294,9 @@ namespace MCapaStatusDashboard {
         }
         .bigChart
         {
-            min-height:900px;
+            width: 90%; 
+            min-height: 900px;
+            cursor:pointer;
         }
         </style>
 
@@ -363,7 +365,7 @@ namespace MCapaStatusDashboard {
                                 <h3 class="panel-title">CAPA tracker</h3>
                         </div>
                         <div class="panel-body">
-                            <div id="CapaTrackerChart" class="chart bigChart"></div>
+                            <div id="CapaTrackerChart" class="bigChart"></div>
                         </div>
                     </div>
                 </div>
