@@ -191,6 +191,9 @@ namespace MCapaStatusDashboard {
             //prepare template
             let trackerChartparams: c3.ChartConfiguration = {
                 bindto: '#CapaTrackerGraph',
+                size: {
+                    height: 600
+                },
                 data: {
                     x : 'x',
                     columns: [
