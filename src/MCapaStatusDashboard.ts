@@ -57,14 +57,17 @@ namespace MCapaStatusDashboard {
             $("#waiting", that._root).append(spinningWait);
 
             $(".spinningWait", that._root).show();
+            $("#MCSONoItems", that._root).hide();
 
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
                 console.log("Check the result");
+                $(".spinningWait", that._root).hide();
                 that.renderCharts();
             }).then(() => {
                 //Let's remove the spinning wait
                 $(".spinningWait",that._root).hide();
+                $("#MCSONoItems", that._root).show();
             });
         }
 
@@ -84,7 +87,7 @@ namespace MCapaStatusDashboard {
                     x : 'x',
                     columns: [
                         ['x', 'ST','PROD','QC','D&D','QA','MICRO','PUR','PROD','SC'],
-                        ['CAPA', 30, 20, 10, 40,30, 20, 10, 40,50]
+                        ['CAPA count by department', 30, 20, 10, 40,30, 20, 10, 40,50]
                     ],
                     type: 'bar'
                 },
@@ -112,7 +115,7 @@ namespace MCapaStatusDashboard {
                 x : 'x',
                 columns: [
                     ['x', 'Internal Audit','Process/ Product','Complaint','External Audit'],
-                    ['CAPA', 30, 20, 10, 40]
+                    ['CAPA count by category', 30, 20, 10, 40]
                 ],
                 type: 'bar'
                 },
@@ -164,7 +167,7 @@ namespace MCapaStatusDashboard {
                     x : 'x',
                     columns: [
                         ['x', 'Initiated','Approved','WFEC','Closed'],
-                        ['CAPA', 30, 20, 10, 40]
+                        ['CAPA average time spent in state', 30, 20, 10, 40]
                     ],
                     type: 'bar'
                 },
@@ -191,10 +194,10 @@ namespace MCapaStatusDashboard {
                 data: {
                     x : 'x',
                     columns: [
-                        ['x', 'CA1','CA2','PA1','PA2'],
-                        ['Initiated', 30, 20, 10, 40],
-                        ['Approved', 30, 20, 10, 40],
-                        ['WFEC', 30, 20, 10, 40]
+                        ['x', 'CA1','CA2','CA3','CA4','CA5','CA6','CA7','CA8','CA9','CA10','PA1','PA2','PA3','PA4','PA5','PA6','PA7','PA8','PA9','PA10'],
+                        ['Initiated', 30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40],
+                        ['Approved', 30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40],
+                        ['WFEC', 30, 20, 10, 40, 30, 20, 10, 40, 30, 20, 10, 40, 30, 20, 10, 40, 30, 20, 10, 40]
                     ],
                     type: 'bar',
                     groups: [
@@ -343,7 +346,7 @@ namespace MCapaStatusDashboard {
                 <div  class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title" id="AvgTimeWiseChartTitle">Average time stahe wise overview</h3>
+                            <h3 class="panel-title" id="AvgTimeWiseChartTitle">Average time state wise overview</h3>
                         </div>
                         <div class="panel-body">
                             <div class='copyTitle'> </div>
