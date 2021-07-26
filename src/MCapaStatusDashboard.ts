@@ -294,7 +294,7 @@ namespace MCapaStatusDashboard {
         }
         .bigChart
         {
-            min-height:600px;
+            min-height:900px;
         }
         </style>
 
