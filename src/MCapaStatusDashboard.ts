@@ -192,7 +192,7 @@ namespace MCapaStatusDashboard {
             let trackerChartparams: c3.ChartConfiguration = {
                 bindto: '#CapaTrackerGraph',
                 size: {
-                    height: 600
+                    height: 900
                 },
                 data: {
                     x : 'x',
