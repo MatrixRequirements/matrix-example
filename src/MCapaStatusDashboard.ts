@@ -115,7 +115,7 @@ namespace MCapaStatusDashboard {
 
 
             ml.UI.copyBuffer($("#StatusWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#StatusWiseoverviewGraph)"), this._root, (copied: JQuery) => {
-                let title_ = $("#StatusWiseChartTitle",this._root).val();
+                let title_ = $("#StatusWiseChartTitle",this._root).text();
                 $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
                 ml.UI.fixC3ForCopy(copied);
@@ -129,7 +129,7 @@ namespace MCapaStatusDashboard {
 
 
             ml.UI.copyBuffer($("#AvgTimeWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#AvgTimeWiseoverviewGraph)"), this._root, (copied: JQuery) => {
-                let title_ = $("#AvgTimeWiseChartTitle",this._root).val();
+                let title_ = $("#AvgTimeWiseChartTitle",this._root).text();
                 $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
                 ml.UI.fixC3ForCopy(copied);
@@ -143,7 +143,7 @@ namespace MCapaStatusDashboard {
 
 
             ml.UI.copyBuffer($("#CapaTrackerChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#CapaTrackerGraph)"), this._root, (copied: JQuery) => {
-                let title_ = $("#CapaTrackerChartTitle",this._root).val();
+                let title_ = $("#CapaTrackerChartTitle",this._root).text();
                 $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
                 ml.UI.fixC3ForCopy(copied);
