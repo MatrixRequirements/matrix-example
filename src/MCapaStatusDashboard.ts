@@ -81,26 +81,6 @@ namespace MCapaStatusDashboard {
             });
         }
 
-        DeptWiseChartTitle
-        DeptWiseoverviewChart
-        DeptWiseoverviewGraph
-
-        CatWiseChartTitle
-        CatWiseoverviewChart
-        CatWiseoverviewGraph
-
-        StatusWiseChartTitle
-        StatusWiseoverviewChart
-        StatusWiseoverviewGraph
-
-        AvgTimeWiseChartTitle
-        AvgTimeWiseoverviewChart
-        AvgTimeWiseoverviewGraph
-
-        CapaTrackerChartTitle
-        CapaTrackerChart
-        CapaTrackerGraph
-
         installCopyButtons(title: string) {
             let that = this;
             
