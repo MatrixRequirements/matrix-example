@@ -87,8 +87,8 @@ namespace MCapaStatusDashboard {
             let savedWidth = 0;
     
             ml.UI.copyBuffer($("#DeptWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#DeptWiseoverviewChart)"), this._root, (copied: JQuery) => {
-                //let title_ = $("#DeptWiseChartTitle",this._root).val();
-                $(".copyTitle",copied).html(`<h1> ${title}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
+                let title_ = $("#DeptWiseChartTitle",this._root).val();
+                $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
                 ml.UI.fixC3ForCopy(copied);
     
