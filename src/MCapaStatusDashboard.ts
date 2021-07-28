@@ -86,14 +86,14 @@ namespace MCapaStatusDashboard {
             
             let savedWidth = 0;
     
-            ml.UI.copyBuffer($("#DeptWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#DeptWiseoverviewGraph)"), this._root, (copied: JQuery) => {
-                let title_ = $("#DeptWiseChartTitle",this._root).val();
-                $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
+            ml.UI.copyBuffer($("#DeptWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#DeptWiseoverviewChart)"), this._root, (copied: JQuery) => {
+                //let title_ = $("#DeptWiseChartTitle",this._root).val();
+                $(".copyTitle",copied).html(`<h1> ${title}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
                 ml.UI.fixC3ForCopy(copied);
     
             },"",()=>{
-                savedWidth = $("#DeptWiseoverviewGraph svg",this._root).width();
+                savedWidth = $("#DeptWiseoverviewChart svg",this._root).width();
                 that.DeptWiseoverviewChart.resize({width:590});
             },()=>{
                 that.DeptWiseoverviewChart.resize({width:savedWidth})
