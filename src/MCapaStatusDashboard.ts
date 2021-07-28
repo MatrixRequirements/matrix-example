@@ -57,18 +57,18 @@ namespace MCapaStatusDashboard {
             $("#waiting", that._root).append(spinningWait);
 
             $(".spinningWait", that._root).show();
-            $("#MCSONoItems", that._root).hide();
+            //$("#MCSONoItems", that._root).hide();
 
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
                 console.log("Check the result");
                 $(".spinningWait", that._root).hide();
-                $("#MCSONoItems", that._root).hide();
+                //$("#MCSONoItems", that._root).hide();
                 that.renderCharts();
             }).then(() => {
                 //Let's remove the spinning wait
                 $(".spinningWait",that._root).hide();
-                $("#MCSONoItems", that._root).show();
+                //$("#MCSONoItems", that._root).show();
             });
         }
 
@@ -288,6 +288,8 @@ namespace MCapaStatusDashboard {
         // </div>
         // `
 
+        //<div id="MCSONoItems">Not enough data to display MCSO Overview </div>
+
         ExampleHTMLDom = `
         <div class="panel-body-v-scroll fillHeight panel-default ">
         <style>
@@ -308,7 +310,6 @@ namespace MCapaStatusDashboard {
             <div class="row" id="waiting" class="spinningWait">
 
             </div>
-            <div id="MCSONoItems">Not enough data to display MCSO Overview </div>
         </div>
 
         <div id="MCSOContent" class="" style="margin:10px;" >
