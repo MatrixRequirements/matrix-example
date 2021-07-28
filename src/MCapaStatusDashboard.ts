@@ -100,56 +100,56 @@ namespace MCapaStatusDashboard {
             });
 
 
-            ml.UI.copyBuffer($("#CatWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#CatWiseoverviewGraph)"), this._root, (copied: JQuery) => {
+            ml.UI.copyBuffer($("#CatWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#CatWiseoverviewChart)"), this._root, (copied: JQuery) => {
                 let title_ = $("#CatWiseChartTitle",this._root).text();
                 $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
                 ml.UI.fixC3ForCopy(copied);
     
             },"",()=>{
-                savedWidth = $("#CatWiseoverviewGraph svg",this._root).width();
+                savedWidth = $("#CatWiseoverviewChart svg",this._root).width();
                 that.CatWiseoverviewChart.resize({width:590});
             },()=>{
                 that.CatWiseoverviewChart.resize({width:savedWidth})
             });
 
 
-            ml.UI.copyBuffer($("#StatusWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#StatusWiseoverviewGraph)"), this._root, (copied: JQuery) => {
+            ml.UI.copyBuffer($("#StatusWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#StatusWiseoverviewChart)"), this._root, (copied: JQuery) => {
                 let title_ = $("#StatusWiseChartTitle",this._root).text();
                 $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
                 ml.UI.fixC3ForCopy(copied);
     
             },"",()=>{
-                savedWidth = $("#StatusWiseoverviewGraph svg",this._root).width();
+                savedWidth = $("#StatusWiseoverviewChart svg",this._root).width();
                 that.StatusWiseoverviewChart.resize({width:590});
             },()=>{
                 that.StatusWiseoverviewChart.resize({width:savedWidth})
             });
 
 
-            ml.UI.copyBuffer($("#AvgTimeWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#AvgTimeWiseoverviewGraph)"), this._root, (copied: JQuery) => {
+            ml.UI.copyBuffer($("#AvgTimeWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#AvgTimeWiseoverviewChart)"), this._root, (copied: JQuery) => {
                 let title_ = $("#AvgTimeWiseChartTitle",this._root).text();
                 $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
                 ml.UI.fixC3ForCopy(copied);
     
             },"",()=>{
-                savedWidth = $("#AvgTimeWiseoverviewGraph svg",this._root).width();
+                savedWidth = $("#AvgTimeWiseoverviewChart svg",this._root).width();
                 that.AvgTimeWiseoverviewChart.resize({width:590});
             },()=>{
                 that.AvgTimeWiseoverviewChart.resize({width:savedWidth})
             });
 
 
-            ml.UI.copyBuffer($("#CapaTrackerChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#CapaTrackerGraph)"), this._root, (copied: JQuery) => {
+            ml.UI.copyBuffer($("#CapaTrackerChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#CapaTrackerChart)"), this._root, (copied: JQuery) => {
                 let title_ = $("#CapaTrackerChartTitle",this._root).text();
                 $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
                 ml.UI.fixC3ForCopy(copied);
     
             },"",()=>{
-                savedWidth = $("#CapaTrackerGraph svg",this._root).width();
+                savedWidth = $("#CapaTrackerChart svg",this._root).width();
                 that.CapaTrackerChart.resize({width:590});
             },()=>{
                 that.CapaTrackerChart.resize({width:savedWidth})
