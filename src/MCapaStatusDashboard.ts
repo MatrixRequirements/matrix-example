@@ -38,6 +38,12 @@ namespace MCapaStatusDashboard {
    
     class MCapaStatusDashboardControl extends BaseControl {
 
+        DeptWiseoverviewChart: c3.ChartAPI;
+        CatWiseoverviewChart: c3.ChartAPI;
+        StatusWiseoverviewChart: c3.ChartAPI;
+        AvgTimeWiseoverviewChart: c3.ChartAPI;
+        CapaTrackerChart: c3.ChartAPI;
+
         destroy(): void { }
 
         getValue(): any { }
@@ -59,6 +65,9 @@ namespace MCapaStatusDashboard {
             $(".spinningWait", that._root).show();
             //$("#MCSONoItems", that._root).hide();
 
+
+            setTimeout(o => that.installCopyButtons("MCAPA Status Overview"), 10);
+
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
                 console.log("Check the result");
@@ -69,6 +78,101 @@ namespace MCapaStatusDashboard {
                 //Let's remove the spinning wait
                 $(".spinningWait",that._root).hide();
                 //$("#MCSONoItems", that._root).show();
+            });
+        }
+
+        DeptWiseChartTitle
+        DeptWiseoverviewChart
+        DeptWiseoverviewGraph
+
+        CatWiseChartTitle
+        CatWiseoverviewChart
+        CatWiseoverviewGraph
+
+        StatusWiseChartTitle
+        StatusWiseoverviewChart
+        StatusWiseoverviewGraph
+
+        AvgTimeWiseChartTitle
+        AvgTimeWiseoverviewChart
+        AvgTimeWiseoverviewGraph
+
+        CapaTrackerChartTitle
+        CapaTrackerChart
+        CapaTrackerGraph
+
+        installCopyButtons(title: string) {
+            let that = this;
+            
+            let savedWidth = 0;
+    
+            ml.UI.copyBuffer($("#DeptWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#DeptWiseoverviewGraph)"), this._root, (copied: JQuery) => {
+                let title_ = $("#DeptWiseChartTitle",this._root).val();
+                $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
+    
+                ml.UI.fixC3ForCopy(copied);
+    
+            },"",()=>{
+                savedWidth = $("#DeptWiseoverviewGraph svg",this._root).width();
+                that.DeptWiseoverviewChart.resize({width:590});
+            },()=>{
+                that.DeptWiseoverviewChart.resize({width:savedWidth})
+            });
+
+
+            ml.UI.copyBuffer($("#CatWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#CatWiseoverviewGraph)"), this._root, (copied: JQuery) => {
+                let title_ = $("#CatWiseChartTitle",this._root).val();
+                $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
+    
+                ml.UI.fixC3ForCopy(copied);
+    
+            },"",()=>{
+                savedWidth = $("#CatWiseoverviewGraph svg",this._root).width();
+                that.CatWiseoverviewChart.resize({width:590});
+            },()=>{
+                that.CatWiseoverviewChart.resize({width:savedWidth})
+            });
+
+
+            ml.UI.copyBuffer($("#StatusWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#StatusWiseoverviewGraph)"), this._root, (copied: JQuery) => {
+                let title_ = $("#StatusWiseChartTitle",this._root).val();
+                $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
+    
+                ml.UI.fixC3ForCopy(copied);
+    
+            },"",()=>{
+                savedWidth = $("#StatusWiseoverviewGraph svg",this._root).width();
+                that.StatusWiseoverviewChart.resize({width:590});
+            },()=>{
+                that.StatusWiseoverviewChart.resize({width:savedWidth})
+            });
+
+
+            ml.UI.copyBuffer($("#AvgTimeWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#AvgTimeWiseoverviewGraph)"), this._root, (copied: JQuery) => {
+                let title_ = $("#AvgTimeWiseChartTitle",this._root).val();
+                $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
+    
+                ml.UI.fixC3ForCopy(copied);
+    
+            },"",()=>{
+                savedWidth = $("#AvgTimeWiseoverviewGraph svg",this._root).width();
+                that.AvgTimeWiseoverviewChart.resize({width:590});
+            },()=>{
+                that.AvgTimeWiseoverviewChart.resize({width:savedWidth})
+            });
+
+
+            ml.UI.copyBuffer($("#CapaTrackerChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#CapaTrackerGraph)"), this._root, (copied: JQuery) => {
+                let title_ = $("#CapaTrackerChartTitle",this._root).val();
+                $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
+    
+                ml.UI.fixC3ForCopy(copied);
+    
+            },"",()=>{
+                savedWidth = $("#CapaTrackerGraph svg",this._root).width();
+                that.CapaTrackerChart.resize({width:590});
+            },()=>{
+                that.CapaTrackerChart.resize({width:savedWidth})
             });
         }
 
@@ -104,7 +208,7 @@ namespace MCapaStatusDashboard {
 
             $("#DeptWiseoverviewChart").append("<div id='DeptWiseoverviewGraph'>");
 
-            let renderedChart = c3.generate(byDeptChartparams);
+            this.DeptWiseoverviewChart = c3.generate(byDeptChartparams);
             //this.charts.push(renderedChart);
         }
 
@@ -132,7 +236,7 @@ namespace MCapaStatusDashboard {
 
            $("#CatWiseoverviewChart").append("<div id='CatWiseoverviewGraph'>");
 
-           let renderedChart = c3.generate(byCatChartparams);
+           this.CatWiseoverviewChart = c3.generate(byCatChartparams);
            //this.charts.push(renderedChart);
        }
 
@@ -156,7 +260,7 @@ namespace MCapaStatusDashboard {
 
             $("#StatusWiseoverviewChart").append("<div id='StatusWiseoverviewGraph'>");
 
-            let renderedChart = c3.generate(byStatusChartparams);
+            this.StatusWiseoverviewChart = c3.generate(byStatusChartparams);
             //this.charts.push(renderedChart);
         }
 
@@ -184,7 +288,7 @@ namespace MCapaStatusDashboard {
 
             $("#AvgTimeWiseoverviewChart").append("<div id='AvgTimeWiseoverviewGraph'>");
 
-            let renderedChart = c3.generate(byAvgTimeChartparams);
+            this.AvgTimeWiseoverviewChart = c3.generate(byAvgTimeChartparams);
             //this.charts.push(renderedChart);
         }
 
@@ -221,7 +325,7 @@ namespace MCapaStatusDashboard {
 
             $("#CapaTrackerChart").append("<div id='CapaTrackerGraph'>");
 
-            let renderedChart = c3.generate(trackerChartparams);
+            this.CapaTrackerChart = c3.generate(trackerChartparams);
             //this.charts.push(renderedChart);
         }
 
@@ -289,6 +393,7 @@ namespace MCapaStatusDashboard {
         // `
 
         //<div id="MCSONoItems">Not enough data to display MCSO Overview </div>
+
 
         ExampleHTMLDom = `
         <div class="panel-body-v-scroll fillHeight panel-default ">
@@ -367,7 +472,7 @@ namespace MCapaStatusDashboard {
                 <div class="col-lg-12"> 
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                                <h3 class="panel-title">CAPA tracker</h3>
+                            <h3 class="panel-title" id="CapaTrackerChartTitle">CAPA tracker</h3>
                         </div>
                         <div class="panel-body">
                             <div id="CapaTrackerChart" class="bigChart"></div>
