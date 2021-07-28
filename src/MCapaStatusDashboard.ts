@@ -455,6 +455,7 @@ namespace MCapaStatusDashboard {
                             <h3 class="panel-title" id="CapaTrackerChartTitle">CAPA tracker</h3>
                         </div>
                         <div class="panel-body">
+                            <div class='copyTitle'> </div>
                             <div id="CapaTrackerChart" class="bigChart"></div>
                         </div>
                     </div>
