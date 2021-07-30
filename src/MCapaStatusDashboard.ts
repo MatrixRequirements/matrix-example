@@ -338,7 +338,9 @@ namespace MCapaStatusDashboard {
             let categories = IC.getCategories();
             let index = 0;
 
-            categories.forEach(cat => {
+            let capaCategories = categories.filter(cat => cat == "CA" || cat == "PA");
+
+            capaCategories.forEach(cat => {
 
                 if (ml.LabelTools.getLabelDefinitions([cat]).length > 0) {
                     let item = $(`<li class="cat" data-cat="${cat}"><a href="javascript:void(0)">${cat}</a></li>`).click(function () {
