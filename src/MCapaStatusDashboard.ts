@@ -38,6 +38,7 @@ namespace MCapaStatusDashboard {
    
     class MCapaStatusDashboardControl extends BaseControl {
 
+        currentCat: string = "";
         DeptWiseoverviewChart: c3.ChartAPI;
         CatWiseoverviewChart: c3.ChartAPI;
         StatusWiseoverviewChart: c3.ChartAPI;
@@ -344,7 +345,7 @@ namespace MCapaStatusDashboard {
 
                 if (ml.LabelTools.getLabelDefinitions([cat]).length > 0) {
                     let item = $(`<li class="cat" data-cat="${cat}"><a href="javascript:void(0)">${cat}</a></li>`).click(function () {
-                        console.log("Render based on CAT selected");
+                        that.renderCategoryWiseData(cat);
                     });
                     $(".dropdown-menu", select).append(item);
                     if (index == 0) {
@@ -354,6 +355,20 @@ namespace MCapaStatusDashboard {
                 }
             });
 
+        }
+
+        public renderCategoryWiseData(cat: string) {
+            
+            if (cat == undefined) {
+                return;
+            }
+            if (cat == "")
+                cat = $("#itemSelectionLabelDashboard .dropdown-menu li:first").text();
+
+            this.currentCat = cat;
+
+            $("#selectedCat", this._root).text(cat);
+            
         }
 
         
