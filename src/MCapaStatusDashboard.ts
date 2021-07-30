@@ -35,15 +35,27 @@ namespace MCapaStatusDashboard {
         }
     }
 
+    interface ByCategoryLabelData {
+        category: string;
+        deptWiseData: any[];
+        categoryWiseData: any[];
+        statusWiseData: any[];
+        statusWiseAvgData: any[];
+        stateTracketData: any[];
+    }
    
     class MCapaStatusDashboardControl extends BaseControl {
 
         currentCat: string = "";
+        departments: any[] = [];
+        categories: any[] = [];
+        ByCategoryLabelDetails: ByCategoryLabelData[] = [];
         DeptWiseoverviewChart: c3.ChartAPI;
         CatWiseoverviewChart: c3.ChartAPI;
         StatusWiseoverviewChart: c3.ChartAPI;
         AvgTimeWiseoverviewChart: c3.ChartAPI;
         CapaTrackerChart: c3.ChartAPI;
+
 
         destroy(): void { }
 
@@ -58,6 +70,17 @@ namespace MCapaStatusDashboard {
         // Set up the page, load data and then render the content
         initPage() {
             let that = this;
+
+            //fetch departments
+            let departments_ = new LabelTools().getLabelGroups( "CA").filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
+
+            departments_.forEach(dept => {
+                let deptDispName = new LabelTools().getDisplayName(dept);
+                this.departments.push(deptDispName);
+            });
+
+            this.categories = new LabelTools().getLabelGroups( "CA").filter( lg => lg.filterMenu && lg.filterMenu.displayName == "CAPA Category")[0].labels;
+
             that.renderHTML();
             //Add a waiting spinning item
             let spinningWait = ml.UI.getSpinningWait("Please wait...");
@@ -341,7 +364,21 @@ namespace MCapaStatusDashboard {
 
             let capaCategories = categories.filter(cat => cat == "CA" || cat == "PA");
 
+            let deptWiseInitials = Array(this.departments.length).fill(0);
+            let catWiseInitials = Array(this.categories.length).fill(0);
+
             capaCategories.forEach(cat => {
+
+                let ByCategoryLabelData: ByCategoryLabelData = {
+                    category: cat,
+                    deptWiseData: [cat, ...deptWiseInitials],
+                    categoryWiseData: [cat, ...catWiseInitials],
+                    statusWiseData: [],
+                    statusWiseAvgData: [],
+                    stateTracketData: []
+                };
+    
+                this.ByCategoryLabelDetails.push(ByCategoryLabelData)
 
                 if (ml.LabelTools.getLabelDefinitions([cat]).length > 0) {
                     let item = $(`<li class="cat" data-cat="${cat}"><a href="javascript:void(0)">${cat}</a></li>`).click(function () {
@@ -358,7 +395,7 @@ namespace MCapaStatusDashboard {
         }
 
         public renderCategoryWiseData(cat: string) {
-            
+
             if (cat == undefined) {
                 return;
             }
