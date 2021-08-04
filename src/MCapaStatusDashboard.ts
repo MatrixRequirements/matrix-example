@@ -37,18 +37,22 @@ namespace MCapaStatusDashboard {
 
     interface ByCategoryLabelData {
         category: string;
+        departments: any[];
+        catagories: any[];
+        stateCodes: any[];
+        stateDesc: any[];
         deptWiseData: any[];
         categoryWiseData: any[];
         statusWiseData: any[];
+        statusWiseTotalDaysData: any[];
         statusWiseAvgData: any[];
         stateTracketData: any[];
+        closedState: string;
     }
    
     class MCapaStatusDashboardControl extends BaseControl {
 
         currentCat: string = "";
-        departments: any[] = [];
-        categories: any[] = [];
         ByCategoryLabelDetails: ByCategoryLabelData[] = [];
         DeptWiseoverviewChart: c3.ChartAPI;
         CatWiseoverviewChart: c3.ChartAPI;
@@ -71,16 +75,6 @@ namespace MCapaStatusDashboard {
         initPage() {
             let that = this;
 
-            //fetch departments
-            let departments_ = new LabelTools().getLabelGroups( "CA").filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
-
-            departments_.forEach(dept => {
-                let deptDispName = new LabelTools().getDisplayName(dept);
-                this.departments.push(deptDispName);
-            });
-
-            this.categories = new LabelTools().getLabelGroups( "CA").filter( lg => lg.filterMenu && lg.filterMenu.displayName == "CAPA Category")[0].labels;
-
             that.renderHTML();
             //Add a waiting spinning item
             let spinningWait = ml.UI.getSpinningWait("Please wait...");
@@ -98,6 +92,7 @@ namespace MCapaStatusDashboard {
                 $(".spinningWait", that._root).hide();
                 //$("#MCSONoItems", that._root).hide();
                 that.renderCharts();
+                that.processLabelsData(result);
             }).then(() => {
                 //Let's remove the spinning wait
                 $(".spinningWait",that._root).hide();
@@ -364,18 +359,94 @@ namespace MCapaStatusDashboard {
 
             let capaCategories = categories.filter(cat => cat == "CA" || cat == "PA");
 
-            let deptWiseInitials = Array(this.departments.length).fill(0);
-            let catWiseInitials = Array(this.categories.length).fill(0);
-
             capaCategories.forEach(cat => {
+
+                 let departments: any[] = [];
+                 let categories: any[] = [];
+                 let stateCodes: any[] = [];
+                 let stateDesc: any[];
+                 let deptWiseInitials: any[] = [];
+                 let catWiseInitials: any[] = [];
+                 let SateWiseAvgInitials: any[] = [];
+                 let statusWiseData: any[] = [];
+                 let stateTracketData: any[] = [];
+                 let statusWiseTotalDaysData: any[] = [];
+                 let closedState;
+                 
+                let departments_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
+
+                departments_.forEach(dept => {
+                    let deptDispName = new LabelTools().getDisplayName(dept);
+                    departments.push(deptDispName);
+                });
+    
+                categories = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "CAPA Category")[0].labels;
+    
+                deptWiseInitials = Array(departments.length).fill(0);
+                catWiseInitials = Array(categories.length).fill(0);
+
+                let states_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == cat)[0].labels.sort();
+
+                if(cat === "CA"){
+
+                    stateCodes = states_.sort();
+                    stateDesc =  ['Initiated','Approved','RC Approved', 'WFEC','Closed'];
+                    SateWiseAvgInitials = Array(stateDesc.length).fill(0);
+                    statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0],[0,0]];
+                    closedState = "AN5";
+
+                    statusWiseData = [
+                        ['Initiated', 0],
+                        ['Approved', 0],
+                        ['RC Approved', 0],
+                        ['WFEC', 0],
+                        ['Closed', 0]
+                    ];
+
+                    stateTracketData = [
+                        ['x']
+                        ['Initiated'],
+                        ['Approved'],
+                        ['RC Approved'],
+                        ['WFEC']
+                    ];
+
+                }else{
+
+                    stateCodes = states_;
+                    stateDesc =  ['Initiated','Approved','RC Approved','Closed'];
+                    SateWiseAvgInitials = Array(stateDesc.length).fill(0);
+                    statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0]];
+                    closedState = "PAC";
+
+                    statusWiseData = [
+                        ['Initiated', 0],
+                        ['Approved', 0],
+                        ['RC Approved', 0],
+                        ['Closed', 0]
+                    ];
+
+                    stateTracketData = [
+                        ['x']
+                        ['Initiated'],
+                        ['Approved'],
+                        ['RC Approved']
+                    ];
+                }
 
                 let ByCategoryLabelData: ByCategoryLabelData = {
                     category: cat,
+                    departments: departments,
+                    catagories: categories,
+                    stateCodes: stateCodes,
+                    stateDesc: stateDesc,
                     deptWiseData: [cat, ...deptWiseInitials],
                     categoryWiseData: [cat, ...catWiseInitials],
-                    statusWiseData: [],
-                    statusWiseAvgData: [],
-                    stateTracketData: []
+                    statusWiseData: statusWiseData,
+                    statusWiseTotalDaysData: statusWiseTotalDaysData,
+                    statusWiseAvgData: [cat, ...SateWiseAvgInitials],
+                    stateTracketData: stateTracketData,
+                    closedState: closedState
                 };
     
                 this.ByCategoryLabelDetails.push(ByCategoryLabelData)
@@ -394,7 +465,7 @@ namespace MCapaStatusDashboard {
 
         }
 
-        public renderCategoryWiseData(cat: string) {
+        renderCategoryWiseData(cat: string) {
 
             if (cat == undefined) {
                 return;
@@ -406,6 +477,109 @@ namespace MCapaStatusDashboard {
 
             $("#selectedCat", this._root).text(cat);
             
+        }
+
+        processLabelsData(labels: XRLabelEntry[]){
+
+            for (const item of labels) {
+
+                let itemCategory = item.itemRef.substring(0, item.itemRef.indexOf('-'));
+                let ByCategoryLabelData: ByCategoryLabelData;
+                let itemIndex = -1;
+
+                for (const ByCategoryData of this.ByCategoryLabelDetails) {
+                    if (itemCategory == ByCategoryData.category) {
+                        ByCategoryLabelData = ByCategoryData;
+                        break;
+                    }
+                }
+
+                for (const label of item.labels) {
+                    //check for item department
+                    // statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === fromDateLabelsCurrentSate.currentState);
+                    // dateFilterChartColumnsData[0][statusColumnIndex + 1] += 1;
+
+                    let deptIndex = ByCategoryLabelData.departments.findIndex(dept => dept === label.label);
+
+                    if(deptIndex && deptIndex !== -1){
+                        ByCategoryLabelData.deptWiseData[deptIndex + 1] += 1;
+                    }
+
+                    let catIndex = ByCategoryLabelData.catagories.findIndex(cat => cat === label.label);
+
+                    if(catIndex && catIndex !== -1){
+                        ByCategoryLabelData.categoryWiseData[catIndex + 1] += 1;
+                    }
+
+                    let stateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === label.label);
+
+                    if(stateIndex && stateIndex !== -1){
+                        //check for current state
+                        if(label.reset.length == 0){
+                            ByCategoryLabelData.statusWiseData[stateIndex][0] += 1;
+                        }
+
+                         //get the number of days label state was in
+                        label.set.sort((a, b) => a.version - b.version);
+                        label.reset.sort((a, b) => a.version - b.version);
+
+                        const labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
+                            let stateDays: number;
+                            if (label.reset[currentIndex]) {
+                                const setDate = new Date(currentValue.dateUser);
+                                const resetDate = new Date(label.reset[currentIndex].dateUser);
+
+                                let time_difference = resetDate.getTime() - setDate.getTime();
+
+                                //calculate days difference by dividing total milliseconds in a day  
+                                let days_difference = time_difference / (1000 * 60 * 60 * 24);
+
+                                stateDays = Math.floor(days_difference);
+                            } else {
+                                const setDate = new Date(currentValue.dateUser);
+                                const resetDate = new Date();
+
+                                let time_difference = resetDate.getTime() - setDate.getTime();
+
+                                //calculate days difference by dividing total milliseconds in a day  
+                                let days_difference = time_difference / (1000 * 60 * 60 * 24);
+
+                                stateDays = Math.floor(days_difference);
+                            }
+
+                            return accumulator + stateDays;
+
+                        }, 0);
+
+                        ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
+                        ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
+
+                        //check if state is closed or not
+                        if(label.label !== ByCategoryLabelData.closedState){
+                            //update state tracker
+                            if(itemIndex && itemIndex !== -1){
+                                ByCategoryLabelData.stateTracketData[stateIndex + 1][itemIndex] += 1;
+                            }else{
+                                ByCategoryLabelData.stateTracketData[0].push(item.itemRef);
+                                itemIndex = ByCategoryLabelData.stateTracketData[0].length - 2;
+                                for (let i = 1; i <= ByCategoryLabelData.stateCodes.length; i++) {
+                                    ByCategoryLabelData.stateTracketData[i].push(0);
+                                }
+                            }
+                        }    
+                    }
+                } 
+            }
+
+            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+                ByCategoryLabelData.statusWiseTotalDaysData.forEach((element,index) => {
+                    let avgData = 0;
+                    if(element[1] !== 0){
+                        avgData = element[0]/element[1]
+                    }
+                    ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData;
+                });
+            }
         }
 
         
