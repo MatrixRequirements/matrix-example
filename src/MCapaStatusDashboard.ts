@@ -481,10 +481,10 @@ namespace MCapaStatusDashboard {
 
                 let itemCategory: String = item.itemRef.substring(0, item.itemRef.indexOf('-'));
                 
-                if(itemCategory && (itemCategory != "CA" || itemCategory != "PA"){
+                if(itemCategory && (itemCategory != "CA" || itemCategory != "PA")){
                     continue;
                 }
-                
+
                 let ByCategoryLabelData: ByCategoryLabelData;
                 let itemIndex = -1;
 
