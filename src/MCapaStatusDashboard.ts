@@ -501,7 +501,7 @@ namespace MCapaStatusDashboard {
                         ByCategoryLabelData.deptWiseData[deptIndex + 1] += 1;
                     }
 
-                    let catIndex = ByCategoryLabelData.catagories.findIndex(cat => cat === label.label);
+                    let catIndex = ByCategoryLabelData.categories.findIndex(cat => cat === label.label);
 
                     if(catIndex && catIndex !== -1){
                         ByCategoryLabelData.categoryWiseData[catIndex + 1] += 1;
