@@ -38,9 +38,10 @@ namespace MCapaStatusDashboard {
     interface ByCategoryLabelData {
         category: string;
         departments: any[];
-        catagories: any[];
+        categories: any[];
         stateCodes: any[];
         stateDesc: any[];
+        trackerStates: any[];
         deptWiseData: any[];
         categoryWiseData: any[];
         statusWiseData: any[];
@@ -91,8 +92,8 @@ namespace MCapaStatusDashboard {
                 console.log("Check the result");
                 $(".spinningWait", that._root).hide();
                 //$("#MCSONoItems", that._root).hide();
-                that.renderCharts();
                 that.processLabelsData(result);
+                that.renderCategoryWiseData("");
             }).then(() => {
                 //Let's remove the spinning wait
                 $(".spinningWait",that._root).hide();
@@ -175,23 +176,15 @@ namespace MCapaStatusDashboard {
             });
         }
 
-        renderCharts(){
-          this.renderByDeptChart();
-          this.renderByCatChart();
-          this.renderByStatusChart();
-          this.renderByAvgTimeChart();
-          this.renderTrackerChart();
-        }
-
-        renderByDeptChart(){
+        renderByDeptChart(departments,deptWiseData){
              //prepare template
              let byDeptChartparams: c3.ChartConfiguration = {
                 bindto: '#DeptWiseoverviewGraph',
                 data: {
                     x : 'x',
                     columns: [
-                        ['x', 'ST','PROD','QC','D&D','QA','MICRO','PUR','PROD','SC'],
-                        ['CAPA count by department', 30, 20, 10, 40,30, 20, 10, 40,50]
+                        ['x', ...departments],
+                        deptWiseData
                     ],
                     type: 'bar'
                 },
@@ -211,15 +204,15 @@ namespace MCapaStatusDashboard {
             //this.charts.push(renderedChart);
         }
 
-        renderByCatChart(){
+        renderByCatChart(categories,categoryWiseData){
             //prepare template
             let byCatChartparams: c3.ChartConfiguration = {
                bindto: '#CatWiseoverviewGraph',
                data: {
                 x : 'x',
                 columns: [
-                    ['x', 'Internal Audit','Process/ Product','Complaint','External Audit'],
-                    ['CAPA count by category', 30, 20, 10, 40]
+                    ['x', ...categories],
+                    categoryWiseData
                 ],
                 type: 'bar'
                 },
@@ -239,17 +232,12 @@ namespace MCapaStatusDashboard {
            //this.charts.push(renderedChart);
        }
 
-       renderByStatusChart(){
+       renderByStatusChart(statusWiseData){
                 //prepare template
                 let byStatusChartparams: c3.ChartConfiguration = {
                 bindto: '#StatusWiseoverviewGraph',
                 data: {
-                    columns: [
-                        ['Initiated', 38],
-                        ['Approved', 8],
-                        ['WFEC', 31],
-                        ['Closed', 23]
-                    ],
+                    columns: statusWiseData,
                     type : 'pie'
                 }
             };
@@ -263,15 +251,15 @@ namespace MCapaStatusDashboard {
             //this.charts.push(renderedChart);
         }
 
-        renderByAvgTimeChart(){
+        renderByAvgTimeChart(states,statusWiseAvgData){
             //prepare template
             let byAvgTimeChartparams: c3.ChartConfiguration = {
                 bindto: '#AvgTimeWiseoverviewGraph',
                 data: {
                     x : 'x',
                     columns: [
-                        ['x', 'Initiated','Approved','WFEC','Closed'],
-                        ['CAPA average time spent in state', 30, 20, 10, 40]
+                        ['x', ...states],
+                        statusWiseAvgData
                     ],
                     type: 'bar'
                 },
@@ -291,7 +279,7 @@ namespace MCapaStatusDashboard {
             //this.charts.push(renderedChart);
         }
 
-        renderTrackerChart(){
+        renderTrackerChart(trackerStates,stateTracketData){
             //prepare template
             let trackerChartparams: c3.ChartConfiguration = {
                 bindto: '#CapaTrackerGraph',
@@ -300,15 +288,10 @@ namespace MCapaStatusDashboard {
                 },
                 data: {
                     x : 'x',
-                    columns: [
-                        ['x', 'CA1','CA2','CA3','CA4','CA5','CA6','CA7','CA8','CA9','CA10','PA1','PA2','PA3','PA4','PA5','PA6','PA7','PA8','PA9','PA10'],
-                        ['Initiated', 30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40],
-                        ['Approved', 30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40],
-                        ['WFEC', 30, 20, 10, 40, 30, 20, 10, 40, 30, 20, 10, 40, 30, 20, 10, 40, 30, 20, 10, 40]
-                    ],
+                    columns: stateTracketData,
                     type: 'bar',
                     groups: [
-                                ['Initiated', 'Approved', 'WFEC']
+                              trackerStates
                             ]
                 },
                 axis: {
@@ -365,6 +348,7 @@ namespace MCapaStatusDashboard {
                  let categories: any[] = [];
                  let stateCodes: any[] = [];
                  let stateDesc: any[];
+                 let trackerStates: any[];
                  let deptWiseInitials: any[] = [];
                  let catWiseInitials: any[] = [];
                  let SateWiseAvgInitials: any[] = [];
@@ -391,6 +375,7 @@ namespace MCapaStatusDashboard {
 
                     stateCodes = states_.sort();
                     stateDesc =  ['Initiated','Approved','RC Approved', 'WFEC','Closed'];
+                    trackerStates = ['Initiated','Approved','RC Approved', 'WFEC'];
                     SateWiseAvgInitials = Array(stateDesc.length).fill(0);
                     statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0],[0,0]];
                     closedState = "AN5";
@@ -415,6 +400,7 @@ namespace MCapaStatusDashboard {
 
                     stateCodes = states_;
                     stateDesc =  ['Initiated','Approved','RC Approved','Closed'];
+                    trackerStates = ['Initiated','Approved','RC Approved'];
                     SateWiseAvgInitials = Array(stateDesc.length).fill(0);
                     statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0]];
                     closedState = "PAC";
@@ -437,14 +423,15 @@ namespace MCapaStatusDashboard {
                 let ByCategoryLabelData: ByCategoryLabelData = {
                     category: cat,
                     departments: departments,
-                    catagories: categories,
+                    categories: categories,
                     stateCodes: stateCodes,
                     stateDesc: stateDesc,
-                    deptWiseData: [cat, ...deptWiseInitials],
-                    categoryWiseData: [cat, ...catWiseInitials],
+                    trackerStates: trackerStates,
+                    deptWiseData: [cat + ' count by department', ...deptWiseInitials],
+                    categoryWiseData: [cat + ' count by category', ...catWiseInitials],
                     statusWiseData: statusWiseData,
                     statusWiseTotalDaysData: statusWiseTotalDaysData,
-                    statusWiseAvgData: [cat, ...SateWiseAvgInitials],
+                    statusWiseAvgData: [cat + ' average time spent in state', ...SateWiseAvgInitials],
                     stateTracketData: stateTracketData,
                     closedState: closedState
                 };
@@ -476,7 +463,16 @@ namespace MCapaStatusDashboard {
             this.currentCat = cat;
 
             $("#selectedCat", this._root).text(cat);
-            
+
+            let ByCategoryLabelData = this.ByCategoryLabelDetails
+                .find(({ category }) => category === this.currentCat);
+
+            this.renderByDeptChart(ByCategoryLabelData.departments,ByCategoryLabelData.deptWiseData);
+            this.renderByCatChart(ByCategoryLabelData.categories,ByCategoryLabelData.categoryWiseData);
+            this.renderByStatusChart(ByCategoryLabelData.statusWiseData);
+            this.renderByAvgTimeChart(ByCategoryLabelData.stateDesc,ByCategoryLabelData.statusWiseAvgData);
+            this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTracketData);
+
         }
 
         processLabelsData(labels: XRLabelEntry[]){
@@ -584,25 +580,6 @@ namespace MCapaStatusDashboard {
 
         
         // HTML template
-        // ExampleHTMLDom = `<div class="panel-body-v-scroll fillHeight">
-        // <style>
-        // </style>
-        // <div class="row" id="waiting" class=""></div>
-        // <div class="panel-body" id="CapaStatusDashboardPanel">
-        //     <div id="">   
-        //         <div class="panel panel-default">
-        //             <div class="panel-heading">
-        //                 <h3 class="panel-title" id="CapaStatusChartTitle">MCapa Status Overview</h3>
-        //             </div>
-        //             <div class="panel-body chartcontainer"></div>
-        //        </div>
-        //     </div>
-        // </div>
-        // `
-
-        //<div id="MCSONoItems">Not enough data to display MCSO Overview </div>
-
-
         ExampleHTMLDom = `
         <div class="panel-body-v-scroll fillHeight panel-default ">
         <style>
