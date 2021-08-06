@@ -223,39 +223,39 @@ namespace MCapaStatusDashboard {
 
         renderByCatChart(categories,categoryWiseData){
             //prepare template
-        //     let byCatChartparams: c3.ChartConfiguration = {
-        //        bindto: '#CatWiseoverviewGraph',
-        //        data: {
-        //         x : 'x',
-        //         columns: [
-        //             ['x', ...categories],
-        //             categoryWiseData
-        //         ],
-        //         type: 'bar'
-        //         },
-        //         axis: {
-        //             x: {
-        //                 type: 'category'
-        //             }
-        //         }
-        //    };
+            let byCatChartparams: c3.ChartConfiguration = {
+               bindto: '#CatWiseoverviewGraph',
+               data: {
+                x : 'x',
+                columns: [
+                    ['x', ...categories],
+                    categoryWiseData
+                ],
+                type: 'bar'
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+                }
+           };
 
-           let byCatChartparams: c3.ChartConfiguration = {
-            bindto: '#CatWiseoverviewGraph',
-            data: {
-             x : 'x',
-             columns: [
-                 ['x', 'Internal Audit','Process/ Product','Complaint','External Audit'],
-                 ['CAPA count by category', 30, 20, 10, 40]
-             ],
-             type: 'bar'
-             },
-             axis: {
-                 x: {
-                     type: 'category'
-                 }
-             }
-        };
+        //    let byCatChartparams: c3.ChartConfiguration = {
+        //     bindto: '#CatWiseoverviewGraph',
+        //     data: {
+        //      x : 'x',
+        //      columns: [
+        //          ['x', 'Internal Audit','Process/ Product','Complaint','External Audit'],
+        //          ['CAPA count by category', 30, 20, 10, 40]
+        //      ],
+        //      type: 'bar'
+        //      },
+        //      axis: {
+        //          x: {
+        //              type: 'category'
+        //          }
+        //      }
+        // };
 
            //prepare chart config and render
            $("#CatWiseoverviewChart div").remove();
