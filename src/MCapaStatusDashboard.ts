@@ -300,30 +300,13 @@ namespace MCapaStatusDashboard {
 
         renderByAvgTimeChart(states,statusWiseAvgData){
             //prepare template
-            // let byAvgTimeChartparams: c3.ChartConfiguration = {
-            //     bindto: '#AvgTimeWiseoverviewGraph',
-            //     data: {
-            //         x : 'x',
-            //         columns: [
-            //             ['x', ...states],
-            //             statusWiseAvgData
-            //         ],
-            //         type: 'bar'
-            //     },
-            //     axis: {
-            //         x: {
-            //             type: 'category'
-            //         }
-            //     }
-            // };
-
             let byAvgTimeChartparams: c3.ChartConfiguration = {
                 bindto: '#AvgTimeWiseoverviewGraph',
                 data: {
                     x : 'x',
                     columns: [
-                        ['x', 'Initiated','Approved','WFEC','Closed'],
-                        ['CAPA average time spent in state', 30, 20, 10, 40]
+                        ['x', ...states],
+                        statusWiseAvgData
                     ],
                     type: 'bar'
                 },
@@ -333,6 +316,23 @@ namespace MCapaStatusDashboard {
                     }
                 }
             };
+
+            // let byAvgTimeChartparams: c3.ChartConfiguration = {
+            //     bindto: '#AvgTimeWiseoverviewGraph',
+            //     data: {
+            //         x : 'x',
+            //         columns: [
+            //             ['x', 'Initiated','Approved','WFEC','Closed'],
+            //             ['CAPA average time spent in state', 30, 20, 10, 40]
+            //         ],
+            //         type: 'bar'
+            //     },
+            //     axis: {
+            //         x: {
+            //             type: 'category'
+            //         }
+            //     }
+            // };
 
             //prepare chart config and render
             $("#AvgTimeWiseoverviewChart div").remove();
