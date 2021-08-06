@@ -281,6 +281,27 @@ namespace MCapaStatusDashboard {
 
         renderTrackerChart(trackerStates,stateTracketData){
             //prepare template
+            // let trackerChartparams: c3.ChartConfiguration = {
+            //     bindto: '#CapaTrackerGraph',
+            //     size: {
+            //         height: 900
+            //     },
+            //     data: {
+            //         x : 'x',
+            //         columns: stateTracketData,
+            //         type: 'bar',
+            //         groups: [
+            //                   trackerStates
+            //                 ]
+            //     },
+            //     axis: {
+            //         x: {
+            //             type: 'category'
+            //         },
+            //         rotated: true
+            //     }
+            // };
+
             let trackerChartparams: c3.ChartConfiguration = {
                 bindto: '#CapaTrackerGraph',
                 size: {
@@ -288,10 +309,15 @@ namespace MCapaStatusDashboard {
                 },
                 data: {
                     x : 'x',
-                    columns: stateTracketData,
+                    columns: [
+                        ['x', 'CA1','CA2','CA3','CA4','CA5','CA6','CA7','CA8','CA9','CA10','PA1','PA2','PA3','PA4','PA5','PA6','PA7','PA8','PA9','PA10'],
+                        ['Initiated', 30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40],
+                        ['Approved', 30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40],
+                        ['WFEC', 30, 20, 10, 40, 30, 20, 10, 40, 30, 20, 10, 40, 30, 20, 10, 40, 30, 20, 10, 40]
+                    ],
                     type: 'bar',
                     groups: [
-                              trackerStates
+                                ['Initiated', 'Approved', 'WFEC']
                             ]
                 },
                 axis: {
