@@ -267,27 +267,27 @@ namespace MCapaStatusDashboard {
        }
 
        renderByStatusChart(statusWiseData){
-            //     //prepare template
-            //     let byStatusChartparams: c3.ChartConfiguration = {
-            //     bindto: '#StatusWiseoverviewGraph',
-            //     data: {
-            //         columns: statusWiseData,
-            //         type : 'pie'
-            //     }
-            // };
-
+            //prepare template
             let byStatusChartparams: c3.ChartConfiguration = {
                 bindto: '#StatusWiseoverviewGraph',
                 data: {
-                    columns: [
-                        ['Initiated', 38],
-                        ['Approved', 8],
-                        ['WFEC', 31],
-                        ['Closed', 23]
-                    ],
+                    columns: statusWiseData,
                     type : 'pie'
                 }
             };
+
+            // let byStatusChartparams: c3.ChartConfiguration = {
+            //     bindto: '#StatusWiseoverviewGraph',
+            //     data: {
+            //         columns: [
+            //             ['Initiated', 38],
+            //             ['Approved', 8],
+            //             ['WFEC', 31],
+            //             ['Closed', 23]
+            //         ],
+            //         type : 'pie'
+            //     }
+            // };
 
             //prepare chart config and render
             $("#StatusWiseoverviewChart div").remove();
