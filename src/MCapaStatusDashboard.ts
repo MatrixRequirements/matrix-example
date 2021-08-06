@@ -605,7 +605,7 @@ namespace MCapaStatusDashboard {
                     if(stateIndex > -1){
                         //check for current state
                         if(label.reset.length == 0){
-                            ByCategoryLabelData.statusWiseData[stateIndex][0] += 1;
+                            ByCategoryLabelData.statusWiseData[stateIndex][1] += 1;
                         }
 
                         //  //get the number of days label state was in
