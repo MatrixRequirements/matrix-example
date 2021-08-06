@@ -47,7 +47,7 @@ namespace MCapaStatusDashboard {
         statusWiseData: any[];
         statusWiseTotalDaysData: any[];
         statusWiseAvgData: any[];
-        stateTracketData: any[];
+        stateTrackerData: any[];
         closedState: string;
     }
    
@@ -343,7 +343,7 @@ namespace MCapaStatusDashboard {
             //this.charts.push(renderedChart);
         }
 
-        renderTrackerChart(trackerStates,stateTracketData){
+        renderTrackerChart(trackerStates,stateTrackerData){
             //prepare template
             // let trackerChartparams: c3.ChartConfiguration = {
             //     bindto: '#CapaTrackerGraph',
@@ -352,7 +352,7 @@ namespace MCapaStatusDashboard {
             //     },
             //     data: {
             //         x : 'x',
-            //         columns: stateTracketData,
+            //         columns: stateTrackerData,
             //         type: 'bar',
             //         groups: [
             //                   trackerStates
@@ -443,7 +443,7 @@ namespace MCapaStatusDashboard {
                  let catWiseInitials: any[] = [];
                  let SateWiseAvgInitials: any[] = [];
                  let statusWiseData: any[] = [];
-                 let stateTracketData: any[] = [];
+                 let stateTrackerData: any[] = [];
                  let statusWiseTotalDaysData: any[] = [];
                  let closedState;
                  
@@ -478,8 +478,8 @@ namespace MCapaStatusDashboard {
                         ['Closed', 0]
                     ];
 
-                    stateTracketData = [
-                        ['x']
+                    stateTrackerData = [
+                        ['x'],
                         ['Initiated'],
                         ['Approved'],
                         ['RC Approved'],
@@ -502,8 +502,8 @@ namespace MCapaStatusDashboard {
                         ['Closed', 0]
                     ];
 
-                    stateTracketData = [
-                        ['x']
+                    stateTrackerData = [
+                        ['x'],
                         ['Initiated'],
                         ['Approved'],
                         ['RC Approved']
@@ -522,7 +522,7 @@ namespace MCapaStatusDashboard {
                     statusWiseData: statusWiseData,
                     statusWiseTotalDaysData: statusWiseTotalDaysData,
                     statusWiseAvgData: [cat + ' average time spent in state', ...SateWiseAvgInitials],
-                    stateTracketData: stateTracketData,
+                    stateTrackerData: stateTrackerData,
                     closedState: closedState
                 };
     
@@ -647,12 +647,12 @@ namespace MCapaStatusDashboard {
                         if(label.label !== ByCategoryLabelData.closedState){
                             //update state tracker
                             if(itemIndex > -1){
-                                ByCategoryLabelData.stateTracketData[stateIndex + 1][itemIndex + 1] += 1;
+                                ByCategoryLabelData.stateTrackerData[stateIndex + 1][itemIndex + 1] += 1;
                             }else{
-                                ByCategoryLabelData.stateTracketData[0].push(item.itemRef);
-                                itemIndex = ByCategoryLabelData.stateTracketData[0].length - 2;
+                                ByCategoryLabelData.stateTrackerData[0].push(item.itemRef);
+                                itemIndex = ByCategoryLabelData.stateTrackerData[0].length - 2;
                                 for (let i = 1; i <= ByCategoryLabelData.stateCodes.length; i++) {
-                                    ByCategoryLabelData.stateTracketData[i].push(0);
+                                    ByCategoryLabelData.stateTrackerData[i].push(0);
                                 }
                             }
                         }    
@@ -666,7 +666,7 @@ namespace MCapaStatusDashboard {
                 // console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
                 console.log("state wise:"+JSON.stringify(ByCategoryLabelData.statusWiseData));
                 console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
-                console.log("state TracketData:"+JSON.stringify(ByCategoryLabelData.stateTracketData));
+                console.log("state TracketData:"+JSON.stringify(ByCategoryLabelData.stateTrackerData));
 
             }
             // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
