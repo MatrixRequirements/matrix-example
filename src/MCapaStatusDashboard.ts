@@ -572,100 +572,99 @@ namespace MCapaStatusDashboard {
 
                 let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
 
-                // if(itemCategory && (itemCategory != "CA" || itemCategory != "PA")){
-                //     continue;
-                // }
-
                 if(itemCategory && (!capaCategories.includes(itemCategory))){
                     continue;
                 }
 
-                console.log(item.itemRef);
+                let ByCategoryLabelData: ByCategoryLabelData;
+                let itemIndex = -1;
 
-                // let ByCategoryLabelData: ByCategoryLabelData;
-                // let itemIndex = -1;
+                for (const ByCategoryData of this.ByCategoryLabelDetails) {
+                    if (itemCategory == ByCategoryData.category) {
+                        ByCategoryLabelData = ByCategoryData;
+                        break;
+                    }
+                }
 
-                // for (const ByCategoryData of this.ByCategoryLabelDetails) {
-                //     if (itemCategory == ByCategoryData.category) {
-                //         ByCategoryLabelData = ByCategoryData;
-                //         break;
-                //     }
-                // }
+                for (const label of item.labels) {
+                    //check for item department
+                    let deptIndex = ByCategoryLabelData.departments.findIndex(dept => dept === label.label);
 
-                // for (const label of item.labels) {
-                //     //check for item department
-                //     let deptIndex = ByCategoryLabelData.departments.findIndex(dept => dept === label.label);
+                    if(deptIndex > -1){
+                        ByCategoryLabelData.deptWiseData[deptIndex + 1] += 1;
+                    }
 
-                //     if(deptIndex > -1){
-                //         ByCategoryLabelData.deptWiseData[deptIndex + 1] += 1;
-                //     }
+                    let catIndex = ByCategoryLabelData.categories.findIndex(cat => cat === label.label);
 
-                //     let catIndex = ByCategoryLabelData.categories.findIndex(cat => cat === label.label);
+                    if(catIndex > -1){
+                        ByCategoryLabelData.categoryWiseData[catIndex + 1] += 1;
+                    }
 
-                //     if(catIndex > -1){
-                //         ByCategoryLabelData.categoryWiseData[catIndex + 1] += 1;
-                //     }
+                    // let stateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === label.label);
 
-                //     let stateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === label.label);
+                    // if(stateIndex > -1){
+                    //     //check for current state
+                    //     if(label.reset.length == 0){
+                    //         ByCategoryLabelData.statusWiseData[stateIndex][0] += 1;
+                    //     }
 
-                //     if(stateIndex > -1){
-                //         //check for current state
-                //         if(label.reset.length == 0){
-                //             ByCategoryLabelData.statusWiseData[stateIndex][0] += 1;
-                //         }
+                    //      //get the number of days label state was in
+                    //     label.set.sort((a, b) => a.version - b.version);
+                    //     label.reset.sort((a, b) => a.version - b.version);
 
-                //          //get the number of days label state was in
-                //         label.set.sort((a, b) => a.version - b.version);
-                //         label.reset.sort((a, b) => a.version - b.version);
+                    //     const labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
+                    //         let stateDays: number;
+                    //         if (label.reset[currentIndex]) {
+                    //             const setDate = new Date(currentValue.dateUser);
+                    //             const resetDate = new Date(label.reset[currentIndex].dateUser);
 
-                //         const labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
-                //             let stateDays: number;
-                //             if (label.reset[currentIndex]) {
-                //                 const setDate = new Date(currentValue.dateUser);
-                //                 const resetDate = new Date(label.reset[currentIndex].dateUser);
+                    //             let time_difference = resetDate.getTime() - setDate.getTime();
 
-                //                 let time_difference = resetDate.getTime() - setDate.getTime();
+                    //             //calculate days difference by dividing total milliseconds in a day  
+                    //             let days_difference = time_difference / (1000 * 60 * 60 * 24);
 
-                //                 //calculate days difference by dividing total milliseconds in a day  
-                //                 let days_difference = time_difference / (1000 * 60 * 60 * 24);
+                    //             stateDays = Math.floor(days_difference);
+                    //         } else {
+                    //             const setDate = new Date(currentValue.dateUser);
+                    //             const resetDate = new Date();
 
-                //                 stateDays = Math.floor(days_difference);
-                //             } else {
-                //                 const setDate = new Date(currentValue.dateUser);
-                //                 const resetDate = new Date();
+                    //             let time_difference = resetDate.getTime() - setDate.getTime();
 
-                //                 let time_difference = resetDate.getTime() - setDate.getTime();
+                    //             //calculate days difference by dividing total milliseconds in a day  
+                    //             let days_difference = time_difference / (1000 * 60 * 60 * 24);
 
-                //                 //calculate days difference by dividing total milliseconds in a day  
-                //                 let days_difference = time_difference / (1000 * 60 * 60 * 24);
+                    //             stateDays = Math.floor(days_difference);
+                    //         }
 
-                //                 stateDays = Math.floor(days_difference);
-                //             }
+                    //         return accumulator + stateDays;
 
-                //             return accumulator + stateDays;
+                    //     }, 0);
 
-                //         }, 0);
+                    //     ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
+                    //     ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
 
-                //         ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
-                //         ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
-
-                //         //check if state is closed or not
-                //         if(label.label !== ByCategoryLabelData.closedState){
-                //             //update state tracker
-                //             if(itemIndex > -1){
-                //                 ByCategoryLabelData.stateTracketData[stateIndex + 1][itemIndex] += 1;
-                //             }else{
-                //                 ByCategoryLabelData.stateTracketData[0].push(item.itemRef);
-                //                 itemIndex = ByCategoryLabelData.stateTracketData[0].length - 2;
-                //                 for (let i = 1; i <= ByCategoryLabelData.stateCodes.length; i++) {
-                //                     ByCategoryLabelData.stateTracketData[i].push(0);
-                //                 }
-                //             }
-                //         }    
-                //     }
-                // } 
+                    //     //check if state is closed or not
+                    //     if(label.label !== ByCategoryLabelData.closedState){
+                    //         //update state tracker
+                    //         if(itemIndex > -1){
+                    //             ByCategoryLabelData.stateTracketData[stateIndex + 1][itemIndex] += 1;
+                    //         }else{
+                    //             ByCategoryLabelData.stateTracketData[0].push(item.itemRef);
+                    //             itemIndex = ByCategoryLabelData.stateTracketData[0].length - 2;
+                    //             for (let i = 1; i <= ByCategoryLabelData.stateCodes.length; i++) {
+                    //                 ByCategoryLabelData.stateTracketData[i].push(0);
+                    //             }
+                    //         }
+                    //     }    
+                    // }
+                } 
             }
 
+            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+                console.log("category:"+ByCategoryLabelData.category);
+                console.log("departments:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
+                console.log("categories:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
+            }
             // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
             //     ByCategoryLabelData.statusWiseTotalDaysData.forEach((element,index) => {
             //         let avgData = 0;
