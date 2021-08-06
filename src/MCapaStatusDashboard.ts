@@ -614,10 +614,6 @@ namespace MCapaStatusDashboard {
                         label.set.sort((a, b) => a.version - b.version);
                         label.reset.sort((a, b) => a.version - b.version);
 
-                        if(item.itemRef == 'CA-6'){
-                           console.log(item.itemRef);
-                        }
-
                         const labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
                             let stateDays: number;
                             if (label.reset[currentIndex]) {
@@ -660,6 +656,7 @@ namespace MCapaStatusDashboard {
                                 for (let i = 0; i <= ByCategoryLabelData.trackerStates.length - 1; i++) {
                                     ByCategoryLabelData.stateTrackerData[i + 1].push(0);
                                 }
+                                ByCategoryLabelData.stateTrackerData[stateIndex + 1][itemIndex + 1] = labelstateDaysCount;
                             }
                         }    
                     }
