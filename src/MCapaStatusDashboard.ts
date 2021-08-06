@@ -608,42 +608,42 @@ namespace MCapaStatusDashboard {
                             ByCategoryLabelData.statusWiseData[stateIndex][1] += 1;
                         }
 
-                        //  //get the number of days label state was in
-                        // label.set.sort((a, b) => a.version - b.version);
-                        // label.reset.sort((a, b) => a.version - b.version);
+                         //get the number of days label state was in
+                        label.set.sort((a, b) => a.version - b.version);
+                        label.reset.sort((a, b) => a.version - b.version);
 
-                        // const labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
-                        //     let stateDays: number;
-                        //     if (label.reset[currentIndex]) {
-                        //         const setDate = new Date(currentValue.dateUser);
-                        //         const resetDate = new Date(label.reset[currentIndex].dateUser);
+                        const labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
+                            let stateDays: number;
+                            if (label.reset[currentIndex]) {
+                                const setDate = new Date(currentValue.dateUser);
+                                const resetDate = new Date(label.reset[currentIndex].dateUser);
 
-                        //         let time_difference = resetDate.getTime() - setDate.getTime();
+                                let time_difference = resetDate.getTime() - setDate.getTime();
 
-                        //         //calculate days difference by dividing total milliseconds in a day  
-                        //         let days_difference = time_difference / (1000 * 60 * 60 * 24);
+                                //calculate days difference by dividing total milliseconds in a day  
+                                let days_difference = time_difference / (1000 * 60 * 60 * 24);
 
-                        //         stateDays = Math.floor(days_difference);
-                        //     } else {
-                        //         const setDate = new Date(currentValue.dateUser);
-                        //         const resetDate = new Date();
+                                stateDays = Math.floor(days_difference);
+                            } else {
+                                const setDate = new Date(currentValue.dateUser);
+                                const resetDate = new Date();
 
-                        //         let time_difference = resetDate.getTime() - setDate.getTime();
+                                let time_difference = resetDate.getTime() - setDate.getTime();
 
-                        //         //calculate days difference by dividing total milliseconds in a day  
-                        //         let days_difference = time_difference / (1000 * 60 * 60 * 24);
+                                //calculate days difference by dividing total milliseconds in a day  
+                                let days_difference = time_difference / (1000 * 60 * 60 * 24);
 
-                        //         stateDays = Math.floor(days_difference);
-                        //     }
+                                stateDays = Math.floor(days_difference);
+                            }
 
-                        //     return accumulator + stateDays;
+                            return accumulator + stateDays;
 
-                        // }, 0);
+                        }, 0);
 
-                        // ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
-                        // ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
+                        ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
+                        ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
 
-                        // //check if state is closed or not
+                        //check if state is closed or not
                         // if(label.label !== ByCategoryLabelData.closedState){
                         //     //update state tracker
                         //     if(itemIndex > -1){
@@ -664,7 +664,8 @@ namespace MCapaStatusDashboard {
                 console.log("category:"+ByCategoryLabelData.category);
                 // console.log("department wise:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
                 // console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
-                console.log("state wise:"+ByCategoryLabelData.statusWiseData);
+                console.log("state wise:"+JSON.stringify(ByCategoryLabelData.statusWiseData));
+                console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
 
             }
             // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
