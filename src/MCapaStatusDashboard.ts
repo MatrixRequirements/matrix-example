@@ -480,7 +480,7 @@ namespace MCapaStatusDashboard {
             for (const item of labels) {
 
                 let itemCategory: String = item.itemRef.substring(0, item.itemRef.indexOf('-'));
-                
+
                 if(itemCategory && (itemCategory != "CA" || itemCategory != "PA")){
                     continue;
                 }
@@ -497,24 +497,21 @@ namespace MCapaStatusDashboard {
 
                 for (const label of item.labels) {
                     //check for item department
-                    // statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === fromDateLabelsCurrentSate.currentState);
-                    // dateFilterChartColumnsData[0][statusColumnIndex + 1] += 1;
-
                     let deptIndex = ByCategoryLabelData.departments.findIndex(dept => dept === label.label);
 
-                    if(deptIndex && deptIndex !== -1){
+                    if(deptIndex > -1){
                         ByCategoryLabelData.deptWiseData[deptIndex + 1] += 1;
                     }
 
                     let catIndex = ByCategoryLabelData.categories.findIndex(cat => cat === label.label);
 
-                    if(catIndex && catIndex !== -1){
+                    if(catIndex > -1){
                         ByCategoryLabelData.categoryWiseData[catIndex + 1] += 1;
                     }
 
                     let stateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === label.label);
 
-                    if(stateIndex && stateIndex !== -1){
+                    if(stateIndex > -1){
                         //check for current state
                         if(label.reset.length == 0){
                             ByCategoryLabelData.statusWiseData[stateIndex][0] += 1;
@@ -558,7 +555,7 @@ namespace MCapaStatusDashboard {
                         //check if state is closed or not
                         if(label.label !== ByCategoryLabelData.closedState){
                             //update state tracker
-                            if(itemIndex && itemIndex !== -1){
+                            if(itemIndex > -1){
                                 ByCategoryLabelData.stateTracketData[stateIndex + 1][itemIndex] += 1;
                             }else{
                                 ByCategoryLabelData.stateTracketData[0].push(item.itemRef);
