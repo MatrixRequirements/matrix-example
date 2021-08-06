@@ -651,7 +651,7 @@ namespace MCapaStatusDashboard {
                             }else{
                                 ByCategoryLabelData.stateTrackerData[0].push(item.itemRef);
                                 itemIndex = ByCategoryLabelData.stateTrackerData[0].length - 2;
-                                for (let i = 0; i <= ByCategoryLabelData.trackerStates.length; i++) {
+                                for (let i = 0; i <= ByCategoryLabelData.trackerStates.length - 1; i++) {
                                     ByCategoryLabelData.stateTrackerData[i + 1].push(0);
                                 }
                             }
