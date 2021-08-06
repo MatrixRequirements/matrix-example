@@ -644,18 +644,18 @@ namespace MCapaStatusDashboard {
                         ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
 
                         //check if state is closed or not
-                        // if(label.label !== ByCategoryLabelData.closedState){
-                        //     //update state tracker
-                        //     if(itemIndex > -1){
-                        //         ByCategoryLabelData.stateTracketData[stateIndex + 1][itemIndex] += 1;
-                        //     }else{
-                        //         ByCategoryLabelData.stateTracketData[0].push(item.itemRef);
-                        //         itemIndex = ByCategoryLabelData.stateTracketData[0].length - 2;
-                        //         for (let i = 1; i <= ByCategoryLabelData.stateCodes.length; i++) {
-                        //             ByCategoryLabelData.stateTracketData[i].push(0);
-                        //         }
-                        //     }
-                        // }    
+                        if(label.label !== ByCategoryLabelData.closedState){
+                            //update state tracker
+                            if(itemIndex > -1){
+                                ByCategoryLabelData.stateTracketData[stateIndex + 1][itemIndex + 1] += 1;
+                            }else{
+                                ByCategoryLabelData.stateTracketData[0].push(item.itemRef);
+                                itemIndex = ByCategoryLabelData.stateTracketData[0].length - 2;
+                                for (let i = 1; i <= ByCategoryLabelData.stateCodes.length; i++) {
+                                    ByCategoryLabelData.stateTracketData[i].push(0);
+                                }
+                            }
+                        }    
                     }
                 } 
             }
@@ -666,6 +666,7 @@ namespace MCapaStatusDashboard {
                 // console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
                 console.log("state wise:"+JSON.stringify(ByCategoryLabelData.statusWiseData));
                 console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
+                console.log("state TracketData:"+JSON.stringify(ByCategoryLabelData.stateTracketData));
 
             }
             // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
