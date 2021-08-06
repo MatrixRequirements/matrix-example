@@ -567,11 +567,16 @@ namespace MCapaStatusDashboard {
 
         processLabelsData(labels: XRLabelEntry[]){
 
+            let capaCategories = ['CA','PA'];
             for (const item of labels) {
 
-                let itemCategory: String = item.itemRef.substring(0, item.itemRef.indexOf('-'));
+                let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
 
-                if(itemCategory && (itemCategory != "CA" || itemCategory != "PA")){
+                // if(itemCategory && (itemCategory != "CA" || itemCategory != "PA")){
+                //     continue;
+                // }
+
+                if(itemCategory && (capaCategories.includes(itemCategory))){
                     continue;
                 }
 
