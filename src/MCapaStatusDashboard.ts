@@ -576,7 +576,7 @@ namespace MCapaStatusDashboard {
                 //     continue;
                 // }
 
-                if(itemCategory && (capaCategories.includes(itemCategory))){
+                if(itemCategory && (!capaCategories.includes(itemCategory))){
                     continue;
                 }
 
