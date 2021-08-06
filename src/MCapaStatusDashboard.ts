@@ -647,9 +647,6 @@ namespace MCapaStatusDashboard {
                         if(label.label !== ByCategoryLabelData.closedState){
                             //update state tracker
                             if(itemIndex > -1){
-                                if(item.itemRef == 'PA-1'){
-                                  console.log("item:"+item.itemRef);
-                                }
                                 ByCategoryLabelData.stateTrackerData[stateIndex + 1][itemIndex + 1] = labelstateDaysCount;
                             }else{
                                 ByCategoryLabelData.stateTrackerData[0].push(item.itemRef);
@@ -664,23 +661,25 @@ namespace MCapaStatusDashboard {
             }
 
             for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+                ByCategoryLabelData.statusWiseTotalDaysData.forEach((element,index) => {
+                    let avgData = 0;
+                    if(element[1] !== 0){
+                        avgData = element[0]/element[1]
+                    }
+                    ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData;
+                });
+            }
+
+            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
                 console.log("category:"+ByCategoryLabelData.category);
-                // console.log("department wise:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
-                // console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
+                console.log("department wise:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
+                console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
                 console.log("state wise:"+JSON.stringify(ByCategoryLabelData.statusWiseData));
-                console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
                 console.log("state TracketData:"+JSON.stringify(ByCategoryLabelData.stateTrackerData));
+                console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
+                console.log("status Wise AvgData:"+JSON.stringify(ByCategoryLabelData.statusWiseAvgData));
 
             }
-            // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
-            //     ByCategoryLabelData.statusWiseTotalDaysData.forEach((element,index) => {
-            //         let avgData = 0;
-            //         if(element[1] !== 0){
-            //             avgData = element[0]/element[1]
-            //         }
-            //         ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData;
-            //     });
-            // }
         }
 
         
