@@ -178,13 +178,30 @@ namespace MCapaStatusDashboard {
 
         renderByDeptChart(departments,deptWiseData){
              //prepare template
-             let byDeptChartparams: c3.ChartConfiguration = {
+            //  let byDeptChartparams: c3.ChartConfiguration = {
+            //     bindto: '#DeptWiseoverviewGraph',
+            //     data: {
+            //         x : 'x',
+            //         columns: [
+            //             ['x', ...departments],
+            //             deptWiseData
+            //         ],
+            //         type: 'bar'
+            //     },
+            //     axis: {
+            //         x: {
+            //             type: 'category'
+            //         }
+            //     }
+            // };
+
+            let byDeptChartparams: c3.ChartConfiguration = {
                 bindto: '#DeptWiseoverviewGraph',
                 data: {
                     x : 'x',
                     columns: [
-                        ['x', ...departments],
-                        deptWiseData
+                        ['x', 'ST','PROD','QC','D&D','QA','MICRO','PUR','PROD','SC'],
+                        ['CAPA count by department', 30, 20, 10, 40,30, 20, 10, 40,50]
                     ],
                     type: 'bar'
                 },
@@ -206,22 +223,39 @@ namespace MCapaStatusDashboard {
 
         renderByCatChart(categories,categoryWiseData){
             //prepare template
-            let byCatChartparams: c3.ChartConfiguration = {
-               bindto: '#CatWiseoverviewGraph',
-               data: {
-                x : 'x',
-                columns: [
-                    ['x', ...categories],
-                    categoryWiseData
-                ],
-                type: 'bar'
-                },
-                axis: {
-                    x: {
-                        type: 'category'
-                    }
-                }
-           };
+        //     let byCatChartparams: c3.ChartConfiguration = {
+        //        bindto: '#CatWiseoverviewGraph',
+        //        data: {
+        //         x : 'x',
+        //         columns: [
+        //             ['x', ...categories],
+        //             categoryWiseData
+        //         ],
+        //         type: 'bar'
+        //         },
+        //         axis: {
+        //             x: {
+        //                 type: 'category'
+        //             }
+        //         }
+        //    };
+
+           let byCatChartparams: c3.ChartConfiguration = {
+            bindto: '#CatWiseoverviewGraph',
+            data: {
+             x : 'x',
+             columns: [
+                 ['x', 'Internal Audit','Process/ Product','Complaint','External Audit'],
+                 ['CAPA count by category', 30, 20, 10, 40]
+             ],
+             type: 'bar'
+             },
+             axis: {
+                 x: {
+                     type: 'category'
+                 }
+             }
+        };
 
            //prepare chart config and render
            $("#CatWiseoverviewChart div").remove();
@@ -233,11 +267,24 @@ namespace MCapaStatusDashboard {
        }
 
        renderByStatusChart(statusWiseData){
-                //prepare template
-                let byStatusChartparams: c3.ChartConfiguration = {
+            //     //prepare template
+            //     let byStatusChartparams: c3.ChartConfiguration = {
+            //     bindto: '#StatusWiseoverviewGraph',
+            //     data: {
+            //         columns: statusWiseData,
+            //         type : 'pie'
+            //     }
+            // };
+
+            let byStatusChartparams: c3.ChartConfiguration = {
                 bindto: '#StatusWiseoverviewGraph',
                 data: {
-                    columns: statusWiseData,
+                    columns: [
+                        ['Initiated', 38],
+                        ['Approved', 8],
+                        ['WFEC', 31],
+                        ['Closed', 23]
+                    ],
                     type : 'pie'
                 }
             };
@@ -253,13 +300,30 @@ namespace MCapaStatusDashboard {
 
         renderByAvgTimeChart(states,statusWiseAvgData){
             //prepare template
+            // let byAvgTimeChartparams: c3.ChartConfiguration = {
+            //     bindto: '#AvgTimeWiseoverviewGraph',
+            //     data: {
+            //         x : 'x',
+            //         columns: [
+            //             ['x', ...states],
+            //             statusWiseAvgData
+            //         ],
+            //         type: 'bar'
+            //     },
+            //     axis: {
+            //         x: {
+            //             type: 'category'
+            //         }
+            //     }
+            // };
+
             let byAvgTimeChartparams: c3.ChartConfiguration = {
                 bindto: '#AvgTimeWiseoverviewGraph',
                 data: {
                     x : 'x',
                     columns: [
-                        ['x', ...states],
-                        statusWiseAvgData
+                        ['x', 'Initiated','Approved','WFEC','Closed'],
+                        ['CAPA average time spent in state', 30, 20, 10, 40]
                     ],
                     type: 'bar'
                 },
@@ -511,99 +575,101 @@ namespace MCapaStatusDashboard {
                     continue;
                 }
 
-                let ByCategoryLabelData: ByCategoryLabelData;
-                let itemIndex = -1;
+                console.log(item.itemRef);
 
-                for (const ByCategoryData of this.ByCategoryLabelDetails) {
-                    if (itemCategory == ByCategoryData.category) {
-                        ByCategoryLabelData = ByCategoryData;
-                        break;
-                    }
-                }
+                // let ByCategoryLabelData: ByCategoryLabelData;
+                // let itemIndex = -1;
 
-                for (const label of item.labels) {
-                    //check for item department
-                    let deptIndex = ByCategoryLabelData.departments.findIndex(dept => dept === label.label);
+                // for (const ByCategoryData of this.ByCategoryLabelDetails) {
+                //     if (itemCategory == ByCategoryData.category) {
+                //         ByCategoryLabelData = ByCategoryData;
+                //         break;
+                //     }
+                // }
 
-                    if(deptIndex > -1){
-                        ByCategoryLabelData.deptWiseData[deptIndex + 1] += 1;
-                    }
+                // for (const label of item.labels) {
+                //     //check for item department
+                //     let deptIndex = ByCategoryLabelData.departments.findIndex(dept => dept === label.label);
 
-                    let catIndex = ByCategoryLabelData.categories.findIndex(cat => cat === label.label);
+                //     if(deptIndex > -1){
+                //         ByCategoryLabelData.deptWiseData[deptIndex + 1] += 1;
+                //     }
 
-                    if(catIndex > -1){
-                        ByCategoryLabelData.categoryWiseData[catIndex + 1] += 1;
-                    }
+                //     let catIndex = ByCategoryLabelData.categories.findIndex(cat => cat === label.label);
 
-                    let stateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === label.label);
+                //     if(catIndex > -1){
+                //         ByCategoryLabelData.categoryWiseData[catIndex + 1] += 1;
+                //     }
 
-                    if(stateIndex > -1){
-                        //check for current state
-                        if(label.reset.length == 0){
-                            ByCategoryLabelData.statusWiseData[stateIndex][0] += 1;
-                        }
+                //     let stateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === label.label);
 
-                         //get the number of days label state was in
-                        label.set.sort((a, b) => a.version - b.version);
-                        label.reset.sort((a, b) => a.version - b.version);
+                //     if(stateIndex > -1){
+                //         //check for current state
+                //         if(label.reset.length == 0){
+                //             ByCategoryLabelData.statusWiseData[stateIndex][0] += 1;
+                //         }
 
-                        const labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
-                            let stateDays: number;
-                            if (label.reset[currentIndex]) {
-                                const setDate = new Date(currentValue.dateUser);
-                                const resetDate = new Date(label.reset[currentIndex].dateUser);
+                //          //get the number of days label state was in
+                //         label.set.sort((a, b) => a.version - b.version);
+                //         label.reset.sort((a, b) => a.version - b.version);
 
-                                let time_difference = resetDate.getTime() - setDate.getTime();
+                //         const labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
+                //             let stateDays: number;
+                //             if (label.reset[currentIndex]) {
+                //                 const setDate = new Date(currentValue.dateUser);
+                //                 const resetDate = new Date(label.reset[currentIndex].dateUser);
 
-                                //calculate days difference by dividing total milliseconds in a day  
-                                let days_difference = time_difference / (1000 * 60 * 60 * 24);
+                //                 let time_difference = resetDate.getTime() - setDate.getTime();
 
-                                stateDays = Math.floor(days_difference);
-                            } else {
-                                const setDate = new Date(currentValue.dateUser);
-                                const resetDate = new Date();
+                //                 //calculate days difference by dividing total milliseconds in a day  
+                //                 let days_difference = time_difference / (1000 * 60 * 60 * 24);
 
-                                let time_difference = resetDate.getTime() - setDate.getTime();
+                //                 stateDays = Math.floor(days_difference);
+                //             } else {
+                //                 const setDate = new Date(currentValue.dateUser);
+                //                 const resetDate = new Date();
 
-                                //calculate days difference by dividing total milliseconds in a day  
-                                let days_difference = time_difference / (1000 * 60 * 60 * 24);
+                //                 let time_difference = resetDate.getTime() - setDate.getTime();
 
-                                stateDays = Math.floor(days_difference);
-                            }
+                //                 //calculate days difference by dividing total milliseconds in a day  
+                //                 let days_difference = time_difference / (1000 * 60 * 60 * 24);
 
-                            return accumulator + stateDays;
+                //                 stateDays = Math.floor(days_difference);
+                //             }
 
-                        }, 0);
+                //             return accumulator + stateDays;
 
-                        ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
-                        ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
+                //         }, 0);
 
-                        //check if state is closed or not
-                        if(label.label !== ByCategoryLabelData.closedState){
-                            //update state tracker
-                            if(itemIndex > -1){
-                                ByCategoryLabelData.stateTracketData[stateIndex + 1][itemIndex] += 1;
-                            }else{
-                                ByCategoryLabelData.stateTracketData[0].push(item.itemRef);
-                                itemIndex = ByCategoryLabelData.stateTracketData[0].length - 2;
-                                for (let i = 1; i <= ByCategoryLabelData.stateCodes.length; i++) {
-                                    ByCategoryLabelData.stateTracketData[i].push(0);
-                                }
-                            }
-                        }    
-                    }
-                } 
+                //         ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
+                //         ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
+
+                //         //check if state is closed or not
+                //         if(label.label !== ByCategoryLabelData.closedState){
+                //             //update state tracker
+                //             if(itemIndex > -1){
+                //                 ByCategoryLabelData.stateTracketData[stateIndex + 1][itemIndex] += 1;
+                //             }else{
+                //                 ByCategoryLabelData.stateTracketData[0].push(item.itemRef);
+                //                 itemIndex = ByCategoryLabelData.stateTracketData[0].length - 2;
+                //                 for (let i = 1; i <= ByCategoryLabelData.stateCodes.length; i++) {
+                //                     ByCategoryLabelData.stateTracketData[i].push(0);
+                //                 }
+                //             }
+                //         }    
+                //     }
+                // } 
             }
 
-            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
-                ByCategoryLabelData.statusWiseTotalDaysData.forEach((element,index) => {
-                    let avgData = 0;
-                    if(element[1] !== 0){
-                        avgData = element[0]/element[1]
-                    }
-                    ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData;
-                });
-            }
+            // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+            //     ByCategoryLabelData.statusWiseTotalDaysData.forEach((element,index) => {
+            //         let avgData = 0;
+            //         if(element[1] !== 0){
+            //             avgData = element[0]/element[1]
+            //         }
+            //         ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData;
+            //     });
+            // }
         }
 
         
