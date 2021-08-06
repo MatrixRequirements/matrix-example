@@ -647,7 +647,9 @@ namespace MCapaStatusDashboard {
                         if(label.label !== ByCategoryLabelData.closedState){
                             //update state tracker
                             if(itemIndex > -1){
-                                console.log("item:"+item.itemRef);
+                                if(item.itemRef == 'PA-1'){
+                                  console.log("item:"+item.itemRef);
+                                }
                                 ByCategoryLabelData.stateTrackerData[stateIndex + 1][itemIndex + 1] += 1;
                             }else{
                                 ByCategoryLabelData.stateTrackerData[0].push(item.itemRef);
