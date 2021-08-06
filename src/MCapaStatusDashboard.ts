@@ -459,7 +459,7 @@ namespace MCapaStatusDashboard {
                 deptWiseInitials = Array(departments.length).fill(0);
                 catWiseInitials = Array(categories.length).fill(0);
 
-                let states_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == cat)[0].labels.sort();
+                let states_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == cat)[0].labels;
 
                 if(cat === "CA"){
 
