@@ -614,6 +614,10 @@ namespace MCapaStatusDashboard {
                         label.set.sort((a, b) => a.version - b.version);
                         label.reset.sort((a, b) => a.version - b.version);
 
+                        if(item.itemRef == 'CA-6'){
+                           console.log(item.itemRef);
+                        }
+
                         const labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
                             let stateDays: number;
                             if (label.reset[currentIndex]) {
