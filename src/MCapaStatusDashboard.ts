@@ -561,7 +561,7 @@ namespace MCapaStatusDashboard {
             this.renderByCatChart(ByCategoryLabelData.categories,ByCategoryLabelData.categoryWiseData);
             this.renderByStatusChart(ByCategoryLabelData.statusWiseData);
             this.renderByAvgTimeChart(ByCategoryLabelData.stateDesc,ByCategoryLabelData.statusWiseAvgData);
-            this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTracketData);
+            this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData);
 
         }
 
