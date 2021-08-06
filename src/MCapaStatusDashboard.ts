@@ -447,13 +447,15 @@ namespace MCapaStatusDashboard {
                  let statusWiseTotalDaysData: any[] = [];
                  let closedState;
                  
-                let departments_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
+                // let departments_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
 
-                departments_.forEach(dept => {
-                    let deptDispName = new LabelTools().getDisplayName(dept);
-                    departments.push(deptDispName);
-                });
-    
+                // departments_.forEach(dept => {
+                //     let deptDispName = new LabelTools().getDisplayName(dept);
+                //     departments.push(deptDispName);
+                // });
+
+                departments = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
+
                 categories = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "CAPA Category")[0].labels;
     
                 deptWiseInitials = Array(departments.length).fill(0);
