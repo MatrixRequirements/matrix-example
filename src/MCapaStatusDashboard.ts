@@ -650,7 +650,7 @@ namespace MCapaStatusDashboard {
                                 if(item.itemRef == 'PA-1'){
                                   console.log("item:"+item.itemRef);
                                 }
-                                ByCategoryLabelData.stateTrackerData[stateIndex + 1][itemIndex + 1] += 1;
+                                ByCategoryLabelData.stateTrackerData[stateIndex + 1][itemIndex + 1] = labelstateDaysCount;
                             }else{
                                 ByCategoryLabelData.stateTrackerData[0].push(item.itemRef);
                                 itemIndex = ByCategoryLabelData.stateTrackerData[0].length - 2;
