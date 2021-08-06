@@ -178,30 +178,13 @@ namespace MCapaStatusDashboard {
 
         renderByDeptChart(departments,deptWiseData){
              //prepare template
-            //  let byDeptChartparams: c3.ChartConfiguration = {
-            //     bindto: '#DeptWiseoverviewGraph',
-            //     data: {
-            //         x : 'x',
-            //         columns: [
-            //             ['x', ...departments],
-            //             deptWiseData
-            //         ],
-            //         type: 'bar'
-            //     },
-            //     axis: {
-            //         x: {
-            //             type: 'category'
-            //         }
-            //     }
-            // };
-
-            let byDeptChartparams: c3.ChartConfiguration = {
+             let byDeptChartparams: c3.ChartConfiguration = {
                 bindto: '#DeptWiseoverviewGraph',
                 data: {
                     x : 'x',
                     columns: [
-                        ['x', 'ST','PROD','QC','D&D','QA','MICRO','PUR','PROD','SC'],
-                        ['CAPA count by department', 30, 20, 10, 40,30, 20, 10, 40,50]
+                        ['x', ...departments],
+                        deptWiseData
                     ],
                     type: 'bar'
                 },
@@ -211,6 +194,23 @@ namespace MCapaStatusDashboard {
                     }
                 }
             };
+
+            // let byDeptChartparams: c3.ChartConfiguration = {
+            //     bindto: '#DeptWiseoverviewGraph',
+            //     data: {
+            //         x : 'x',
+            //         columns: [
+            //             ['x', 'ST','PROD','QC','D&D','QA','MICRO','PUR','PROD','SC'],
+            //             ['CAPA count by department', 30, 20, 10, 40,30, 20, 10, 40,50]
+            //         ],
+            //         type: 'bar'
+            //     },
+            //     axis: {
+            //         x: {
+            //             type: 'category'
+            //         }
+            //     }
+            // };
 
             //prepare chart config and render
             $("#DeptWiseoverviewChart div").remove();
@@ -675,7 +675,7 @@ namespace MCapaStatusDashboard {
                 console.log("department wise:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
                 console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
                 console.log("state wise:"+JSON.stringify(ByCategoryLabelData.statusWiseData));
-                console.log("state TracketData:"+JSON.stringify(ByCategoryLabelData.stateTrackerData));
+                console.log("state TrackerData:"+JSON.stringify(ByCategoryLabelData.stateTrackerData));
                 console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
                 console.log("status Wise AvgData:"+JSON.stringify(ByCategoryLabelData.statusWiseAvgData));
 
