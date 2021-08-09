@@ -356,7 +356,8 @@ namespace MCapaStatusDashboard {
                     type: 'bar',
                     groups: [
                               trackerStates
-                            ]
+                            ],
+                    order: null
                 },
                 axis: {
                     x: {
