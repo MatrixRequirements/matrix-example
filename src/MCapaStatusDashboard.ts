@@ -593,13 +593,13 @@ namespace MCapaStatusDashboard {
                     //check for item department
                     let deptIndex = ByCategoryLabelData.departments.findIndex(dept => dept === label.label);
 
-                    if(deptIndex > -1){
+                    if(deptIndex > -1 && (label.reset.length !== label.set.length)){
                         ByCategoryLabelData.deptWiseData[deptIndex + 1] += 1;
                     }
 
                     let catIndex = ByCategoryLabelData.categories.findIndex(cat => cat === label.label);
 
-                    if(catIndex > -1){
+                    if(catIndex > -1 && (label.reset.length !== label.set.length)){
                         ByCategoryLabelData.categoryWiseData[catIndex + 1] += 1;
                     }
 
