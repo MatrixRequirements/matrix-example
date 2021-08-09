@@ -678,6 +678,7 @@ namespace MCapaStatusDashboard {
                 console.log("department wise:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
                 console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
                 console.log("state wise:"+JSON.stringify(ByCategoryLabelData.statusWiseData));
+                console.log("trackerStates:"+JSON.stringify(ByCategoryLabelData.trackerStates));
                 console.log("state TrackerData:"+JSON.stringify(ByCategoryLabelData.stateTrackerData));
                 console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
                 console.log("status Wise AvgData:"+JSON.stringify(ByCategoryLabelData.statusWiseAvgData));
