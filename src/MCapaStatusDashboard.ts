@@ -607,7 +607,7 @@ namespace MCapaStatusDashboard {
 
                     if(stateIndex > -1){
                         //check for current state
-                        if(label.reset.length == 0){
+                        if(label.reset.length !== label.set.length){
                             ByCategoryLabelData.statusWiseData[stateIndex][1] += 1;
                         }
 
