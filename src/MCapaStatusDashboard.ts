@@ -197,23 +197,6 @@ namespace MCapaStatusDashboard {
                 }
             };
 
-            // let byDeptChartparams: c3.ChartConfiguration = {
-            //     bindto: '#DeptWiseoverviewGraph',
-            //     data: {
-            //         x : 'x',
-            //         columns: [
-            //             ['x', 'ST','PROD','QC','D&D','QA','MICRO','PUR','PROD','SC'],
-            //             ['CAPA count by department', 30, 20, 10, 40,30, 20, 10, 40,50]
-            //         ],
-            //         type: 'bar'
-            //     },
-            //     axis: {
-            //         x: {
-            //             type: 'category'
-            //         }
-            //     }
-            // };
-
             //prepare chart config and render
             $("#DeptWiseoverviewChart div").remove();
 
@@ -242,23 +225,6 @@ namespace MCapaStatusDashboard {
                 }
            };
 
-        //    let byCatChartparams: c3.ChartConfiguration = {
-        //     bindto: '#CatWiseoverviewGraph',
-        //     data: {
-        //      x : 'x',
-        //      columns: [
-        //          ['x', 'Internal Audit','Process/ Product','Complaint','External Audit'],
-        //          ['CAPA count by category', 30, 20, 10, 40]
-        //      ],
-        //      type: 'bar'
-        //      },
-        //      axis: {
-        //          x: {
-        //              type: 'category'
-        //          }
-        //      }
-        // };
-
            //prepare chart config and render
            $("#CatWiseoverviewChart div").remove();
 
@@ -277,19 +243,6 @@ namespace MCapaStatusDashboard {
                     type : 'pie'
                 }
             };
-
-            // let byStatusChartparams: c3.ChartConfiguration = {
-            //     bindto: '#StatusWiseoverviewGraph',
-            //     data: {
-            //         columns: [
-            //             ['Initiated', 38],
-            //             ['Approved', 8],
-            //             ['WFEC', 31],
-            //             ['Closed', 23]
-            //         ],
-            //         type : 'pie'
-            //     }
-            // };
 
             //prepare chart config and render
             $("#StatusWiseoverviewChart div").remove();
@@ -318,23 +271,6 @@ namespace MCapaStatusDashboard {
                     }
                 }
             };
-
-            // let byAvgTimeChartparams: c3.ChartConfiguration = {
-            //     bindto: '#AvgTimeWiseoverviewGraph',
-            //     data: {
-            //         x : 'x',
-            //         columns: [
-            //             ['x', 'Initiated','Approved','WFEC','Closed'],
-            //             ['CAPA average time spent in state', 30, 20, 10, 40]
-            //         ],
-            //         type: 'bar'
-            //     },
-            //     axis: {
-            //         x: {
-            //             type: 'category'
-            //         }
-            //     }
-            // };
 
             //prepare chart config and render
             $("#AvgTimeWiseoverviewChart div").remove();
@@ -368,32 +304,6 @@ namespace MCapaStatusDashboard {
                     rotated: true
                 }
             };
-
-            // let trackerChartparams: c3.ChartConfiguration = {
-            //     bindto: '#CapaTrackerGraph',
-            //     size: {
-            //         height: 900
-            //     },
-            //     data: {
-            //         x : 'x',
-            //         columns: [
-            //             ['x', 'CA1','CA2','CA3','CA4','CA5','CA6','CA7','CA8','CA9','CA10','PA1','PA2','PA3','PA4','PA5','PA6','PA7','PA8','PA9','PA10'],
-            //             ['Initiated', 30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40],
-            //             ['Approved', 30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40,30, 20, 10, 40],
-            //             ['WFEC', 30, 20, 10, 40, 30, 20, 10, 40, 30, 20, 10, 40, 30, 20, 10, 40, 30, 20, 10, 40]
-            //         ],
-            //         type: 'bar',
-            //         groups: [
-            //                     ['Initiated', 'Approved', 'WFEC']
-            //                 ]
-            //     },
-            //     axis: {
-            //         x: {
-            //             type: 'category'
-            //         },
-            //         rotated: true
-            //     }
-            // };
 
             //prepare chart config and render
             $("#CapaTrackerChart div").remove();
@@ -695,22 +605,21 @@ namespace MCapaStatusDashboard {
                 });
             }
 
-            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
-                console.log("category:"+ByCategoryLabelData.category);
-                console.log("departments:"+ByCategoryLabelData.departments);
-                console.log("displayDepartments:"+ByCategoryLabelData.displayDepartments);
-                console.log("categories:"+ByCategoryLabelData.categories);
-                console.log("displayCategories:"+ByCategoryLabelData.displayCategories);
-                console.log("department wise:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
-                console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
-                console.log("state codes:"+JSON.stringify(ByCategoryLabelData.stateCodes));
-                console.log("state wise:"+JSON.stringify(ByCategoryLabelData.statusWiseData));
-                console.log("trackerStates:"+JSON.stringify(ByCategoryLabelData.trackerStates));
-                console.log("state TrackerData:"+JSON.stringify(ByCategoryLabelData.stateTrackerData));
-                console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
-                console.log("status Wise AvgData:"+JSON.stringify(ByCategoryLabelData.statusWiseAvgData));
-
-            }
+            // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+            //     console.log("category:"+ByCategoryLabelData.category);
+            //     console.log("departments:"+ByCategoryLabelData.departments);
+            //     console.log("displayDepartments:"+ByCategoryLabelData.displayDepartments);
+            //     console.log("categories:"+ByCategoryLabelData.categories);
+            //     console.log("displayCategories:"+ByCategoryLabelData.displayCategories);
+            //     console.log("department wise:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
+            //     console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
+            //     console.log("state codes:"+JSON.stringify(ByCategoryLabelData.stateCodes));
+            //     console.log("state wise:"+JSON.stringify(ByCategoryLabelData.statusWiseData));
+            //     console.log("trackerStates:"+JSON.stringify(ByCategoryLabelData.trackerStates));
+            //     console.log("state TrackerData:"+JSON.stringify(ByCategoryLabelData.stateTrackerData));
+            //     console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
+            //     console.log("status Wise AvgData:"+JSON.stringify(ByCategoryLabelData.statusWiseAvgData));
+            // }
         }
 
         
