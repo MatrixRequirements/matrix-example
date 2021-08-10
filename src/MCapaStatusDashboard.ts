@@ -657,6 +657,9 @@ namespace MCapaStatusDashboard {
 
                         //check if state is closed or not
                         //if(label.label !== ByCategoryLabelData.closedState){
+                        if(item.itemRef == 'PA-1' && itemCurrentSateIndex == closedStateIndex){
+                           console.log('check');
+                        }    
                         if((stateIndex !== closedStateIndex) && (itemCurrentSateIndex !== closedStateIndex)){ 
                             //update state tracker
                             if(itemIndex > -1){
