@@ -656,11 +656,7 @@ namespace MCapaStatusDashboard {
                         ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
                         ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
 
-                        //check if state is closed or not
-                        //if(label.label !== ByCategoryLabelData.closedState){
-                        if(item.itemRef == 'PA-1' && itemCurrentSateIndex == closedStateIndex){
-                           console.log('check');
-                        }    
+                        //check if state is closed or not  
                         if((stateIndex !== closedStateIndex) && (itemCurrentSateIndex !== closedStateIndex)){ 
                             //update state tracker
                             if(itemIndex > -1){
