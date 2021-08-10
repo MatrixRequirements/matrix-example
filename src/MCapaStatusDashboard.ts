@@ -581,6 +581,7 @@ namespace MCapaStatusDashboard {
 
                 let ByCategoryLabelData: ByCategoryLabelData;
                 let itemIndex = -1;
+                let itemCurrentSateIndex = -1;
 
                 for (const ByCategoryData of this.ByCategoryLabelDetails) {
                     if (itemCategory == ByCategoryData.category) {
@@ -607,8 +608,13 @@ namespace MCapaStatusDashboard {
 
                     if(stateIndex > -1){
                         //check for current state
-                        if(label.reset.length !== label.set.length){
+                        if((label.reset.length !== label.set.length) && itemCurrentSateIndex < 0){
                             ByCategoryLabelData.statusWiseData[stateIndex][1] += 1;
+                            itemCurrentSateIndex = stateIndex;
+                        }else if((label.reset.length !== label.set.length) && stateIndex > itemCurrentSateIndex) {
+                            ByCategoryLabelData.statusWiseData[itemCurrentSateIndex][1] -= 1;
+                            ByCategoryLabelData.statusWiseData[stateIndex][1] += 1;
+                            itemCurrentSateIndex = stateIndex;
                         }
 
                          //get the number of days label state was in
@@ -678,6 +684,7 @@ namespace MCapaStatusDashboard {
                 console.log("category:"+ByCategoryLabelData.category);
                 console.log("department wise:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
                 console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
+                console.log("state codes:"+JSON.stringify(ByCategoryLabelData.stateCodes));
                 console.log("state wise:"+JSON.stringify(ByCategoryLabelData.statusWiseData));
                 console.log("trackerStates:"+JSON.stringify(ByCategoryLabelData.trackerStates));
                 console.log("state TrackerData:"+JSON.stringify(ByCategoryLabelData.stateTrackerData));
