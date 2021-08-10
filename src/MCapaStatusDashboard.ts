@@ -590,6 +590,9 @@ namespace MCapaStatusDashboard {
                     }
                 }
 
+                let initialStateTrackerData = {...ByCategoryLabelData.stateTrackerData};
+                let closedStateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === ByCategoryLabelData.closedState);
+
                 for (const label of item.labels) {
                     //check for item department
                     let deptIndex = ByCategoryLabelData.departments.findIndex(dept => dept === label.label);
@@ -653,7 +656,8 @@ namespace MCapaStatusDashboard {
                         ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
 
                         //check if state is closed or not
-                        if(label.label !== ByCategoryLabelData.closedState){
+                        //if(label.label !== ByCategoryLabelData.closedState){
+                        if((stateIndex !== closedStateIndex) && (itemCurrentSateIndex !== closedStateIndex)){ 
                             //update state tracker
                             if(itemIndex > -1){
                                 ByCategoryLabelData.stateTrackerData[stateIndex + 1][itemIndex + 1] = labelstateDaysCount;
@@ -665,6 +669,8 @@ namespace MCapaStatusDashboard {
                                 }
                                 ByCategoryLabelData.stateTrackerData[stateIndex + 1][itemIndex + 1] = labelstateDaysCount;
                             }
+                        }else{
+                            ByCategoryLabelData.stateTrackerData = initialStateTrackerData;
                         }    
                     }
                 } 
