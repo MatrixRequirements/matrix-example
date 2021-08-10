@@ -590,7 +590,8 @@ namespace MCapaStatusDashboard {
                     }
                 }
 
-                let initialStateTrackerData = {...ByCategoryLabelData.stateTrackerData};
+                //let initialStateTrackerData = {...ByCategoryLabelData.stateTrackerData};
+                let initialStateTrackerData = JSON.parse(JSON.stringify(ByCategoryLabelData.stateTrackerData));
                 let closedStateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === ByCategoryLabelData.closedState);
 
                 for (const label of item.labels) {
