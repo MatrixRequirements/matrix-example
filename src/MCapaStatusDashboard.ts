@@ -38,7 +38,9 @@ namespace MCapaStatusDashboard {
     interface ByCategoryLabelData {
         category: string;
         departments: any[];
+        displayDepartments: any[];
         categories: any[];
+        displayCategories: any[];
         stateCodes: any[];
         stateDesc: any[];
         trackerStates: any[];
@@ -436,7 +438,9 @@ namespace MCapaStatusDashboard {
             capaCategories.forEach(cat => {
 
                  let departments: any[] = [];
+                 let displayDepartments: any[] = [];
                  let categories: any[] = [];
+                 let displayCategories: any[] = [];
                  let stateCodes: any[] = [];
                  let stateDesc: any[];
                  let trackerStates: any[];
@@ -449,16 +453,19 @@ namespace MCapaStatusDashboard {
                  let closedState;
                  
                 // let departments_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
-
-                // departments_.forEach(dept => {
-                //     let deptDispName = new LabelTools().getDisplayName(dept);
-                //     departments.push(deptDispName);
-                // });
-
                 departments = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
-
                 categories = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "CAPA Category")[0].labels;
     
+                departments.forEach(dept => {
+                    let deptDispName = new LabelTools().getDisplayName(dept);
+                    displayDepartments.push(deptDispName);
+                });
+
+                categories.forEach(cat => {
+                    let catDispName = new LabelTools().getDisplayName(cat);
+                    displayCategories.push(catDispName);
+                });
+
                 deptWiseInitials = Array(departments.length).fill(0);
                 catWiseInitials = Array(categories.length).fill(0);
 
@@ -516,7 +523,9 @@ namespace MCapaStatusDashboard {
                 let ByCategoryLabelData: ByCategoryLabelData = {
                     category: cat,
                     departments: departments,
+                    displayDepartments: displayDepartments,
                     categories: categories,
+                    displayCategories: displayCategories,
                     stateCodes: stateCodes,
                     stateDesc: stateDesc,
                     trackerStates: trackerStates,
@@ -560,8 +569,8 @@ namespace MCapaStatusDashboard {
             let ByCategoryLabelData = this.ByCategoryLabelDetails
                 .find(({ category }) => category === this.currentCat);
 
-            this.renderByDeptChart(ByCategoryLabelData.departments,ByCategoryLabelData.deptWiseData);
-            this.renderByCatChart(ByCategoryLabelData.categories,ByCategoryLabelData.categoryWiseData);
+            this.renderByDeptChart(ByCategoryLabelData.displayDepartments,ByCategoryLabelData.deptWiseData);
+            this.renderByCatChart(ByCategoryLabelData.displayCategories,ByCategoryLabelData.categoryWiseData);
             this.renderByStatusChart(ByCategoryLabelData.statusWiseData);
             this.renderByAvgTimeChart(ByCategoryLabelData.stateDesc,ByCategoryLabelData.statusWiseAvgData);
             this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData);
@@ -688,6 +697,10 @@ namespace MCapaStatusDashboard {
 
             for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
                 console.log("category:"+ByCategoryLabelData.category);
+                console.log("departments:"+ByCategoryLabelData.departments);
+                console.log("displayDepartments:"+ByCategoryLabelData.displayDepartments);
+                console.log("categories:"+ByCategoryLabelData.categories);
+                console.log("displayCategories:"+ByCategoryLabelData.displayCategories);
                 console.log("department wise:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
                 console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
                 console.log("state codes:"+JSON.stringify(ByCategoryLabelData.stateCodes));
