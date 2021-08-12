@@ -573,8 +573,8 @@ namespace MCapaStatusDashboard {
                         const labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
                             let stateDays: number;
                             if (label.reset[currentIndex]) {
-                                const setDate = new Date(currentValue.dateUser);
-                                const resetDate = new Date(label.reset[currentIndex].dateUser);
+                                const setDate = new Date(currentValue.dateIso);
+                                const resetDate = new Date(label.reset[currentIndex].dateIso);
 
                                 let time_difference = resetDate.getTime() - setDate.getTime();
 
@@ -583,7 +583,7 @@ namespace MCapaStatusDashboard {
 
                                 stateDays = Math.floor(days_difference);
                             } else {
-                                const setDate = new Date(currentValue.dateUser);
+                                const setDate = new Date(currentValue.dateIso);
                                 const resetDate = new Date();
 
                                 let time_difference = resetDate.getTime() - setDate.getTime();
