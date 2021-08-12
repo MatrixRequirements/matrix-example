@@ -50,11 +50,14 @@ namespace MCapaStatusDashboard {
         deptWiseData: any[];
         categoryWiseData: any[];
         statusWiseData: any[];
+        statusWiseLegendColors: any[];
         statusWiseTotalDaysData: any[];
         statusWiseAvgData: any[];
         stateTrackerData: any[];
+        stateTrackerLegendColors: any[];
         closedState: string;
     }
+
    
     class MCapaStatusDashboardControl extends BaseControl {
 
@@ -90,7 +93,7 @@ namespace MCapaStatusDashboard {
             //$("#MCSONoItems", that._root).hide();
 
 
-            setTimeout(o => that.installCopyButtons("MCAPA Status Overview"), 10);
+            setTimeout(o => that.installCopyButtons("CAPA Status Overview"), 10);
 
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
@@ -237,13 +240,16 @@ namespace MCapaStatusDashboard {
            //this.charts.push(renderedChart);
        }
 
-       renderByStatusChart(statusWiseData){
+       renderByStatusChart(statusWiseData,legendColors){
             //prepare template
             let byStatusChartparams: c3.ChartConfiguration = {
                 bindto: '#StatusWiseoverviewGraph',
                 data: {
                     columns: statusWiseData,
                     type : 'pie'
+                },
+                color: {
+                    pattern: legendColors
                 }
             };
 
@@ -284,7 +290,7 @@ namespace MCapaStatusDashboard {
             //this.charts.push(renderedChart);
         }
 
-        renderTrackerChart(trackerStates,stateTrackerData){
+        renderTrackerChart(trackerStates,stateTrackerData,legendColors){
             //prepare template
             let trackerChartparams: c3.ChartConfiguration = {
                 bindto: '#CapaTrackerGraph',
@@ -299,6 +305,9 @@ namespace MCapaStatusDashboard {
                               trackerStates
                             ],
                     order: null
+                },
+                color: {
+                    pattern: legendColors
                 },
                 axis: {
                     x: {
@@ -325,7 +334,7 @@ namespace MCapaStatusDashboard {
             //Load the template
             that._root.html(that.ExampleHTMLDom);
             //Add the page title
-            ml.UI.getPageTitle("MCAPA Status Overview").prependTo(that._root);
+            ml.UI.getPageTitle("CAPA Status Overview").prependTo(that._root);
 
             let baseControl = $("<div id='itemSelectionLabelDashboard'/>");
 
@@ -361,7 +370,9 @@ namespace MCapaStatusDashboard {
                  let catWiseInitials: any[] = [];
                  let SateWiseAvgInitials: any[] = [];
                  let statusWiseData: any[] = [];
+                 let statusWiseLegendColors: any[];
                  let stateTrackerData: any[] = [];
+                 let stateTrackerLegendColors: any[];
                  let statusWiseTotalDaysData: any[] = [];
                  let closedState;
                  
@@ -401,6 +412,9 @@ namespace MCapaStatusDashboard {
                         ['Closed', 0]
                     ];
 
+                    statusWiseLegendColors = ['#d62728', '#ff7f0e', '#9467bd','#1f77b4', '#2ca02c'];
+
+
                     stateTrackerData = [
                         ['x'],
                         ['Initiated'],
@@ -408,6 +422,8 @@ namespace MCapaStatusDashboard {
                         ['RC Approved'],
                         ['WFEC']
                     ];
+
+                    stateTrackerLegendColors = ['#d62728', '#ff7f0e', '#9467bd','#1f77b4'];
 
                 }else{
 
@@ -425,12 +441,17 @@ namespace MCapaStatusDashboard {
                         ['Closed', 0]
                     ];
 
+                    statusWiseLegendColors = ['#d62728', '#ff7f0e', '#9467bd', '#2ca02c'];
+
                     stateTrackerData = [
                         ['x'],
                         ['Initiated'],
                         ['Approved'],
                         ['RC Approved']
                     ];
+
+                    stateTrackerLegendColors = ['#d62728', '#ff7f0e', '#9467bd'];
+
                 }
 
                 let ByCategoryLabelData: ByCategoryLabelData = {
@@ -445,9 +466,11 @@ namespace MCapaStatusDashboard {
                     deptWiseData: [cat + ' count by department', ...deptWiseInitials],
                     categoryWiseData: [cat + ' count by category', ...catWiseInitials],
                     statusWiseData: statusWiseData,
+                    statusWiseLegendColors: statusWiseLegendColors,
                     statusWiseTotalDaysData: statusWiseTotalDaysData,
                     statusWiseAvgData: [cat + ' average time spent in state', ...SateWiseAvgInitials],
                     stateTrackerData: stateTrackerData,
+                    stateTrackerLegendColors: stateTrackerLegendColors,
                     closedState: closedState
                 };
     
@@ -484,9 +507,9 @@ namespace MCapaStatusDashboard {
 
             this.renderByDeptChart(ByCategoryLabelData.displayDepartments,ByCategoryLabelData.deptWiseData);
             this.renderByCatChart(ByCategoryLabelData.displayCategories,ByCategoryLabelData.categoryWiseData);
-            this.renderByStatusChart(ByCategoryLabelData.statusWiseData);
+            this.renderByStatusChart(ByCategoryLabelData.statusWiseData,ByCategoryLabelData.statusWiseLegendColors);
             this.renderByAvgTimeChart(ByCategoryLabelData.stateDesc,ByCategoryLabelData.statusWiseAvgData);
-            this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData);
+            this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData,ByCategoryLabelData.stateTrackerLegendColors);
 
         }
 
