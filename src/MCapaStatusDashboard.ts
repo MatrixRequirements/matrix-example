@@ -12,7 +12,7 @@ namespace MCapaStatusDashboard {
             let pages: IProjectPageParam[] = [];
             pages.push({
                 id: "MCSO",
-                title: "MCAPA Status Overview",
+                title: "CAPA Status Overview",
                 folder: "DASHBOARDS",
                 order: 3000,
                 icon: "fal fa-rocket",
@@ -30,11 +30,11 @@ namespace MCapaStatusDashboard {
         isDefault = true;
 
         getPluginName(): string {
-            return "MCAPA Status Overview";
+            return "CAPA Status Overview";
         }
 
         getPluginVersion(): string {
-            return "0.0.1";
+            return "1.0.0";
         }
     }
 
