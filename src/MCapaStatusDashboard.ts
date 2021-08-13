@@ -15,7 +15,7 @@ namespace MCapaStatusDashboard {
                 title: "CAPA Status Overview",
                 folder: "DASHBOARDS",
                 order: 3000,
-                icon: "fal fa-rocket",
+                icon: "fal fa-chart-bar",
                 usesFilters: true,
                 render: (options: IPluginPanelOptions) => {
                     const control = new MCapaStatusDashboardControl(options.control);
