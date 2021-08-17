@@ -7,7 +7,7 @@ namespace MCapaStatusDashboard {
         // Implement to pass back additional pages to be displayed in the tree
         getProjectPages(): IProjectPageParam[] {
 
-            if (!IC.getSettingJSON( "MSCO")) return [];
+            //if (!IC.getSettingJSON( "MSCO")) return [];
         
             let pages: IProjectPageParam[] = [];
             pages.push({
