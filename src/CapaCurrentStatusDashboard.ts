@@ -261,7 +261,7 @@ namespace CapaCurrentStatusDashboard {
                             days: 30
                         }
                     ],
-                    currentState: 'Closed',
+                    currentState: 'CLOSED',
                     currentStateSetDate: '02-07-2021',
                     openToCloseDays: '120'
                 },
@@ -305,7 +305,7 @@ namespace CapaCurrentStatusDashboard {
                     $("#title", clonedTemplate).data("ref", itemData.id + "!");
 
                     $("#currentstate", clonedTemplate).text(itemData.currentState);
-                    $("#opentoclose", clonedTemplate).text(itemData.currentState);
+                    $("#opentoclose", clonedTemplate).text(itemData.openToCloseDays);
 
                     itemData.labels.forEach(
                         (label) => {
