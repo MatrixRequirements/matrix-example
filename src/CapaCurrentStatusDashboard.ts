@@ -100,6 +100,7 @@ namespace CapaCurrentStatusDashboard {
                 that.processLabelsData(result);
                 that.renderCategoryWiseData("");
                 that.renderCharts();
+                that.renderTable();
             }).then(() => {
                 //Let's remove the spinning wait
                 $(".spinningWait",that._root).hide();
