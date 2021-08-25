@@ -379,11 +379,11 @@ namespace CapaCurrentStatusDashboard {
                 let itemCurrentStateDetails: ItemCurrentStateData[] = [];
                 let closedState;
 
-                let states_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == cat)[0].labels.sort();
+                //let states_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == cat)[0].labels.sort();
 
                 if(cat === "CA"){
 
-                    stateCodes = states_.sort();
+                    //stateCodes = states_.sort();
                     stateDesc =  ['Initiated','Approved','RC Approved', 'WFEC','Closed'];
                     SateWiseAvgInitials = Array(stateDesc.length).fill(0);
                     statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0],[0,0]];
@@ -399,7 +399,7 @@ namespace CapaCurrentStatusDashboard {
 
                 }else{
 
-                    stateCodes = states_;
+                    //stateCodes = states_;
                     stateDesc =  ['Initiated','Approved','RC Approved','Closed'];
                     SateWiseAvgInitials = Array(stateDesc.length).fill(0);
                     statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0]];
