@@ -333,7 +333,7 @@ namespace CapaCurrentStatusDashboard {
             $("table#CCSOTable").highlightReferences();
             $("table#CCSOTable").tablesorter();
 
-            this.filterByLabel({ type: "" });
+            //this.filterByLabel({ type: "" });
 
         }
 
