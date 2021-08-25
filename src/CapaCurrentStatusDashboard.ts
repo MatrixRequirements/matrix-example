@@ -221,23 +221,23 @@ namespace CapaCurrentStatusDashboard {
                     id: "CA-1",
                     labels: [
                         {
-                            label: 'Open',
+                            label: 'OPEN',
                             days: 30
                         },
                         {
-                            label: 'Wait',
+                            label: 'WAIT',
                             days: 30
                         },
                         {
-                            label: 'Checked',
+                            label: 'CHECKED',
                             days: 30
                         },
                         {
-                            label: 'Closed',
+                            label: 'CLOSED',
                             days: 30
                         }
                     ],
-                    currentState: 'Closed',
+                    currentState: 'CLOSED',
                     currentStateSetDate: '02-07-2021',
                     openToCloseDays: '120'
                 },
@@ -245,19 +245,19 @@ namespace CapaCurrentStatusDashboard {
                     id: "CA-2",
                     labels: [
                         {
-                            label: 'Open',
+                            label: 'OPEN',
                             days: 30
                         },
                         {
-                            label: 'Wait',
+                            label: 'WAIT',
                             days: 30
                         },
                         {
-                            label: 'Checked',
+                            label: 'CHECKED',
                             days: 30
                         },
                         {
-                            label: 'Closed',
+                            label: 'CLOSED',
                             days: 30
                         }
                     ],
@@ -269,23 +269,23 @@ namespace CapaCurrentStatusDashboard {
                     id: "CA-3",
                     labels: [
                         {
-                            label: 'Open',
+                            label: 'OPEN',
                             days: 30
                         },
                         {
-                            label: 'Wait',
+                            label: 'WAIT',
                             days: 30
                         },
                         {
-                            label: 'Checked',
+                            label: 'CHECKED',
                             days: 30
                         },
                         {
-                            label: 'Closed',
+                            label: 'CLOSED',
                             days: 30
                         }
                     ],
-                    currentState: 'Closed',
+                    currentState: 'CLOSED',
                     currentStateSetDate: '02-07-2021',
                     openToCloseDays: '120'
                 }
