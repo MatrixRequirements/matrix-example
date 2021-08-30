@@ -249,6 +249,18 @@ namespace MCapaStatusDashboard {
                 },
                 color: {
                     pattern: legendColors
+                },
+                pie: {
+                    label: {
+                        format: function (value: any, ratio: any, id: any) {
+                            return (value);
+                        }
+                    }
+                },
+                tooltip: {
+                    format: {
+                        value: function (value : any, ratio: any, id: any, index: any) { return value; }
+                    }
                 }
             };
 
