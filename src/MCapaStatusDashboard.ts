@@ -609,7 +609,9 @@ namespace MCapaStatusDashboard {
 
                         }, 0);
 
-                        
+                        ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
+                        ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
+
                         //check if state is closed or not  
                         if((stateIndex !== closedStateIndex) && (itemCurrentSateIndex !== closedStateIndex)){ 
                             //update state tracker
@@ -625,8 +627,6 @@ namespace MCapaStatusDashboard {
                             }
                         }else{
                             ByCategoryLabelData.stateTrackerData = initialStateTrackerData;
-                            ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
-                            ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
                         }    
                     }
                 } 
@@ -642,21 +642,21 @@ namespace MCapaStatusDashboard {
                 });
             }
 
-            // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
-            //     console.log("category:"+ByCategoryLabelData.category);
-            //     console.log("departments:"+ByCategoryLabelData.departments);
-            //     console.log("displayDepartments:"+ByCategoryLabelData.displayDepartments);
-            //     console.log("categories:"+ByCategoryLabelData.categories);
-            //     console.log("displayCategories:"+ByCategoryLabelData.displayCategories);
-            //     console.log("department wise:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
-            //     console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
-            //     console.log("state codes:"+JSON.stringify(ByCategoryLabelData.stateCodes));
-            //     console.log("state wise:"+JSON.stringify(ByCategoryLabelData.statusWiseData));
-            //     console.log("trackerStates:"+JSON.stringify(ByCategoryLabelData.trackerStates));
-            //     console.log("state TrackerData:"+JSON.stringify(ByCategoryLabelData.stateTrackerData));
-            //     console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
-            //     console.log("status Wise AvgData:"+JSON.stringify(ByCategoryLabelData.statusWiseAvgData));
-            // }
+            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+                console.log("category:"+ByCategoryLabelData.category);
+                console.log("departments:"+ByCategoryLabelData.departments);
+                console.log("displayDepartments:"+ByCategoryLabelData.displayDepartments);
+                console.log("categories:"+ByCategoryLabelData.categories);
+                console.log("displayCategories:"+ByCategoryLabelData.displayCategories);
+                console.log("department wise:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
+                console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
+                console.log("state codes:"+JSON.stringify(ByCategoryLabelData.stateCodes));
+                console.log("state wise:"+JSON.stringify(ByCategoryLabelData.statusWiseData));
+                console.log("trackerStates:"+JSON.stringify(ByCategoryLabelData.trackerStates));
+                console.log("state TrackerData:"+JSON.stringify(ByCategoryLabelData.stateTrackerData));
+                console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
+                console.log("status Wise AvgData:"+JSON.stringify(ByCategoryLabelData.statusWiseAvgData));
+            }
         }
 
         
