@@ -609,9 +609,7 @@ namespace MCapaStatusDashboard {
 
                         }, 0);
 
-                        ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
-                        ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
-
+                        
                         //check if state is closed or not  
                         if((stateIndex !== closedStateIndex) && (itemCurrentSateIndex !== closedStateIndex)){ 
                             //update state tracker
@@ -627,6 +625,8 @@ namespace MCapaStatusDashboard {
                             }
                         }else{
                             ByCategoryLabelData.stateTrackerData = initialStateTrackerData;
+                            ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
+                            ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
                         }    
                     }
                 } 
