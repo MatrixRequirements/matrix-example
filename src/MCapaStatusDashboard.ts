@@ -438,7 +438,8 @@ namespace MCapaStatusDashboard {
 
                 }else{
 
-                    stateCodes = states_;
+                    //stateCodes = states_;
+                    stateCodes = ["PN1","PN2","PN3","PN4","PAC"];
                     stateDesc =  ['Initiated','Approved','RC Approved', 'WFEC','Closed'];
                     trackerStates = ['Initiated','Approved','RC Approved', 'WFEC'];
                     SateWiseAvgInitials = Array(stateDesc.length).fill(0);
