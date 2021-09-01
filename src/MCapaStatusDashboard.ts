@@ -439,29 +439,31 @@ namespace MCapaStatusDashboard {
                 }else{
 
                     stateCodes = states_;
-                    stateDesc =  ['Initiated','Approved','RC Approved','Closed'];
-                    trackerStates = ['Initiated','Approved','RC Approved'];
+                    stateDesc =  ['Initiated','Approved','RC Approved', 'WFEC','Closed'];
+                    trackerStates = ['Initiated','Approved','RC Approved', 'WFEC'];
                     SateWiseAvgInitials = Array(stateDesc.length).fill(0);
-                    statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0]];
+                    statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0],[0,0]];
                     closedState = "PAC";
 
                     statusWiseData = [
                         ['Initiated', 0],
                         ['Approved', 0],
                         ['RC Approved', 0],
+                        ['WFEC', 0],
                         ['Closed', 0]
                     ];
 
-                    statusWiseLegendColors = ['#d62728', '#ff7f0e', '#9467bd', '#2ca02c'];
+                    statusWiseLegendColors = ['#d62728', '#ff7f0e', '#9467bd', '#1f77b4', '#2ca02c'];
 
                     stateTrackerData = [
                         ['x'],
                         ['Initiated'],
                         ['Approved'],
-                        ['RC Approved']
+                        ['RC Approved'],
+                        ['WFEC']
                     ];
 
-                    stateTrackerLegendColors = ['#d62728', '#ff7f0e', '#9467bd'];
+                    stateTrackerLegendColors = ['#d62728', '#ff7f0e', '#9467bd', '#1f77b4'];
 
                 }
 
