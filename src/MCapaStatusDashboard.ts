@@ -55,7 +55,9 @@ namespace MCapaStatusDashboard {
         statusWiseAvgData: any[];
         stateTrackerData: any[];
         stateTrackerLegendColors: any[];
+        intialState: string;
         closedState: string;
+
     }
 
    
@@ -385,6 +387,7 @@ namespace MCapaStatusDashboard {
                  let stateTrackerData: any[] = [];
                  let stateTrackerLegendColors: any[];
                  let statusWiseTotalDaysData: any[] = [];
+                 let intialState;
                  let closedState;
                  
                 // let departments_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
@@ -413,6 +416,7 @@ namespace MCapaStatusDashboard {
                     trackerStates = ['Initiated','Approved','RC Approved', 'WFEC'];
                     SateWiseAvgInitials = Array(stateDesc.length).fill(0);
                     statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0],[0,0]];
+                    intialState = "AN1";
                     closedState = "AN5";
 
                     statusWiseData = [
@@ -444,6 +448,7 @@ namespace MCapaStatusDashboard {
                     trackerStates = ['Initiated','Approved','RC Approved', 'WFEC'];
                     SateWiseAvgInitials = Array(stateDesc.length).fill(0);
                     statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0],[0,0]];
+                    intialState = "PN1";
                     closedState = "PAC";
 
                     statusWiseData = [
@@ -485,6 +490,7 @@ namespace MCapaStatusDashboard {
                     statusWiseAvgData: [cat + ' average time spent in state', ...SateWiseAvgInitials],
                     stateTrackerData: stateTrackerData,
                     stateTrackerLegendColors: stateTrackerLegendColors,
+                    intialState: intialState,
                     closedState: closedState
                 };
     
@@ -551,8 +557,11 @@ namespace MCapaStatusDashboard {
 
                 //let initialStateTrackerData = {...ByCategoryLabelData.stateTrackerData};
                 let initialStateTrackerData = JSON.parse(JSON.stringify(ByCategoryLabelData.stateTrackerData));
+                let initialStateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === ByCategoryLabelData.intialState);
                 let closedStateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === ByCategoryLabelData.closedState);
                 let itemSateWiseDaysCount = [];
+                let initalStateData = [];
+                let closeStateData = [];
 
                 for (const label of item.labels) {
                     //check for item department
@@ -613,7 +622,15 @@ namespace MCapaStatusDashboard {
 
                         }, 0);
 
-                        itemSateWiseDaysCount.push({ stateIndex : stateIndex, daysCount: labelstateDaysCount})
+                        itemSateWiseDaysCount.push({ stateIndex : stateIndex, daysCount: labelstateDaysCount});
+
+                        if(stateIndex == initialStateIndex){
+                            initalStateData.push(label);
+                        }
+
+                        if(stateIndex == closedStateIndex){
+                            closeStateData.push(label);
+                        }
 
                         //check if state is closed or not  
                         if((stateIndex !== closedStateIndex) && (itemCurrentSateIndex !== closedStateIndex)){ 
@@ -635,11 +652,33 @@ namespace MCapaStatusDashboard {
                 } 
 
                 if(itemCurrentSateIndex == closedStateIndex){
+
                     itemSateWiseDaysCount.forEach((element) => {
                         ByCategoryLabelData.statusWiseTotalDaysData[element.stateIndex][0] += element.daysCount;
                         ByCategoryLabelData.statusWiseTotalDaysData[element.stateIndex][1] += 1;
 
                     });
+
+                    if(initalStateData.length > 0 && closeStateData.length > 0){
+
+                        initalStateData[0].set.sort((a, b) => a.version - b.version);
+                        closeStateData[0].set.sort((a, b) => b.version - a.version);
+
+                        const intiatedDate = new Date(initalStateData[0].set[0].dateIso);
+                        const colosedDate = new Date(closeStateData[0].set[0].dateIso);
+
+                        let time_difference = colosedDate.getTime() - intiatedDate.getTime();
+
+                        //calculate days difference by dividing total milliseconds in a day  
+                        let days_difference = time_difference / (1000 * 60 * 60 * 24);
+
+                        let daystoCloseItem = Math.floor(days_difference);
+
+                        console.log("Item:"+item.itemRef+",Days to close:"+daystoCloseItem);
+
+                    }
+
+
                 }
 
             }
