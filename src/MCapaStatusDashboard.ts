@@ -55,6 +55,8 @@ namespace MCapaStatusDashboard {
         statusWiseAvgData: any[];
         stateTrackerData: any[];
         stateTrackerLegendColors: any[];
+        closedItemsData: any[];
+        closureTimeData: any[];
         intialState: string;
         closedState: string;
 
@@ -317,15 +319,15 @@ namespace MCapaStatusDashboard {
             //this.charts.push(renderedChart);
         }
 
-        renderClosureTimeChart(){
+        renderClosureTimeChart(closedItemsData,closureTimeData){
             //prepare template
             let closureTimeChartparams: c3.ChartConfiguration = {
                bindto: '#ClosureTimeoverviewGraph',
                data: {
                    x : 'x',
                    columns: [
-                    ['x', 'CA-1','CA-2','CA-3','CA-4','CA-5','CA-6','CA-7','CA-8','CA-9'],
-                    ['CA closure time(in days)', 30, 20, 10, 40,30, 20, 10, 40,50]
+                    ['x', ...closedItemsData],
+                    closureTimeData
                    ],
                    type: 'bar'
                },
@@ -429,6 +431,7 @@ namespace MCapaStatusDashboard {
                  let stateTrackerData: any[] = [];
                  let stateTrackerLegendColors: any[];
                  let statusWiseTotalDaysData: any[] = [];
+                 let closedItemsData: any[] = [];
                  let intialState;
                  let closedState;
                  
@@ -532,6 +535,8 @@ namespace MCapaStatusDashboard {
                     statusWiseAvgData: [cat + ' average time spent in state', ...SateWiseAvgInitials],
                     stateTrackerData: stateTrackerData,
                     stateTrackerLegendColors: stateTrackerLegendColors,
+                    closedItemsData: closedItemsData,
+                    closureTimeData: [cat + ' closure time(in days)'],
                     intialState: intialState,
                     closedState: closedState
                 };
@@ -572,7 +577,7 @@ namespace MCapaStatusDashboard {
             this.renderByStatusChart(ByCategoryLabelData.statusWiseData,ByCategoryLabelData.statusWiseLegendColors);
             this.renderByAvgTimeChart(ByCategoryLabelData.stateDesc,ByCategoryLabelData.statusWiseAvgData);
             this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData,ByCategoryLabelData.stateTrackerLegendColors);
-            this.renderClosureTimeChart();
+            this.renderClosureTimeChart(ByCategoryLabelData.closedItemsData,ByCategoryLabelData.closureTimeData);
 
         }
 
@@ -699,7 +704,6 @@ namespace MCapaStatusDashboard {
                     itemSateWiseDaysCount.forEach((element) => {
                         ByCategoryLabelData.statusWiseTotalDaysData[element.stateIndex][0] += element.daysCount;
                         ByCategoryLabelData.statusWiseTotalDaysData[element.stateIndex][1] += 1;
-
                     });
 
                     if(initalStateData.length > 0 && closeStateData.length > 0){
@@ -717,8 +721,10 @@ namespace MCapaStatusDashboard {
 
                         let daystoCloseItem = Math.floor(days_difference);
 
-                        console.log("Item:"+item.itemRef+",Days to close:"+daystoCloseItem);
+                        //console.log("Item:"+item.itemRef+",Days to close:"+daystoCloseItem);
 
+                        ByCategoryLabelData.closedItemsData.push(item.itemRef);
+                        ByCategoryLabelData.closureTimeData.push(daystoCloseItem);
                     }
                 }
 
@@ -748,6 +754,8 @@ namespace MCapaStatusDashboard {
                 console.log("state TrackerData:"+JSON.stringify(ByCategoryLabelData.stateTrackerData));
                 console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
                 console.log("status Wise AvgData:"+JSON.stringify(ByCategoryLabelData.statusWiseAvgData));
+                console.log("closed items data:"+JSON.stringify(ByCategoryLabelData.closedItemsData));
+                console.log("closure time data:"+JSON.stringify(ByCategoryLabelData.closureTimeData));
             }
         }
 
@@ -769,7 +777,7 @@ namespace MCapaStatusDashboard {
         }
         .closureTimeChart{
             width: 90%; 
-            min-height: 450px;
+            min-height: 315px;
             cursor:pointer;
         }
         </style>
