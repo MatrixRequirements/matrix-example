@@ -69,6 +69,7 @@ namespace MCapaStatusDashboard {
         CatWiseoverviewChart: c3.ChartAPI;
         StatusWiseoverviewChart: c3.ChartAPI;
         AvgTimeWiseoverviewChart: c3.ChartAPI;
+        ClosureTimeoverviewChart: c3.ChartAPI;
         CapaTrackerChart: c3.ChartAPI;
 
 
@@ -168,6 +169,19 @@ namespace MCapaStatusDashboard {
                 that.AvgTimeWiseoverviewChart.resize({width:590});
             },()=>{
                 that.AvgTimeWiseoverviewChart.resize({width:savedWidth})
+            });
+
+            ml.UI.copyBuffer($("#ClosureTimeChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#ClosureTimeoverviewChart)"), this._root, (copied: JQuery) => {
+                let title_ = $("#ClosureTimeChartTitle",this._root).text();
+                $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
+    
+                ml.UI.fixC3ForCopy(copied);
+    
+            },"",()=>{
+                savedWidth = $("#ClosureTimeoverviewChart svg",this._root).width();
+                that.ClosureTimeoverviewChart.resize({width:590});
+            },()=>{
+                that.ClosureTimeoverviewChart.resize({width:savedWidth})
             });
 
 
@@ -302,6 +316,34 @@ namespace MCapaStatusDashboard {
             this.AvgTimeWiseoverviewChart = c3.generate(byAvgTimeChartparams);
             //this.charts.push(renderedChart);
         }
+
+        renderClosureTimeChart(){
+            //prepare template
+            let closureTimeChartparams: c3.ChartConfiguration = {
+               bindto: '#ClosureTimeoverviewGraph',
+               data: {
+                   x : 'x',
+                   columns: [
+                    ['x', 'CA-1','CA-2','CA-3','CA-4','CA-5','CA-6','CA-7','CA-8','CA-9'],
+                    ['CA closure time(in days)', 30, 20, 10, 40,30, 20, 10, 40,50]
+                   ],
+                   type: 'bar'
+               },
+               axis: {
+                   x: {
+                       type: 'category'
+                   }
+               }
+           };
+
+           //prepare chart config and render
+           $("#ClosureTimeoverviewChart div").remove();
+
+           $("#ClosureTimeoverviewChart").append("<div id='ClosureTimeoverviewGraph'>");
+
+           this.ClosureTimeoverviewChart = c3.generate(closureTimeChartparams);
+           //this.charts.push(renderedChart);
+       }
 
         renderTrackerChart(trackerStates,stateTrackerData,legendColors){
             //prepare template
@@ -530,6 +572,7 @@ namespace MCapaStatusDashboard {
             this.renderByStatusChart(ByCategoryLabelData.statusWiseData,ByCategoryLabelData.statusWiseLegendColors);
             this.renderByAvgTimeChart(ByCategoryLabelData.stateDesc,ByCategoryLabelData.statusWiseAvgData);
             this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData,ByCategoryLabelData.stateTrackerLegendColors);
+            this.renderClosureTimeChart();
 
         }
 
@@ -677,8 +720,6 @@ namespace MCapaStatusDashboard {
                         console.log("Item:"+item.itemRef+",Days to close:"+daystoCloseItem);
 
                     }
-
-
                 }
 
             }
@@ -724,6 +765,11 @@ namespace MCapaStatusDashboard {
         {
             width: 90%; 
             min-height: 900px;
+            cursor:pointer;
+        }
+        .closureTimeChart{
+            width: 90%; 
+            min-height: 450px;
             cursor:pointer;
         }
         </style>
@@ -780,6 +826,20 @@ namespace MCapaStatusDashboard {
                         <div class="panel-body">
                             <div class='copyTitle'> </div>
                             <div id="AvgTimeWiseoverviewChart" class="chart" ></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row doNotCopy">
+                <div class="col-lg-12"> 
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title" id="ClosureTimeChartTitle">CAPA closure time overview</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class='copyTitle'> </div>
+                            <div id="ClosureTimeoverviewChart" class="closureTimeChart"></div>
                         </div>
                     </div>
                 </div>
