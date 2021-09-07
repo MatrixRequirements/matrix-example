@@ -736,7 +736,7 @@ namespace MCapaStatusDashboard {
                     if(element[1] !== 0){
                         avgData = element[0]/element[1]
                     }
-                    ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData;
+                    ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData.toFixed(2);
                 });
             }
 
