@@ -681,7 +681,7 @@ namespace MCapaStatusDashboard {
                         }
 
                         //check if state is closed or not  
-                        if((stateIndex !== closedStateIndex) && (itemCurrentSateIndex !== closedStateIndex)){ 
+                        if(stateIndex !== closedStateIndex){ 
                             //update state tracker
                             if(itemIndex > -1){
                                 ByCategoryLabelData.stateTrackerData[stateIndex + 1][itemIndex + 1] = labelstateDaysCount;
@@ -693,13 +693,13 @@ namespace MCapaStatusDashboard {
                                 }
                                 ByCategoryLabelData.stateTrackerData[stateIndex + 1][itemIndex + 1] = labelstateDaysCount;
                             }
-                        }else{
-                            ByCategoryLabelData.stateTrackerData = initialStateTrackerData;
-                        }    
+                        }   
                     }
                 } 
 
                 if(itemCurrentSateIndex == closedStateIndex){
+
+                    ByCategoryLabelData.stateTrackerData = initialStateTrackerData;
 
                     itemSateWiseDaysCount.forEach((element) => {
                         ByCategoryLabelData.statusWiseTotalDaysData[element.stateIndex][0] += element.daysCount;
