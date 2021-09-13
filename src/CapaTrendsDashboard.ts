@@ -603,13 +603,13 @@ namespace CapaTrendsDashboard {
                         let statusColumnIndex;
 
                         if(fromDateLabels.length > 0){
-                            let fromDateLabelsCurrentSate: CurrentStateData = getItemCurrentState(fromDateLabels);
+                            let fromDateLabelsCurrentSate: CurrentStateData = this.getItemCurrentState(fromDateLabels);
                             statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === fromDateLabelsCurrentSate.currentState);
                             dateFilterChartColumnsData[0][statusColumnIndex + 1] += 1;
                         }
                         
                         if(toDateLabels.length > 0){
-                            let toDateLabelsCurrentSate: CurrentStateData = getItemCurrentState(toDateLabels);
+                            let toDateLabelsCurrentSate: CurrentStateData = this.getItemCurrentState(toDateLabels);
                             statusColumnIndex = dateFilterChartCategoryData.findIndex(column => column === toDateLabelsCurrentSate.currentState);
                             dateFilterChartColumnsData[1][statusColumnIndex + 1] += 1;
                         }
