@@ -1304,7 +1304,7 @@ namespace CapaTrendsDashboard {
                         </div>
                         <div class="panel-body">
                             <div class='copyTitle'> </div>
-                            <div>
+                            <div class="bigChart">
                                 <div id="timeSeriesChartRangeFilter" style="display:flex;margin-left: 40px">
                                     <div class="btn-group labelTools">
                                         <button id="weekRange" class="btn btn-default btn-xs timerangeselected" data-original-title="" title="">Week</button>
@@ -1340,7 +1340,7 @@ namespace CapaTrendsDashboard {
                                         <button id="gobutton" style="margin-left: 12px" type="button" class="date-filter-btn btn-success">Go</button>
                                     </p>
                                 </div>
-                                <div id="CapaStatusTimeSeriesChart" class="bigChart"></div>
+                                <div id="CapaStatusTimeSeriesChart"></div>
                             </div>
                         </div>
                     </div>
