@@ -1246,7 +1246,7 @@ namespace CapaTrendsDashboard {
         .bigChart
         {
             width: 90%; 
-            min-height: 450px;
+            min-height: 388px;
             cursor:pointer;
         }
         .timerangenormal{
@@ -1305,7 +1305,7 @@ namespace CapaTrendsDashboard {
                         <div class="panel-body">
                             <div class='copyTitle'> </div>
                             <div class="bigChart">
-                                <div id="timeSeriesChartRangeFilter" style="display:flex;margin-left: 40px">
+                                <div id="timeSeriesChartRangeFilter" style="display:flex;margin-left: 170px">
                                     <div class="btn-group labelTools">
                                         <button id="weekRange" class="btn btn-default btn-xs timerangeselected" data-original-title="" title="">Week</button>
                                     </div>
@@ -1331,7 +1331,7 @@ namespace CapaTrendsDashboard {
                                         <button id="datefilterRange" class="btn btn-default btn-xs timerangenormal"  data-original-title="" title="">Date Filter</button>
                                     </div>
                                 </div>
-                                <div id="dateRangeFilter" class="baseControl" style="display:flex;margin-left: 80px">
+                                <div id="dateRangeFilter" class="baseControl" style="display:flex;margin-left: 205px">
                                     <p>
                                         <span class="">From</span>
                                         <input id="fromdate" type='text' class='date-filter-form-control filterDates'>
