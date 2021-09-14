@@ -536,9 +536,9 @@ namespace CapaTrendsDashboard {
             //prepare template
             let timeSeriesChartparams: c3.ChartConfiguration = {
                 bindto: '#stateTimeSeriesGraph',
-                size: {
-                    width: 500,
-                },
+                // size: {
+                //     width: 500,
+                // },
                 data: {
                     columns: chartColumnsData,
                     type: 'bar',
@@ -576,9 +576,9 @@ namespace CapaTrendsDashboard {
 
             let StatusDateFilterChartParams: c3.ChartConfiguration = {
                 bindto: '#stateTimeSeriesGraph',
-                size: {
-                    width: 500,
-                },
+                // size: {
+                //     width: 500,
+                // },
                 data: {
                     columns: dateFilterChartColumnsData,
                     type: 'bar'
