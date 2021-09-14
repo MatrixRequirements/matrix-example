@@ -149,7 +149,15 @@ namespace CapaTrendsDashboard {
                 let fromDateSelected = fromDate.data("DateTimePicker").date();
                 let toDateSelected = toDate.data("DateTimePicker").date();
 
-                that.renderDataByDateRanges(fromDateSelected, toDateSelected);
+                //that.renderDataByDateRanges(fromDateSelected, toDateSelected);
+
+                let dateFilterChartCategoryData = ['OPEN','WAIT','CHECKED','CLOSED'];
+                let dateFilterChartColumnsData =  [
+                    ['From:1/7/2021', 30, 10,20,90],
+                    ['To:8/7/2021', 20, 30,10,70]
+                ];
+
+                that.prepareStatusDateFilterChart(dateFilterChartCategoryData,dateFilterChartColumnsData);
 
             });
 
@@ -165,7 +173,16 @@ namespace CapaTrendsDashboard {
                     $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
 
                     that.currentTimeRangeSelected = "week";
-                    that.renderStatusTimeSeriesChart(that.currentWeekColumnsData, that.currentWeekCategoryData);
+                    //that.renderStatusTimeSeriesChart(that.currentWeekColumnsData, that.currentWeekCategoryData);
+
+                    let currentWeekColumnsData =  [
+                        ['Open', 30, 20, 10, 0, 0, 0, 0],
+                        ['Wait', 10, 20, 10, 0, 0, 0,0],
+                        ['Checked', 30, 34, 20, 0, 0, 0,0],
+                        ['Closed', 30, 34, 20, 0, 0, 0,0]
+                    ];
+                    let currentWeekCategoryData =  ['2021-04-19', '2021-04-20', '2021-04-21', '2021-04-22', '2021-04-23', '2021-04-24', '2021-04-25'];
+                    that.renderStatusTimeSeriesChart(currentWeekColumnsData, currentWeekCategoryData);
                 }
 
             });
@@ -182,7 +199,16 @@ namespace CapaTrendsDashboard {
                     $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
 
                     that.currentTimeRangeSelected = "month";
-                    that.renderStatusTimeSeriesChart(that.currentMonthColumnsData, that.currentMonthCategoryData.categories);
+                    //that.renderStatusTimeSeriesChart(that.currentMonthColumnsData, that.currentMonthCategoryData.categories);
+
+                    let currentMonthColumnsData =  [
+                        ['Open', 30, 20, 10, 30, 0],
+                        ['Wait', 10, 20, 10, 20, 0],
+                        ['Checked', 30, 34, 20, 40, 0],
+                        ['Closed', 30, 34, 20, 10, 0]
+                    ];
+                    let currentMonthCategoryData =  ["Week1('2021-04-01' to '2021-04-04')", "Week2('2021-04-05' to '2021-04-11')", "Week3('2021-04-12' to '2021-04-18')", "Week4('2021-04-19' to '2021-04-25')", "Week5('2021-04-26' to '2021-04-30')"];
+                    that.renderStatusTimeSeriesChart(currentMonthColumnsData, currentMonthCategoryData);
                 }
 
             });
@@ -199,7 +225,16 @@ namespace CapaTrendsDashboard {
                     $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
 
                     that.currentTimeRangeSelected = "threeMonths";
-                    that.renderStatusTimeSeriesChart(that.threeMonthsColumnsData, that.threeMonthsCategoryData);
+                    //that.renderStatusTimeSeriesChart(that.threeMonthsColumnsData, that.threeMonthsCategoryData);
+
+                    let threeMonthsColumnsData =  [
+                        ['Open', 30, 20, 10],
+                        ['Wait', 10, 20, 10],
+                        ['Checked', 30, 34, 20],
+                        ['Closed', 30, 34, 20]
+                    ];
+                    let threeMonthsCategoryData = ["Feb 2021", "March 2021", "April 2021"];
+                    that.renderStatusTimeSeriesChart(threeMonthsColumnsData, threeMonthsCategoryData);
                 }
 
             });
@@ -217,7 +252,16 @@ namespace CapaTrendsDashboard {
                     $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
 
                     that.currentTimeRangeSelected = "sixMonths";
-                    that.renderStatusTimeSeriesChart(that.sixMonthsColumnsData, that.sixMonthsCategoryData);
+                    //that.renderStatusTimeSeriesChart(that.sixMonthsColumnsData, that.sixMonthsCategoryData);
+
+                    let sixMonthsColumnsData =  [
+                        ['Open', 30, 20, 10, 30, 20, 40],
+                        ['Wait', 10, 20, 10, 50, 40, 50],
+                        ['Checked', 30, 34, 20, 40, 60],
+                        ['Closed', 30, 34, 20, 40, 50, 30]
+                    ];
+                    let sixMonthsCategoryData = ["Nov 2020","Dec 2020","Jan 2021","Feb 2021", "March 2021", "April 2021"];
+                    that.renderStatusTimeSeriesChart(sixMonthsColumnsData, sixMonthsCategoryData);
                 }
 
             });
@@ -235,7 +279,16 @@ namespace CapaTrendsDashboard {
                     $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
 
                     that.currentTimeRangeSelected = "twelveMonths";
-                    that.renderStatusTimeSeriesChart(that.twelveMonthsColumnsData, that.twelveMonthsCategoryData);
+                    //that.renderStatusTimeSeriesChart(that.twelveMonthsColumnsData, that.twelveMonthsCategoryData);
+
+                    let twelveMonthsColumnsData =  [
+                        ['Open', 30, 20, 10, 30],
+                        ['Wait', 10, 20, 10, 50],
+                        ['Checked', 30, 34, 20],
+                        ['Closed', 30, 34, 20, 40]
+                    ];
+                    let twelveMonthsCategoryData = ["Jan 2021","Feb 2021", "March 2021", "April 2021"];
+                    that.renderStatusTimeSeriesChart(twelveMonthsColumnsData, twelveMonthsCategoryData);
                 }
 
             });
@@ -253,7 +306,16 @@ namespace CapaTrendsDashboard {
                     $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
 
                     that.currentTimeRangeSelected = "ytd";
-                    that.renderStatusTimeSeriesChart(that.ytdColumnsData, that.ytdCategoryData);
+                    //that.renderStatusTimeSeriesChart(that.ytdColumnsData, that.ytdCategoryData);
+
+                    let ytdColumnsData =  [
+                        ['Open', 30, 20, 10, 30],
+                        ['Wait', 10, 20, 10, 50],
+                        ['Checked', 30, 34, 20],
+                        ['Closed', 30, 34, 20, 40]
+                    ];
+                    let ytdCategoryData = ["Jan 2021","Feb 2021", "March 2021", "April 2021"];
+                    that.renderStatusTimeSeriesChart(ytdColumnsData, ytdCategoryData);
                 }
 
             });
@@ -270,7 +332,16 @@ namespace CapaTrendsDashboard {
                     $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
 
                     that.currentTimeRangeSelected = "moreThanYear";
-                    that.renderStatusTimeSeriesChart(that.moreThanYearColumnsData, that.moreThanYearCategoryData);
+                    //that.renderStatusTimeSeriesChart(that.moreThanYearColumnsData, that.moreThanYearCategoryData);
+
+                    let moreThanYearColumnsData = [
+                        ['Open', 130, 120, 110, 130],
+                        ['Wait', 110, 120, 110,150],
+                        ['Checked', 130, 134, 120],
+                        ['Closed', 130, 134, 120, 140]
+                    ]; 
+                    let moreThanYearCategoryData = ["2018","2019", "2020", "2021"];
+                    that.renderStatusTimeSeriesChart(moreThanYearColumnsData, moreThanYearCategoryData);
                 }
 
             });
@@ -393,7 +464,15 @@ namespace CapaTrendsDashboard {
 
         renderCharts(){     
             this.renderByDeptChart();
-            this.renderByCatChart();     
+            this.renderByCatChart();
+            let currentWeekColumnsData =  [
+                ['Open', 30, 20, 10, 0, 0, 0, 0],
+                ['Wait', 10, 20, 10, 0, 0, 0,0],
+                ['Checked', 30, 34, 20, 0, 0, 0,0],
+                ['Closed', 30, 34, 20, 0, 0, 0,0]
+            ];
+            let currentWeekCategoryData =  ['2021-04-19', '2021-04-20', '2021-04-21', '2021-04-22', '2021-04-23', '2021-04-24', '2021-04-25'];
+            this.renderStatusTimeSeriesChart(currentWeekColumnsData, currentWeekCategoryData);     
         }
 
         renderByDeptChart(){
