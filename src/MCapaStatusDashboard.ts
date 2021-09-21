@@ -39,7 +39,7 @@ namespace MCapaStatusDashboard {
     }
 
     interface ItemStateDaysCount {
-        label: string;
+        state: string;
         days: number;
     }
 
@@ -49,8 +49,10 @@ namespace MCapaStatusDashboard {
         category: string;
         currentState: string;
         currentStateSetDate: string;
-        labels: ItemStateDaysCount[];
-        openToCloseDays: string;
+        itemStateDaysCountData: ItemStateDaysCount[];
+        openToCloseDays: number;
+        InitiatedDate: string;
+        ClosedDate: string;
     }
 
     interface ByCategoryLabelData {
@@ -214,9 +216,25 @@ namespace MCapaStatusDashboard {
             },()=>{
                 that.CapaTrackerChart.resize({width:savedWidth})
             });
+
+            ml.UI.copyBuffer($("#MCSOTableHeader",this._root), "copy list to clipboard", $("#currentStatusList",this._root), this._root, (copied: JQuery) => {
+                $(".doNotCopy", copied).remove();
+    
+                var filter = $("#MCSOInputFilter",this._root).val();
+               
+                $(".hidden",copied).remove();
+           
+                $("#id", copied).each( (i,item)=>{ $(item).text($(item).data("ref") +"!")  } );
+    
+                $("#MCSOInputFilter",copied).remove();
+    
+                $("#MCSOTitleForCopy", copied).html("<div><h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) + "</span> <br/>" + (filter != "" ? "<b>Filter : </b>" + filter + "<br/>" : "") + "</div>");
+            });
+
         }
 
         renderByDeptChart(departments,deptWiseData){
+            let that = this;
              //prepare template
              let byDeptChartparams: c3.ChartConfiguration = {
                 bindto: '#DeptWiseoverviewGraph',
@@ -226,7 +244,12 @@ namespace MCapaStatusDashboard {
                         ['x', ...departments],
                         deptWiseData
                     ],
-                    type: 'bar'
+                    type: 'bar',
+                    onclick: function (d, i) {
+                        setTimeout(() => {
+                            that.filterByLabel({ type: d.id });
+                        }, 100);
+                    }
                 },
                 axis: {
                     x: {
@@ -242,19 +265,29 @@ namespace MCapaStatusDashboard {
 
             this.DeptWiseoverviewChart = c3.generate(byDeptChartparams);
             //this.charts.push(renderedChart);
+
+            $("#DeptWiseoverviewChart svg").click(function () {
+                that.filterByLabel({ type: "" })
+            });
         }
 
         renderByCatChart(categories,categoryWiseData){
+            let that = this;
             //prepare template
             let byCatChartparams: c3.ChartConfiguration = {
                bindto: '#CatWiseoverviewGraph',
                data: {
-                x : 'x',
-                columns: [
-                    ['x', ...categories],
-                    categoryWiseData
-                ],
-                type: 'bar'
+                    x : 'x',
+                    columns: [
+                        ['x', ...categories],
+                        categoryWiseData
+                    ],
+                    type: 'bar',
+                    onclick: function (d, i) {
+                        setTimeout(() => {
+                            that.filterByLabel({ type: d.id });
+                        }, 100);
+                    }
                 },
                 axis: {
                     x: {
@@ -270,15 +303,25 @@ namespace MCapaStatusDashboard {
 
            this.CatWiseoverviewChart = c3.generate(byCatChartparams);
            //this.charts.push(renderedChart);
+
+           $("#CatWiseoverviewChart svg").click(function () {
+                that.filterByLabel({ type: "" })
+           });
        }
 
        renderByStatusChart(statusWiseData,legendColors){
+            let that = this;
             //prepare template
             let byStatusChartparams: c3.ChartConfiguration = {
                 bindto: '#StatusWiseoverviewGraph',
                 data: {
                     columns: statusWiseData,
-                    type : 'pie'
+                    type : 'pie',
+                    onclick: function (d, i) {
+                        setTimeout(() => {
+                            that.filterByLabel({ type: d.id });
+                        }, 100);
+                    }
                 },
                 color: {
                     pattern: legendColors
@@ -304,6 +347,10 @@ namespace MCapaStatusDashboard {
 
             this.StatusWiseoverviewChart = c3.generate(byStatusChartparams);
             //this.charts.push(renderedChart);
+
+            $("#StatusWiseoverviewChart svg").click(function () {
+                that.filterByLabel({ type: "" })
+            });
         }
 
         renderByAvgTimeChart(states,statusWiseAvgData){
@@ -335,6 +382,7 @@ namespace MCapaStatusDashboard {
         }
 
         renderClosureTimeChart(closedItemsData,closureTimeData){
+            let that = this;
             //prepare template
             let closureTimeChartparams: c3.ChartConfiguration = {
                bindto: '#ClosureTimeoverviewGraph',
@@ -344,7 +392,12 @@ namespace MCapaStatusDashboard {
                     ['x', ...closedItemsData],
                     closureTimeData
                    ],
-                   type: 'bar'
+                   type: 'bar',
+                   onclick: function (d, i) {
+                       setTimeout(() => {
+                           that.filterByLabel({ type: d.id });
+                       }, 100);
+                   }
                },
                axis: {
                    x: {
@@ -360,6 +413,10 @@ namespace MCapaStatusDashboard {
 
            this.ClosureTimeoverviewChart = c3.generate(closureTimeChartparams);
            //this.charts.push(renderedChart);
+
+           $("#ClosureTimeoverviewChart svg").click(function () {
+                that.filterByLabel({ type: "" })
+           });
        }
 
         renderTrackerChart(trackerStates,stateTrackerData,legendColors){
@@ -398,6 +455,53 @@ namespace MCapaStatusDashboard {
             //this.charts.push(renderedChart);
         }
 
+        private currentFilter = "";
+        filterByLabel(filter: any) {
+            this.currentFilter = filter.type;
+            let filterDataClass = "";
+            if (filter.type == "") {
+                //Show all
+                $("#itemCapaStatusDashboardList tbody tr").show();
+            }
+            else {
+                filterDataClass = filter.type;
+                $("#itemCapaStatusDashboardList tbody tr").hide();
+                $("#itemCapaStatusDashboardList tbody tr." + filterDataClass).show();
+            }
+        }
+
+        renderTable(itemCurrentStateDetails: ItemCurrentStateData[]){
+
+            let table = $("#MCSOtable");
+            $(".addedItem", table).remove();
+
+            itemCurrentStateDetails.forEach(
+                (itemData) => {
+                    let clonedTemplate = $("#csoRow", this._root).clone();
+                    //let stateClass = itemData.currentState;
+                    clonedTemplate.removeClass("hidden");
+                    let classAttr = "addedItem" 
+                                    + " " + itemData.id 
+                                    + " " + itemData.department 
+                                    + " " + itemData.category 
+                                    + " " + itemData.currentState;
+                    clonedTemplate.attr("class", classAttr);
+                    $("#title", clonedTemplate).text(itemData.id + "!");
+                    $("#title", clonedTemplate).data("ref", itemData.id + "!");
+                    $("#department", clonedTemplate).text(itemData.department);
+                    $("#category", clonedTemplate).text(itemData.category);
+                    $("#currentstate", clonedTemplate).text(itemData.currentState);
+                    $("##closureTime", clonedTemplate).text(itemData.openToCloseDays);
+                    clonedTemplate.appendTo($("#MCSOtable tbody", this._root));
+                }
+            );
+
+
+            $("table#MCSOtable").highlightReferences();
+            $("table#MCSOtable").tablesorter();
+
+            this.filterByLabel({ type: "" });
+        }
        
         renderHTML() {
 
@@ -572,6 +676,20 @@ namespace MCapaStatusDashboard {
                 }
             });
 
+
+             //Table filter
+             $("#MCSOInputFilter").on("keyup", function (e) {
+                let inputValue = $(e.target).val().toString();
+                let value = inputValue.toLowerCase();
+                $("#MCSOTable tbody tr").show();
+
+                $("#MCSOTable tbody tr").each(function (index, elem) {
+                    if (($(elem).text().toLowerCase().indexOf(value) == -1)) {
+                        $(elem).hide();
+                    }
+                });
+            });
+
         }
 
         renderCategoryWiseData(cat: string) {
@@ -596,6 +714,13 @@ namespace MCapaStatusDashboard {
             this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData,ByCategoryLabelData.stateTrackerLegendColors);
             this.renderClosureTimeChart(ByCategoryLabelData.closedItemsData,ByCategoryLabelData.closureTimeData);
 
+        }
+
+        getCurrentStateSetDate(labelData: XRLabelChange): string {
+            //sorting label set array in descending order based on version 
+            labelData.set.sort((a, b) => b.version - a.version);
+            let currentStateSetDate = new Date(labelData.set[0].dateIso).toISOString().slice(0, 10);
+            return currentStateSetDate;
         }
 
         processLabelsData(labels: XRLabelEntry[]){
@@ -628,31 +753,51 @@ namespace MCapaStatusDashboard {
                 let initalStateData = [];
                 let closeStateData = [];
 
+                let itemCurrentStateData : ItemCurrentStateData = {
+                    id: item.itemRef,
+                    department: "",
+                    category: "",
+                    currentState: "",
+                    currentStateSetDate: "",
+                    itemStateDaysCountData: [],
+                    openToCloseDays: null,
+                    InitiatedDate: "",
+                    ClosedDate: ""
+                };
+
                 for (const label of item.labels) {
                     //check for item department
                     let deptIndex = ByCategoryLabelData.departments.findIndex(dept => dept === label.label);
 
                     if(deptIndex > -1 && (label.reset.length !== label.set.length)){
                         ByCategoryLabelData.deptWiseData[deptIndex + 1] += 1;
+                        itemCurrentStateData.department = label.label;
                     }
 
                     let catIndex = ByCategoryLabelData.categories.findIndex(cat => cat === label.label);
 
                     if(catIndex > -1 && (label.reset.length !== label.set.length)){
                         ByCategoryLabelData.categoryWiseData[catIndex + 1] += 1;
+                        itemCurrentStateData.category = label.label;
                     }
 
                     let stateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === label.label);
+
+
 
                     if(stateIndex > -1){
                         //check for current state
                         if((label.reset.length !== label.set.length) && itemCurrentSateIndex < 0){
                             ByCategoryLabelData.statusWiseData[stateIndex][1] += 1;
                             itemCurrentSateIndex = stateIndex;
+                            itemCurrentStateData.currentState = ByCategoryLabelData.stateDesc[stateIndex];
+                            itemCurrentStateData.currentStateSetDate = this.getCurrentStateSetDate(label);
                         }else if((label.reset.length !== label.set.length) && stateIndex > itemCurrentSateIndex) {
                             ByCategoryLabelData.statusWiseData[itemCurrentSateIndex][1] -= 1;
                             ByCategoryLabelData.statusWiseData[stateIndex][1] += 1;
                             itemCurrentSateIndex = stateIndex;
+                            itemCurrentStateData.currentState = ByCategoryLabelData.stateDesc[stateIndex];
+                            itemCurrentStateData.currentStateSetDate = this.getCurrentStateSetDate(label);
                         }
 
                          //get the number of days label state was in
@@ -686,6 +831,14 @@ namespace MCapaStatusDashboard {
                             return accumulator + stateDays;
 
                         }, 0);
+
+
+                        let itemStateDaysCount :ItemStateDaysCount = {
+                            state: ByCategoryLabelData.stateDesc[stateIndex],
+                            days: labelstateDaysCount
+                        };
+
+                        itemCurrentStateData.itemStateDaysCountData.push(itemStateDaysCount);
                         
                         if(label.reset.length == label.set.length){
                             ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
@@ -734,6 +887,10 @@ namespace MCapaStatusDashboard {
                         const intiatedDate = new Date(initalStateData[0].set[0].dateIso);
                         const colosedDate = new Date(closeStateData[0].set[0].dateIso);
 
+                        itemCurrentStateData.InitiatedDate = new Date(intiatedDate).toISOString().slice(0, 10);
+                        itemCurrentStateData.ClosedDate = new Date(colosedDate).toISOString().slice(0, 10);
+
+
                         let time_difference = colosedDate.getTime() - intiatedDate.getTime();
 
                         //calculate days difference by dividing total milliseconds in a day  
@@ -742,6 +899,8 @@ namespace MCapaStatusDashboard {
                         let daystoCloseItem = Math.floor(days_difference);
 
                         //console.log("Item:"+item.itemRef+",Days to close:"+daystoCloseItem);
+
+                        itemCurrentStateData.openToCloseDays = daystoCloseItem;
 
                         ByCategoryLabelData.closedItemsData.push(item.itemRef);
                         ByCategoryLabelData.closureTimeData.push(daystoCloseItem);
@@ -911,8 +1070,8 @@ namespace MCapaStatusDashboard {
                                     <th>Closure Time</th>
                                     </tr>
                                 </thead>
-                                <tbody id="ctoList">
-                                    <tr id="ctoRow" class="hidden">
+                                <tbody id="csoList">
+                                    <tr id="csoRow" class="hidden">
                                     <td id="title" ></td>
                                     <td id="department" ></td>
                                     <td id="category" ></td>
