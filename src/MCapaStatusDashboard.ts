@@ -505,7 +505,7 @@ namespace MCapaStatusDashboard {
 
         renderTable(itemCurrentStateDetails: ItemCurrentStateData[]) {
 
-            let table = $("#CTOTable");
+            let table = $("#CSOTable");
             $(".addedItem", table).remove();
 
             itemCurrentStateDetails.forEach(
@@ -520,13 +520,13 @@ namespace MCapaStatusDashboard {
                     $("#department", clonedTemplate).text(itemData.department);
                     $("#category", clonedTemplate).text(itemData.category);
                     $("#currentstate", clonedTemplate).text(itemData.currentState);
-                    clonedTemplate.appendTo($("#CTOTable tbody", this._root));
+                    clonedTemplate.appendTo($("#CSOTable tbody", this._root));
                 }
             );
 
 
-            $("table#CTOTable").highlightReferences();
-            $("table#CTOTable").tablesorter();
+            $("table#CSOTable").highlightReferences();
+            $("table#CSOTable").tablesorter();
 
             //this.filterByLabel({ type: "" });
 
@@ -1088,10 +1088,10 @@ namespace MCapaStatusDashboard {
                         <input type="text" id="CTOInputFilter" style="margin-bottom:10px;" placeholder="filter..." class="doNotCopy  form-control"></input>
                     </div>
                 </div>
-                <div class="row CTOtable">
+                <div class="row CSOtable">
                     <div class="col-md-12">
                         <div class="table-responsive">
-                            <table class="table table-condensed table-borderless table-hover" id="CTOTable">
+                            <table class="table table-condensed table-borderless table-hover" id="CSOTable">
                                 <thead>
                                     <tr>
                                     <th>Item</th>
