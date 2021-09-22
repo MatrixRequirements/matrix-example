@@ -1142,11 +1142,11 @@ namespace MCapaStatusDashboard {
                                     <td id="department" ></td>
                                     <td id="category" ></td>
                                     <td id="currentstate" ></td>
-                                    <td class="initiated" ></td>
-                                    <td class="approved" ></td>
-                                    <td class="rcapproved" ></td>
-                                    <td class="wfec" ></td>
-                                    <td class="closed" ></td>
+                                    <td id="initiated" ></td>
+                                    <td id="approved" ></td>
+                                    <td id="rcapproved" ></td>
+                                    <td id="wfec" ></td>
+                                    <td id="closed" ></td>
                                     <td id="closureTime" ></td>
                                     </tr>
                                 </tbody>
