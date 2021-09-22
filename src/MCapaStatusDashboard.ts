@@ -505,36 +505,12 @@ namespace MCapaStatusDashboard {
 
         renderTable(itemCurrentStateDetails: ItemCurrentStateData[]) {
 
-            // let itemCurrentStateDetails = [
-            //     {
-            //         id: "CA-1",
-            //         department: 'ST',
-            //         category: 'Internal Audit',
-            //         currentState: 'CLOSED',
-            //         currentStateSetDate: '02-07-2021'
-            //     },
-            //     {
-            //         id: "CA-2",
-            //         department: 'PROD',
-            //         category: 'Process/ Product',
-            //         currentState: 'CLOSED',
-            //         currentStateSetDate: '02-07-2021'
-            //     },
-            //     {
-            //         id: "CA-3",
-            //         department: 'QC',
-            //         category: 'Complaint',
-            //         currentState: 'CLOSED',
-            //         currentStateSetDate: '02-07-2021'
-            //     }
-            // ];
-
-            let table = $("#CTOTable");
+            let table = $("#MCSOTable");
             $(".addedItem", table).remove();
 
             itemCurrentStateDetails.forEach(
                 (itemData) => {
-                    let clonedTemplate = $("#ctoRow", this._root).clone();
+                    let clonedTemplate = $("#csoRow", this._root).clone();
                     let stateClass = itemData.currentState;
                     clonedTemplate.removeClass("hidden");
                     let classAttr = "addedItem" + " " + stateClass;
@@ -544,13 +520,13 @@ namespace MCapaStatusDashboard {
                     $("#department", clonedTemplate).text(itemData.department);
                     $("#category", clonedTemplate).text(itemData.category);
                     $("#currentstate", clonedTemplate).text(itemData.currentState);
-                    clonedTemplate.appendTo($("#CTOTable tbody", this._root));
+                    clonedTemplate.appendTo($("#MCSOTable tbody", this._root));
                 }
             );
 
 
-            $("table#CTOTable").highlightReferences();
-            $("table#CTOTable").tablesorter();
+            $("table#MCSOTable").highlightReferences();
+            $("table#MCSOTable").tablesorter();
 
             //this.filterByLabel({ type: "" });
 
@@ -767,8 +743,6 @@ namespace MCapaStatusDashboard {
             this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData,ByCategoryLabelData.stateTrackerLegendColors);
             this.renderClosureTimeChart(ByCategoryLabelData.closedItemsData,ByCategoryLabelData.closureTimeData);
             this.renderTable(ByCategoryLabelData.itemCurrentStateDetails);
-            //this.renderTable();
-
         }
 
         getCurrentStateSetDate(labelData: XRLabelChange): string {
@@ -1104,20 +1078,20 @@ namespace MCapaStatusDashboard {
             </div>
 
             <div id="currentStatusList">
-                <div class="row" id="CTOTitleForCopy"></div> 
-                <div class="row doNotCopy CTOtable">
+                <div class="row" id="MCSOTitleForCopy"></div> 
+                <div class="row doNotCopy MCSOtable">
                     <div class="col-lg-3 ">
-                        <h3 id="CTOTableHeader">CAPA current status list</h3>
+                        <h3 id="MCSOtableHeader">CAPA current status list</h3>
                     </div>
                     <div class=" col-lg-7"></div>
                     <div class=" col-lg-2">
-                        <input type="text" id="CTOInputFilter" style="margin-bottom:10px;" placeholder="filter..." class="doNotCopy  form-control"></input>
+                        <input type="text" id="MCSOInputFilter" style="margin-bottom:10px;" placeholder="filter..." class="doNotCopy  form-control"></input>
                     </div>
                 </div>
-                <div class="row CTOtable">
+                <div class="row MCSOtable">
                     <div class="col-md-12">
                         <div class="table-responsive">
-                            <table class="table table-condensed table-borderless table-hover" id="CTOTable">
+                            <table class="table table-condensed table-borderless table-hover" id="MCSOtable">
                                 <thead>
                                     <tr>
                                     <th>Item</th>
@@ -1126,8 +1100,8 @@ namespace MCapaStatusDashboard {
                                     <th>Currernt State</th>
                                     </tr>
                                 </thead>
-                                <tbody id="ctoList">
-                                    <tr id="ctoRow" class="hidden">
+                                <tbody id="csoList">
+                                    <tr id="csoRow" class="hidden">
                                     <td id="title" ></td>
                                     <td id="department" ></td>
                                     <td id="category" ></td>
