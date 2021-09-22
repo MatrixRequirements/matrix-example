@@ -519,7 +519,7 @@ namespace MCapaStatusDashboard {
                         + " " + itemData.department.split(' ').join('-')
                         + " " + itemData.category.split(' ').join('-')
                         + " " + itemData.currentState.split(' ').join('-');
-                    console.log("classAttr:"+classAttr);    
+                    // console.log("classAttr:"+classAttr);    
                     clonedTemplate.attr("class", classAttr);
                     $("#title", clonedTemplate).text(itemData.id + "!");
                     $("#title", clonedTemplate).data("ref", itemData.id + "!");
@@ -534,7 +534,7 @@ namespace MCapaStatusDashboard {
             $("table#CSOTable").highlightReferences();
             $("table#CSOTable").tablesorter();
 
-            //this.filterByLabel({ type: "" });
+            this.filterByLabel({ type: "" });
 
         }
        
