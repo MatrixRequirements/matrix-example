@@ -461,12 +461,12 @@ namespace MCapaStatusDashboard {
             let filterDataClass = "";
             if (filter.type == "") {
                 //Show all
-                $("#itemCapaStatusDashboardList tbody tr").show();
+                $("#MCSOTable tbody tr").show();
             }
             else {
                 filterDataClass = filter.type;
-                $("#itemCapaStatusDashboardList tbody tr").hide();
-                $("#itemCapaStatusDashboardList tbody tr." + filterDataClass).show();
+                $("#MCSOTable tbody tr").hide();
+                $("#MCSOTable tbody tr." + filterDataClass).show();
             }
         }
 
