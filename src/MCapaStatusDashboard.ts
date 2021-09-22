@@ -464,7 +464,7 @@ namespace MCapaStatusDashboard {
                 $("#CSOTable tbody tr").show();
             }
             else {
-                filterDataClass = filter.type;
+                filterDataClass = filter.type.split(' ').join('_');
                 $("#CSOTable tbody tr").hide();
                 $("#CSOTable tbody tr." + filterDataClass).show();
             }
@@ -515,10 +515,10 @@ namespace MCapaStatusDashboard {
                     clonedTemplate.removeClass("hidden");
                     //let classAttr = "addedItem" + " " + stateClass;
                     let classAttr = "addedItem" 
-                        + " " + itemData.id 
-                        + " " + itemData.department 
-                        + " " + itemData.category 
-                        + " " + itemData.currentState;
+                        + " " + itemData.id.split(' ').join('_') 
+                        + " " + itemData.department.split(' ').join('-');
+                        + " " + itemData.category.split(' ').join('-'); 
+                        + " " + itemData.currentState.split(' ').join('-');
                     console.log("classAttr:"+classAttr);    
                     clonedTemplate.attr("class", classAttr);
                     $("#title", clonedTemplate).text(itemData.id + "!");
