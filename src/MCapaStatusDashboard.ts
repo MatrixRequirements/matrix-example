@@ -511,9 +511,15 @@ namespace MCapaStatusDashboard {
             itemCurrentStateDetails.forEach(
                 (itemData) => {
                     let clonedTemplate = $("#csoRow", this._root).clone();
-                    let stateClass = itemData.currentState;
+                    //let stateClass = itemData.currentState;
                     clonedTemplate.removeClass("hidden");
-                    let classAttr = "addedItem" + " " + stateClass;
+                    //let classAttr = "addedItem" + " " + stateClass;
+                    let classAttr = "addedItem" 
+                        + " " + itemData.id 
+                        + " " + itemData.department 
+                        + " " + itemData.category 
+                        + " " + itemData.currentState;
+                    console.log("classAttr:"+classAttr);    
                     clonedTemplate.attr("class", classAttr);
                     $("#title", clonedTemplate).text(itemData.id + "!");
                     $("#title", clonedTemplate).data("ref", itemData.id + "!");
