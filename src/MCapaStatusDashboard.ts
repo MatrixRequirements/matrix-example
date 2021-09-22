@@ -526,6 +526,7 @@ namespace MCapaStatusDashboard {
                     $("#department", clonedTemplate).text(itemData.department);
                     $("#category", clonedTemplate).text(itemData.category);
                     $("#currentstate", clonedTemplate).text(itemData.currentState);
+                    $("#closureTime", clonedTemplate).text(itemData.openToCloseDays);
                     clonedTemplate.appendTo($("#CSOTable tbody", this._root));
                 }
             );
@@ -1104,6 +1105,7 @@ namespace MCapaStatusDashboard {
                                     <th>Department</th>
                                     <th>Category</th>
                                     <th>Currernt State</th>
+                                    <th>Closure Time</th>
                                     </tr>
                                 </thead>
                                 <tbody id="csoList">
@@ -1112,6 +1114,7 @@ namespace MCapaStatusDashboard {
                                     <td id="department" ></td>
                                     <td id="category" ></td>
                                     <td id="currentstate" ></td>
+                                    <td id="closureTime" ></td>
                                     </tr>
                                 </tbody>
                             </table>
