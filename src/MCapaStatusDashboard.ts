@@ -491,7 +491,7 @@ namespace MCapaStatusDashboard {
                     $("#department", clonedTemplate).text(itemData.department);
                     $("#category", clonedTemplate).text(itemData.category);
                     $("#currentstate", clonedTemplate).text(itemData.currentState);
-                    $("##closureTime", clonedTemplate).text(itemData.openToCloseDays);
+                    $("#closureTime", clonedTemplate).text(itemData.openToCloseDays);
                     clonedTemplate.appendTo($("#MCSOtable tbody", this._root));
                 }
             );
