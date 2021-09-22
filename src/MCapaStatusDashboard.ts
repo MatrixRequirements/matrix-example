@@ -707,12 +707,12 @@ namespace MCapaStatusDashboard {
 
 
              //Table filter
-             $("#MCSOInputFilter").on("keyup", function (e) {
+             $("#CSOInputFilter").on("keyup", function (e) {
                 let inputValue = $(e.target).val().toString();
                 let value = inputValue.toLowerCase();
-                $("#MCSOTable tbody tr").show();
+                $("#CSOTable tbody tr").show();
 
-                $("#MCSOTable tbody tr").each(function (index, elem) {
+                $("#CSOTable tbody tr").each(function (index, elem) {
                     if (($(elem).text().toLowerCase().indexOf(value) == -1)) {
                         $(elem).hide();
                     }
@@ -1085,7 +1085,7 @@ namespace MCapaStatusDashboard {
                     </div>
                     <div class=" col-lg-7"></div>
                     <div class=" col-lg-2">
-                        <input type="text" id="CTOInputFilter" style="margin-bottom:10px;" placeholder="filter..." class="doNotCopy  form-control"></input>
+                        <input type="text" id="CSOInputFilter" style="margin-bottom:10px;" placeholder="filter..." class="doNotCopy  form-control"></input>
                     </div>
                 </div>
                 <div class="row CSOtable">
