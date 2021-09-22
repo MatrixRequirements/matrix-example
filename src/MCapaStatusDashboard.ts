@@ -766,8 +766,8 @@ namespace MCapaStatusDashboard {
             this.renderByAvgTimeChart(ByCategoryLabelData.stateDesc,ByCategoryLabelData.statusWiseAvgData);
             this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData,ByCategoryLabelData.stateTrackerLegendColors);
             this.renderClosureTimeChart(ByCategoryLabelData.closedItemsData,ByCategoryLabelData.closureTimeData);
-           // this.renderTable(ByCategoryLabelData.itemCurrentStateDetails);
-            this.renderTable();
+            this.renderTable(ByCategoryLabelData.itemCurrentStateDetails);
+            //this.renderTable();
 
         }
 
