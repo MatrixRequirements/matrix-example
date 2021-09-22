@@ -285,7 +285,7 @@ namespace MCapaStatusDashboard {
                     type: 'bar',
                     onclick: function (d, i) {
                         setTimeout(() => {
-                            that.filterByLabel({ type: d.id });
+                            that.filterByLabel({ type: categories[d.x] });
                         }, 100);
                     }
                 },
