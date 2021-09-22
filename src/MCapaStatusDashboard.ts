@@ -464,7 +464,7 @@ namespace MCapaStatusDashboard {
                 $("#CSOTable tbody tr").show();
             }
             else {
-                filterDataClass = filter.type.split(' ').join('-');
+                filterDataClass = filter.type.split(' ').join('-').replaceAll('&','-');
                 $("#CSOTable tbody tr").hide();
                 $("#CSOTable tbody tr." + filterDataClass).show();
             }
@@ -515,10 +515,10 @@ namespace MCapaStatusDashboard {
                     clonedTemplate.removeClass("hidden");
                     //let classAttr = "addedItem" + " " + stateClass;
                     let classAttr = "addedItem" 
-                        + " " + itemData.id.split(' ').join('-') 
-                        + " " + itemData.department.split(' ').join('-')
-                        + " " + itemData.category.split(' ').join('-')
-                        + " " + itemData.currentState.split(' ').join('-');
+                        + " " + itemData.id.split(' ').join('-').replaceAll('&','-') 
+                        + " " + itemData.department.split(' ').join('-').replaceAll('&','-')
+                        + " " + itemData.category.split(' ').join('-').replaceAll('&','-')
+                        + " " + itemData.currentState.split(' ').join('-').replaceAll('&','-');
                     // console.log("classAttr:"+classAttr);    
                     clonedTemplate.attr("class", classAttr);
                     $("#title", clonedTemplate).text(itemData.id + "!");
