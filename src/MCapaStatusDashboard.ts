@@ -908,6 +908,8 @@ namespace MCapaStatusDashboard {
                     }
                 }
 
+                ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
+
             }
 
             for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
