@@ -500,7 +500,7 @@ namespace MCapaStatusDashboard {
             $("table#MCSOtable").highlightReferences();
             $("table#MCSOtable").tablesorter();
 
-            this.filterByLabel({ type: "" });
+            //this.filterByLabel({ type: "" });
         }
        
         renderHTML() {
