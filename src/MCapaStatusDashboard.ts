@@ -527,6 +527,29 @@ namespace MCapaStatusDashboard {
                     $("#category", clonedTemplate).text(itemData.category);
                     $("#currentstate", clonedTemplate).text(itemData.currentState);
                     $("#closureTime", clonedTemplate).text(itemData.openToCloseDays);
+
+                    itemData.itemStateDaysCountData.forEach(
+                        (label) => {
+                            switch (label.state) {
+                                case 'Initiated':
+                                    $("#initiated", clonedTemplate).text(label.days);
+                                    break;
+                                case 'Approved':
+                                    $("#approved", clonedTemplate).text(label.days);
+                                    break;
+                                case 'RC Approved':
+                                    $("#rcapproved", clonedTemplate).text(label.days);
+                                    break;
+                                case 'WFEC':
+                                    $("#wfec", clonedTemplate).text(label.days);
+                                    break;
+                                case 'Closed':
+                                    $("#closed", clonedTemplate).text(label.days);
+                                    break;    
+                            }
+                        }
+                    ); 
+
                     clonedTemplate.appendTo($("#CSOTable tbody", this._root));
                 }
             );
@@ -1105,6 +1128,11 @@ namespace MCapaStatusDashboard {
                                     <th>Department</th>
                                     <th>Category</th>
                                     <th>Currernt State</th>
+                                    <th>Initiated</th>
+                                    <th>Approved</th>
+                                    <th>WFEC</th>
+                                    <th>RC Approved</th>
+                                    <th>Closed</th>
                                     <th>Closure Time</th>
                                     </tr>
                                 </thead>
@@ -1114,6 +1142,11 @@ namespace MCapaStatusDashboard {
                                     <td id="department" ></td>
                                     <td id="category" ></td>
                                     <td id="currentstate" ></td>
+                                    <td class="initiated" ></td>
+                                    <td class="approved" ></td>
+                                    <td class="rcapproved" ></td>
+                                    <td class="wfec" ></td>
+                                    <td class="closed" ></td>
                                     <td id="closureTime" ></td>
                                     </tr>
                                 </tbody>
@@ -1130,6 +1163,8 @@ namespace MCapaStatusDashboard {
     }
 
 }
+
+stateDesc =  ['Initiated','Approved','RC Approved', 'WFEC','Closed'];
 
 // Register the plugin
 $(function () {
