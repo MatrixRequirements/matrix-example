@@ -1164,8 +1164,6 @@ namespace MCapaStatusDashboard {
 
 }
 
-stateDesc =  ['Initiated','Approved','RC Approved', 'WFEC','Closed'];
-
 // Register the plugin
 $(function () {
     plugins.register(new MCapaStatusDashboard.MCapaStatusDashboard());
