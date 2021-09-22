@@ -510,7 +510,7 @@ namespace MCapaStatusDashboard {
 
             itemCurrentStateDetails.forEach(
                 (itemData) => {
-                    let clonedTemplate = $("#ctoRow", this._root).clone();
+                    let clonedTemplate = $("#csoRow", this._root).clone();
                     let stateClass = itemData.currentState;
                     clonedTemplate.removeClass("hidden");
                     let classAttr = "addedItem" + " " + stateClass;
@@ -1100,8 +1100,8 @@ namespace MCapaStatusDashboard {
                                     <th>Currernt State</th>
                                     </tr>
                                 </thead>
-                                <tbody id="ctoList">
-                                    <tr id="ctoRow" class="hidden">
+                                <tbody id="csoList">
+                                    <tr id="csoRow" class="hidden">
                                     <td id="title" ></td>
                                     <td id="department" ></td>
                                     <td id="category" ></td>
