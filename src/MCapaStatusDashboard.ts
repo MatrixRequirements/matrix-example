@@ -806,14 +806,14 @@ namespace MCapaStatusDashboard {
 
                     if(deptIndex > -1 && (label.reset.length !== label.set.length)){
                         ByCategoryLabelData.deptWiseData[deptIndex + 1] += 1;
-                        itemCurrentStateData.department = label.label;
+                        itemCurrentStateData.department = ByCategoryLabelData.displayDepartments[deptIndex];
                     }
 
                     let catIndex = ByCategoryLabelData.categories.findIndex(cat => cat === label.label);
 
                     if(catIndex > -1 && (label.reset.length !== label.set.length)){
                         ByCategoryLabelData.categoryWiseData[catIndex + 1] += 1;
-                        itemCurrentStateData.category = label.label;
+                        itemCurrentStateData.category = ByCategoryLabelData.displayCategories[catIndex];
                     }
 
                     let stateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === label.label);
