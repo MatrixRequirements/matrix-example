@@ -470,37 +470,90 @@ namespace MCapaStatusDashboard {
             }
         }
 
-        renderTable(itemCurrentStateDetails: ItemCurrentStateData[]){
+        // renderTable(itemCurrentStateDetails: ItemCurrentStateData[]){
 
-            let table = $("#MCSOtable");
+        //     let table = $("#MCSOtable");
+        //     $(".addedItem", table).remove();
+
+        //     itemCurrentStateDetails.forEach(
+        //         (itemData) => {
+        //             let clonedTemplate = $("#csoRow", this._root).clone();
+        //             //let stateClass = itemData.currentState;
+        //             clonedTemplate.removeClass("hidden");
+        //             let classAttr = "addedItem" 
+        //                             + " " + itemData.id 
+        //                             + " " + itemData.department 
+        //                             + " " + itemData.category 
+        //                             + " " + itemData.currentState;
+        //             clonedTemplate.attr("class", classAttr);
+        //             $("#title", clonedTemplate).text(itemData.id + "!");
+        //             $("#title", clonedTemplate).data("ref", itemData.id + "!");
+        //             $("#department", clonedTemplate).text(itemData.department);
+        //             $("#category", clonedTemplate).text(itemData.category);
+        //             $("#currentstate", clonedTemplate).text(itemData.currentState);
+        //             $("#closureTime", clonedTemplate).text(itemData.openToCloseDays);
+        //             clonedTemplate.appendTo($("#MCSOtable tbody", this._root));
+        //         }
+        //     );
+
+
+        //     $("table#MCSOtable").highlightReferences();
+        //     $("table#MCSOtable").tablesorter();
+
+        //     //this.filterByLabel({ type: "" });
+        // }
+
+        renderTable() {
+
+            let itemCurrentStateDetails = [
+                {
+                    id: "CA-1",
+                    department: 'ST',
+                    category: 'Internal Audit',
+                    currentState: 'CLOSED',
+                    currentStateSetDate: '02-07-2021'
+                },
+                {
+                    id: "CA-2",
+                    department: 'PROD',
+                    category: 'Process/ Product',
+                    currentState: 'CLOSED',
+                    currentStateSetDate: '02-07-2021'
+                },
+                {
+                    id: "CA-3",
+                    department: 'QC',
+                    category: 'Complaint',
+                    currentState: 'CLOSED',
+                    currentStateSetDate: '02-07-2021'
+                }
+            ];
+
+            let table = $("#CTOTable");
             $(".addedItem", table).remove();
 
             itemCurrentStateDetails.forEach(
                 (itemData) => {
-                    let clonedTemplate = $("#csoRow", this._root).clone();
-                    //let stateClass = itemData.currentState;
+                    let clonedTemplate = $("#ctoRow", this._root).clone();
+                    let stateClass = itemData.currentState;
                     clonedTemplate.removeClass("hidden");
-                    let classAttr = "addedItem" 
-                                    + " " + itemData.id 
-                                    + " " + itemData.department 
-                                    + " " + itemData.category 
-                                    + " " + itemData.currentState;
+                    let classAttr = "addedItem" + " " + stateClass;
                     clonedTemplate.attr("class", classAttr);
                     $("#title", clonedTemplate).text(itemData.id + "!");
                     $("#title", clonedTemplate).data("ref", itemData.id + "!");
                     $("#department", clonedTemplate).text(itemData.department);
                     $("#category", clonedTemplate).text(itemData.category);
                     $("#currentstate", clonedTemplate).text(itemData.currentState);
-                    $("#closureTime", clonedTemplate).text(itemData.openToCloseDays);
-                    clonedTemplate.appendTo($("#MCSOtable tbody", this._root));
+                    clonedTemplate.appendTo($("#CTOTable tbody", this._root));
                 }
             );
 
 
-            $("table#MCSOtable").highlightReferences();
-            $("table#MCSOtable").tablesorter();
+            $("table#CTOTable").highlightReferences();
+            $("table#CTOTable").tablesorter();
 
             //this.filterByLabel({ type: "" });
+
         }
        
         renderHTML() {
@@ -713,7 +766,8 @@ namespace MCapaStatusDashboard {
             this.renderByAvgTimeChart(ByCategoryLabelData.stateDesc,ByCategoryLabelData.statusWiseAvgData);
             this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData,ByCategoryLabelData.stateTrackerLegendColors);
             this.renderClosureTimeChart(ByCategoryLabelData.closedItemsData,ByCategoryLabelData.closureTimeData);
-            this.renderTable(ByCategoryLabelData.itemCurrentStateDetails);
+           // this.renderTable(ByCategoryLabelData.itemCurrentStateDetails);
+            this.renderTable();
 
         }
 
@@ -1050,36 +1104,34 @@ namespace MCapaStatusDashboard {
             </div>
 
             <div id="currentStatusList">
-                <div class="row" id="MCSOTitleForCopy"></div> 
-                <div class="row doNotCopy MCSOtable">
+                <div class="row" id="CTOTitleForCopy"></div> 
+                <div class="row doNotCopy CTOtable">
                     <div class="col-lg-3 ">
-                        <h3 id="MCSOTableHeader">CAPA current status list</h3>
+                        <h3 id="CTOTableHeader">CAPA current status list</h3>
                     </div>
                     <div class=" col-lg-7"></div>
                     <div class=" col-lg-2">
-                        <input type="text" id="MCSOInputFilter" style="margin-bottom:10px;" placeholder="filter..." class="doNotCopy  form-control"></input>
+                        <input type="text" id="CTOInputFilter" style="margin-bottom:10px;" placeholder="filter..." class="doNotCopy  form-control"></input>
                     </div>
                 </div>
-                <div class="row MCSOtable">
+                <div class="row CTOtable">
                     <div class="col-md-12">
                         <div class="table-responsive">
-                            <table class="table table-condensed table-borderless table-hover" id="MCSOTable">
+                            <table class="table table-condensed table-borderless table-hover" id="CTOTable">
                                 <thead>
                                     <tr>
                                     <th>Item</th>
                                     <th>Department</th>
                                     <th>Category</th>
                                     <th>Currernt State</th>
-                                    <th>Closure Time</th>
                                     </tr>
                                 </thead>
-                                <tbody id="csoList">
-                                    <tr id="csoRow" class="hidden">
+                                <tbody id="ctoList">
+                                    <tr id="ctoRow" class="hidden">
                                     <td id="title" ></td>
                                     <td id="department" ></td>
                                     <td id="category" ></td>
                                     <td id="currentstate" ></td>
-                                    <td id="closureTime" ></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1087,6 +1139,7 @@ namespace MCapaStatusDashboard {
                     </div>
                 </div>
             </div>
+
         </div>
 
         </div>
