@@ -217,18 +217,18 @@ namespace MCapaStatusDashboard {
                 that.CapaTrackerChart.resize({width:savedWidth})
             });
 
-            ml.UI.copyBuffer($("#MCSOTableHeader",this._root), "copy list to clipboard", $("#currentStatusList",this._root), this._root, (copied: JQuery) => {
+            ml.UI.copyBuffer($("#CSOTableHeader",this._root), "copy list to clipboard", $("#currentStatusList",this._root), this._root, (copied: JQuery) => {
                 $(".doNotCopy", copied).remove();
     
-                var filter = $("#MCSOInputFilter",this._root).val();
+                var filter = $("#CSOInputFilter",this._root).val();
                
                 $(".hidden",copied).remove();
            
                 $("#id", copied).each( (i,item)=>{ $(item).text($(item).data("ref") +"!")  } );
     
-                $("#MCSOInputFilter",copied).remove();
+                $("#CSOInputFilter",copied).remove();
     
-                $("#MCSOTitleForCopy", copied).html("<div><h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) + "</span> <br/>" + (filter != "" ? "<b>Filter : </b>" + filter + "<br/>" : "") + "</div>");
+                $("#CSOTitleForCopy", copied).html("<div><h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) + "</span> <br/>" + (filter != "" ? "<b>Filter : </b>" + filter + "<br/>" : "") + "</div>");
             });
 
         }
@@ -461,12 +461,12 @@ namespace MCapaStatusDashboard {
             let filterDataClass = "";
             if (filter.type == "") {
                 //Show all
-                $("#MCSOTable tbody tr").show();
+                $("#CSOTable tbody tr").show();
             }
             else {
                 filterDataClass = filter.type;
-                $("#MCSOTable tbody tr").hide();
-                $("#MCSOTable tbody tr." + filterDataClass).show();
+                $("#CSOTable tbody tr").hide();
+                $("#CSOTable tbody tr." + filterDataClass).show();
             }
         }
 
@@ -1078,10 +1078,10 @@ namespace MCapaStatusDashboard {
             </div>
 
             <div id="currentStatusList">
-                <div class="row" id="CTOTitleForCopy"></div> 
-                <div class="row doNotCopy CTOtable">
+                <div class="row" id="CSOTitleForCopy"></div> 
+                <div class="row doNotCopy CSOtable">
                     <div class="col-lg-3 ">
-                        <h3 id="CTOTableHeader">CAPA current status list</h3>
+                        <h3 id="CSOTableHeader">CAPA current status list</h3>
                     </div>
                     <div class=" col-lg-7"></div>
                     <div class=" col-lg-2">
