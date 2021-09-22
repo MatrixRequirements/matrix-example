@@ -516,8 +516,8 @@ namespace MCapaStatusDashboard {
                     //let classAttr = "addedItem" + " " + stateClass;
                     let classAttr = "addedItem" 
                         + " " + itemData.id.split(' ').join('_') 
-                        + " " + itemData.department.split(' ').join('-');
-                        + " " + itemData.category.split(' ').join('-'); 
+                        + " " + itemData.department.split(' ').join('-')
+                        + " " + itemData.category.split(' ').join('-')
                         + " " + itemData.currentState.split(' ').join('-');
                     console.log("classAttr:"+classAttr);    
                     clonedTemplate.attr("class", classAttr);
