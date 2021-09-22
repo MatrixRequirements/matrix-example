@@ -503,31 +503,31 @@ namespace MCapaStatusDashboard {
         //     //this.filterByLabel({ type: "" });
         // }
 
-        renderTable() {
+        renderTable(itemCurrentStateDetails: ItemCurrentStateData[]) {
 
-            let itemCurrentStateDetails = [
-                {
-                    id: "CA-1",
-                    department: 'ST',
-                    category: 'Internal Audit',
-                    currentState: 'CLOSED',
-                    currentStateSetDate: '02-07-2021'
-                },
-                {
-                    id: "CA-2",
-                    department: 'PROD',
-                    category: 'Process/ Product',
-                    currentState: 'CLOSED',
-                    currentStateSetDate: '02-07-2021'
-                },
-                {
-                    id: "CA-3",
-                    department: 'QC',
-                    category: 'Complaint',
-                    currentState: 'CLOSED',
-                    currentStateSetDate: '02-07-2021'
-                }
-            ];
+            // let itemCurrentStateDetails = [
+            //     {
+            //         id: "CA-1",
+            //         department: 'ST',
+            //         category: 'Internal Audit',
+            //         currentState: 'CLOSED',
+            //         currentStateSetDate: '02-07-2021'
+            //     },
+            //     {
+            //         id: "CA-2",
+            //         department: 'PROD',
+            //         category: 'Process/ Product',
+            //         currentState: 'CLOSED',
+            //         currentStateSetDate: '02-07-2021'
+            //     },
+            //     {
+            //         id: "CA-3",
+            //         department: 'QC',
+            //         category: 'Complaint',
+            //         currentState: 'CLOSED',
+            //         currentStateSetDate: '02-07-2021'
+            //     }
+            // ];
 
             let table = $("#CTOTable");
             $(".addedItem", table).remove();
