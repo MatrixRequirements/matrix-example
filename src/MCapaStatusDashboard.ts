@@ -115,57 +115,58 @@ namespace MCapaStatusDashboard {
             $(".spinningWait", that._root).show();
             //$("#MCSONoItems", that._root).hide();
 
-            $("#dept-date-filter").hide();
+            that.initiateDateFilter("dept");
+            // $("#dept-date-filter").hide();
 
-            $('#dept-date-filter-icon').click(function () {
+            // $('#dept-date-filter-icon').click(function () {
 
-                that.enableDeptDateFilter = !that.enableDeptDateFilter;
+            //     that.enableDeptDateFilter = !that.enableDeptDateFilter;
 
-                if(that.enableDeptDateFilter){
-                    $("#dept-date-filter").show();
-                }else{
-                    $("#dept-date-filter").hide();
-                }
-            });
+            //     if(that.enableDeptDateFilter){
+            //         $("#dept-date-filter").show();
+            //     }else{
+            //         $("#dept-date-filter").hide();
+            //     }
+            // });
 
-            //Initiating date range selection section
-            let fromDate = $("#fromdate", that._root);
-            let toDate = $("#todate", that._root);
-            let goButton = $("#gobutton", that._root);
+            // //Initiating date range selection section
+            // let fromDate = $("#fromdate", that._root);
+            // let toDate = $("#todate", that._root);
+            // let goButton = $("#gobutton", that._root);
 
-            //MM/dd/YYYY 
-            //ml.UI.DateTime.getSimpleDateTimeFormatMoment()
-            fromDate.datetimepicker({
-                format: 'MM/DD/YYYY',
-                maxDate: 'now'
-            });
-            toDate.datetimepicker({
-                defaultDate: new Date(),
-                maxDate: 'now',
-                useCurrent: false, //Important! 
-                format: 'MM/DD/YYYY'
-            });
-            ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            // //MM/dd/YYYY 
+            // //ml.UI.DateTime.getSimpleDateTimeFormatMoment()
+            // fromDate.datetimepicker({
+            //     format: 'MM/DD/YYYY',
+            //     maxDate: 'now'
+            // });
+            // toDate.datetimepicker({
+            //     defaultDate: new Date(),
+            //     maxDate: 'now',
+            //     useCurrent: false, //Important! 
+            //     format: 'MM/DD/YYYY'
+            // });
+            // ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
 
-            fromDate.on("dp.change", function (e: any) {
-                toDate.data("DateTimePicker").minDate(e.date);
-                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
-            });
-            toDate.on("dp.change", function (e: any) {
-                fromDate.data("DateTimePicker").maxDate(e.date);
-                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
-            });
+            // fromDate.on("dp.change", function (e: any) {
+            //     toDate.data("DateTimePicker").minDate(e.date);
+            //     ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            // });
+            // toDate.on("dp.change", function (e: any) {
+            //     fromDate.data("DateTimePicker").maxDate(e.date);
+            //     ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            // });
 
 
 
-            $('#gobutton').click(function () {
+            // $('#gobutton').click(function () {
 
-                let fromDateSelected = fromDate.data("DateTimePicker").date();
-                let toDateSelected = toDate.data("DateTimePicker").date();
+            //     let fromDateSelected = fromDate.data("DateTimePicker").date();
+            //     let toDateSelected = toDate.data("DateTimePicker").date();
 
-                that.renderDeptChartByDateRanges(fromDateSelected, toDateSelected);
+            //     that.renderDeptChartByDateRanges(fromDateSelected, toDateSelected);
 
-            });
+            // });
 
 
             setTimeout(o => that.installCopyButtons("CAPA Status Overview"), 10);
@@ -282,6 +283,66 @@ namespace MCapaStatusDashboard {
                 $("#CSOInputFilter",copied).remove();
     
                 $("#CSOTitleForCopy", copied).html("<div><h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) + "</span> <br/>" + (filter != "" ? "<b>Filter : </b>" + filter + "<br/>" : "") + "</div>");
+            });
+
+        }
+
+        initiateDateFilter(dateFilterId){
+
+            let that = this;
+
+            $("#"+dateFilterId+"-date-filter").hide();
+
+            $("#"+dateFilterId+"-date-filter-icon").click(function () {
+
+                that.enableDeptDateFilter = !that.enableDeptDateFilter;
+
+                if(that.enableDeptDateFilter){
+                    $("#"+dateFilterId+"-date-filter").show();
+                }else{
+                    $("#"+dateFilterId+"-date-filter").hide();
+                }
+            });
+
+            //Initiating date range selection section
+            let fromDate = $("#"+dateFilterId+"-fromdate", that._root);
+            let toDate = $("#"+dateFilterId+"-todate", that._root);
+            let goButton = $("#"+dateFilterId+"-gobutton", that._root);
+
+            //MM/dd/YYYY 
+            //ml.UI.DateTime.getSimpleDateTimeFormatMoment()
+            fromDate.datetimepicker({
+                format: 'MM/DD/YYYY',
+                maxDate: 'now'
+            });
+            toDate.datetimepicker({
+                defaultDate: new Date(),
+                maxDate: 'now',
+                useCurrent: false, //Important! 
+                format: 'MM/DD/YYYY'
+            });
+            ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+
+            fromDate.on("dp.change", function (e: any) {
+                toDate.data("DateTimePicker").minDate(e.date);
+                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            });
+            toDate.on("dp.change", function (e: any) {
+                fromDate.data("DateTimePicker").maxDate(e.date);
+                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            });
+
+
+
+            $("#"+dateFilterId+"-gobutton").click(function () {
+
+                let fromDateSelected = fromDate.data("DateTimePicker").date();
+                let toDateSelected = toDate.data("DateTimePicker").date();
+
+                if(dateFilterId == "dept"){
+                    that.renderDeptChartByDateRanges(fromDateSelected, toDateSelected);
+                }
+
             });
 
         }
@@ -1147,10 +1208,10 @@ namespace MCapaStatusDashboard {
                             <div id="dept-date-filter" class="baseControl dateFilter">
                                 <p>
                                     <span class="">From</span>
-                                    <input id="fromdate" type='text' class='date-filter-form-control filterDates'>
+                                    <input id="dept-fromdate" type='text' class='date-filter-form-control filterDates'>
                                     <span class="">To</span>
-                                    <input id="todate" type='text' class='date-filter-form-control filterDates'>
-                                    <button id="gobutton" type="button" class="date-filter-btn btn-success">Go</button>
+                                    <input id="dept-todate" type='text' class='date-filter-form-control filterDates'>
+                                    <button id="dept-gobutton" type="button" class="date-filter-btn btn-success">Go</button>
                                 </p>
                             </div>
                             <div id="DeptWiseoverviewChart" class="chart"></div>
