@@ -119,8 +119,6 @@ namespace MCapaStatusDashboard {
 
             $('#dept-date-filter-icon').click(function () {
 
-                console.log("date filter clicked");
-
                 that.enableDeptDateFilter = !that.enableDeptDateFilter;
 
                 if(that.enableDeptDateFilter){
@@ -128,6 +126,45 @@ namespace MCapaStatusDashboard {
                 }else{
                     $("#dept-date-filter").hide();
                 }
+            });
+
+            //Initiating date range selection section
+            let fromDate = $("#fromdate", that._root);
+            let toDate = $("#todate", that._root);
+            let goButton = $("#gobutton", that._root);
+
+            //MM/dd/YYYY 
+            //ml.UI.DateTime.getSimpleDateTimeFormatMoment()
+            fromDate.datetimepicker({
+                format: 'MM/DD/YYYY',
+                maxDate: 'now'
+            });
+            toDate.datetimepicker({
+                defaultDate: new Date(),
+                maxDate: 'now',
+                useCurrent: false, //Important! 
+                format: 'MM/DD/YYYY'
+            });
+            ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+
+            fromDate.on("dp.change", function (e: any) {
+                toDate.data("DateTimePicker").minDate(e.date);
+                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            });
+            toDate.on("dp.change", function (e: any) {
+                fromDate.data("DateTimePicker").maxDate(e.date);
+                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            });
+
+
+
+            $('#gobutton').click(function () {
+
+                let fromDateSelected = fromDate.data("DateTimePicker").date();
+                let toDateSelected = toDate.data("DateTimePicker").date();
+
+                that.renderDeptChartByDateRanges(fromDateSelected, toDateSelected);
+
             });
 
 
@@ -246,6 +283,19 @@ namespace MCapaStatusDashboard {
     
                 $("#CSOTitleForCopy", copied).html("<div><h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) + "</span> <br/>" + (filter != "" ? "<b>Filter : </b>" + filter + "<br/>" : "") + "</div>");
             });
+
+        }
+
+        renderDeptChartByDateRanges(fromDateVal: any, toDateVal: any) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            let formattedFromDate = new Date(fromDate.setDate(fromDate.getDate() + 1)).toISOString().slice(0, 10);
+            let formattedToDate = new Date(toDate.setDate(toDate.getDate() + 1)).toISOString().slice(0, 10);
+
+            console.log("formattedFromDate:"+formattedFromDate);
+            console.log("formattedToDate:"+formattedToDate);
 
         }
 
