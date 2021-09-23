@@ -1037,6 +1037,11 @@ namespace MCapaStatusDashboard {
             cursor:pointer;
         }
 
+        .dateFilter{
+            display:flex;
+            margin-left: 45px;
+        }
+
         .filterDates {
             width: 115px;
             margin: 0 6px;
@@ -1055,6 +1060,7 @@ namespace MCapaStatusDashboard {
         }
         .date-filter-btn {
             margin-bottom: 0;
+            margin-left: 12px;
             font-weight: 400;
             text-align: center;
             white-space: nowrap;
@@ -1088,13 +1094,13 @@ namespace MCapaStatusDashboard {
                         </div>
                         <div class="panel-body">
                             <div class='copyTitle'> </div>
-                            <div id="dept-date-filter" class="baseControl" style="display:flex;margin-left: 80px">
+                            <div id="dept-date-filter" class="baseControl dateFilter">
                                 <p>
                                     <span class="">From</span>
                                     <input id="fromdate" type='text' class='date-filter-form-control filterDates'>
                                     <span class="">To</span>
                                     <input id="todate" type='text' class='date-filter-form-control filterDates'>
-                                    <button id="gobutton" style="margin-left: 12px" type="button" class="date-filter-btn btn-success">Go</button>
+                                    <button id="gobutton" type="button" class="date-filter-btn btn-success">Go</button>
                                 </p>
                             </div>
                             <div id="DeptWiseoverviewChart" class="chart"></div>
