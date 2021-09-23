@@ -114,10 +114,13 @@ namespace MCapaStatusDashboard {
             $(".spinningWait", that._root).show();
             //$("#MCSONoItems", that._root).hide();
 
+            $("#dept-date-filter").hide();
 
-            $('#date-filter').click(function () {
+            $('#dept-date-filter-icon').click(function () {
 
                 console.log("date filter clicked");
+
+                $("#dept-date-filter").show();
 
             });
 
@@ -1042,11 +1045,12 @@ namespace MCapaStatusDashboard {
                         <div class="panel-heading">
                             <h3 class="panel-title" id="DeptWiseChartTitle">
                             Department wise CAPA count overview
-                            <i id="date-filter" class="far fa-calendar-alt" aria-hidden="true" style="padding-left:12px;cursor:pointer" data-original-title="Date Filter"> </i>
+                            <i id="dept-date-filter-icon" class="far fa-calendar-alt" aria-hidden="true" style="padding-left:12px;cursor:pointer" data-original-title="Date Filter"> </i>
                             </h3>
                         </div>
                         <div class="panel-body">
                             <div class='copyTitle'> </div>
+                            <div id="dept-date-filter"><h3>test<h3></div>
                             <div id="DeptWiseoverviewChart" class="chart"></div>
                         </div>
                     </div>
