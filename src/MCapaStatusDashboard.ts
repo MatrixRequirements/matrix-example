@@ -1033,7 +1033,10 @@ namespace MCapaStatusDashboard {
                 <div class="col-lg-6 ">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title" id="DeptWiseChartTitle">Department wise CAPA count overview</h3>
+                            <h3 class="panel-title" id="DeptWiseChartTitle">
+                            Department wise CAPA count overview
+                            <i class="far fa-calendar-alt hideCopy" aria-hidden="true" style="padding-left:12px;cursor:pointer" data-original-title="Date Filter"> </i>
+                            </h3>
                         </div>
                         <div class="panel-body">
                             <div class='copyTitle'> </div>
