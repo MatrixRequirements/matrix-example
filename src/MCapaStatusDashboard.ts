@@ -115,6 +115,13 @@ namespace MCapaStatusDashboard {
             //$("#MCSONoItems", that._root).hide();
 
 
+            $('#date-filter').click(function () {
+
+                console.log("date filter clicked");
+
+            });
+
+
             setTimeout(o => that.installCopyButtons("CAPA Status Overview"), 10);
 
             //Get the data and render it
@@ -1035,7 +1042,7 @@ namespace MCapaStatusDashboard {
                         <div class="panel-heading">
                             <h3 class="panel-title" id="DeptWiseChartTitle">
                             Department wise CAPA count overview
-                            <i class="far fa-calendar-alt hideCopy" aria-hidden="true" style="padding-left:12px;cursor:pointer" data-original-title="Date Filter"> </i>
+                            <i id="date-filter" class="far fa-calendar-alt" aria-hidden="true" style="padding-left:12px;cursor:pointer" data-original-title="Date Filter"> </i>
                             </h3>
                         </div>
                         <div class="panel-body">
