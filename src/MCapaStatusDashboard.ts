@@ -90,6 +90,7 @@ namespace MCapaStatusDashboard {
         AvgTimeWiseoverviewChart: c3.ChartAPI;
         ClosureTimeoverviewChart: c3.ChartAPI;
         CapaTrackerChart: c3.ChartAPI;
+        enableDeptDateFilter: boolean = false;
 
 
         destroy(): void { }
@@ -120,8 +121,13 @@ namespace MCapaStatusDashboard {
 
                 console.log("date filter clicked");
 
-                $("#dept-date-filter").show();
+                that.enableDeptDateFilter = !that.enableDeptDateFilter;
 
+                if(that.enableDeptDateFilter){
+                    $("#dept-date-filter").show();
+                }else{
+                    $("#dept-date-filter").hide();
+                }
             });
 
 
