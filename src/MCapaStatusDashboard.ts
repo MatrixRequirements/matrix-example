@@ -360,6 +360,9 @@ namespace MCapaStatusDashboard {
 
             console.log("chartType:"+chartType);
 
+            console.log("fromDateVal:"+fromDateVal);
+            console.log("toDateVal:"+toDateVal);
+
             console.log("fromDate:"+fromDate);
             console.log("toDate:"+toDate);
 
