@@ -116,6 +116,11 @@ namespace MCapaStatusDashboard {
             //$("#MCSONoItems", that._root).hide();
 
             that.initiateDateFilter("dept");
+            that.initiateDateFilter("cat");
+            that.initiateDateFilter("status");
+            that.initiateDateFilter("avg");
+            that.initiateDateFilter("closure");
+            that.initiateDateFilter("tracker");
             // $("#dept-date-filter").hide();
 
             // $('#dept-date-filter-icon').click(function () {
@@ -332,22 +337,17 @@ namespace MCapaStatusDashboard {
                 ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
             });
 
-
-
             $("#"+dateFilterId+"-gobutton").click(function () {
 
                 let fromDateSelected = fromDate.data("DateTimePicker").date();
                 let toDateSelected = toDate.data("DateTimePicker").date();
 
-                if(dateFilterId == "dept"){
-                    that.renderDeptChartByDateRanges(fromDateSelected, toDateSelected);
-                }
-
+                that.renderChartByDateRanges(dateFilterId,fromDateSelected, toDateSelected);
             });
 
         }
 
-        renderDeptChartByDateRanges(fromDateVal: any, toDateVal: any) {
+        renderChartByDateRanges(chartType: string, fromDateVal: any, toDateVal: any) {
 
             let fromDate = new Date(fromDateVal);
             let toDate = new Date(toDateVal);
@@ -355,6 +355,7 @@ namespace MCapaStatusDashboard {
             let formattedFromDate = new Date(fromDate.setDate(fromDate.getDate() + 1)).toISOString().slice(0, 10);
             let formattedToDate = new Date(toDate.setDate(toDate.getDate() + 1)).toISOString().slice(0, 10);
 
+            console.log("chartType:"+chartType);
             console.log("formattedFromDate:"+formattedFromDate);
             console.log("formattedToDate:"+formattedToDate);
 
@@ -1221,10 +1222,22 @@ namespace MCapaStatusDashboard {
                 <div  class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title" id="CatWiseChartTitle">Category wise CAPA count overview</h3>
+                            <h3 class="panel-title" id="CatWiseChartTitle">
+                            Category wise CAPA count overview
+                            <i id="cat-date-filter-icon" class="far fa-calendar-alt" aria-hidden="true" style="padding-left:12px;cursor:pointer" data-original-title="Date Filter"> </i>
+                            </h3>
                         </div>
                         <div class="panel-body">
                             <div class='copyTitle'> </div>
+                            <div id="cat-date-filter" class="baseControl dateFilter">
+                                <p>
+                                    <span class="">From</span>
+                                    <input id="cat-fromdate" type='text' class='date-filter-form-control filterDates'>
+                                    <span class="">To</span>
+                                    <input id="cat-todate" type='text' class='date-filter-form-control filterDates'>
+                                    <button id="cat-gobutton" type="button" class="date-filter-btn btn-success">Go</button>
+                                </p>
+                            </div>
                             <div id="CatWiseoverviewChart" class="chart" ></div>
                         </div>
                     </div>
@@ -1235,10 +1248,22 @@ namespace MCapaStatusDashboard {
                 <div class="col-lg-6 ">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title" id="StatusWiseChartTitle">Status wise CAPA count overview</h3>
+                            <h3 class="panel-title" id="StatusWiseChartTitle">
+                            Status wise CAPA count overview
+                            <i id="status-date-filter-icon" class="far fa-calendar-alt" aria-hidden="true" style="padding-left:12px;cursor:pointer" data-original-title="Date Filter"> </i>
+                            </h3>
                         </div>
                         <div class="panel-body">
                             <div class='copyTitle'> </div>
+                            <div id="status-date-filter" class="baseControl dateFilter">
+                                <p>
+                                    <span class="">From</span>
+                                    <input id="status-fromdate" type='text' class='date-filter-form-control filterDates'>
+                                    <span class="">To</span>
+                                    <input id="status-todate" type='text' class='date-filter-form-control filterDates'>
+                                    <button id="status-gobutton" type="button" class="date-filter-btn btn-success">Go</button>
+                                </p>
+                            </div>
                             <div id="StatusWiseoverviewChart" class="chart"></div>
                         </div>
                     </div>
@@ -1246,10 +1271,22 @@ namespace MCapaStatusDashboard {
                 <div  class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title" id="AvgTimeWiseChartTitle">Average time state wise overview</h3>
+                            <h3 class="panel-title" id="AvgTimeWiseChartTitle">
+                            Average time state wise overview
+                            <i id="avg-date-filter-icon" class="far fa-calendar-alt" aria-hidden="true" style="padding-left:12px;cursor:pointer" data-original-title="Date Filter"> </i>
+                            </h3>
                         </div>
                         <div class="panel-body">
                             <div class='copyTitle'> </div>
+                            <div id="avg-date-filter" class="baseControl dateFilter">
+                                <p>
+                                    <span class="">From</span>
+                                    <input id="avg-fromdate" type='text' class='date-filter-form-control filterDates'>
+                                    <span class="">To</span>
+                                    <input id="avg-todate" type='text' class='date-filter-form-control filterDates'>
+                                    <button id="avg-gobutton" type="button" class="date-filter-btn btn-success">Go</button>
+                                </p>
+                            </div>
                             <div id="AvgTimeWiseoverviewChart" class="chart" ></div>
                         </div>
                     </div>
@@ -1260,10 +1297,22 @@ namespace MCapaStatusDashboard {
                 <div class="col-lg-12"> 
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title" id="ClosureTimeChartTitle">CAPA closure time overview</h3>
+                            <h3 class="panel-title" id="ClosureTimeChartTitle">
+                            CAPA closure time overview
+                            <i id="closure-date-filter-icon" class="far fa-calendar-alt" aria-hidden="true" style="padding-left:12px;cursor:pointer" data-original-title="Date Filter"> </i>
+                            </h3>
                         </div>
                         <div class="panel-body">
                             <div class='copyTitle'> </div>
+                            <div id="closure-date-filter" class="baseControl dateFilter">
+                                <p>
+                                    <span class="">From</span>
+                                    <input id="closure-fromdate" type='text' class='date-filter-form-control filterDates'>
+                                    <span class="">To</span>
+                                    <input id="closure-todate" type='text' class='date-filter-form-control filterDates'>
+                                    <button id="closure-gobutton" type="button" class="date-filter-btn btn-success">Go</button>
+                                </p>
+                            </div>
                             <div id="ClosureTimeoverviewChart" class="closureTimeChart"></div>
                         </div>
                     </div>
@@ -1274,10 +1323,22 @@ namespace MCapaStatusDashboard {
                 <div class="col-lg-12"> 
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title" id="CapaTrackerChartTitle">CAPA tracker</h3>
+                            <h3 class="panel-title" id="CapaTrackerChartTitle">
+                            CAPA Tracker
+                            <i id="tracker-date-filter-icon" class="far fa-calendar-alt" aria-hidden="true" style="padding-left:12px;cursor:pointer" data-original-title="Date Filter"> </i>
+                            </h3>
                         </div>
                         <div class="panel-body">
                             <div class='copyTitle'> </div>
+                            <div id="tracker-date-filter" class="baseControl dateFilter">
+                                <p>
+                                    <span class="">From</span>
+                                    <input id="tracker-fromdate" type='text' class='date-filter-form-control filterDates'>
+                                    <span class="">To</span>
+                                    <input id="tracker-todate" type='text' class='date-filter-form-control filterDates'>
+                                    <button id="tracker-gobutton" type="button" class="date-filter-btn btn-success">Go</button>
+                                </p>
+                            </div>
                             <div id="CapaTrackerChart" class="bigChart"></div>
                         </div>
                     </div>
