@@ -349,25 +349,25 @@ namespace MCapaStatusDashboard {
 
         renderChartByDateRanges(chartType: string, fromDateVal: any, toDateVal: any) {
 
-            let fromDate = new Date(fromDateVal);
-            let toDate = new Date(toDateVal);
+            //let fromDate = new Date(fromDateVal);
+            //let toDate = new Date(toDateVal);
 
-            let formattedFromDate_ = new Date(fromDate.setDate(fromDate.getDate() + 1)).toISOString().slice(0, 10);
-            let formattedToDate_ = new Date(toDate.setDate(toDate.getDate() + 1)).toISOString().slice(0, 10);
+            // let formattedFromDate_ = new Date(fromDate.setDate(fromDate.getDate() + 1)).toISOString().slice(0, 10);
+            // let formattedToDate_ = new Date(toDate.setDate(toDate.getDate() + 1)).toISOString().slice(0, 10);
 
-            let formattedFromDate = fromDate.toISOString().slice(0, 10);
-            let formattedToDate = toDate.toISOString().slice(0, 10);
+            let formattedFromDate = new Date(fromDateVal).toISOString().slice(0, 10);
+            let formattedToDate = new Date(toDateVal).toISOString().slice(0, 10);
 
             console.log("chartType:"+chartType);
 
-            console.log("fromDateVal:"+fromDateVal);
-            console.log("toDateVal:"+toDateVal);
+            // console.log("fromDateVal:"+fromDateVal);
+            // console.log("toDateVal:"+toDateVal);
 
-            console.log("fromDate:"+fromDate);
-            console.log("toDate:"+toDate);
+            // console.log("fromDate:"+fromDate);
+            // console.log("toDate:"+toDate);
 
-            console.log("formattedFromDate_:"+formattedFromDate_);
-            console.log("formattedToDate_:"+formattedToDate_);
+            // console.log("formattedFromDate_:"+formattedFromDate_);
+            // console.log("formattedToDate_:"+formattedToDate_);
 
             console.log("formattedFromDate:"+formattedFromDate);
             console.log("formattedToDate:"+formattedToDate);
