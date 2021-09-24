@@ -48,11 +48,11 @@ namespace MCapaStatusDashboard {
         department: string;
         category: string;
         currentState: string;
-        currentStateSetDate: string;
+        currentStateSetDate: Date;
         itemStateDaysCountData: ItemStateDaysCount[];
         openToCloseDays: number;
-        InitiatedDate: string;
-        ClosedDate: string;
+        InitiatedDate: Date;
+        ClosedDate: Date;
     }
 
     interface ByCategoryLabelData {
@@ -91,6 +91,11 @@ namespace MCapaStatusDashboard {
         ClosureTimeoverviewChart: c3.ChartAPI;
         CapaTrackerChart: c3.ChartAPI;
         enableDeptDateFilter: boolean = false;
+        enableCatDateFilter: boolean = false;
+        enableStatusDateFilter: boolean = false;
+        enableAvgDateFilter: boolean = false;
+        enableClosureDateFilter: boolean = false;
+        enableTrackerDateFilter: boolean = false;
 
 
         destroy(): void { }
@@ -121,58 +126,7 @@ namespace MCapaStatusDashboard {
             that.initiateDateFilter("avg");
             that.initiateDateFilter("closure");
             that.initiateDateFilter("tracker");
-            // $("#dept-date-filter").hide();
-
-            // $('#dept-date-filter-icon').click(function () {
-
-            //     that.enableDeptDateFilter = !that.enableDeptDateFilter;
-
-            //     if(that.enableDeptDateFilter){
-            //         $("#dept-date-filter").show();
-            //     }else{
-            //         $("#dept-date-filter").hide();
-            //     }
-            // });
-
-            // //Initiating date range selection section
-            // let fromDate = $("#fromdate", that._root);
-            // let toDate = $("#todate", that._root);
-            // let goButton = $("#gobutton", that._root);
-
-            // //MM/dd/YYYY 
-            // //ml.UI.DateTime.getSimpleDateTimeFormatMoment()
-            // fromDate.datetimepicker({
-            //     format: 'MM/DD/YYYY',
-            //     maxDate: 'now'
-            // });
-            // toDate.datetimepicker({
-            //     defaultDate: new Date(),
-            //     maxDate: 'now',
-            //     useCurrent: false, //Important! 
-            //     format: 'MM/DD/YYYY'
-            // });
-            // ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
-
-            // fromDate.on("dp.change", function (e: any) {
-            //     toDate.data("DateTimePicker").minDate(e.date);
-            //     ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
-            // });
-            // toDate.on("dp.change", function (e: any) {
-            //     fromDate.data("DateTimePicker").maxDate(e.date);
-            //     ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
-            // });
-
-
-
-            // $('#gobutton').click(function () {
-
-            //     let fromDateSelected = fromDate.data("DateTimePicker").date();
-            //     let toDateSelected = toDate.data("DateTimePicker").date();
-
-            //     that.renderDeptChartByDateRanges(fromDateSelected, toDateSelected);
-
-            // });
-
+           
 
             setTimeout(o => that.installCopyButtons("CAPA Status Overview"), 10);
 
@@ -295,14 +249,40 @@ namespace MCapaStatusDashboard {
         initiateDateFilter(dateFilterId){
 
             let that = this;
+            let enableDateFilter;
 
             $("#"+dateFilterId+"-date-filter").hide();
 
             $("#"+dateFilterId+"-date-filter-icon").click(function () {
 
-                that.enableDeptDateFilter = !that.enableDeptDateFilter;
+                switch (dateFilterId) {
+                    case 'dept':
+                        that.enableDeptDateFilter = !that.enableDeptDateFilter;
+                        enableDateFilter = that.enableDeptDateFilter;
+                        break;
+                    case 'cat':
+                        that.enableCatDateFilter = !that.enableCatDateFilter;
+                        enableDateFilter = that.enableCatDateFilter;
+                        break;
+                    case 'status':
+                        that.enableStatusDateFilter = !that.enableStatusDateFilter;
+                        enableDateFilter = that.enableStatusDateFilter;
+                        break;
+                    case 'avg':
+                        that.enableAvgDateFilter = !that.enableAvgDateFilter;
+                        enableDateFilter = that.enableAvgDateFilter;
+                        break;
+                    case 'closure':
+                        that.enableClosureDateFilter = !that.enableClosureDateFilter;
+                        enableDateFilter = that.enableClosureDateFilter;
+                        break; 
+                    case 'tracker':
+                        that.enableTrackerDateFilter = !that.enableTrackerDateFilter;
+                        enableDateFilter = that.enableTrackerDateFilter;
+                        break;    
+                };
 
-                if(that.enableDeptDateFilter){
+                if(enableDateFilter){
                     $("#"+dateFilterId+"-date-filter").show();
                 }else{
                     $("#"+dateFilterId+"-date-filter").hide();
@@ -349,34 +329,13 @@ namespace MCapaStatusDashboard {
 
         renderChartByDateRanges(chartType: string, fromDateVal: any, toDateVal: any) {
 
-            //let fromDate = new Date(fromDateVal);
-            //let toDate = new Date(toDateVal);
-
-            // let formattedFromDate_ = new Date(fromDate.setDate(fromDate.getDate() + 1)).toISOString().slice(0, 10);
-            // let formattedToDate_ = new Date(toDate.setDate(toDate.getDate() + 1)).toISOString().slice(0, 10);
-
-            // let formattedFromDate = new Date(fromDateVal).toISOString().slice(0, 10);
-            // let formattedToDate = new Date(toDateVal).toISOString().slice(0, 10);
-
-            let formattedFromDate = new Date(fromDateVal);
-            let formattedToDate = new Date(toDateVal);
-
-            let formattedFromDate_ = new Date(fromDateVal).toISOString();
-            let formattedToDate_ = new Date(toDateVal).toISOString();
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
 
             console.log("chartType:"+chartType);
 
-            // console.log("fromDateVal:"+fromDateVal);
-            // console.log("toDateVal:"+toDateVal);
-
-            // console.log("fromDate:"+fromDate);
-            // console.log("toDate:"+toDate);
-
-            console.log("formattedFromDate:"+formattedFromDate);
-            console.log("formattedToDate:"+formattedToDate);
-
-            console.log("formattedFromDate_:"+formattedFromDate_);
-            console.log("formattedToDate_:"+formattedToDate_);
+            console.log("fromDate:"+fromDate);
+            console.log("toDate:"+toDate);
         }
 
         renderByDeptChart(departments,deptWiseData){
@@ -921,10 +880,10 @@ namespace MCapaStatusDashboard {
             this.renderTable(ByCategoryLabelData.itemCurrentStateDetails);
         }
 
-        getCurrentStateSetDate(labelData: XRLabelChange): string {
+        getCurrentStateSetDate(labelData: XRLabelChange): Date {
             //sorting label set array in descending order based on version 
             labelData.set.sort((a, b) => b.version - a.version);
-            let currentStateSetDate = new Date(labelData.set[0].dateIso).toISOString().slice(0, 10);
+            let currentStateSetDate = new Date(labelData.set[0].dateIso);
             return currentStateSetDate;
         }
 
@@ -963,11 +922,11 @@ namespace MCapaStatusDashboard {
                     department: "",
                     category: "",
                     currentState: "",
-                    currentStateSetDate: "",
+                    currentStateSetDate: null,
                     itemStateDaysCountData: [],
                     openToCloseDays: null,
-                    InitiatedDate: "",
-                    ClosedDate: ""
+                    InitiatedDate: null,
+                    ClosedDate: null
                 };
 
                 for (const label of item.labels) {
@@ -1092,8 +1051,8 @@ namespace MCapaStatusDashboard {
                         const intiatedDate = new Date(initalStateData[0].set[0].dateIso);
                         const colosedDate = new Date(closeStateData[0].set[0].dateIso);
 
-                        itemCurrentStateData.InitiatedDate = new Date(intiatedDate).toISOString().slice(0, 10);
-                        itemCurrentStateData.ClosedDate = new Date(colosedDate).toISOString().slice(0, 10);
+                        itemCurrentStateData.InitiatedDate = intiatedDate;
+                        itemCurrentStateData.ClosedDate = colosedDate;
 
 
                         let time_difference = colosedDate.getTime() - intiatedDate.getTime();
