@@ -359,8 +359,12 @@ namespace MCapaStatusDashboard {
             let formattedToDate = toDate.toISOString().slice(0, 10);
 
             console.log("chartType:"+chartType);
-            console.log("formattedFromDate:"+formattedFromDate_);
-            console.log("formattedToDate:"+formattedToDate_);
+
+            console.log("fromDate:"+fromDate);
+            console.log("toDate:"+toDate);
+
+            console.log("formattedFromDate_:"+formattedFromDate_);
+            console.log("formattedToDate_:"+formattedToDate_);
 
             console.log("formattedFromDate:"+formattedFromDate);
             console.log("formattedToDate:"+formattedToDate);
