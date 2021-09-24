@@ -352,10 +352,16 @@ namespace MCapaStatusDashboard {
             let fromDate = new Date(fromDateVal);
             let toDate = new Date(toDateVal);
 
-            let formattedFromDate = new Date(fromDate.setDate(fromDate.getDate() + 1)).toISOString().slice(0, 10);
-            let formattedToDate = new Date(toDate.setDate(toDate.getDate() + 1)).toISOString().slice(0, 10);
+            let formattedFromDate_ = new Date(fromDate.setDate(fromDate.getDate() + 1)).toISOString().slice(0, 10);
+            let formattedToDate_ = new Date(toDate.setDate(toDate.getDate() + 1)).toISOString().slice(0, 10);
+
+            let formattedFromDate = fromDate.toISOString().slice(0, 10);
+            let formattedToDate = toDate.toISOString().slice(0, 10);
 
             console.log("chartType:"+chartType);
+            console.log("formattedFromDate:"+formattedFromDate_);
+            console.log("formattedToDate:"+formattedToDate_);
+
             console.log("formattedFromDate:"+formattedFromDate);
             console.log("formattedToDate:"+formattedToDate);
 
