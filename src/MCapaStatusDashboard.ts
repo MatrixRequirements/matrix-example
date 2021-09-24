@@ -355,8 +355,14 @@ namespace MCapaStatusDashboard {
             // let formattedFromDate_ = new Date(fromDate.setDate(fromDate.getDate() + 1)).toISOString().slice(0, 10);
             // let formattedToDate_ = new Date(toDate.setDate(toDate.getDate() + 1)).toISOString().slice(0, 10);
 
-            let formattedFromDate = new Date(fromDateVal).toISOString().slice(0, 10);
-            let formattedToDate = new Date(toDateVal).toISOString().slice(0, 10);
+            // let formattedFromDate = new Date(fromDateVal).toISOString().slice(0, 10);
+            // let formattedToDate = new Date(toDateVal).toISOString().slice(0, 10);
+
+            let formattedFromDate = new Date(fromDateVal);
+            let formattedToDate = new Date(toDateVal);
+
+            let formattedFromDate_ = new Date(fromDateVal).toISOString();
+            let formattedToDate_ = new Date(toDateVal).toISOString();
 
             console.log("chartType:"+chartType);
 
@@ -366,12 +372,11 @@ namespace MCapaStatusDashboard {
             // console.log("fromDate:"+fromDate);
             // console.log("toDate:"+toDate);
 
-            // console.log("formattedFromDate_:"+formattedFromDate_);
-            // console.log("formattedToDate_:"+formattedToDate_);
-
             console.log("formattedFromDate:"+formattedFromDate);
             console.log("formattedToDate:"+formattedToDate);
 
+            console.log("formattedFromDate_:"+formattedFromDate_);
+            console.log("formattedToDate_:"+formattedToDate_);
         }
 
         renderByDeptChart(departments,deptWiseData){
