@@ -338,7 +338,7 @@ namespace MCapaStatusDashboard {
                 let fromDateSelected = fromDate.data("DateTimePicker").date();
                 let toDateSelected = toDate.data("DateTimePicker").date();
                 
-                let byCategoryLabelData = this.ByCategoryLabelDetails
+                let byCategoryLabelData = that.ByCategoryLabelDetails
                 .find(({ category }) => category === that.currentCat);
 
                 switch (dateFilterId) {
