@@ -589,7 +589,7 @@ namespace MCapaStatusDashboard {
             let toDate = new Date(toDateVal);
 
             let closedItemsData = [];
-            let closureTimeData = [];
+            let closureTimeData: any[] = [this.currentCat + ' closure time(in days)'];
 
             byCategoryLabelData.itemCurrentStateDetails.forEach(
                 (itemCurrentStateData) => {
