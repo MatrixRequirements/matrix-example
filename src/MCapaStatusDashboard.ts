@@ -1140,6 +1140,9 @@ namespace MCapaStatusDashboard {
 
                         if(stateIndex == initialStateIndex){
                             initalStateData.push(label);
+                            initalStateData[0].set.sort((a, b) => a.version - b.version);
+                            let intiatedDate = new Date(initalStateData[0].set[0].dateIso);
+                            itemCurrentStateData.InitiatedDate = intiatedDate;
                         }
 
                         if(stateIndex == closedStateIndex){
