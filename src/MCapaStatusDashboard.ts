@@ -93,7 +93,6 @@ namespace MCapaStatusDashboard {
         enableDeptDateFilter: boolean = false;
         enableCatDateFilter: boolean = false;
         enableStatusDateFilter: boolean = false;
-        enableAvgDateFilter: boolean = false;
         enableClosureDateFilter: boolean = false;
         enableTrackerDateFilter: boolean = false;
 
@@ -123,7 +122,6 @@ namespace MCapaStatusDashboard {
             that.initiateDateFilter("dept");
             that.initiateDateFilter("cat");
             that.initiateDateFilter("status");
-            that.initiateDateFilter("avg");
             that.initiateDateFilter("closure");
             that.initiateDateFilter("tracker");
            
@@ -268,10 +266,6 @@ namespace MCapaStatusDashboard {
                         that.enableStatusDateFilter = !that.enableStatusDateFilter;
                         enableDateFilter = that.enableStatusDateFilter;
                         break;
-                    case 'avg':
-                        that.enableAvgDateFilter = !that.enableAvgDateFilter;
-                        enableDateFilter = that.enableAvgDateFilter;
-                        break;
                     case 'closure':
                         that.enableClosureDateFilter = !that.enableClosureDateFilter;
                         enableDateFilter = that.enableClosureDateFilter;
@@ -280,12 +274,34 @@ namespace MCapaStatusDashboard {
                         that.enableTrackerDateFilter = !that.enableTrackerDateFilter;
                         enableDateFilter = that.enableTrackerDateFilter;
                         break;    
-                };
+                };     
 
                 if(enableDateFilter){
                     $("#"+dateFilterId+"-date-filter").show();
                 }else{
                     $("#"+dateFilterId+"-date-filter").hide();
+
+                    let byCategoryLabelData = that.ByCategoryLabelDetails
+                    .find(({ category }) => category === that.currentCat);
+
+                    switch (dateFilterId) {
+                        case 'dept':
+                            that.renderByDeptChart(byCategoryLabelData.displayDepartments,byCategoryLabelData.deptWiseData);
+                            break;
+                        case 'cat':
+                            that.renderByCatChart(byCategoryLabelData.displayCategories,byCategoryLabelData.categoryWiseData);
+                            break;
+                        case 'status':
+                            that.renderByStatusChart(byCategoryLabelData.statusWiseData,byCategoryLabelData.statusWiseLegendColors);
+                            break;
+                        case 'closure':
+                            that.renderClosureTimeChart(byCategoryLabelData.closedItemsData,byCategoryLabelData.closureTimeData);
+                            break; 
+                        case 'tracker':
+                            that.renderTrackerChart(byCategoryLabelData.trackerStates,byCategoryLabelData.stateTrackerData,byCategoryLabelData.stateTrackerLegendColors);
+                            break;   
+
+                   }
                 }
             });
 
@@ -321,22 +337,54 @@ namespace MCapaStatusDashboard {
 
                 let fromDateSelected = fromDate.data("DateTimePicker").date();
                 let toDateSelected = toDate.data("DateTimePicker").date();
+                
+                let byCategoryLabelData = this.ByCategoryLabelDetails
+                .find(({ category }) => category === that.currentCat);
 
-                that.renderChartByDateRanges(dateFilterId,fromDateSelected, toDateSelected);
+                switch (dateFilterId) {
+                    case 'dept':
+                        that.renderDeptChartByDateRanges(fromDateSelected, toDateSelected,byCategoryLabelData);
+                        break;
+                    case 'cat':
+                        that.renderCatChartByDateRanges(fromDateSelected, toDateSelected,byCategoryLabelData);
+                        break;
+                    case 'status':
+                        that.renderStatusChartByDateRanges(fromDateSelected, toDateSelected,byCategoryLabelData);
+                        break;
+                    case 'closure':
+                        that.renderClosureTimeChartByDateRanges(fromDateSelected, toDateSelected,byCategoryLabelData);
+                        break; 
+                    case 'tracker':
+                        that.renderTrackerChartByDateRanges(fromDateSelected, toDateSelected,byCategoryLabelData);
+                        break;    
+                };
             });
 
         }
 
-        renderChartByDateRanges(chartType: string, fromDateVal: any, toDateVal: any) {
+
+        renderDeptChartByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData) {
 
             let fromDate = new Date(fromDateVal);
             let toDate = new Date(toDateVal);
 
-            console.log("chartType:"+chartType);
+            let deptWiseInitials = Array(byCategoryLabelData.departments.length).fill(0);
+            let deptWiseData =  [ this.currentCat + ' count by department', ...deptWiseInitials];
 
-            console.log("fromDate:"+fromDate);
-            console.log("toDate:"+toDate);
+            byCategoryLabelData.itemCurrentStateDetails.forEach(
+                (itemCurrentStateData) => {
+
+                    if(itemCurrentStateData.InitiatedDate && 
+                       (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
+
+                        let deptIndex = byCategoryLabelData.displayDepartments.findIndex(dept => dept === itemCurrentStateData.department);
+                        deptWiseData[deptIndex + 1] += 1;
+                    }
+            });
+
+            this.renderByDeptChart(byCategoryLabelData.displayDepartments,deptWiseData);
         }
+
 
         renderByDeptChart(departments,deptWiseData){
             let that = this;
@@ -376,6 +424,28 @@ namespace MCapaStatusDashboard {
             });
         }
 
+        renderCatChartByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            let catWiseInitials = Array(byCategoryLabelData.categories.length).fill(0);
+            let catWiseData =  [ this.currentCat + ' count by category', ...catWiseInitials];
+
+            byCategoryLabelData.itemCurrentStateDetails.forEach(
+                (itemCurrentStateData) => {
+
+                    if(itemCurrentStateData.InitiatedDate && 
+                       (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
+
+                        let catIndex = byCategoryLabelData.displayCategories.findIndex(dept => dept === itemCurrentStateData.category);
+                        catWiseData[catIndex + 1] += 1;
+                    }
+            });
+
+            this.renderByDeptChart(byCategoryLabelData.displayCategories,catWiseData);
+        }
+
         renderByCatChart(categories,categoryWiseData){
             let that = this;
             //prepare template
@@ -412,6 +482,33 @@ namespace MCapaStatusDashboard {
            $("#CatWiseoverviewChart svg").click(function () {
                 that.filterByLabel({ type: "" })
            });
+       }
+
+       renderStatusChartByDateRanges(fromDateVal: any, toDateVal: any,byCategoryLabelData: ByCategoryLabelData) {
+
+           let fromDate = new Date(fromDateVal);
+           let toDate = new Date(toDateVal);
+
+           let statusWiseData: any[] = [
+                ['Initiated', 0],
+                ['Approved', 0],
+                ['RC Approved', 0],
+                ['WFEC', 0],
+                ['Closed', 0]
+            ];
+
+            byCategoryLabelData.itemCurrentStateDetails.forEach(
+                (itemCurrentStateData) => {
+
+                    if(itemCurrentStateData.InitiatedDate && 
+                       (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
+
+                        let stateIndex = byCategoryLabelData.stateDesc.findIndex(state => state === itemCurrentStateData.currentState);
+                        statusWiseData[stateIndex][1] += 1;
+                    }
+            });
+
+            this.renderByStatusChart(statusWiseData, byCategoryLabelData.statusWiseLegendColors);
        }
 
        renderByStatusChart(statusWiseData,legendColors){
@@ -486,6 +583,28 @@ namespace MCapaStatusDashboard {
             //this.charts.push(renderedChart);
         }
 
+        renderClosureTimeChartByDateRanges(fromDateVal: any, toDateVal: any,byCategoryLabelData: ByCategoryLabelData) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            let closedItemsData = [];
+            let closureTimeData = [];
+
+            byCategoryLabelData.itemCurrentStateDetails.forEach(
+                (itemCurrentStateData) => {
+
+                    if(itemCurrentStateData.ClosedDate && 
+                       (itemCurrentStateData.ClosedDate >= fromDate && itemCurrentStateData.ClosedDate <= toDate)){    
+                        closedItemsData.push(itemCurrentStateData.id);
+                        closureTimeData.push(itemCurrentStateData.openToCloseDays) 
+                    }
+            });
+
+            this.renderClosureTimeChart(closedItemsData,closureTimeData);
+        }
+ 
+
         renderClosureTimeChart(closedItemsData,closureTimeData){
             let that = this;
             //prepare template
@@ -524,7 +643,50 @@ namespace MCapaStatusDashboard {
            });
        }
 
-        renderTrackerChart(trackerStates,stateTrackerData,legendColors){
+       renderTrackerChartByDateRanges(fromDateVal: any, toDateVal: any,byCategoryLabelData: ByCategoryLabelData) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            let stateTrackerData : any[]= [
+                ['x'],
+                ['Initiated'],
+                ['Approved'],
+                ['RC Approved'],
+                ['WFEC']
+            ];
+
+            byCategoryLabelData.itemCurrentStateDetails.forEach(
+                (itemCurrentStateData) => {
+
+                    if(itemCurrentStateData.InitiatedDate && 
+                       (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
+
+                        stateTrackerData[0].push(itemCurrentStateData.id);
+
+                        byCategoryLabelData.trackerStates.forEach(
+                            (trackState, stateIndex) => {
+
+                                let stateDays = 0;
+
+                                for (let i = 0; i <= itemCurrentStateData.itemStateDaysCountData.length - 1; i++) {
+                                    if(itemCurrentStateData.itemStateDaysCountData[i].state == trackState){
+                                        stateDays = itemCurrentStateData.itemStateDaysCountData[i].days;
+                                        break;
+                                    }
+                                }
+
+                                stateTrackerData[stateIndex +1].push(stateDays);
+                        });
+
+                    }
+            });
+
+            this.renderTrackerChart(byCategoryLabelData.trackerStates,stateTrackerData,byCategoryLabelData.stateTrackerLegendColors);
+
+       }
+
+       renderTrackerChart(trackerStates,stateTrackerData,legendColors){
             //prepare template
             let trackerChartparams: c3.ChartConfiguration = {
                 bindto: '#CapaTrackerGraph',
@@ -574,39 +736,6 @@ namespace MCapaStatusDashboard {
                 $("#CSOTable tbody tr." + filterDataClass).show();
             }
         }
-
-        // renderTable(itemCurrentStateDetails: ItemCurrentStateData[]){
-
-        //     let table = $("#MCSOtable");
-        //     $(".addedItem", table).remove();
-
-        //     itemCurrentStateDetails.forEach(
-        //         (itemData) => {
-        //             let clonedTemplate = $("#csoRow", this._root).clone();
-        //             //let stateClass = itemData.currentState;
-        //             clonedTemplate.removeClass("hidden");
-        //             let classAttr = "addedItem" 
-        //                             + " " + itemData.id 
-        //                             + " " + itemData.department 
-        //                             + " " + itemData.category 
-        //                             + " " + itemData.currentState;
-        //             clonedTemplate.attr("class", classAttr);
-        //             $("#title", clonedTemplate).text(itemData.id + "!");
-        //             $("#title", clonedTemplate).data("ref", itemData.id + "!");
-        //             $("#department", clonedTemplate).text(itemData.department);
-        //             $("#category", clonedTemplate).text(itemData.category);
-        //             $("#currentstate", clonedTemplate).text(itemData.currentState);
-        //             $("#closureTime", clonedTemplate).text(itemData.openToCloseDays);
-        //             clonedTemplate.appendTo($("#MCSOtable tbody", this._root));
-        //         }
-        //     );
-
-
-        //     $("table#MCSOtable").highlightReferences();
-        //     $("table#MCSOtable").tablesorter();
-
-        //     //this.filterByLabel({ type: "" });
-        // }
 
         renderTable(itemCurrentStateDetails: ItemCurrentStateData[]) {
 
@@ -947,8 +1076,6 @@ namespace MCapaStatusDashboard {
 
                     let stateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === label.label);
 
-
-
                     if(stateIndex > -1){
                         //check for current state
                         if((label.reset.length !== label.set.length) && itemCurrentSateIndex < 0){
@@ -1250,20 +1377,10 @@ namespace MCapaStatusDashboard {
                         <div class="panel-heading">
                             <h3 class="panel-title" id="AvgTimeWiseChartTitle">
                             Average time state wise overview
-                            <i id="avg-date-filter-icon" class="far fa-calendar-alt" aria-hidden="true" style="padding-left:12px;cursor:pointer" data-original-title="Date Filter"> </i>
                             </h3>
                         </div>
                         <div class="panel-body">
                             <div class='copyTitle'> </div>
-                            <div id="avg-date-filter" class="baseControl dateFilter">
-                                <p>
-                                    <span class="">From</span>
-                                    <input id="avg-fromdate" type='text' class='date-filter-form-control filterDates'>
-                                    <span class="">To</span>
-                                    <input id="avg-todate" type='text' class='date-filter-form-control filterDates'>
-                                    <button id="avg-gobutton" type="button" class="date-filter-btn btn-success">Go</button>
-                                </p>
-                            </div>
                             <div id="AvgTimeWiseoverviewChart" class="chart" ></div>
                         </div>
                     </div>
