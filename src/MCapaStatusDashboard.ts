@@ -438,12 +438,12 @@ namespace MCapaStatusDashboard {
                     if(itemCurrentStateData.InitiatedDate && 
                        (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
 
-                        let catIndex = byCategoryLabelData.displayCategories.findIndex(dept => dept === itemCurrentStateData.category);
+                        let catIndex = byCategoryLabelData.displayCategories.findIndex(cat => cat === itemCurrentStateData.category);
                         catWiseData[catIndex + 1] += 1;
                     }
             });
 
-            this.renderByDeptChart(byCategoryLabelData.displayCategories,catWiseData);
+            this.renderByCatChart(byCategoryLabelData.displayCategories,catWiseData);
         }
 
         renderByCatChart(categories,categoryWiseData){
