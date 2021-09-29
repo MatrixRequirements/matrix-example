@@ -1032,6 +1032,7 @@ namespace MCapaStatusDashboard {
             this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData,ByCategoryLabelData.stateTrackerLegendColors);
             this.renderClosureTimeChart(ByCategoryLabelData.closedItemsData,ByCategoryLabelData.closureTimeData);
             this.renderTable(ByCategoryLabelData.itemCurrentStateDetails);
+            console.log("finished rendering");
         }
 
         getCurrentStateSetDate(labelData: XRLabelChange): Date {
@@ -1235,6 +1236,7 @@ namespace MCapaStatusDashboard {
                             for (const ByCategoryData of this.ByCategoryLabelDetails) {
                                 if (itemCategory == ByCategoryData.category) {
                                     let ByCategoryLabelData = ByCategoryData;
+                                    console.log("updating for item:"+itemCurrentStateData.id);
                                     ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
                                     break;
                                 }
