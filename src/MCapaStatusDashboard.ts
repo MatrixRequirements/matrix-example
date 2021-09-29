@@ -1016,7 +1016,7 @@ namespace MCapaStatusDashboard {
             return currentStateSetDate;
         }
 
-        processLabelsData(labels: XRLabelEntry[]){
+        async processLabelsData(labels: XRLabelEntry[]){
 
             let capaCategories = ['CA','PA'];
             for (const item of labels) {
@@ -1201,7 +1201,22 @@ namespace MCapaStatusDashboard {
                     }
                 }
 
-                ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
+                if(itemCurrentStateData.InitiatedDate == null){
+                    Matrix.Labels.getItemNeedles(itemCurrentStateData.id).then((result) => {
+                        if(result && result.length > 0){
+                            let itemCreationDate = result[0].creationDate;
+                            itemCurrentStateData.InitiatedDate = new Date(itemCreationDate);
+                        }
+                    });
+                    // .then(() => {
+                    //   //error handling
+                    // });
+
+                    await new Promise(r => setTimeout(r, 300));
+                    ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
+                }else{
+                    ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
+                }
 
             }
 
