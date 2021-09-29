@@ -1212,7 +1212,7 @@ namespace MCapaStatusDashboard {
                     //   //error handling
                     // });
 
-                    await new Promise(r => setTimeout(r, 300));
+                    //await new Promise(r => setTimeout(r, 300));
                     console.log("with await for item:"+itemCurrentStateData.id);
                     //ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
                 }else{
