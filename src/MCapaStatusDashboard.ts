@@ -135,7 +135,7 @@ namespace MCapaStatusDashboard {
                 that.processLabelsData(result);
                 //that.renderCategoryWiseData("");
 
-                setTimeout(o => that.renderCategoryWiseData(""), 5);
+                setTimeout(o => that.renderCategoryWiseData(""), 300);
                 
             }).then(() => {
                 //Let's remove the spinning wait
