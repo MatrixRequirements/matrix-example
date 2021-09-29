@@ -1201,22 +1201,24 @@ namespace MCapaStatusDashboard {
                     }
                 }
 
-                if(itemCurrentStateData.InitiatedDate == null){
-                    Matrix.Labels.getItemNeedles(itemCurrentStateData.id).then((result) => {
-                        if(result && result.length > 0){
-                            let itemCreationDate = result[0].creationDate;
-                            itemCurrentStateData.InitiatedDate = new Date(itemCreationDate);
-                        }
-                    });
-                    // .then(() => {
-                    //   //error handling
-                    // });
+                // if(itemCurrentStateData.InitiatedDate == null){
+                //     Matrix.Labels.getItemNeedles(itemCurrentStateData.id).then((result) => {
+                //         if(result && result.length > 0){
+                //             let itemCreationDate = result[0].creationDate;
+                //             itemCurrentStateData.InitiatedDate = new Date(itemCreationDate);
+                //         }
+                //     });
+                //     // .then(() => {
+                //     //   //error handling
+                //     // });
 
-                    await new Promise(r => setTimeout(r, 300));
-                    ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
-                }else{
-                    ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
-                }
+                //     await new Promise(r => setTimeout(r, 300));
+                //     ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
+                // }else{
+                //     ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
+                // }
+
+                ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
 
             }
 
