@@ -1202,21 +1202,21 @@ namespace MCapaStatusDashboard {
                 }
 
                 if(itemCurrentStateData.InitiatedDate == null){
-                    Matrix.Labels.getItemNeedles(itemCurrentStateData.id).then((result) => {
-                        if(result && result.length > 0){
-                            let itemCreationDate = result[0].creationDate;
-                            itemCurrentStateData.InitiatedDate = new Date(itemCreationDate);
-                        }
-                    });
+                    // Matrix.Labels.getItemNeedles(itemCurrentStateData.id).then((result) => {
+                    //     if(result && result.length > 0){
+                    //         let itemCreationDate = result[0].creationDate;
+                    //         itemCurrentStateData.InitiatedDate = new Date(itemCreationDate);
+                    //     }
+                    // });
                     // .then(() => {
                     //   //error handling
                     // });
 
                     await new Promise(r => setTimeout(r, 300));
-                    console.log("with await");
-                    ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
+                    console.log("with await for item:"+itemCurrentStateData.id);
+                    //ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
                 }else{
-                    console.log("normal");
+                    console.log("normal for item:"+itemCurrentStateData.id);
                     ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
                 }
 
