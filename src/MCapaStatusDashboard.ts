@@ -1225,6 +1225,13 @@ namespace MCapaStatusDashboard {
                         ByCategoryLabelData.closedItemsData.push(item.itemRef);
                         ByCategoryLabelData.closureTimeData.push(daystoCloseItem);
                     }
+
+                    if(closeStateData.length > 0){
+                      
+                        closeStateData[0].set.sort((a, b) => b.version - a.version);
+                        const colosedDate = new Date(closeStateData[0].set[0].dateIso);
+                        itemCurrentStateData.ClosedDate = colosedDate;
+                    }
                 }
 
                 if(itemCurrentStateData.InitiatedDate == null){
@@ -1233,14 +1240,33 @@ namespace MCapaStatusDashboard {
                             let itemCreationDate = result[0].creationDate;
                             itemCurrentStateData.InitiatedDate = new Date(itemCreationDate);
                             let itemCategory: string = itemCurrentStateData.id.substring(0, itemCurrentStateData.id.indexOf('-'));
+                            let ByCategoryLabelData;
                             for (const ByCategoryData of this.ByCategoryLabelDetails) {
                                 if (itemCategory == ByCategoryData.category) {
-                                    let ByCategoryLabelData = ByCategoryData;
-                                    console.log("updating for item:"+itemCurrentStateData.id);
-                                    ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
+                                    ByCategoryLabelData = ByCategoryData;
                                     break;
                                 }
                             }
+
+                            if(itemCurrentStateData.ClosedDate){
+
+                                let time_difference = itemCurrentStateData.ClosedDate.getTime() - itemCurrentStateData.InitiatedDate.getTime();
+
+                                //calculate days difference by dividing total milliseconds in a day  
+                                let days_difference = time_difference / (1000 * 60 * 60 * 24);
+
+                                let daystoCloseItem = Math.floor(days_difference);
+
+                                //console.log("Item:"+item.itemRef+",Days to close:"+daystoCloseItem);
+
+                                itemCurrentStateData.openToCloseDays = daystoCloseItem;
+
+                                ByCategoryLabelData.closedItemsData.push(item.itemRef);
+                                ByCategoryLabelData.closureTimeData.push(daystoCloseItem);
+
+                            }
+                            console.log("updating for item:"+itemCurrentStateData.id);
+                            ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
                         }
                     });
                     // .then(() => {
