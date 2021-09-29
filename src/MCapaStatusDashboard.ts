@@ -988,17 +988,17 @@ namespace MCapaStatusDashboard {
 
         }
 
-        generateAvgData(){
-             for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
-                ByCategoryLabelData.statusWiseTotalDaysData.forEach((element,index) => {
-                    let avgData = 0;
-                    if(element[1] !== 0){
-                        avgData = element[0]/element[1]
-                    }
-                    ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData.toFixed(2);
-                });
-            }
-        }
+        // generateAvgData(){
+        //      for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+        //         ByCategoryLabelData.statusWiseTotalDaysData.forEach((element,index) => {
+        //             let avgData = 0;
+        //             if(element[1] !== 0){
+        //                 avgData = element[0]/element[1]
+        //             }
+        //             ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData.toFixed(2);
+        //         });
+        //     }
+        // }
 
         renderCategoryWiseData(cat: string) {
 
@@ -1014,6 +1014,16 @@ namespace MCapaStatusDashboard {
 
             let ByCategoryLabelData = this.ByCategoryLabelDetails
                 .find(({ category }) => category === this.currentCat);
+
+            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+                ByCategoryLabelData.statusWiseTotalDaysData.forEach((element,index) => {
+                    let avgData = 0;
+                    if(element[1] !== 0){
+                        avgData = element[0]/element[1]
+                    }
+                    ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData.toFixed(2);
+                });
+            }
 
             this.renderByDeptChart(ByCategoryLabelData.displayDepartments,ByCategoryLabelData.deptWiseData);
             this.renderByCatChart(ByCategoryLabelData.displayCategories,ByCategoryLabelData.categoryWiseData);
