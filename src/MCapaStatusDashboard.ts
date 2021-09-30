@@ -34,7 +34,7 @@ namespace MCapaStatusDashboard {
         }
 
         getPluginVersion(): string {
-            return "1.2.0";
+            return "1.3.0";
         }
     }
 
@@ -133,10 +133,7 @@ namespace MCapaStatusDashboard {
                 $(".spinningWait", that._root).hide();
                 //$("#MCSONoItems", that._root).hide();
                 that.processLabelsData(result);
-                //that.renderCategoryWiseData("");
-
-                setTimeout(o => that.renderCategoryWiseData(""), 300);
-                
+                that.renderCategoryWiseData("");
             }).then(() => {
                 //Let's remove the spinning wait
                 $(".spinningWait",that._root).hide();
@@ -988,18 +985,6 @@ namespace MCapaStatusDashboard {
 
         }
 
-        // generateAvgData(){
-        //      for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
-        //         ByCategoryLabelData.statusWiseTotalDaysData.forEach((element,index) => {
-        //             let avgData = 0;
-        //             if(element[1] !== 0){
-        //                 avgData = element[0]/element[1]
-        //             }
-        //             ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData.toFixed(2);
-        //         });
-        //     }
-        // }
-
         renderCategoryWiseData(cat: string) {
 
             if (cat == undefined) {
@@ -1015,16 +1000,6 @@ namespace MCapaStatusDashboard {
             let ByCategoryLabelData = this.ByCategoryLabelDetails
                 .find(({ category }) => category === this.currentCat);
 
-            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
-                ByCategoryLabelData.statusWiseTotalDaysData.forEach((element,index) => {
-                    let avgData = 0;
-                    if(element[1] !== 0){
-                        avgData = element[0]/element[1]
-                    }
-                    ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData.toFixed(2);
-                });
-            }
-
             this.renderByDeptChart(ByCategoryLabelData.displayDepartments,ByCategoryLabelData.deptWiseData);
             this.renderByCatChart(ByCategoryLabelData.displayCategories,ByCategoryLabelData.categoryWiseData);
             this.renderByStatusChart(ByCategoryLabelData.statusWiseData,ByCategoryLabelData.statusWiseLegendColors);
@@ -1032,7 +1007,6 @@ namespace MCapaStatusDashboard {
             this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData,ByCategoryLabelData.stateTrackerLegendColors);
             this.renderClosureTimeChart(ByCategoryLabelData.closedItemsData,ByCategoryLabelData.closureTimeData);
             this.renderTable(ByCategoryLabelData.itemCurrentStateDetails);
-            console.log("finished rendering");
         }
 
         getCurrentStateSetDate(labelData: XRLabelChange): Date {
@@ -1042,7 +1016,7 @@ namespace MCapaStatusDashboard {
             return currentStateSetDate;
         }
 
-        async processLabelsData(labels: XRLabelEntry[]){
+        processLabelsData(labels: XRLabelEntry[]){
 
             let capaCategories = ['CA','PA'];
             for (const item of labels) {
@@ -1225,75 +1199,21 @@ namespace MCapaStatusDashboard {
                         ByCategoryLabelData.closedItemsData.push(item.itemRef);
                         ByCategoryLabelData.closureTimeData.push(daystoCloseItem);
                     }
-
-                    if(closeStateData.length > 0){
-                      
-                        closeStateData[0].set.sort((a, b) => b.version - a.version);
-                        const colosedDate = new Date(closeStateData[0].set[0].dateIso);
-                        itemCurrentStateData.ClosedDate = colosedDate;
-                    }
                 }
 
-                if(itemCurrentStateData.InitiatedDate == null){
-                    Matrix.Labels.getItemNeedles(itemCurrentStateData.id).then((result) => {
-                        if(result && result.length > 0){
-                            let itemCreationDate = result[0].creationDate;
-                            itemCurrentStateData.InitiatedDate = new Date(itemCreationDate);
-                            let itemCategory: string = itemCurrentStateData.id.substring(0, itemCurrentStateData.id.indexOf('-'));
-                            let ByCategoryLabelData;
-                            for (const ByCategoryData of this.ByCategoryLabelDetails) {
-                                if (itemCategory == ByCategoryData.category) {
-                                    ByCategoryLabelData = ByCategoryData;
-                                    break;
-                                }
-                            }
-
-                            if(itemCurrentStateData.ClosedDate){
-
-                                let time_difference = itemCurrentStateData.ClosedDate.getTime() - itemCurrentStateData.InitiatedDate.getTime();
-
-                                //calculate days difference by dividing total milliseconds in a day  
-                                let days_difference = time_difference / (1000 * 60 * 60 * 24);
-
-                                let daystoCloseItem = Math.floor(days_difference);
-
-                                //console.log("Item:"+item.itemRef+",Days to close:"+daystoCloseItem);
-
-                                itemCurrentStateData.openToCloseDays = daystoCloseItem;
-
-                                ByCategoryLabelData.closedItemsData.push(item.itemRef);
-                                ByCategoryLabelData.closureTimeData.push(daystoCloseItem);
-
-                            }
-                            console.log("updating for item:"+itemCurrentStateData.id);
-                            ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
-                        }
-                    });
-                    // .then(() => {
-                    //   //error handling
-                    // });
-
-                    //await new Promise(r => setTimeout(r, 300));
-                    //console.log("with await for item:"+itemCurrentStateData.id);
-                    // ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
-                }else{
-                    console.log("normal for item:"+itemCurrentStateData.id);
-                    ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
-                }
-
-                //ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
+                ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
 
             }
 
-            // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
-            //     ByCategoryLabelData.statusWiseTotalDaysData.forEach((element,index) => {
-            //         let avgData = 0;
-            //         if(element[1] !== 0){
-            //             avgData = element[0]/element[1]
-            //         }
-            //         ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData.toFixed(2);
-            //     });
-            // }
+            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+                ByCategoryLabelData.statusWiseTotalDaysData.forEach((element,index) => {
+                    let avgData = 0;
+                    if(element[1] !== 0){
+                        avgData = element[0]/element[1]
+                    }
+                    ByCategoryLabelData.statusWiseAvgData[index + 1] = avgData.toFixed(2);
+                });
+            }
 
             // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
             //     console.log("category:"+ByCategoryLabelData.category);

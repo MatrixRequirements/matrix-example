@@ -14,13 +14,5 @@ namespace Matrix {
                     .catch((error) => reject(error));
             });
         }
-
-        export function getItemNeedles(itemId: string): Promise<XRTrimNeedleItem[]> {
-            return new Promise<XRTrimNeedleItem[]>((resolve, reject) => {
-                Matrix.REST.projectGETRequest("/needle?search=mrql:id="+itemId)
-                    .then((data: XRTrimNeedle) => resolve(data.needles as XRTrimNeedleItem[]))
-                    .catch((error) => reject(error));
-            });
-        }
     }
 }
