@@ -1298,7 +1298,7 @@ namespace MCapaStatusDashboard {
 
         .tableDateFilter{
             display:flex;
-            margin-left: 65px;
+            margin-left: 350px;
         }
 
         .filterDates {
