@@ -95,6 +95,7 @@ namespace MCapaStatusDashboard {
         enableStatusDateFilter: boolean = false;
         enableClosureDateFilter: boolean = false;
         enableTrackerDateFilter: boolean = false;
+        enableCstDateFilter: boolean = false;
 
 
         destroy(): void { }
@@ -124,6 +125,7 @@ namespace MCapaStatusDashboard {
             that.initiateDateFilter("status");
             that.initiateDateFilter("closure");
             that.initiateDateFilter("tracker");
+            that.initiateDateFilter("cst");
            
 
             setTimeout(o => that.installCopyButtons("CAPA Status Overview"), 10);
@@ -273,7 +275,11 @@ namespace MCapaStatusDashboard {
                     case 'tracker':
                         that.enableTrackerDateFilter = !that.enableTrackerDateFilter;
                         enableDateFilter = that.enableTrackerDateFilter;
-                        break;    
+                        break; 
+                    case 'cst':
+                        that.enableCstDateFilter = !that.enableCstDateFilter;
+                        enableDateFilter = that.enableCstDateFilter;
+                        break;        
                 };     
 
                 if(enableDateFilter){
@@ -299,8 +305,10 @@ namespace MCapaStatusDashboard {
                             break; 
                         case 'tracker':
                             that.renderTrackerChart(byCategoryLabelData.trackerStates,byCategoryLabelData.stateTrackerData,byCategoryLabelData.stateTrackerLegendColors);
-                            break;   
-
+                            break; 
+                        case 'cst':
+                            that.renderTable(byCategoryLabelData.itemCurrentStateDetails);
+                            break;
                    }
                 }
             });
@@ -343,25 +351,27 @@ namespace MCapaStatusDashboard {
 
                 switch (dateFilterId) {
                     case 'dept':
-                        that.renderDeptChartByDateRanges(fromDateSelected, toDateSelected,byCategoryLabelData);
+                        that.renderDeptChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
                         break;
                     case 'cat':
-                        that.renderCatChartByDateRanges(fromDateSelected, toDateSelected,byCategoryLabelData);
+                        that.renderCatChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
                         break;
                     case 'status':
-                        that.renderStatusChartByDateRanges(fromDateSelected, toDateSelected,byCategoryLabelData);
+                        that.renderStatusChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
                         break;
                     case 'closure':
-                        that.renderClosureTimeChartByDateRanges(fromDateSelected, toDateSelected,byCategoryLabelData);
+                        that.renderClosureTimeChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
                         break; 
                     case 'tracker':
-                        that.renderTrackerChartByDateRanges(fromDateSelected, toDateSelected,byCategoryLabelData);
-                        break;    
+                        that.renderTrackerChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
+                        break; 
+                    case 'cst':
+                        that.renderTableByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
+                        break;           
                 };
             });
 
         }
-
 
         renderDeptChartByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData) {
 
@@ -735,6 +745,31 @@ namespace MCapaStatusDashboard {
                 $("#CSOTable tbody tr").hide();
                 $("#CSOTable tbody tr." + filterDataClass).show();
             }
+        }
+
+        renderTableByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+            let itemCurrentStateDetailsByDateRange: ItemCurrentStateData[] = [];
+
+            byCategoryLabelData.itemCurrentStateDetails.forEach(
+                (itemCurrentStateData) => {
+
+                    if(
+                       (itemCurrentStateData.InitiatedDate && 
+                       (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate))
+                       ||
+                       (itemCurrentStateData.ClosedDate && 
+                        (itemCurrentStateData.ClosedDate >= fromDate && itemCurrentStateData.ClosedDate <= toDate))
+                    )
+                    {
+
+                        itemCurrentStateDetailsByDateRange.push(itemCurrentStateData);
+                    }
+            });
+
+            this.renderTable(itemCurrentStateDetailsByDateRange);
         }
 
         renderTable(itemCurrentStateDetails: ItemCurrentStateData[]) {
@@ -1261,6 +1296,11 @@ namespace MCapaStatusDashboard {
             margin-left: 45px;
         }
 
+        .tableDateFilter{
+            display:flex;
+            margin-left: 65px;
+        }
+
         .filterDates {
             width: 115px;
             margin: 0 6px;
@@ -1446,7 +1486,10 @@ namespace MCapaStatusDashboard {
                 <div class="row" id="CSOTitleForCopy"></div> 
                 <div class="row doNotCopy CSOtable">
                     <div class="col-lg-3 ">
-                        <h3 id="CSOTableHeader">CAPA current status list</h3>
+                        <h3 id="CSOTableHeader">
+                        CAPA current status list
+                        <i id="cst-date-filter-icon" class="far fa-calendar-alt" aria-hidden="true" style="padding-left:12px;cursor:pointer" data-original-title="Date Filter"> </i>
+                        </h3>
                     </div>
                     <div class=" col-lg-7"></div>
                     <div class=" col-lg-2">
@@ -1455,6 +1498,15 @@ namespace MCapaStatusDashboard {
                 </div>
                 <div class="row CSOtable">
                     <div class="col-md-12">
+                        <div id="cst-date-filter" class="baseControl tableDateFilter">
+                            <p>
+                                <span class="">From</span>
+                                <input id="cst-fromdate" type='text' class='date-filter-form-control filterDates'>
+                                <span class="">To</span>
+                                <input id="cst-todate" type='text' class='date-filter-form-control filterDates'>
+                                <button id="cst-gobutton" type="button" class="date-filter-btn btn-success">Go</button>
+                            </p>
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-condensed table-borderless table-hover" id="CSOTable">
                                 <thead>
