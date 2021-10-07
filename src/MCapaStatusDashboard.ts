@@ -149,6 +149,7 @@ namespace MCapaStatusDashboard {
             let savedWidth = 0;
     
             ml.UI.copyBuffer($("#DeptWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#DeptWiseoverviewChart)"), this._root, (copied: JQuery) => {
+                $("#dept-date-filter",copied).remove();
                 let title_ = $("#DeptWiseChartTitle",this._root).text();
                 $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
@@ -163,6 +164,7 @@ namespace MCapaStatusDashboard {
 
 
             ml.UI.copyBuffer($("#CatWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#CatWiseoverviewChart)"), this._root, (copied: JQuery) => {
+                $("#cat-date-filter",copied).remove();
                 let title_ = $("#CatWiseChartTitle",this._root).text();
                 $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
@@ -177,6 +179,7 @@ namespace MCapaStatusDashboard {
 
 
             ml.UI.copyBuffer($("#StatusWiseChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#StatusWiseoverviewChart)"), this._root, (copied: JQuery) => {
+                $("#status-date-filter",copied).remove();
                 let title_ = $("#StatusWiseChartTitle",this._root).text();
                 $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
@@ -204,6 +207,7 @@ namespace MCapaStatusDashboard {
             });
 
             ml.UI.copyBuffer($("#ClosureTimeChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#ClosureTimeoverviewChart)"), this._root, (copied: JQuery) => {
+                $("#closure-date-filter",copied).remove();
                 let title_ = $("#ClosureTimeChartTitle",this._root).text();
                 $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
@@ -218,6 +222,8 @@ namespace MCapaStatusDashboard {
 
 
             ml.UI.copyBuffer($("#CapaTrackerChartTitle",this._root), "copy  to clipboard", $(".panel-body:has(#CapaTrackerChart)"), this._root, (copied: JQuery) => {
+                $("#tracker-date-filter",copied).remove();
+
                 let title_ = $("#CapaTrackerChartTitle",this._root).text();
                 $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
     
@@ -240,7 +246,7 @@ namespace MCapaStatusDashboard {
                 $("#id", copied).each( (i,item)=>{ $(item).text($(item).data("ref") +"!")  } );
     
                 $("#CSOInputFilter",copied).remove();
-                
+
                 $("#cst-date-filter",copied).remove();
 
                 $("#CSOTitleForCopy", copied).html("<div><h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) + "</span> <br/>" + (filter != "" ? "<b>Filter : </b>" + filter + "<br/>" : "") + "</div>");
