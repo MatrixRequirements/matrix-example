@@ -240,7 +240,9 @@ namespace MCapaStatusDashboard {
                 $("#id", copied).each( (i,item)=>{ $(item).text($(item).data("ref") +"!")  } );
     
                 $("#CSOInputFilter",copied).remove();
-    
+                
+                $("#cst-date-filter",copied).remove();
+
                 $("#CSOTitleForCopy", copied).html("<div><h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) + "</span> <br/>" + (filter != "" ? "<b>Filter : </b>" + filter + "<br/>" : "") + "</div>");
             });
 
