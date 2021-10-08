@@ -1,5 +1,5 @@
 {
-  "name": "adminpagepatchcolumns",
+  "name": "example_plugin",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,6 +7,7 @@
     "build": "tsc -b",
     "watch": "tsc -b --watch",
     "pretty": "prettier --write src/",
+    "clean": "rm -rf dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
