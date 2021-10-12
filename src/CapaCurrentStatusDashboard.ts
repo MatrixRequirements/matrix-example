@@ -304,43 +304,84 @@ namespace CapaCurrentStatusDashboard {
                                 <th>Open to Close</th>
                                 </tr>`;
 
-            $("#ccsoTableHeader").append(tableHeader);     
+            $("#ccsoTableHeader").append(tableHeader);   
             
+            //id="ccsoList"
+
             itemCurrentStateDetails.forEach(
                 (itemData) => {
-                    let clonedTemplate = $("#ccsoRow", this._root).clone();
+                    let tableRow = $('<tr id="ccsoRow" />');
                     let stateClass = itemData.currentState;
-                    clonedTemplate.removeClass("hidden");
                     let classAttr = "addedItem" + " " + stateClass;
-                    clonedTemplate.attr("class", classAttr);
-                    $("#title", clonedTemplate).text(itemData.id + "!");
-                    $("#title", clonedTemplate).data("ref", itemData.id + "!");
-
-                    $("#currentstate", clonedTemplate).text(itemData.currentState);
-                    $("#opentoclose", clonedTemplate).text(itemData.openToCloseDays);
+                    tableRow.attr("class", classAttr);
+                    let titleRowData = $("<td/>");
+                    tableRow.append(titleRowData);
+                    titleRowData.text(itemData.id + "!");
+                    titleRowData.data("ref", itemData.id + "!");
 
                     itemData.labels.forEach(
                         (label) => {
-                            switch (label.label) {
-                                case 'OPEN':
-                                    $("#opencontent", clonedTemplate).text(label.days);
-                                    break;
-                                case 'WAIT':
-                                    $("#waitcontent", clonedTemplate).text(label.days);
-                                    break;
-                                case 'CHECKED':
-                                    $("#checkedcontent", clonedTemplate).text(label.days);
-                                    break;
-                                case 'CLOSED':
-                                    $("#closedcontent", clonedTemplate).text(label.days);
-                                    break;
-                            }
+                            let labelRowData = $("<td>"+ label.days +"</td>");
+                            tableRow.append(labelRowData);
                         }
                     );
 
-                    clonedTemplate.appendTo($("#CCSOTable tbody", this._root));
+                    let csRowData = $("<td>"+ itemData.currentState +"</td>");
+                    tableRow.append(csRowData);
+
+                    let ocRowData = $("<td>"+ itemData.openToCloseDays +"</td>");
+                    tableRow.append(ocRowData);
+
+                    $("#ccsoList").append(tableRow);
                 }
             );
+            
+            // itemCurrentStateDetails.forEach(
+            //     (itemData) => {
+            //         //let clonedTemplate = $("#ccsoRow", this._root).clone();
+
+            //         let clonedTemplate = $(`<tr id="ccsoRow" class="hidden">
+            //         <td id="title" ></td>
+            //         <td id="opencontent" ></td>
+            //         <td id="waitcontent" ></td>
+            //         <td id="checkedcontent" ></td>
+            //         <td id="closedcontent" ></td>
+            //         <td id="currentstate" ></td>
+            //         <td id="opentoclose" ></td>
+            //         </tr>`);
+
+            //         let stateClass = itemData.currentState;
+            //         clonedTemplate.removeClass("hidden");
+            //         let classAttr = "addedItem" + " " + stateClass;
+            //         clonedTemplate.attr("class", classAttr);
+            //         $("#title", clonedTemplate).text(itemData.id + "!");
+            //         $("#title", clonedTemplate).data("ref", itemData.id + "!");
+
+            //         $("#currentstate", clonedTemplate).text(itemData.currentState);
+            //         $("#opentoclose", clonedTemplate).text(itemData.openToCloseDays);
+
+            //         itemData.labels.forEach(
+            //             (label) => {
+            //                 switch (label.label) {
+            //                     case 'OPEN':
+            //                         $("#opencontent", clonedTemplate).text(label.days);
+            //                         break;
+            //                     case 'WAIT':
+            //                         $("#waitcontent", clonedTemplate).text(label.days);
+            //                         break;
+            //                     case 'CHECKED':
+            //                         $("#checkedcontent", clonedTemplate).text(label.days);
+            //                         break;
+            //                     case 'CLOSED':
+            //                         $("#closedcontent", clonedTemplate).text(label.days);
+            //                         break;
+            //                 }
+            //             }
+            //         );
+
+            //         clonedTemplate.appendTo($("#CCSOTable tbody", this._root));
+            //     }
+            // );
 
 
             $("table#CCSOTable").highlightReferences();
@@ -543,15 +584,6 @@ namespace CapaCurrentStatusDashboard {
                                 <thead id="ccsoTableHeader">
                                 </thead>
                                 <tbody id="ccsoList">
-                                    <tr id="ccsoRow" class="hidden">
-                                    <td id="title" ></td>
-                                    <td id="opencontent" ></td>
-                                    <td id="waitcontent" ></td>
-                                    <td id="checkedcontent" ></td>
-                                    <td id="closedcontent" ></td>
-                                    <td id="currentstate" ></td>
-                                    <td id="opentoclose" ></td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
