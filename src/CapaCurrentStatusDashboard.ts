@@ -332,7 +332,7 @@ namespace CapaCurrentStatusDashboard {
                     let ocRowData = $("<td>"+ itemData.openToCloseDays +"</td>");
                     tableRow.append(ocRowData);
 
-                    $("#ccsoList").append(tableRow);
+                    $("#ccsoRowList").append(tableRow);
                 }
             );
             
@@ -583,7 +583,7 @@ namespace CapaCurrentStatusDashboard {
                             <table class="table table-condensed table-borderless table-hover" id="CCSOTable">
                                 <thead id="ccsoTableHeader">
                                 </thead>
-                                <tbody id="ccsoList">
+                                <tbody id="ccsoRowList">
                                 </tbody>
                             </table>
                         </div>
