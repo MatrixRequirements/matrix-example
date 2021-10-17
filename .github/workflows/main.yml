@@ -38,8 +38,8 @@ jobs:
 
       - name: Copy the build result
         run: |
-          mkdir -p dist/custom/js
-          mv dist/plugin.js dist/custom/js/${{steps.nameversion.outputs.value}}_${{github.run_number}}.js
+          mkdir -p dist/js
+          mv dist/plugin.js dist/js/${{steps.nameversion.outputs.value}}_${{github.run_number}}.js
 
       - uses: actions/upload-artifact@v2
         with:
