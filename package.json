@@ -1,7 +1,7 @@
 {
-  "name": "adminpagepatchcolumns",
-  "version": "1.0.0",
-  "description": "",
+  "name": "capa-status-dashboard",
+  "version": "1.5.0",
+  "description": "CAPA status dashboard",
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",

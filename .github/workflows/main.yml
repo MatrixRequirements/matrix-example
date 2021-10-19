@@ -30,7 +30,20 @@ jobs:
           npm install
           npm run build
 
+      - name: Extract name and version from package.json
+        uses: sergeysova/jq-action@v2
+        id: nameversion
+        with:  
+          cmd: 'jq ".name + \"-\" + .version" package.json -r'
+
+      - name: Copy the build result
+        run: |
+          mkdir -p dist/js
+          mv dist/plugin.js dist/js/${{steps.nameversion.outputs.value}}_${{github.run_number}}.js
+
       - uses: actions/upload-artifact@v2
         with:
-          name: js_dist
-          path: dist/exampleplugin.js
+          name: ${{steps.nameversion.outputs.value}}_${{github.run_number}}
+          path: |
+            dist
+            !dist/plugin.tsbuildinfo
