@@ -964,17 +964,19 @@ namespace MCapaStatusDashboard {
                  let SateWiseAvgInitials: any[] = [];
                  let statusWiseData: any[] = [];
                  let statusWiseLegendColors: any[];
-                 let stateTrackerData: any[] = [];
+                 let stateTrackerData: any[] = [['x']];
                  let stateTrackerLegendColors: any[];
                  let statusWiseTotalDaysData: any[] = [];
                  let closedItemsData: any[] = [];
                  let itemCurrentStateDetails: ItemCurrentStateData[] = [];
                  let intialState;
                  let closedState;
+
+                let pluginCategoryConfig = this.pluginConfig.categories.filter(category => category.id == cat);
                  
-                // let departments_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
-                departments = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
-                categories = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "CAPA Category")[0].labels;
+                
+                departments = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == pluginCategoryConfig.deptFilterDisplayName)[0].labels;
+                categories = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == pluginCategoryConfig.catFilterDisplayName)[0].labels;
     
                 departments.forEach(dept => {
                     let deptDispName = new LabelTools().getDisplayName(dept);
@@ -989,82 +991,98 @@ namespace MCapaStatusDashboard {
                 deptWiseInitials = Array(departments.length).fill(0);
                 catWiseInitials = Array(categories.length).fill(0);
 
-                let pluginCategoryConfig = this.pluginConfig.categories.filter(category => category.id == cat);
-
                 intialState = pluginCategoryConfig.initialSate;
                 closedState = pluginCategoryConfig.closedState;
 
+                SateWiseAvgInitials = Array(pluginCategoryConfig.states.length).fill(0);
+
                 pluginCategoryConfig.states.forEach(sateConfig => {
+
+                    stateCodes.push(sateConfig.label);
+                    let labelDesc = new LabelTools().getDisplayName(sateConfig.label);
+                    stateDesc.push(labelDesc);
+
+                    if(sateConfig.isTracked == "Y"){
+                        trackerStates.push(labelDesc);
+                        stateTrackerLegendColors.push(sateConfig.legendColor);
+                        stateTrackerData.push(labelDesc);
+                    }
+
+                    statusWiseTotalDaysData.push([0,0]);
+                    statusWiseData.push([labelDesc, 0]);
+
+                    statusWiseLegendColors.push(sateConfig.legendColor);
+
                     
                 });
 
 
-                let states_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == cat)[0].labels;
+                // let states_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == cat)[0].labels;
 
-                if(cat === "CA"){
+                // if(cat === "CA"){
 
-                    //stateCodes = states_.sort();
-                    stateCodes = ["AN1","AN2","AN3","AN4","AN5"];
-                    stateDesc =  ['Initiated','Approved','RC Approved', 'WFEC','Closed'];
-                    trackerStates = ['Initiated','Approved','RC Approved', 'WFEC'];
-                    SateWiseAvgInitials = Array(stateDesc.length).fill(0);
-                    statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0],[0,0]];
-                    intialState = "AN1";
-                    closedState = "AN5";
+                //     //stateCodes = states_.sort();
+                //     stateCodes = ["AN1","AN2","AN3","AN4","AN5"];
+                //     stateDesc =  ['Initiated','Approved','RC Approved', 'WFEC','Closed'];
+                //     trackerStates = ['Initiated','Approved','RC Approved', 'WFEC'];
+                //     SateWiseAvgInitials = Array(stateDesc.length).fill(0);
+                //     statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0],[0,0]];
+                //     intialState = "AN1";
+                //     closedState = "AN5";
 
-                    statusWiseData = [
-                        ['Initiated', 0],
-                        ['Approved', 0],
-                        ['RC Approved', 0],
-                        ['WFEC', 0],
-                        ['Closed', 0]
-                    ];
+                //     statusWiseData = [
+                //         ['Initiated', 0],
+                //         ['Approved', 0],
+                //         ['RC Approved', 0],
+                //         ['WFEC', 0],
+                //         ['Closed', 0]
+                //     ];
 
-                    statusWiseLegendColors = ['#d62728', '#ff7f0e', '#9467bd','#1f77b4', '#2ca02c'];
+                //     statusWiseLegendColors = ['#d62728', '#ff7f0e', '#9467bd','#1f77b4', '#2ca02c'];
 
 
-                    stateTrackerData = [
-                        ['x'],
-                        ['Initiated'],
-                        ['Approved'],
-                        ['RC Approved'],
-                        ['WFEC']
-                    ];
+                //     stateTrackerData = [
+                //         ['x'],
+                //         ['Initiated'],
+                //         ['Approved'],
+                //         ['RC Approved'],
+                //         ['WFEC']
+                //     ];
 
-                    stateTrackerLegendColors = ['#d62728', '#ff7f0e', '#9467bd','#1f77b4'];
+                //     stateTrackerLegendColors = ['#d62728', '#ff7f0e', '#9467bd','#1f77b4'];
 
-                }else{
+                // }else{
 
-                    //stateCodes = states_;
-                    stateCodes = ["PN1","PN2","PN3","PN4","PAC"];
-                    stateDesc =  ['Initiated','Approved','RC Approved', 'WFEC','Closed'];
-                    trackerStates = ['Initiated','Approved','RC Approved', 'WFEC'];
-                    SateWiseAvgInitials = Array(stateDesc.length).fill(0);
-                    statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0],[0,0]];
-                    intialState = "PN1";
-                    closedState = "PAC";
+                //     //stateCodes = states_;
+                //     stateCodes = ["PN1","PN2","PN3","PN4","PAC"];
+                //     stateDesc =  ['Initiated','Approved','RC Approved', 'WFEC','Closed'];
+                //     trackerStates = ['Initiated','Approved','RC Approved', 'WFEC'];
+                //     SateWiseAvgInitials = Array(stateDesc.length).fill(0);
+                //     statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0],[0,0]];
+                //     intialState = "PN1";
+                //     closedState = "PAC";
 
-                    statusWiseData = [
-                        ['Initiated', 0],
-                        ['Approved', 0],
-                        ['RC Approved', 0],
-                        ['WFEC', 0],
-                        ['Closed', 0]
-                    ];
+                //     statusWiseData = [
+                //         ['Initiated', 0],
+                //         ['Approved', 0],
+                //         ['RC Approved', 0],
+                //         ['WFEC', 0],
+                //         ['Closed', 0]
+                //     ];
 
-                    statusWiseLegendColors = ['#d62728', '#ff7f0e', '#9467bd', '#1f77b4', '#2ca02c'];
+                //     statusWiseLegendColors = ['#d62728', '#ff7f0e', '#9467bd', '#1f77b4', '#2ca02c'];
 
-                    stateTrackerData = [
-                        ['x'],
-                        ['Initiated'],
-                        ['Approved'],
-                        ['RC Approved'],
-                        ['WFEC']
-                    ];
+                //     stateTrackerData = [
+                //         ['x'],
+                //         ['Initiated'],
+                //         ['Approved'],
+                //         ['RC Approved'],
+                //         ['WFEC']
+                //     ];
 
-                    stateTrackerLegendColors = ['#d62728', '#ff7f0e', '#9467bd', '#1f77b4'];
+                //     stateTrackerLegendColors = ['#d62728', '#ff7f0e', '#9467bd', '#1f77b4'];
 
-                }
+                // }
 
                 let ByCategoryLabelData: ByCategoryLabelData = {
                     category: cat,
