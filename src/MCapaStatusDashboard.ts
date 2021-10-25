@@ -34,7 +34,7 @@ namespace MCapaStatusDashboard {
         }
 
         getPluginVersion(): string {
-            return "1.5.0";
+            return "1.6.0";
         }
     }
 
@@ -118,6 +118,8 @@ namespace MCapaStatusDashboard {
         enableClosureDateFilter: boolean = false;
         enableTrackerDateFilter: boolean = false;
         enableCstDateFilter: boolean = false;
+
+        //pluginConfig: any = IC.getSettingJSON( "MSCO");
 
         pluginConfig: any = {
             categories: [
