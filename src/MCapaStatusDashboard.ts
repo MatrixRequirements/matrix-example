@@ -100,90 +100,103 @@ namespace MCapaStatusDashboard {
         enableCstDateFilter: boolean = false;
 
 
-
         pluginConfig: any = {
-            "categories": [
-               { 
-                    "id": "CA",
-                    "deptFilterDisplayName": "Department",
-                    "catFilterDisplayName": "CAPA Category",
-                    "initialSate": "AN1",
-                    "closedState": "AN5",
-                    "states" : [
-                        {
-                            "label": "AN1",
-                            "order": 1,
-                            "isTracked": "Y",
-                            "legendColor": "#d62728"
-                        },
-                        {
-                            "label": "AN2",
-                            "order": 2,
-                            "isTracked": "Y",
-                            "legendColor": "#ff7f0e"
-                        },
-                        {
-                            "label": "AN3",
-                            "order": 3,
-                            "isTracked": "Y",
-                            "legendColor": "#9467bd"
-                        },
-                        {
-                            "label": "AN4",
-                            "order": 4,
-                            "isTracked": "Y",
-                            "legendColor": "#1f77b4"
-                        },
-                        {
-                            "label": "AN5",
-                            "order": 5,
-                            "isTracked": "N",
-                            "legendColor": "#2ca02c"
-                        }
-                    ]
-                },
+
+            categories: [
                 { 
-                    "id": "PA",
-                    "deptFilterDisplayName": "Department",
-                    "catFilterDisplayName": "CAPA Category",
-                    "initialSate": "PN1",
-                    "closedState": "PAC",
-                    "states" : [
-                        {
-                            "label": "PN1",
-                            "order": 1,
-                            "isTracked": "Y",
-                            "legendColor": "#d62728"
-                        },
-                        {
-                            "label": "PN2",
-                            "order": 2,
-                            "isTracked": "Y",
-                            "legendColor": "#ff7f0e"
-                        },
-                        {
-                            "label": "PN3",
-                            "order": 3,
-                            "isTracked": "Y",
-                            "legendColor": "#9467bd"
-                        },
-                        {
-                            "label": "PN4",
-                            "order": 4,
-                            "isTracked": "Y",
-                            "legendColor": "#1f77b4"
-                        },
-                        {
-                            "label": "PAC",
-                            "order": 5,
-                            "isTracked": "N",
-                            "legendColor": "#2ca02c"
-                        }
-                    ]
+                     id: "CA",
+                     deptFilterDisplayName: "Department"
+                },  
+                { 
+                    id: "PA",
+                    deptFilterDisplayName: "Department"
                 }
-            ]
-           
+            ]   
         };
+
+        // pluginConfig: any = {
+        //     "categories": [
+        //        { 
+        //             "id": "CA",
+        //             "deptFilterDisplayName": "Department",
+        //             "catFilterDisplayName": "CAPA Category",
+        //             "initialSate": "AN1",
+        //             "closedState": "AN5",
+        //             "states" : [
+        //                 {
+        //                     "label": "AN1",
+        //                     "order": 1,
+        //                     "isTracked": "Y",
+        //                     "legendColor": "#d62728"
+        //                 },
+        //                 {
+        //                     "label": "AN2",
+        //                     "order": 2,
+        //                     "isTracked": "Y",
+        //                     "legendColor": "#ff7f0e"
+        //                 },
+        //                 {
+        //                     "label": "AN3",
+        //                     "order": 3,
+        //                     "isTracked": "Y",
+        //                     "legendColor": "#9467bd"
+        //                 },
+        //                 {
+        //                     "label": "AN4",
+        //                     "order": 4,
+        //                     "isTracked": "Y",
+        //                     "legendColor": "#1f77b4"
+        //                 },
+        //                 {
+        //                     "label": "AN5",
+        //                     "order": 5,
+        //                     "isTracked": "N",
+        //                     "legendColor": "#2ca02c"
+        //                 }
+        //             ]
+        //         },
+        //         { 
+        //             "id": "PA",
+        //             "deptFilterDisplayName": "Department",
+        //             "catFilterDisplayName": "CAPA Category",
+        //             "initialSate": "PN1",
+        //             "closedState": "PAC",
+        //             "states" : [
+        //                 {
+        //                     "label": "PN1",
+        //                     "order": 1,
+        //                     "isTracked": "Y",
+        //                     "legendColor": "#d62728"
+        //                 },
+        //                 {
+        //                     "label": "PN2",
+        //                     "order": 2,
+        //                     "isTracked": "Y",
+        //                     "legendColor": "#ff7f0e"
+        //                 },
+        //                 {
+        //                     "label": "PN3",
+        //                     "order": 3,
+        //                     "isTracked": "Y",
+        //                     "legendColor": "#9467bd"
+        //                 },
+        //                 {
+        //                     "label": "PN4",
+        //                     "order": 4,
+        //                     "isTracked": "Y",
+        //                     "legendColor": "#1f77b4"
+        //                 },
+        //                 {
+        //                     "label": "PAC",
+        //                     "order": 5,
+        //                     "isTracked": "N",
+        //                     "legendColor": "#2ca02c"
+        //                 }
+        //             ]
+        //         }
+        //     ]
+           
+        // };
 
 
         destroy(): void { }
