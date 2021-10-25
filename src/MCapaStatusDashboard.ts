@@ -66,10 +66,12 @@ namespace MCapaStatusDashboard {
         trackerStates: any[];
         deptWiseData: any[];
         categoryWiseData: any[];
+        statusWiseInitialData: any[];
         statusWiseData: any[];
         statusWiseLegendColors: any[];
         statusWiseTotalDaysData: any[];
         statusWiseAvgData: any[];
+        stateTrackerInitialData: any[];
         stateTrackerData: any[];
         stateTrackerLegendColors: any[];
         closedItemsData: any[];
@@ -98,10 +100,13 @@ namespace MCapaStatusDashboard {
         enableCstDateFilter: boolean = false;
 
 
+
         pluginConfig: any = {
             "categories": [
                { 
                     "id": "CA",
+                    "deptFilterDisplayName": "Department",
+                    "catFilterDisplayName": "CAPA Category",
                     "initialSate": "AN1",
                     "closedState": "AN5",
                     "states" : [
@@ -139,6 +144,8 @@ namespace MCapaStatusDashboard {
                 },
                 { 
                     "id": "PA",
+                    "deptFilterDisplayName": "Department",
+                    "catFilterDisplayName": "CAPA Category",
                     "initialSate": "PN1",
                     "closedState": "PAC",
                     "states" : [
@@ -396,7 +403,7 @@ namespace MCapaStatusDashboard {
                             that.renderTrackerChart(byCategoryLabelData.trackerStates,byCategoryLabelData.stateTrackerData,byCategoryLabelData.stateTrackerLegendColors);
                             break; 
                         case 'cst':
-                            that.renderTable(byCategoryLabelData.itemCurrentStateDetails);
+                            that.renderTable(byCategoryLabelData.itemCurrentStateDetails, byCategoryLabelData.stateDesc);
                             break;
                    }
                 }
@@ -588,13 +595,15 @@ namespace MCapaStatusDashboard {
            let fromDate = new Date(fromDateVal);
            let toDate = new Date(toDateVal);
 
-           let statusWiseData: any[] = [
-                ['Initiated', 0],
-                ['Approved', 0],
-                ['RC Approved', 0],
-                ['WFEC', 0],
-                ['Closed', 0]
-            ];
+        //    let statusWiseData: any[] = [
+        //         ['Initiated', 0],
+        //         ['Approved', 0],
+        //         ['RC Approved', 0],
+        //         ['WFEC', 0],
+        //         ['Closed', 0]
+        //     ];
+
+            let statusWiseData: any = JSON.parse(JSON.stringify(byCategoryLabelData.statusWiseInitialData));
 
             byCategoryLabelData.itemCurrentStateDetails.forEach(
                 (itemCurrentStateData) => {
@@ -747,13 +756,15 @@ namespace MCapaStatusDashboard {
             let fromDate = new Date(fromDateVal);
             let toDate = new Date(toDateVal);
 
-            let stateTrackerData : any[]= [
-                ['x'],
-                ['Initiated'],
-                ['Approved'],
-                ['RC Approved'],
-                ['WFEC']
-            ];
+            // let stateTrackerData : any[]= [
+            //     ['x'],
+            //     ['Initiated'],
+            //     ['Approved'],
+            //     ['RC Approved'],
+            //     ['WFEC']
+            // ];
+
+            let stateTrackerData: any = JSON.parse(JSON.stringify(byCategoryLabelData.stateTrackerInitialData));
 
             byCategoryLabelData.itemCurrentStateDetails.forEach(
                 (itemCurrentStateData) => {
@@ -858,60 +869,80 @@ namespace MCapaStatusDashboard {
                     }
             });
 
-            this.renderTable(itemCurrentStateDetailsByDateRange);
+            this.renderTable(itemCurrentStateDetailsByDateRange, byCategoryLabelData.stateDesc);
         }
 
-        renderTable(itemCurrentStateDetails: ItemCurrentStateData[]) {
+        renderTable(itemCurrentStateDetails: ItemCurrentStateData[], stateDesc: any[]) {
 
             let table = $("#CSOTable");
             $(".addedItem", table).remove();
 
+            // let tableHeader = `<tr>
+            //                     <th>Item</th>
+            //                     <th>Department</th>
+            //                     <th>Category</th>
+            //                     <th>Currernt State</th>
+            //                     <th>Initiated</th>
+            //                     <th>Approved</th>
+            //                     <th>WFEC</th>
+            //                     <th>RC Approved</th>
+            //                     <th>Closed</th>
+            //                     <th>Closure Time</th>
+            //                     </tr>`;
+
+            let tableHeader = $('<tr />');
+            tableHeader.append('<th>Item</th>');
+            tableHeader.append('<th>Department</th>');
+            tableHeader.append('<th>Category</th>');
+            tableHeader.append('<th>Currernt State</th>');
+
+            stateDesc.forEach(
+                (stateLabel) => {
+                    tableHeader.append('<th>' + stateLabel +'</th>');
+                }
+            );
+
+            tableHeader.append('<th>Closure Time</th>');
+
+            $("#ccsoTableHeader").append(tableHeader);
+
             itemCurrentStateDetails.forEach(
                 (itemData) => {
-                    let clonedTemplate = $("#csoRow", this._root).clone();
-                    //let stateClass = itemData.currentState;
-                    clonedTemplate.removeClass("hidden");
-                    //let classAttr = "addedItem" + " " + stateClass;
+                    let tableRow = $('<tr id="ccsoRow" />');
                     let classAttr = "addedItem" 
                         + " " + itemData.id.split(' ').join('-').replaceAll('&','-') 
                         + " " + itemData.department.split(' ').join('-').replaceAll('&','-')
                         + " " + itemData.category.split(' ').join('-').replaceAll('&','-')
                         + " " + itemData.currentState.split(' ').join('-').replaceAll('&','-');
-                    // console.log("classAttr:"+classAttr);    
-                    clonedTemplate.attr("class", classAttr);
-                    $("#title", clonedTemplate).text(itemData.id + "!");
-                    $("#title", clonedTemplate).data("ref", itemData.id + "!");
-                    $("#department", clonedTemplate).text(itemData.department);
-                    $("#category", clonedTemplate).text(itemData.category);
-                    $("#currentstate", clonedTemplate).text(itemData.currentState);
-                    $("#closureTime", clonedTemplate).text(itemData.openToCloseDays);
+                        
+                    tableRow.attr("class", classAttr);
+                    let titleRowData = $("<td/>");
+                    tableRow.append(titleRowData);
+                    titleRowData.text(itemData.id + "!");
+                    titleRowData.data("ref", itemData.id + "!");
+
+                    let deptRowData = $("<td>"+ itemData.department +"</td>");
+                    tableRow.append(deptRowData);
+
+                    let catRowData = $("<td>"+ itemData.category +"</td>");
+                    tableRow.append(catRowData);
+                    
+                    let csRowData = $("<td>"+ itemData.currentState +"</td>");
+                    tableRow.append(csRowData);
 
                     itemData.itemStateDaysCountData.forEach(
                         (label) => {
-                            switch (label.state) {
-                                case 'Initiated':
-                                    $("#initiated", clonedTemplate).text(label.days);
-                                    break;
-                                case 'Approved':
-                                    $("#approved", clonedTemplate).text(label.days);
-                                    break;
-                                case 'RC Approved':
-                                    $("#rcapproved", clonedTemplate).text(label.days);
-                                    break;
-                                case 'WFEC':
-                                    $("#wfec", clonedTemplate).text(label.days);
-                                    break;
-                                case 'Closed':
-                                    $("#closed", clonedTemplate).text(label.days);
-                                    break;    
-                            }
+                            let labelRowData = $("<td>"+ label.days +"</td>");
+                            tableRow.append(labelRowData);
                         }
-                    ); 
+                    );
 
-                    clonedTemplate.appendTo($("#CSOTable tbody", this._root));
+                    let closureTimeRowData = $("<td>"+ itemData.openToCloseDays +"</td>");
+                    tableRow.append(closureTimeRowData);
+
+                    $("#ccsoRowList").append(tableRow);
                 }
             );
-
 
             $("table#CSOTable").highlightReferences();
             $("table#CSOTable").tablesorter();
@@ -919,6 +950,65 @@ namespace MCapaStatusDashboard {
             this.filterByLabel({ type: "" });
 
         }
+
+        // renderTable(itemCurrentStateDetails: ItemCurrentStateData[]) {
+
+        //     let table = $("#CSOTable");
+        //     $(".addedItem", table).remove();
+
+        //     itemCurrentStateDetails.forEach(
+        //         (itemData) => {
+        //             let clonedTemplate = $("#csoRow", this._root).clone();
+        //             //let stateClass = itemData.currentState;
+        //             clonedTemplate.removeClass("hidden");
+        //             //let classAttr = "addedItem" + " " + stateClass;
+        //             let classAttr = "addedItem" 
+        //                 + " " + itemData.id.split(' ').join('-').replaceAll('&','-') 
+        //                 + " " + itemData.department.split(' ').join('-').replaceAll('&','-')
+        //                 + " " + itemData.category.split(' ').join('-').replaceAll('&','-')
+        //                 + " " + itemData.currentState.split(' ').join('-').replaceAll('&','-');
+        //             // console.log("classAttr:"+classAttr);    
+        //             clonedTemplate.attr("class", classAttr);
+        //             $("#title", clonedTemplate).text(itemData.id + "!");
+        //             $("#title", clonedTemplate).data("ref", itemData.id + "!");
+        //             $("#department", clonedTemplate).text(itemData.department);
+        //             $("#category", clonedTemplate).text(itemData.category);
+        //             $("#currentstate", clonedTemplate).text(itemData.currentState);
+        //             $("#closureTime", clonedTemplate).text(itemData.openToCloseDays);
+
+        //             itemData.itemStateDaysCountData.forEach(
+        //                 (label) => {
+        //                     switch (label.state) {
+        //                         case 'Initiated':
+        //                             $("#initiated", clonedTemplate).text(label.days);
+        //                             break;
+        //                         case 'Approved':
+        //                             $("#approved", clonedTemplate).text(label.days);
+        //                             break;
+        //                         case 'RC Approved':
+        //                             $("#rcapproved", clonedTemplate).text(label.days);
+        //                             break;
+        //                         case 'WFEC':
+        //                             $("#wfec", clonedTemplate).text(label.days);
+        //                             break;
+        //                         case 'Closed':
+        //                             $("#closed", clonedTemplate).text(label.days);
+        //                             break;    
+        //                     }
+        //                 }
+        //             ); 
+
+        //             clonedTemplate.appendTo($("#CSOTable tbody", this._root));
+        //         }
+        //     );
+
+
+        //     $("table#CSOTable").highlightReferences();
+        //     $("table#CSOTable").tablesorter();
+
+        //     this.filterByLabel({ type: "" });
+
+        // }
        
         renderHTML() {
 
@@ -1095,10 +1185,12 @@ namespace MCapaStatusDashboard {
                     trackerStates: trackerStates,
                     deptWiseData: [cat + ' count by department', ...deptWiseInitials],
                     categoryWiseData: [cat + ' count by category', ...catWiseInitials],
+                    statusWiseInitialData: statusWiseData,
                     statusWiseData: statusWiseData,
                     statusWiseLegendColors: statusWiseLegendColors,
                     statusWiseTotalDaysData: statusWiseTotalDaysData,
                     statusWiseAvgData: [cat + ' average time spent in state', ...SateWiseAvgInitials],
+                    stateTrackerInitialData: stateTrackerData,
                     stateTrackerData: stateTrackerData,
                     stateTrackerLegendColors: stateTrackerLegendColors,
                     closedItemsData: closedItemsData,
@@ -1159,7 +1251,7 @@ namespace MCapaStatusDashboard {
             this.renderByAvgTimeChart(ByCategoryLabelData.stateDesc,ByCategoryLabelData.statusWiseAvgData);
             this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData,ByCategoryLabelData.stateTrackerLegendColors);
             this.renderClosureTimeChart(ByCategoryLabelData.closedItemsData,ByCategoryLabelData.closureTimeData);
-            this.renderTable(ByCategoryLabelData.itemCurrentStateDetails);
+            this.renderTable(ByCategoryLabelData.itemCurrentStateDetails, ByCategoryLabelData.stateDesc);
         }
 
         getCurrentStateSetDate(labelData: XRLabelChange): Date {
@@ -1627,33 +1719,9 @@ namespace MCapaStatusDashboard {
                         </div>
                         <div class="table-responsive">
                             <table class="table table-condensed table-borderless table-hover" id="CSOTable">
-                                <thead>
-                                    <tr>
-                                    <th>Item</th>
-                                    <th>Department</th>
-                                    <th>Category</th>
-                                    <th>Currernt State</th>
-                                    <th>Initiated</th>
-                                    <th>Approved</th>
-                                    <th>WFEC</th>
-                                    <th>RC Approved</th>
-                                    <th>Closed</th>
-                                    <th>Closure Time</th>
-                                    </tr>
+                                <thead id="ccsoTableHeader">
                                 </thead>
-                                <tbody id="csoList">
-                                    <tr id="csoRow" class="hidden">
-                                    <td id="title" ></td>
-                                    <td id="department" ></td>
-                                    <td id="category" ></td>
-                                    <td id="currentstate" ></td>
-                                    <td id="initiated" ></td>
-                                    <td id="approved" ></td>
-                                    <td id="rcapproved" ></td>
-                                    <td id="wfec" ></td>
-                                    <td id="closed" ></td>
-                                    <td id="closureTime" ></td>
-                                    </tr>
+                                <tbody id="ccsoRowList">
                                 </tbody>
                             </table>
                         </div>
