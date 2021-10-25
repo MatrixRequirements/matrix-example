@@ -1065,8 +1065,8 @@ namespace MCapaStatusDashboard {
                  let categories: any[] = [];
                  let displayCategories: any[] = [];
                  let stateCodes: any[] = [];
-                 let stateDesc: any[];
-                 let trackerStates: any[];
+                 let stateDesc: any[] = [];
+                 let trackerStates: any[] = [];
                  let deptWiseInitials: any[] = [];
                  let catWiseInitials: any[] = [];
                  let SateWiseAvgInitials: any[] = [];
