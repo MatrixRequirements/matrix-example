@@ -81,6 +81,26 @@ namespace MCapaStatusDashboard {
         itemCurrentStateDetails: ItemCurrentStateData[];
     }
 
+    interface StateLabelConfig {
+        label: string;
+        order: Number;
+        isTracked: string;
+        legendColor: string;
+    }
+
+    interface CategoryConfig {
+        id: string;
+        deptFilterDisplayName: string;
+        catFilterDisplayName: string;
+        initialSate: string;
+        closedState: string;
+        states : StateLabelConfig[];
+    }
+
+    interface PluginConfig {
+        categories: CategoryConfig[];
+    }
+
    
     class MCapaStatusDashboardControl extends BaseControl {
 
@@ -99,7 +119,7 @@ namespace MCapaStatusDashboard {
         enableTrackerDateFilter: boolean = false;
         enableCstDateFilter: boolean = false;
 
-        pluginConfig: any = {
+        pluginConfig: PluginConfig = {
             categories: [
                { 
                     id: "CA",
@@ -1060,14 +1080,14 @@ namespace MCapaStatusDashboard {
                  let intialState;
                  let closedState;
 
-                let pluginCategoryConfig = this.pluginConfig.categories.filter(category => category.id == cat);
+                let pluginCategoryConfig: CategoryConfig = this.pluginConfig.categories.find(category => category.id == cat);
                  
                 
-                // departments = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == pluginCategoryConfig.deptFilterDisplayName)[0].labels;
-                // categories = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == pluginCategoryConfig.catFilterDisplayName)[0].labels;
+                departments = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == pluginCategoryConfig.deptFilterDisplayName)[0].labels;
+                categories = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == pluginCategoryConfig.catFilterDisplayName)[0].labels;
     
-                departments = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
-                categories = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "CAPA Category")[0].labels;
+                //departments = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
+                //categories = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "CAPA Category")[0].labels;
 
                 departments.forEach(dept => {
                     let deptDispName = new LabelTools().getDisplayName(dept);
