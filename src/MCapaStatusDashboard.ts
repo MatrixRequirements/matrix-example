@@ -1009,7 +1009,7 @@ namespace MCapaStatusDashboard {
                  let intialState;
                  let closedState;
 
-                let pluginCategoryConfig: CategoryConfig = this.pluginConfig.categories.find(category => category.id == cat);
+                let pluginCategoryConfig: any = this.pluginConfig.categories.find(category => category.id == cat);
                  
                 
                 departments = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == pluginCategoryConfig.deptFilterDisplayName)[0].labels;
