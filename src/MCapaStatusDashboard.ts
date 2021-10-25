@@ -81,25 +81,25 @@ namespace MCapaStatusDashboard {
         itemCurrentStateDetails: ItemCurrentStateData[];
     }
 
-    interface StateLabelConfig {
-        label: string;
-        order: Number;
-        isTracked: string;
-        legendColor: string;
-    }
+    // interface StateLabelConfig {
+    //     label: string;
+    //     order: Number;
+    //     isTracked: string;
+    //     legendColor: string;
+    // }
 
-    interface CategoryConfig {
-        id: string;
-        deptFilterDisplayName: string;
-        catFilterDisplayName: string;
-        initialSate: string;
-        closedState: string;
-        states : StateLabelConfig[];
-    }
+    // interface CategoryConfig {
+    //     id: string;
+    //     deptFilterDisplayName: string;
+    //     catFilterDisplayName: string;
+    //     initialSate: string;
+    //     closedState: string;
+    //     states : StateLabelConfig[];
+    // }
 
-    interface PluginConfig {
-        categories: CategoryConfig[];
-    }
+    // interface PluginConfig {
+    //     categories: CategoryConfig[];
+    // }
 
    
     class MCapaStatusDashboardControl extends BaseControl {
@@ -119,7 +119,7 @@ namespace MCapaStatusDashboard {
         enableTrackerDateFilter: boolean = false;
         enableCstDateFilter: boolean = false;
 
-        pluginConfig: PluginConfig = {
+        pluginConfig: any = {
             categories: [
                { 
                     id: "CA",
@@ -895,19 +895,6 @@ namespace MCapaStatusDashboard {
             let table = $("#CSOTable");
             $(".addedItem", table).remove();
 
-            // let tableHeader = `<tr>
-            //                     <th>Item</th>
-            //                     <th>Department</th>
-            //                     <th>Category</th>
-            //                     <th>Currernt State</th>
-            //                     <th>Initiated</th>
-            //                     <th>Approved</th>
-            //                     <th>WFEC</th>
-            //                     <th>RC Approved</th>
-            //                     <th>Closed</th>
-            //                     <th>Closure Time</th>
-            //                     </tr>`;
-
             let tableHeader = $('<tr />');
             tableHeader.append('<th>Item</th>');
             tableHeader.append('<th>Department</th>');
@@ -969,65 +956,7 @@ namespace MCapaStatusDashboard {
 
         }
 
-        // renderTable(itemCurrentStateDetails: ItemCurrentStateData[]) {
-
-        //     let table = $("#CSOTable");
-        //     $(".addedItem", table).remove();
-
-        //     itemCurrentStateDetails.forEach(
-        //         (itemData) => {
-        //             let clonedTemplate = $("#csoRow", this._root).clone();
-        //             //let stateClass = itemData.currentState;
-        //             clonedTemplate.removeClass("hidden");
-        //             //let classAttr = "addedItem" + " " + stateClass;
-        //             let classAttr = "addedItem" 
-        //                 + " " + itemData.id.split(' ').join('-').replaceAll('&','-') 
-        //                 + " " + itemData.department.split(' ').join('-').replaceAll('&','-')
-        //                 + " " + itemData.category.split(' ').join('-').replaceAll('&','-')
-        //                 + " " + itemData.currentState.split(' ').join('-').replaceAll('&','-');
-        //             // console.log("classAttr:"+classAttr);    
-        //             clonedTemplate.attr("class", classAttr);
-        //             $("#title", clonedTemplate).text(itemData.id + "!");
-        //             $("#title", clonedTemplate).data("ref", itemData.id + "!");
-        //             $("#department", clonedTemplate).text(itemData.department);
-        //             $("#category", clonedTemplate).text(itemData.category);
-        //             $("#currentstate", clonedTemplate).text(itemData.currentState);
-        //             $("#closureTime", clonedTemplate).text(itemData.openToCloseDays);
-
-        //             itemData.itemStateDaysCountData.forEach(
-        //                 (label) => {
-        //                     switch (label.state) {
-        //                         case 'Initiated':
-        //                             $("#initiated", clonedTemplate).text(label.days);
-        //                             break;
-        //                         case 'Approved':
-        //                             $("#approved", clonedTemplate).text(label.days);
-        //                             break;
-        //                         case 'RC Approved':
-        //                             $("#rcapproved", clonedTemplate).text(label.days);
-        //                             break;
-        //                         case 'WFEC':
-        //                             $("#wfec", clonedTemplate).text(label.days);
-        //                             break;
-        //                         case 'Closed':
-        //                             $("#closed", clonedTemplate).text(label.days);
-        //                             break;    
-        //                     }
-        //                 }
-        //             ); 
-
-        //             clonedTemplate.appendTo($("#CSOTable tbody", this._root));
-        //         }
-        //     );
-
-
-        //     $("table#CSOTable").highlightReferences();
-        //     $("table#CSOTable").tablesorter();
-
-        //     this.filterByLabel({ type: "" });
-
-        // }
-       
+        
         renderHTML() {
 
             let that = this;
@@ -1085,9 +1014,6 @@ namespace MCapaStatusDashboard {
                 
                 departments = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == pluginCategoryConfig.deptFilterDisplayName)[0].labels;
                 categories = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == pluginCategoryConfig.catFilterDisplayName)[0].labels;
-    
-                //departments = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "Department")[0].labels;
-                //categories = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == "CAPA Category")[0].labels;
 
                 departments.forEach(dept => {
                     let deptDispName = new LabelTools().getDisplayName(dept);
@@ -1123,77 +1049,7 @@ namespace MCapaStatusDashboard {
                     statusWiseData.push([labelDesc, 0]);
 
                     statusWiseLegendColors.push(sateConfig.legendColor);
-
-                    
                 });
-
-
-                // let states_ = new LabelTools().getLabelGroups(cat).filter( lg => lg.filterMenu && lg.filterMenu.displayName == cat)[0].labels;
-
-                // if(cat === "CA"){
-
-                //     //stateCodes = states_.sort();
-                //     stateCodes = ["AN1","AN2","AN3","AN4","AN5"];
-                //     stateDesc =  ['Initiated','Approved','RC Approved', 'WFEC','Closed'];
-                //     trackerStates = ['Initiated','Approved','RC Approved', 'WFEC'];
-                //     SateWiseAvgInitials = Array(stateDesc.length).fill(0);
-                //     statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0],[0,0]];
-                //     intialState = "AN1";
-                //     closedState = "AN5";
-
-                //     statusWiseData = [
-                //         ['Initiated', 0],
-                //         ['Approved', 0],
-                //         ['RC Approved', 0],
-                //         ['WFEC', 0],
-                //         ['Closed', 0]
-                //     ];
-
-                //     statusWiseLegendColors = ['#d62728', '#ff7f0e', '#9467bd','#1f77b4', '#2ca02c'];
-
-
-                //     stateTrackerData = [
-                //         ['x'],
-                //         ['Initiated'],
-                //         ['Approved'],
-                //         ['RC Approved'],
-                //         ['WFEC']
-                //     ];
-
-                //     stateTrackerLegendColors = ['#d62728', '#ff7f0e', '#9467bd','#1f77b4'];
-
-                // }else{
-
-                //     //stateCodes = states_;
-                //     stateCodes = ["PN1","PN2","PN3","PN4","PAC"];
-                //     stateDesc =  ['Initiated','Approved','RC Approved', 'WFEC','Closed'];
-                //     trackerStates = ['Initiated','Approved','RC Approved', 'WFEC'];
-                //     SateWiseAvgInitials = Array(stateDesc.length).fill(0);
-                //     statusWiseTotalDaysData = [[0,0],[0,0],[0,0],[0,0],[0,0]];
-                //     intialState = "PN1";
-                //     closedState = "PAC";
-
-                //     statusWiseData = [
-                //         ['Initiated', 0],
-                //         ['Approved', 0],
-                //         ['RC Approved', 0],
-                //         ['WFEC', 0],
-                //         ['Closed', 0]
-                //     ];
-
-                //     statusWiseLegendColors = ['#d62728', '#ff7f0e', '#9467bd', '#1f77b4', '#2ca02c'];
-
-                //     stateTrackerData = [
-                //         ['x'],
-                //         ['Initiated'],
-                //         ['Approved'],
-                //         ['RC Approved'],
-                //         ['WFEC']
-                //     ];
-
-                //     stateTrackerLegendColors = ['#d62728', '#ff7f0e', '#9467bd', '#1f77b4'];
-
-                // }
 
                 let ByCategoryLabelData: ByCategoryLabelData = {
                     category: cat,
