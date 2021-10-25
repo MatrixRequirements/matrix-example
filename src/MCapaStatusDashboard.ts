@@ -1116,7 +1116,7 @@ namespace MCapaStatusDashboard {
                     if(sateConfig.isTracked == "Y"){
                         trackerStates.push(labelDesc);
                         stateTrackerLegendColors.push(sateConfig.legendColor);
-                        stateTrackerData.push(labelDesc);
+                        stateTrackerData.push([labelDesc]);
                     }
 
                     statusWiseTotalDaysData.push([0,0]);
