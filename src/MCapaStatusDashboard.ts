@@ -1071,9 +1071,9 @@ namespace MCapaStatusDashboard {
                  let catWiseInitials: any[] = [];
                  let SateWiseAvgInitials: any[] = [];
                  let statusWiseData: any[] = [];
-                 let statusWiseLegendColors: any[];
+                 let statusWiseLegendColors: any[] = [];
                  let stateTrackerData: any[] = [['x']];
-                 let stateTrackerLegendColors: any[];
+                 let stateTrackerLegendColors: any[] = [];
                  let statusWiseTotalDaysData: any[] = [];
                  let closedItemsData: any[] = [];
                  let itemCurrentStateDetails: ItemCurrentStateData[] = [];
