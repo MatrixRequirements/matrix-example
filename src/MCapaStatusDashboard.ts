@@ -937,14 +937,31 @@ namespace MCapaStatusDashboard {
                     let csRowData = $("<td>"+ itemData.currentState +"</td>");
                     tableRow.append(csRowData);
 
-                    itemData.itemStateDaysCountData.forEach(
-                        (label) => {
-                            let labelRowData = $("<td>"+ label.days +"</td>");
+                    // itemData.itemStateDaysCountData.forEach(
+                    //     (label) => {
+                    //         let labelRowData = $("<td>"+ label.days +"</td>");
+                    //         tableRow.append(labelRowData);
+                    //     }
+                    // );
+
+                    stateDesc.forEach(
+                        (stateLabel) => {
+                            
+                            let stateLabelData = itemData.itemStateDaysCountData.find(stateData => stateData.state == stateLabel);
+                            let labelRowData = stateLabelData ? $("<td>"+ stateLabelData.days +"</td>") : $("<td></td>");
                             tableRow.append(labelRowData);
+
+                            // if(stateLabelData){
+                            //     let labelRowData = $("<td>"+ stateLabelData.days +"</td>");
+                            //     tableRow.append(labelRowData);
+                            // }else{
+                            //     let labelRowData = $("<td></td>");
+                            //     tableRow.append(labelRowData);
+                            // }
                         }
                     );
 
-                    let closureTimeRowData = $("<td>"+ itemData.openToCloseDays +"</td>");
+                    let closureTimeRowData = itemData.openToCloseDays ? $("<td>"+ itemData.openToCloseDays +"</td>") : $("<td></td>");
                     tableRow.append(closureTimeRowData);
 
                     $("#ccsoRowList").append(tableRow);
