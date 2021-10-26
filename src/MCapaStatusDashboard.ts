@@ -159,6 +159,12 @@ namespace MCapaStatusDashboard {
                             order: 5,
                             isTracked: "N",
                             legendColor: "#2ca02c"
+                        },
+                        {
+                            label: "CAR",
+                            order: 6,
+                            isTracked: "N",
+                            legendColor: "#8c564b"
                         }
                     ]
                 },
@@ -198,6 +204,12 @@ namespace MCapaStatusDashboard {
                             order: 5,
                             isTracked: "N",
                             legendColor: "#2ca02c"
+                        },
+                        {
+                            label: "CAR",
+                            order: 6,
+                            isTracked: "N",
+                            legendColor: "#8c564b"
                         }
                     ]
                 }
@@ -615,14 +627,6 @@ namespace MCapaStatusDashboard {
            let fromDate = new Date(fromDateVal);
            let toDate = new Date(toDateVal);
 
-        //    let statusWiseData: any[] = [
-        //         ['Initiated', 0],
-        //         ['Approved', 0],
-        //         ['RC Approved', 0],
-        //         ['WFEC', 0],
-        //         ['Closed', 0]
-        //     ];
-
             let statusWiseData: any = JSON.parse(JSON.stringify(byCategoryLabelData.statusWiseInitialData));
 
             byCategoryLabelData.itemCurrentStateDetails.forEach(
@@ -776,14 +780,6 @@ namespace MCapaStatusDashboard {
             let fromDate = new Date(fromDateVal);
             let toDate = new Date(toDateVal);
 
-            // let stateTrackerData : any[]= [
-            //     ['x'],
-            //     ['Initiated'],
-            //     ['Approved'],
-            //     ['RC Approved'],
-            //     ['WFEC']
-            // ];
-
             let stateTrackerData: any = JSON.parse(JSON.stringify(byCategoryLabelData.stateTrackerInitialData));
 
             byCategoryLabelData.itemCurrentStateDetails.forEach(
@@ -896,8 +892,10 @@ namespace MCapaStatusDashboard {
 
             let table = $("#CSOTable");
             $(".addedItem", table).remove();
+            $(".addedHeader", table).remove();
 
             let tableHeader = $('<tr />');
+            tableHeader.attr("class", "addedHeader");
             tableHeader.append('<th>Item</th>');
             tableHeader.append('<th>Department</th>');
             tableHeader.append('<th>Category</th>');
@@ -937,33 +935,17 @@ namespace MCapaStatusDashboard {
                     let csRowData = $("<td>"+ itemData.currentState +"</td>");
                     tableRow.append(csRowData);
 
-                    // itemData.itemStateDaysCountData.forEach(
-                    //     (label) => {
-                    //         let labelRowData = $("<td>"+ label.days +"</td>");
-                    //         tableRow.append(labelRowData);
-                    //     }
-                    // );
-
                     stateDesc.forEach(
                         (stateLabel) => {
                             
                             let stateLabelData = itemData.itemStateDaysCountData.find(stateData => stateData.state == stateLabel);
                             let labelRowData = stateLabelData ? $("<td>"+ stateLabelData.days +"</td>") : $("<td></td>");
                             tableRow.append(labelRowData);
-
-                            // if(stateLabelData){
-                            //     let labelRowData = $("<td>"+ stateLabelData.days +"</td>");
-                            //     tableRow.append(labelRowData);
-                            // }else{
-                            //     let labelRowData = $("<td></td>");
-                            //     tableRow.append(labelRowData);
-                            // }
                         }
                     );
 
                     let closureTimeRowData = itemData.openToCloseDays ? $("<td>"+ itemData.openToCloseDays +"</td>") : $("<td></td>");
                     tableRow.append(closureTimeRowData);
-
                     $("#ccsoRowList").append(tableRow);
                 }
             );
@@ -1356,23 +1338,23 @@ namespace MCapaStatusDashboard {
                 });
             }
 
-            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
-                console.log("category:"+ByCategoryLabelData.category);
-                console.log("departments:"+ByCategoryLabelData.departments);
-                console.log("displayDepartments:"+ByCategoryLabelData.displayDepartments);
-                console.log("categories:"+ByCategoryLabelData.categories);
-                console.log("displayCategories:"+ByCategoryLabelData.displayCategories);
-                console.log("department wise:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
-                console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
-                console.log("state codes:"+JSON.stringify(ByCategoryLabelData.stateCodes));
-                console.log("state wise:"+JSON.stringify(ByCategoryLabelData.statusWiseData));
-                console.log("trackerStates:"+JSON.stringify(ByCategoryLabelData.trackerStates));
-                console.log("state TrackerData:"+JSON.stringify(ByCategoryLabelData.stateTrackerData));
-                console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
-                console.log("status Wise AvgData:"+JSON.stringify(ByCategoryLabelData.statusWiseAvgData));
-                console.log("closed items data:"+JSON.stringify(ByCategoryLabelData.closedItemsData));
-                console.log("closure time data:"+JSON.stringify(ByCategoryLabelData.closureTimeData));
-            }
+            // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+            //     console.log("category:"+ByCategoryLabelData.category);
+            //     console.log("departments:"+ByCategoryLabelData.departments);
+            //     console.log("displayDepartments:"+ByCategoryLabelData.displayDepartments);
+            //     console.log("categories:"+ByCategoryLabelData.categories);
+            //     console.log("displayCategories:"+ByCategoryLabelData.displayCategories);
+            //     console.log("department wise:"+JSON.stringify(ByCategoryLabelData.deptWiseData));
+            //     console.log("categorie wise:"+JSON.stringify(ByCategoryLabelData.categoryWiseData));
+            //     console.log("state codes:"+JSON.stringify(ByCategoryLabelData.stateCodes));
+            //     console.log("state wise:"+JSON.stringify(ByCategoryLabelData.statusWiseData));
+            //     console.log("trackerStates:"+JSON.stringify(ByCategoryLabelData.trackerStates));
+            //     console.log("state TrackerData:"+JSON.stringify(ByCategoryLabelData.stateTrackerData));
+            //     console.log("status Wise TotalDaysData:"+JSON.stringify(ByCategoryLabelData.statusWiseTotalDaysData));
+            //     console.log("status Wise AvgData:"+JSON.stringify(ByCategoryLabelData.statusWiseAvgData));
+            //     console.log("closed items data:"+JSON.stringify(ByCategoryLabelData.closedItemsData));
+            //     console.log("closure time data:"+JSON.stringify(ByCategoryLabelData.closureTimeData));
+            // }
         }
 
         
