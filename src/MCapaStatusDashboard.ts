@@ -122,94 +122,94 @@ namespace MCapaStatusDashboard {
         //pluginConfig: any = IC.getSettingJSON( "MSCO");
 
         pluginConfig: any = {
-            categories: [
+            "categories": [
                { 
-                    id: "CA",
-                    deptFilterDisplayName: "Department",
-                    catFilterDisplayName: "CAPA Category",
-                    initialSate: "AN1",
-                    closedState: "AN5",
-                    states : [
+                    "id": "CA",
+                    "initialSate": "AN1",
+                    "closedState": "AN5",
+                    "deptFilterDisplayName": "Department",
+                    "catFilterDisplayName": "CAPA Category",
+                    "states" : [
                         {
-                            label: "AN1",
-                            order: 1,
-                            isTracked: "Y",
-                            legendColor: "#d62728"
+                            "label": "AN1",
+                            "order": 1,
+                            "isTracked": "Y",
+                            "legendColor": "#d62728"
                         },
                         {
-                            label: "AN2",
-                            order: 2,
-                            isTracked: "Y",
-                            legendColor: "#ff7f0e"
+                            "label": "AN2",
+                            "order": 2,
+                            "isTracked": "Y",
+                            "legendColor": "#ff7f0e"
                         },
                         {
-                            label: "AN3",
-                            order: 3,
-                            isTracked: "Y",
-                            legendColor: "#9467bd"
+                            "label": "AN3",
+                            "order": 3,
+                            "isTracked": "Y",
+                            "legendColor": "#9467bd"
                         },
                         {
-                            label: "AN4",
-                            order: 4,
-                            isTracked: "Y",
-                            legendColor: "#1f77b4"
+                            "label": "AN4",
+                            "order": 4,
+                            "isTracked": "Y",
+                            "legendColor": "#1f77b4"
                         },
                         {
-                            label: "AN5",
-                            order: 5,
-                            isTracked: "N",
-                            legendColor: "#2ca02c"
+                            "label": "AN5",
+                            "order": 5,
+                            "isTracked": "N",
+                            "legendColor": "#2ca02c"
                         },
                         {
-                            label: "CAR",
-                            order: 6,
-                            isTracked: "N",
-                            legendColor: "#8c564b"
+                            "label": "CAR",
+                            "order": 6,
+                            "isTracked": "N",
+                            "legendColor": "#8c564b"
                         }
                     ]
                 },
                 { 
-                    id: "PA",
-                    deptFilterDisplayName: "Department",
-                    catFilterDisplayName: "CAPA Category",
-                    initialSate: "PN1",
-                    closedState: "PAC",
-                    states: [
+                    "id": "PA",
+                    "initialSate": "PN1",
+                    "closedState": "PAC",
+                    "deptFilterDisplayName": "Department",
+                    "catFilterDisplayName": "CAPA Category",
+                    "states" : [
                         {
-                            label: "PN1",
-                            order: 1,
-                            isTracked: "Y",
-                            legendColor: "#d62728"
+                            "label": "PN1",
+                            "order": 1,
+                            "isTracked": "Y",
+                            "legendColor": "#d62728"
                         },
                         {
-                            label: "PN2",
-                            order: 2,
-                            isTracked: "Y",
-                            legendColor: "#ff7f0e"
+                            "label": "PN2",
+                            "order": 2,
+                            "isTracked": "Y",
+                            "legendColor": "#ff7f0e"
                         },
                         {
-                            label: "PN3",
-                            order: 3,
-                            isTracked: "Y",
-                            legendColor: "#9467bd"
+                            "label": "PN3",
+                            "order": 3,
+                            "isTracked": "Y",
+                            "legendColor": "#9467bd"
                         },
                         {
-                            label: "PN4",
-                            order: 4,
-                            isTracked: "Y",
-                            legendColor: "#1f77b4"
+                            "label": "PN4",
+                            "order": 4,
+                            "isTracked": "Y",
+                            "legendColor": "#1f77b4"
                         },
                         {
-                            label: "PAC",
-                            order: 5,
-                            isTracked: "N",
-                            legendColor: "#2ca02c"
+                            "label": "PAC",
+                            "order": 5,
+                            "isTracked": "N",
+                            "legendColor": "#2ca02c"
                         },
                         {
-                            label: "CAR",
-                            order: 6,
-                            isTracked: "N",
-                            legendColor: "#8c564b"
+                            "label": "CAR",
+                            "order": 6,
+                            "isTracked": "N",
+                            "legendColor": "#8c564b"
                         }
                     ]
                 }
