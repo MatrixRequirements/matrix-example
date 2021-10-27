@@ -1198,6 +1198,7 @@ namespace MCapaStatusDashboard {
                     }
 
                     let stateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === label.label);
+                    let stateDesc = ByCategoryLabelData.stateDesc[stateIndex];
 
                     if(stateIndex > -1){
                         //check for current state
@@ -1272,8 +1273,11 @@ namespace MCapaStatusDashboard {
                             closeStateData.push(label);
                         }
 
+                        let stateDescIndex = ByCategoryLabelData.trackerStates.findIndex(stateDisp => stateDisp === stateDesc);
+
                         //check if state is closed or not  
-                        if(stateIndex !== closedStateIndex){ 
+                        //if(stateIndex !== closedStateIndex){ 
+                        if(stateDescIndex > -1){     
                             //update state tracker
                             if(itemIndex > -1){
                                 ByCategoryLabelData.stateTrackerData[stateIndex + 1][itemIndex + 1] = labelstateDaysCount;
