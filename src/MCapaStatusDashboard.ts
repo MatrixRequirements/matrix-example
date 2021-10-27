@@ -34,7 +34,7 @@ namespace MCapaStatusDashboard {
         }
 
         getPluginVersion(): string {
-            return "1.7.0";
+            return "1.8.0";
         }
     }
 
@@ -78,6 +78,7 @@ namespace MCapaStatusDashboard {
         closureTimeData: any[];
         intialState: string;
         closedState: string;
+        rejectedState: string;
         itemCurrentStateDetails: ItemCurrentStateData[];
     }
 
@@ -1009,6 +1010,7 @@ namespace MCapaStatusDashboard {
                  let itemCurrentStateDetails: ItemCurrentStateData[] = [];
                  let intialState;
                  let closedState;
+                 let rejectedState;
 
                 let pluginCategoryConfig: any = this.pluginConfig.categories.find(category => category.id == cat);
                  
@@ -1031,6 +1033,8 @@ namespace MCapaStatusDashboard {
 
                 intialState = pluginCategoryConfig.initialSate;
                 closedState = pluginCategoryConfig.closedState;
+
+                rejectedState = pluginCategoryConfig.rejectedState ? pluginCategoryConfig.rejectedState : "";
 
                 SateWiseAvgInitials = Array(pluginCategoryConfig.states.length).fill(0);
 
@@ -1075,6 +1079,7 @@ namespace MCapaStatusDashboard {
                     closureTimeData: [cat + ' closure time(in days)'],
                     intialState: intialState,
                     closedState: closedState,
+                    rejectedState: rejectedState,
                     itemCurrentStateDetails: itemCurrentStateDetails
                 };
     
@@ -1168,6 +1173,11 @@ namespace MCapaStatusDashboard {
                 let closedStateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === ByCategoryLabelData.closedState);
                 let initalStateData = [];
                 let closeStateData = [];
+                let rejectedStateIndex = -1;
+
+                if(ByCategoryLabelData.rejectedState){
+                    rejectedStateIndex = ByCategoryLabelData.stateCodes.findIndex(stateCode => stateCode === ByCategoryLabelData.rejectedState);
+                }
 
                 let itemCurrentStateData : ItemCurrentStateData = {
                     id: item.itemRef,
@@ -1292,6 +1302,11 @@ namespace MCapaStatusDashboard {
                         }   
                     }
                 } 
+
+                if(itemCurrentSateIndex == rejectedStateIndex){
+                    ByCategoryLabelData.statusWiseTotalDaysData[itemCurrentSateIndex][0] += itemCurrentStateDaysCount;
+                    ByCategoryLabelData.statusWiseTotalDaysData[itemCurrentSateIndex][1] += 1;
+                }
 
                 if(itemCurrentSateIndex == closedStateIndex){
 
