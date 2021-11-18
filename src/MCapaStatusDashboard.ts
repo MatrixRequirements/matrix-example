@@ -64,6 +64,7 @@ namespace MCapaStatusDashboard {
         stateCodes: any[];
         stateDesc: any[];
         trackerStates: any[];
+        avgChartStates: any[];
         deptWiseData: any[];
         categoryWiseData: any[];
         statusWiseInitialData: any[];
@@ -120,103 +121,115 @@ namespace MCapaStatusDashboard {
         enableTrackerDateFilter: boolean = false;
         enableCstDateFilter: boolean = false;
 
-        pluginConfig: any = IC.getSettingJSON("MSCO");
+       // pluginConfig: any = IC.getSettingJSON("MSCO");
 
-        // pluginConfig: any = {
-        //     "categories": [
-        //        { 
-        //             "id": "CA",
-        //             "initialSate": "AN1",
-        //             "closedState": "AN5",
-        //             "deptFilterDisplayName": "Department",
-        //             "catFilterDisplayName": "CAPA Category",
-        //             "states" : [
-        //                 {
-        //                     "label": "AN1",
-        //                     "order": 1,
-        //                     "isTracked": "Y",
-        //                     "legendColor": "#d62728"
-        //                 },
-        //                 {
-        //                     "label": "AN2",
-        //                     "order": 2,
-        //                     "isTracked": "Y",
-        //                     "legendColor": "#ff7f0e"
-        //                 },
-        //                 {
-        //                     "label": "AN3",
-        //                     "order": 3,
-        //                     "isTracked": "Y",
-        //                     "legendColor": "#9467bd"
-        //                 },
-        //                 {
-        //                     "label": "AN4",
-        //                     "order": 4,
-        //                     "isTracked": "Y",
-        //                     "legendColor": "#1f77b4"
-        //                 },
-        //                 {
-        //                     "label": "AN5",
-        //                     "order": 5,
-        //                     "isTracked": "N",
-        //                     "legendColor": "#2ca02c"
-        //                 },
-        //                 {
-        //                     "label": "CAR",
-        //                     "order": 6,
-        //                     "isTracked": "N",
-        //                     "legendColor": "#8c564b"
-        //                 }
-        //             ]
-        //         },
-        //         { 
-        //             "id": "PA",
-        //             "initialSate": "PN1",
-        //             "closedState": "PAC",
-        //             "deptFilterDisplayName": "Department",
-        //             "catFilterDisplayName": "CAPA Category",
-        //             "states" : [
-        //                 {
-        //                     "label": "PN1",
-        //                     "order": 1,
-        //                     "isTracked": "Y",
-        //                     "legendColor": "#d62728"
-        //                 },
-        //                 {
-        //                     "label": "PN2",
-        //                     "order": 2,
-        //                     "isTracked": "Y",
-        //                     "legendColor": "#ff7f0e"
-        //                 },
-        //                 {
-        //                     "label": "PN3",
-        //                     "order": 3,
-        //                     "isTracked": "Y",
-        //                     "legendColor": "#9467bd"
-        //                 },
-        //                 {
-        //                     "label": "PN4",
-        //                     "order": 4,
-        //                     "isTracked": "Y",
-        //                     "legendColor": "#1f77b4"
-        //                 },
-        //                 {
-        //                     "label": "PAC",
-        //                     "order": 5,
-        //                     "isTracked": "N",
-        //                     "legendColor": "#2ca02c"
-        //                 },
-        //                 {
-        //                     "label": "CAR",
-        //                     "order": 6,
-        //                     "isTracked": "N",
-        //                     "legendColor": "#8c564b"
-        //                 }
-        //             ]
-        //         }
-        //     ]
+        pluginConfig: any = {
+            "categories": [
+               { 
+                    "id": "CA",
+                    "initialSate": "AN1",
+                    "closedState": "AN5",
+                    "deptFilterDisplayName": "Department",
+                    "catFilterDisplayName": "CAPA Category",
+                    "states" : [
+                        {
+                            "label": "AN1",
+                            "order": 1,
+                            "isTracked": "Y",
+                            "isEnabledForAvgChart": "Y",
+                            "legendColor": "#d62728"
+                        },
+                        {
+                            "label": "AN2",
+                            "order": 2,
+                            "isTracked": "Y",
+                            "isEnabledForAvgChart": "Y",
+                            "legendColor": "#ff7f0e"
+                        },
+                        {
+                            "label": "AN3",
+                            "order": 3,
+                            "isTracked": "Y",
+                            "isEnabledForAvgChart": "Y",
+                            "legendColor": "#9467bd"
+                        },
+                        {
+                            "label": "AN4",
+                            "order": 4,
+                            "isTracked": "Y",
+                            "isEnabledForAvgChart": "Y",
+                            "legendColor": "#1f77b4"
+                        },
+                        {
+                            "label": "AN5",
+                            "order": 5,
+                            "isTracked": "N",
+                            "isEnabledForAvgChart": "N",
+                            "legendColor": "#2ca02c"
+                        },
+                        {
+                            "label": "CAR",
+                            "order": 6,
+                            "isTracked": "N",
+                            "isEnabledForAvgChart": "N",
+                            "legendColor": "#8c564b"
+                        }
+                    ]
+                },
+                { 
+                    "id": "PA",
+                    "initialSate": "PN1",
+                    "closedState": "PAC",
+                    "deptFilterDisplayName": "Department",
+                    "catFilterDisplayName": "CAPA Category",
+                    "states" : [
+                        {
+                            "label": "PN1",
+                            "order": 1,
+                            "isTracked": "Y",
+                            "isEnabledForAvgChart": "Y",
+                            "legendColor": "#d62728"
+                        },
+                        {
+                            "label": "PN2",
+                            "order": 2,
+                            "isTracked": "Y",
+                            "isEnabledForAvgChart": "Y",
+                            "legendColor": "#ff7f0e"
+                        },
+                        {
+                            "label": "PN3",
+                            "order": 3,
+                            "isTracked": "Y",
+                            "isEnabledForAvgChart": "Y",
+                            "legendColor": "#9467bd"
+                        },
+                        {
+                            "label": "PN4",
+                            "order": 4,
+                            "isTracked": "Y",
+                            "isEnabledForAvgChart": "Y",
+                            "legendColor": "#1f77b4"
+                        },
+                        {
+                            "label": "PAC",
+                            "order": 5,
+                            "isTracked": "N",
+                            "isEnabledForAvgChart": "N",
+                            "legendColor": "#2ca02c"
+                        },
+                        {
+                            "label": "CAR",
+                            "order": 6,
+                            "isTracked": "N",
+                            "isEnabledForAvgChart": "N",
+                            "legendColor": "#8c564b"
+                        }
+                    ]
+                }
+            ]
            
-        // };
+        };
 
 
         destroy(): void { }
@@ -998,6 +1011,7 @@ namespace MCapaStatusDashboard {
                  let stateCodes: any[] = [];
                  let stateDesc: any[] = [];
                  let trackerStates: any[] = [];
+                 let avgChartStates: any[] = [];
                  let deptWiseInitials: any[] = [];
                  let catWiseInitials: any[] = [];
                  let SateWiseAvgInitials: any[] = [];
@@ -1036,8 +1050,6 @@ namespace MCapaStatusDashboard {
 
                 rejectedState = pluginCategoryConfig.rejectedState ? pluginCategoryConfig.rejectedState : "";
 
-                SateWiseAvgInitials = Array(pluginCategoryConfig.states.length).fill(0);
-
                 pluginCategoryConfig.states.forEach(sateConfig => {
 
                     stateCodes.push(sateConfig.label);
@@ -1049,12 +1061,21 @@ namespace MCapaStatusDashboard {
                         stateTrackerLegendColors.push(sateConfig.legendColor);
                         stateTrackerData.push([labelDesc]);
                     }
+                    
+                    if(sateConfig.isEnabledForAvgChart == "Y"){
+                        avgChartStates.push(labelDesc);
+                        SateWiseAvgInitials.push(0);
+                        statusWiseTotalDaysData.push([0,0]);
+                    }
 
-                    statusWiseTotalDaysData.push([0,0]);
                     statusWiseData.push([labelDesc, 0]);
 
                     statusWiseLegendColors.push(sateConfig.legendColor);
                 });
+
+                avgChartStates.push("Closure Time");
+                SateWiseAvgInitials.push(0);
+                statusWiseTotalDaysData.push([0,0]);
 
                 let ByCategoryLabelData: ByCategoryLabelData = {
                     category: cat,
@@ -1065,6 +1086,7 @@ namespace MCapaStatusDashboard {
                     stateCodes: stateCodes,
                     stateDesc: stateDesc,
                     trackerStates: trackerStates,
+                    avgChartStates: avgChartStates,
                     deptWiseData: [cat + ' count by department', ...deptWiseInitials],
                     categoryWiseData: [cat + ' count by category', ...catWiseInitials],
                     statusWiseInitialData: statusWiseData,
@@ -1131,7 +1153,7 @@ namespace MCapaStatusDashboard {
             this.renderByDeptChart(ByCategoryLabelData.displayDepartments,ByCategoryLabelData.deptWiseData);
             this.renderByCatChart(ByCategoryLabelData.displayCategories,ByCategoryLabelData.categoryWiseData);
             this.renderByStatusChart(ByCategoryLabelData.statusWiseData,ByCategoryLabelData.statusWiseLegendColors);
-            this.renderByAvgTimeChart(ByCategoryLabelData.stateDesc,ByCategoryLabelData.statusWiseAvgData);
+            this.renderByAvgTimeChart(ByCategoryLabelData.avgChartStates,ByCategoryLabelData.statusWiseAvgData);
             this.renderTrackerChart(ByCategoryLabelData.trackerStates,ByCategoryLabelData.stateTrackerData,ByCategoryLabelData.stateTrackerLegendColors);
             this.renderClosureTimeChart(ByCategoryLabelData.closedItemsData,ByCategoryLabelData.closureTimeData);
             this.renderTable(ByCategoryLabelData.itemCurrentStateDetails, ByCategoryLabelData.stateDesc);
@@ -1266,8 +1288,9 @@ namespace MCapaStatusDashboard {
                         itemCurrentStateData.itemStateDaysCountData.push(itemStateDaysCount);
                         
                         if(label.reset.length == label.set.length){
-                            ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][0] += labelstateDaysCount;
-                            ByCategoryLabelData.statusWiseTotalDaysData[stateIndex][1] += 1;
+                            let avgChartStateIndex = ByCategoryLabelData.avgChartStates.findIndex(stateDisp => stateDisp === stateDesc);
+                            ByCategoryLabelData.statusWiseTotalDaysData[avgChartStateIndex][0] += labelstateDaysCount;
+                            ByCategoryLabelData.statusWiseTotalDaysData[avgChartStateIndex][1] += 1;
                         }else{
                             itemCurrentStateDaysCount = labelstateDaysCount;
                         }
@@ -1303,17 +1326,9 @@ namespace MCapaStatusDashboard {
                     }
                 } 
 
-                if(itemCurrentSateIndex == rejectedStateIndex){
-                    ByCategoryLabelData.statusWiseTotalDaysData[itemCurrentSateIndex][0] += itemCurrentStateDaysCount;
-                    ByCategoryLabelData.statusWiseTotalDaysData[itemCurrentSateIndex][1] += 1;
-                }
-
                 if(itemCurrentSateIndex == closedStateIndex){
 
                     ByCategoryLabelData.stateTrackerData = initialStateTrackerData;
-
-                    ByCategoryLabelData.statusWiseTotalDaysData[itemCurrentSateIndex][0] += itemCurrentStateDaysCount;
-                    ByCategoryLabelData.statusWiseTotalDaysData[itemCurrentSateIndex][1] += 1;
 
                     if(initalStateData.length > 0 && closeStateData.length > 0){
 
@@ -1340,6 +1355,11 @@ namespace MCapaStatusDashboard {
 
                         ByCategoryLabelData.closedItemsData.push(item.itemRef);
                         ByCategoryLabelData.closureTimeData.push(daystoCloseItem);
+
+                        let closureTimeLabelIndex = ByCategoryLabelData.avgChartStates.length;
+
+                        ByCategoryLabelData.statusWiseTotalDaysData[closureTimeLabelIndex][0] += daystoCloseItem;
+                        ByCategoryLabelData.statusWiseTotalDaysData[closureTimeLabelIndex][1] += 1;
                     }
                 }
 
