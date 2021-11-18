@@ -1358,8 +1358,8 @@ namespace MCapaStatusDashboard {
 
                         let closureTimeLabelIndex = ByCategoryLabelData.avgChartStates.length;
 
-                        ByCategoryLabelData.statusWiseTotalDaysData[closureTimeLabelIndex][0] += daystoCloseItem;
-                        ByCategoryLabelData.statusWiseTotalDaysData[closureTimeLabelIndex][1] += 1;
+                        ByCategoryLabelData.statusWiseTotalDaysData[closureTimeLabelIndex-1][0] += daystoCloseItem;
+                        ByCategoryLabelData.statusWiseTotalDaysData[closureTimeLabelIndex-1][1] += 1;
                     }
                 }
 
