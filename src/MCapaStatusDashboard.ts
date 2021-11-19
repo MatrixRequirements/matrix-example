@@ -34,7 +34,7 @@ namespace MCapaStatusDashboard {
         }
 
         getPluginVersion(): string {
-            return "1.8.0";
+            return "1.9.0";
         }
     }
 
@@ -121,115 +121,115 @@ namespace MCapaStatusDashboard {
         enableTrackerDateFilter: boolean = false;
         enableCstDateFilter: boolean = false;
 
-       // pluginConfig: any = IC.getSettingJSON("MSCO");
+        pluginConfig: any = IC.getSettingJSON("MSCO");
 
-        pluginConfig: any = {
-            "categories": [
-               { 
-                    "id": "CA",
-                    "initialSate": "AN1",
-                    "closedState": "AN5",
-                    "deptFilterDisplayName": "Department",
-                    "catFilterDisplayName": "CAPA Category",
-                    "states" : [
-                        {
-                            "label": "AN1",
-                            "order": 1,
-                            "isTracked": "Y",
-                            "isEnabledForAvgChart": "Y",
-                            "legendColor": "#d62728"
-                        },
-                        {
-                            "label": "AN2",
-                            "order": 2,
-                            "isTracked": "Y",
-                            "isEnabledForAvgChart": "Y",
-                            "legendColor": "#ff7f0e"
-                        },
-                        {
-                            "label": "AN3",
-                            "order": 3,
-                            "isTracked": "Y",
-                            "isEnabledForAvgChart": "Y",
-                            "legendColor": "#9467bd"
-                        },
-                        {
-                            "label": "AN4",
-                            "order": 4,
-                            "isTracked": "Y",
-                            "isEnabledForAvgChart": "Y",
-                            "legendColor": "#1f77b4"
-                        },
-                        {
-                            "label": "AN5",
-                            "order": 5,
-                            "isTracked": "N",
-                            "isEnabledForAvgChart": "N",
-                            "legendColor": "#2ca02c"
-                        },
-                        {
-                            "label": "CAR",
-                            "order": 6,
-                            "isTracked": "N",
-                            "isEnabledForAvgChart": "N",
-                            "legendColor": "#8c564b"
-                        }
-                    ]
-                },
-                { 
-                    "id": "PA",
-                    "initialSate": "PN1",
-                    "closedState": "PAC",
-                    "deptFilterDisplayName": "Department",
-                    "catFilterDisplayName": "CAPA Category",
-                    "states" : [
-                        {
-                            "label": "PN1",
-                            "order": 1,
-                            "isTracked": "Y",
-                            "isEnabledForAvgChart": "Y",
-                            "legendColor": "#d62728"
-                        },
-                        {
-                            "label": "PN2",
-                            "order": 2,
-                            "isTracked": "Y",
-                            "isEnabledForAvgChart": "Y",
-                            "legendColor": "#ff7f0e"
-                        },
-                        {
-                            "label": "PN3",
-                            "order": 3,
-                            "isTracked": "Y",
-                            "isEnabledForAvgChart": "Y",
-                            "legendColor": "#9467bd"
-                        },
-                        {
-                            "label": "PN4",
-                            "order": 4,
-                            "isTracked": "Y",
-                            "isEnabledForAvgChart": "Y",
-                            "legendColor": "#1f77b4"
-                        },
-                        {
-                            "label": "PAC",
-                            "order": 5,
-                            "isTracked": "N",
-                            "isEnabledForAvgChart": "N",
-                            "legendColor": "#2ca02c"
-                        },
-                        {
-                            "label": "CAR",
-                            "order": 6,
-                            "isTracked": "N",
-                            "isEnabledForAvgChart": "N",
-                            "legendColor": "#8c564b"
-                        }
-                    ]
-                }
-            ]
+        // pluginConfig: any = {
+        //     "categories": [
+        //        { 
+        //             "id": "CA",
+        //             "initialSate": "AN1",
+        //             "closedState": "AN5",
+        //             "deptFilterDisplayName": "Department",
+        //             "catFilterDisplayName": "CAPA Category",
+        //             "states" : [
+        //                 {
+        //                     "label": "AN1",
+        //                     "order": 1,
+        //                     "isTracked": "Y",
+        //                     "isEnabledForAvgChart": "Y",
+        //                     "legendColor": "#d62728"
+        //                 },
+        //                 {
+        //                     "label": "AN2",
+        //                     "order": 2,
+        //                     "isTracked": "Y",
+        //                     "isEnabledForAvgChart": "Y",
+        //                     "legendColor": "#ff7f0e"
+        //                 },
+        //                 {
+        //                     "label": "AN3",
+        //                     "order": 3,
+        //                     "isTracked": "Y",
+        //                     "isEnabledForAvgChart": "Y",
+        //                     "legendColor": "#9467bd"
+        //                 },
+        //                 {
+        //                     "label": "AN4",
+        //                     "order": 4,
+        //                     "isTracked": "Y",
+        //                     "isEnabledForAvgChart": "Y",
+        //                     "legendColor": "#1f77b4"
+        //                 },
+        //                 {
+        //                     "label": "AN5",
+        //                     "order": 5,
+        //                     "isTracked": "N",
+        //                     "isEnabledForAvgChart": "N",
+        //                     "legendColor": "#2ca02c"
+        //                 },
+        //                 {
+        //                     "label": "CAR",
+        //                     "order": 6,
+        //                     "isTracked": "N",
+        //                     "isEnabledForAvgChart": "N",
+        //                     "legendColor": "#8c564b"
+        //                 }
+        //             ]
+        //         },
+        //         { 
+        //             "id": "PA",
+        //             "initialSate": "PN1",
+        //             "closedState": "PAC",
+        //             "deptFilterDisplayName": "Department",
+        //             "catFilterDisplayName": "CAPA Category",
+        //             "states" : [
+        //                 {
+        //                     "label": "PN1",
+        //                     "order": 1,
+        //                     "isTracked": "Y",
+        //                     "isEnabledForAvgChart": "Y",
+        //                     "legendColor": "#d62728"
+        //                 },
+        //                 {
+        //                     "label": "PN2",
+        //                     "order": 2,
+        //                     "isTracked": "Y",
+        //                     "isEnabledForAvgChart": "Y",
+        //                     "legendColor": "#ff7f0e"
+        //                 },
+        //                 {
+        //                     "label": "PN3",
+        //                     "order": 3,
+        //                     "isTracked": "Y",
+        //                     "isEnabledForAvgChart": "Y",
+        //                     "legendColor": "#9467bd"
+        //                 },
+        //                 {
+        //                     "label": "PN4",
+        //                     "order": 4,
+        //                     "isTracked": "Y",
+        //                     "isEnabledForAvgChart": "Y",
+        //                     "legendColor": "#1f77b4"
+        //                 },
+        //                 {
+        //                     "label": "PAC",
+        //                     "order": 5,
+        //                     "isTracked": "N",
+        //                     "isEnabledForAvgChart": "N",
+        //                     "legendColor": "#2ca02c"
+        //                 },
+        //                 {
+        //                     "label": "CAR",
+        //                     "order": 6,
+        //                     "isTracked": "N",
+        //                     "isEnabledForAvgChart": "N",
+        //                     "legendColor": "#8c564b"
+        //                 }
+        //             ]
+        //         }
+        //     ]
            
-        };
+        // };
 
 
         destroy(): void { }
