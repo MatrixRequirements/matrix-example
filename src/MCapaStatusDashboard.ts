@@ -34,7 +34,7 @@ namespace MCapaStatusDashboard {
         }
 
         getPluginVersion(): string {
-            return "1.9.0";
+            return "1.10.0";
         }
     }
 
@@ -1289,8 +1289,10 @@ namespace MCapaStatusDashboard {
                         
                         if(label.reset.length == label.set.length){
                             let avgChartStateIndex = ByCategoryLabelData.avgChartStates.findIndex(stateDisp => stateDisp === stateDesc);
-                            ByCategoryLabelData.statusWiseTotalDaysData[avgChartStateIndex][0] += labelstateDaysCount;
-                            ByCategoryLabelData.statusWiseTotalDaysData[avgChartStateIndex][1] += 1;
+                            if(avgChartStateIndex > -1){
+                                ByCategoryLabelData.statusWiseTotalDaysData[avgChartStateIndex][0] += labelstateDaysCount;
+                                ByCategoryLabelData.statusWiseTotalDaysData[avgChartStateIndex][1] += 1;
+                            }
                         }else{
                             itemCurrentStateDaysCount = labelstateDaysCount;
                         }
@@ -1357,6 +1359,10 @@ namespace MCapaStatusDashboard {
                         ByCategoryLabelData.closureTimeData.push(daystoCloseItem);
 
                         let closureTimeLabelIndex = ByCategoryLabelData.avgChartStates.length;
+
+                        if(closureTimeLabelIndex <=0){
+                            closureTimeLabelIndex = 1;
+                        }
 
                         ByCategoryLabelData.statusWiseTotalDaysData[closureTimeLabelIndex-1][0] += daystoCloseItem;
                         ByCategoryLabelData.statusWiseTotalDaysData[closureTimeLabelIndex-1][1] += 1;
