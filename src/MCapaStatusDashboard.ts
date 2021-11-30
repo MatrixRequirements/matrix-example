@@ -34,7 +34,7 @@ namespace MCapaStatusDashboard {
         }
 
         getPluginVersion(): string {
-            return "1.10.0";
+            return "1.11.0";
         }
     }
 
@@ -1089,8 +1089,8 @@ namespace MCapaStatusDashboard {
                     avgChartStates: avgChartStates,
                     deptWiseData: [cat + ' count by department', ...deptWiseInitials],
                     categoryWiseData: [cat + ' count by category', ...catWiseInitials],
-                    statusWiseInitialData: statusWiseData,
-                    statusWiseData: statusWiseData,
+                    statusWiseInitialData: [...statusWiseData],
+                    statusWiseData: [...statusWiseData],
                     statusWiseLegendColors: statusWiseLegendColors,
                     statusWiseTotalDaysData: statusWiseTotalDaysData,
                     statusWiseAvgData: [cat + ' average time spent in state', ...SateWiseAvgInitials],
