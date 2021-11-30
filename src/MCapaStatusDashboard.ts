@@ -1328,6 +1328,12 @@ namespace MCapaStatusDashboard {
                     }
                 } 
 
+                if(itemCurrentSateIndex == rejectedStateIndex){
+
+                    ByCategoryLabelData.stateTrackerData = initialStateTrackerData;
+
+                }
+
                 if(itemCurrentSateIndex == closedStateIndex){
 
                     ByCategoryLabelData.stateTrackerData = initialStateTrackerData;
