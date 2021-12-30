@@ -46,22 +46,29 @@ namespace GenericDashboard {
 
     interface groupByObject {
         id: string;
+        renderChart: string;
+        showInTable: string;
+        tableHeader: string;
         labels: any[];
         labelsDesc: any[];
-        groupWiseData: any[]
+        groupWiseData: any[];
     }
 
     interface groupByStateObject {
         id: string;
+        renderChart: string;
+        showInTable: string;
+        tableHeader: string;
         stateCodes: any[];
         stateDesc: any[];
         stateColors: any[];
         stateWiseInitialData: any[];
-        stateWiseData: any[]
+        stateWiseData: any[];
     }
 
     interface avgObject {
         id: string;
+        renderChart: string;
         stateCodes: any[];
         stateDesc: any[];
         allStateCodes: any[];
@@ -75,6 +82,9 @@ namespace GenericDashboard {
 
     interface closureObject {
         id: string;
+        renderChart: string;
+        showInTable: string;
+        tableHeader: string;
         allStateCodes: any[];
         allStateDesc: any[];
         closedItemsData: any[];
@@ -86,6 +96,8 @@ namespace GenericDashboard {
 
     interface trackerObject {
         id: string;
+        renderChart: string;
+        showInTable: string;
         stateCodes: any[];
         stateDesc: any[];
         stateColors: any[];
@@ -98,8 +110,11 @@ namespace GenericDashboard {
     }
 
     interface ItemCurrentStateData {
-        labels: any[];
-        values: any[];
+        id: string;
+        attributes: any[];
+        tableValues: any[];
+        InitiatedDate: Date;
+        ClosedDate: Date;
     }
 
     interface ByCategoryLabelData {
@@ -109,7 +124,8 @@ namespace GenericDashboard {
         avgData: avgObject[];
         closureData: closureObject[];
         trackerData: trackerObject[];
-        itemCurrentStateDetails: ItemCurrentStateData[];
+        itemCurrentStateTableHeaders: any[];
+        itemCurrentStateValues: ItemCurrentStateData[];
     }
 
     class GenericDashboardControl extends BaseControl {
@@ -168,7 +184,8 @@ namespace GenericDashboard {
 
             categoriesFunctionalities.forEach(category => {
 
-                let itemCurrentStateDetails: ItemCurrentStateData[] = [];
+                let itemCurrentStateTableHeaders: any[] = [];
+                let itemCurrentStateValues: ItemCurrentStateData[] = [];
                 let groupByData: groupByObject[] = [];
                 let groupByStateData: groupByStateObject[] = [];
                 let avgData: avgObject[] = [];
@@ -182,11 +199,15 @@ namespace GenericDashboard {
                             let groupWiseInitials = Array(functionality.labels.length).fill(0);
                             let groupByObject: groupByObject = {
                                 id: functionality.id,
+                                renderChart: functionality.renderChart,
+                                showInTable: functionality.showInTable,
+                                tableHeader: functionality.tableHeader,
                                 labels: functionality.labels,
                                 labelsDesc: functionality.labelsDesc,
                                 groupWiseData: [category.id + ' ' + functionality.title , ...groupWiseInitials]
                             };
                             groupByData.push(groupByObject);
+                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
                             break;
                         case 'groupByState':
                             let statusWiseData: any[] = [];
@@ -197,6 +218,9 @@ namespace GenericDashboard {
 
                             let groupByStateObject: groupByStateObject = {
                                 id: functionality.id,
+                                renderChart: functionality.renderChart,
+                                showInTable: functionality.showInTable,
+                                tableHeader: functionality.tableHeader,
                                 stateCodes: functionality.labels,
                                 stateDesc: functionality.labelsDesc,
                                 stateColors: functionality.labelColors,
@@ -205,7 +229,7 @@ namespace GenericDashboard {
                             };
 
                             groupByStateData.push(groupByStateObject);
-
+                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
                             break;
                         case 'avg':
                             let SateWiseAvgInitials: any[] = [];
@@ -222,6 +246,7 @@ namespace GenericDashboard {
 
                             let avgObject: avgObject = {
                                 id: functionality.id,
+                                renderChart: functionality.renderChart,
                                 stateCodes: functionality.labels,
                                 stateDesc: functionality.labelsDesc,
                                 allStateCodes: functionality.allLabels,
@@ -240,6 +265,9 @@ namespace GenericDashboard {
                             let closedItemsData: any[] = [];
                             let closureObject: closureObject = {
                                 id: functionality.id,
+                                renderChart: functionality.renderChart,
+                                showInTable: functionality.showInTable,
+                                tableHeader: functionality.tableHeader,
                                 allStateCodes: functionality.allLabels,
                                 allStateDesc: functionality.allLabelDesc,
                                 closedItemsData: closedItemsData,
@@ -250,7 +278,7 @@ namespace GenericDashboard {
                             };
 
                             closureData.push(closureObject);
-
+                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
                             break; 
                         case 'tracker':
                             let stateTrackerData: any[] = [['x']];
@@ -261,6 +289,8 @@ namespace GenericDashboard {
 
                             let trackerObject: trackerObject = {
                                 id: functionality.id,
+                                renderChart: functionality.renderChart,
+                                showInTable: functionality.showInTable,
                                 stateCodes: functionality.labels,
                                 stateDesc: functionality.labelsDesc,
                                 stateColors: functionality.labelColors,
@@ -273,6 +303,10 @@ namespace GenericDashboard {
                             };
 
                             trackerData.push(trackerObject);
+                            
+                            functionality.allLabelDesc.forEach(lableDesc => {
+                                itemCurrentStateTableHeaders.push(lableDesc);
+                            });
 
                             break;    
                     };     
@@ -286,7 +320,8 @@ namespace GenericDashboard {
                     avgData: avgData,
                     closureData: closureData,
                     trackerData: trackerData,
-                    itemCurrentStateDetails: itemCurrentStateDetails
+                    itemCurrentStateTableHeaders: itemCurrentStateTableHeaders,
+                    itemCurrentStateValues: itemCurrentStateValues
                 }
 
                 this.ByCategoryLabelDetails.push(ByCategoryLabelData);
@@ -547,6 +582,24 @@ namespace GenericDashboard {
                     }
                 }
 
+                let itemCurrentStateTableInitials : any[] = [];
+
+                // ByCategoryLabelData.itemCurrentStateTableHeaders.forEach(header => {
+                //     itemCurrentStateTableInitials.push("")
+                // });
+
+                itemCurrentStateTableInitials = Array(ByCategoryLabelData.itemCurrentStateTableHeaders.length).fill("");
+
+
+                let itemCurrentStateData : ItemCurrentStateData = {
+                    id: item.itemRef,
+                    attributes: [],
+                    tableValues: itemCurrentStateTableInitials,
+                    InitiatedDate: null,
+                    ClosedDate: null
+                };
+                
+
                 for (const label of item.labels) {
 
                     //process groupBy functionality
@@ -555,9 +608,14 @@ namespace GenericDashboard {
                             let labelIndex = groupByObject.labels.findIndex(labelCode => labelCode === label.label);
 
                             if(labelIndex > -1 && (label.reset.length !== label.set.length)){
-                                groupByObject.groupWiseData[labelIndex + 1] += 1;
-                                //TODO item current state
-                                //itemCurrentStateData.department = ByCategoryLabelData.displayDepartments[deptIndex];
+                                if(groupByObject.renderChart == 'Y'){
+                                    groupByObject.groupWiseData[labelIndex + 1] += 1;
+                                }
+            
+                                if(groupByObject.showInTable == 'Y'){
+                                    let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByObject.tableHeader);
+                                    itemCurrentStateData.tableValues[headerIndex] = groupByObject.labelsDesc[labelIndex];
+                                }
                             }
                         });
                     }
