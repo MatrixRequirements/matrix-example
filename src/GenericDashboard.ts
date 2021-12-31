@@ -132,6 +132,8 @@ namespace GenericDashboard {
 
         currentCat: string = "";
 
+        currentFilter: string = "";
+
         pluginTableId: string = "";
 
         ByCategoryLabelDetails: ByCategoryLabelData[] = [];
@@ -388,7 +390,89 @@ namespace GenericDashboard {
 
         }
 
+        //TODO this has to render only chart where date filter is clicked based on id
+        // renderGroupByChartByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData) {
+
+        //     let fromDate = new Date(fromDateVal);
+        //     let toDate = new Date(toDateVal);
+
+        //     if(byCategoryLabelData.groupByData.length > 0){
+        //         byCategoryLabelData.groupByData.forEach(groupByObject => {
+
+        //             let groupWiseInitials = Array(groupByObject.labels.length).fill(0);
+        //             let groupWiseData =  [ groupByObject.groupWiseData[0] , ...groupWiseInitials];
+
+        //             byCategoryLabelData.itemCurrentStateValues.forEach(
+        //                 (itemCurrentStateData) => {
+
+        //                     if(itemCurrentStateData.InitiatedDate && 
+        //                         (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
+
+        //                             let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByObject.tableHeader);
+        //                             let groupByLabelIndex = groupByObject.labelsDesc.findIndex(labelDesc => labelDesc === itemCurrentStateData.tableValues[headerIndex]);
+        //                             groupWiseData[groupByLabelIndex + 1] += 1;
+        //                     }
+        //             });
+
+        //             this.renderGroupByChart(groupByObject.labelsDesc,groupWiseData,groupByObject.id);
+        //         });
+        //     }
+        // }
+
+        renderGroupByChart(labels,grouoWiseData,groupId){
+            let that = this;
+             //prepare template "${contentConfig.id}-Chart"
+             let groupByChartparams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    x : 'x',
+                    columns: [
+                        ['x', ...labels],
+                        grouoWiseData
+                    ],
+                    type: 'bar',
+                    onclick: function (d, i) {
+                        setTimeout(() => {
+                            that.filterByLabel({ type: labels[d.x] });
+                        }, 100);
+                    }
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+                }
+            };
+
+            //prepare chart config and render
+            //$("#DeptWiseoverviewChart div").remove();
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let groupByChart = c3.generate(groupByChartparams);
+
+            $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+            });
+        }
+
+        filterByLabel(filter: any) {
+            this.currentFilter = filter.type;
+            let filterDataClass = "";
+            if (filter.type == "") {
+                //Show all
+                $(`#${this.pluginTableId}Table tbody tr`).show();
+            }
+            else {
+                filterDataClass = filter.type.split(' ').join('-').replaceAll('&','-');
+                $(`#${this.pluginTableId}Table tbody tr`).hide();
+                $(`#${this.pluginTableId}Table tbody tr.${filterDataClass}`).show();
+            }
+        }
+
         renderCategoryWiseData(cat: string) {
+            let that = this;
 
             if (cat == undefined) {
                 return;
@@ -399,6 +483,17 @@ namespace GenericDashboard {
             this.currentCat = cat;
 
             $("#selectedCat", this._root).text(cat);
+
+            let ByCategoryLabelData = this.ByCategoryLabelDetails
+                .find(({ category }) => category === this.currentCat);
+
+            if(ByCategoryLabelData.groupByData.length > 0){
+                ByCategoryLabelData.groupByData.forEach(groupByObject => {
+                    that.renderGroupByChart(groupByObject.labelsDesc,groupByObject.groupWiseData,groupByObject.id);
+                });
+            }    
+
+            
         }
 
         preparePluginHtmlTemplate() {
@@ -546,7 +641,7 @@ namespace GenericDashboard {
                     ${genericTableRowDom}
                     </div>
                 </div>
-            `;
+            `; 
 
             return genericHtmlDom;
 
@@ -584,12 +679,7 @@ namespace GenericDashboard {
 
                 let itemCurrentStateTableInitials : any[] = [];
 
-                // ByCategoryLabelData.itemCurrentStateTableHeaders.forEach(header => {
-                //     itemCurrentStateTableInitials.push("")
-                // });
-
                 itemCurrentStateTableInitials = Array(ByCategoryLabelData.itemCurrentStateTableHeaders.length).fill("");
-
 
                 let itemCurrentStateData : ItemCurrentStateData = {
                     id: item.itemRef,
@@ -599,7 +689,6 @@ namespace GenericDashboard {
                     ClosedDate: null
                 };
                 
-
                 for (const label of item.labels) {
 
                     //process groupBy functionality
@@ -615,6 +704,7 @@ namespace GenericDashboard {
                                 if(groupByObject.showInTable == 'Y'){
                                     let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByObject.tableHeader);
                                     itemCurrentStateData.tableValues[headerIndex] = groupByObject.labelsDesc[labelIndex];
+                                    itemCurrentStateData.attributes.push(groupByObject.labelsDesc[labelIndex]);
                                 }
                             }
                         });
@@ -628,18 +718,21 @@ namespace GenericDashboard {
 
                             if(stateIndex > -1){
                                 if((label.reset.length !== label.set.length) && itemCurrentSateIndex < 0){
-                                    groupByStateObject.stateWiseData[stateIndex][1] += 1;
+                                    if(groupByStateObject.renderChart == 'Y'){
+                                        groupByStateObject.stateWiseData[stateIndex][1] += 1;
+                                    }
                                     itemCurrentSateIndex = stateIndex;
-                                    //TODO item current state
-                                    // itemCurrentStateData.currentState = ByCategoryLabelData.stateDesc[stateIndex];
-                                    // itemCurrentStateData.currentStateSetDate = this.getCurrentStateSetDate(label);
                                 }else if((label.reset.length !== label.set.length) && stateIndex > itemCurrentSateIndex) {
-                                    groupByStateObject.stateWiseData[itemCurrentSateIndex][1] -= 1;
-                                    groupByStateObject.stateWiseData[stateIndex][1] += 1;
+                                    if(groupByStateObject.renderChart == 'Y'){
+                                        groupByStateObject.stateWiseData[itemCurrentSateIndex][1] -= 1;
+                                        groupByStateObject.stateWiseData[stateIndex][1] += 1;
+                                    }
                                     itemCurrentSateIndex = stateIndex;
-                                    //TODO item current state
-                                    // itemCurrentStateData.currentState = ByCategoryLabelData.stateDesc[stateIndex];
-                                    // itemCurrentStateData.currentStateSetDate = this.getCurrentStateSetDate(label);
+                                }
+
+                                if(groupByStateObject.showInTable == 'Y'){
+                                    let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
+                                    itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
                                 }
                             }
                         });
@@ -700,29 +793,22 @@ namespace GenericDashboard {
 
                             if(stateIndex == initialStateIndex){
                                 initalStateData.push(label);
-                                //TODO item current state
-                                // initalStateData[0].set.sort((a, b) => a.version - b.version);
-                                // let intiatedDate = new Date(initalStateData[0].set[0].dateIso);
-                                // itemCurrentStateData.InitiatedDate = intiatedDate;
+                                initalStateData[0].set.sort((a, b) => a.version - b.version);
+                                let intiatedDate = new Date(initalStateData[0].set[0].dateIso);
+                                itemCurrentStateData.InitiatedDate = intiatedDate;
                             }
     
                             if(stateIndex == closedStateIndex){
                                 closeStateData.push(label);
                             }
 
-                            //TODO item current state
-                            // let itemStateDaysCount :ItemStateDaysCount = {
-                            //     state: ByCategoryLabelData.stateDesc[stateIndex],
-                            //     days: labelstateDaysCount
-                            // };
-    
-                            // itemCurrentStateData.itemStateDaysCountData.push(itemStateDaysCount);
-
                             if(label.reset.length == label.set.length){
-                                let avgStateIndex = avgObject.stateCodes.findIndex(stateCode => stateCode === label.label);
-                                if(avgStateIndex > -1){
-                                    avgObject.statusWiseTotalDaysData[avgStateIndex][0] += labelstateDaysCount;
-                                    avgObject.statusWiseTotalDaysData[avgStateIndex][1] += 1;
+                                if(avgObject.renderChart == 'Y'){
+                                    let avgStateIndex = avgObject.stateCodes.findIndex(stateCode => stateCode === label.label);
+                                    if(avgStateIndex > -1){
+                                        avgObject.statusWiseTotalDaysData[avgStateIndex][0] += labelstateDaysCount;
+                                        avgObject.statusWiseTotalDaysData[avgStateIndex][1] += 1;
+                                    }
                                 }
                             }
                         });
@@ -740,19 +826,30 @@ namespace GenericDashboard {
                             closedStateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === trackerObject.closedState);
                             rejectedStateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === trackerObject.rejectedState);
 
-                            let trackerStateIndex = trackerObject.stateCodes.findIndex(stateCode => stateCode === label.label);
-                            if(trackerStateIndex > -1){
-                                if(itemIndex > -1){
-                                    trackerObject.stateTrackerData[trackerStateIndex + 1][itemIndex + 1] = labelstateDaysCount;
-                                }else{
-                                    trackerObject.stateTrackerData[0].push(item.itemRef);
-                                    itemIndex = trackerObject.stateTrackerData[0].length - 2;
-                                    for (let i = 0; i <= trackerObject.stateCodes.length - 1; i++) {
-                                        trackerObject.stateTrackerData[i + 1].push(0);
+                            if(trackerObject.renderChart == 'Y'){
+                                let trackerStateIndex = trackerObject.stateCodes.findIndex(stateCode => stateCode === label.label);
+                                if(trackerStateIndex > -1){
+                                    if(itemIndex > -1){
+                                        trackerObject.stateTrackerData[trackerStateIndex + 1][itemIndex + 1] = labelstateDaysCount;
+                                    }else{
+                                        trackerObject.stateTrackerData[0].push(item.itemRef);
+                                        itemIndex = trackerObject.stateTrackerData[0].length - 2;
+                                        for (let i = 0; i <= trackerObject.stateCodes.length - 1; i++) {
+                                            trackerObject.stateTrackerData[i + 1].push(0);
+                                        }
+                                        trackerObject.stateTrackerData[trackerStateIndex + 1][itemIndex + 1] = labelstateDaysCount;
                                     }
-                                    trackerObject.stateTrackerData[trackerStateIndex + 1][itemIndex + 1] = labelstateDaysCount;
                                 }
                             }
+
+                            if(trackerObject.showInTable == 'Y'){
+
+                                let stateDesc = trackerObject.allStateDesc[stateIndex];
+                                let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === stateDesc);
+                                itemCurrentStateData.tableValues[headerIndex] = labelstateDaysCount;
+
+                            }
+
 
                         });
                     }
@@ -785,9 +882,8 @@ namespace GenericDashboard {
                             const intiatedDate = new Date(initalStateData[0].set[0].dateIso);
                             const colosedDate = new Date(closeStateData[0].set[0].dateIso);
 
-                            //TODO item current state
-                            // itemCurrentStateData.InitiatedDate = intiatedDate;
-                            // itemCurrentStateData.ClosedDate = colosedDate;
+                            itemCurrentStateData.InitiatedDate = intiatedDate;
+                            itemCurrentStateData.ClosedDate = colosedDate;
 
 
                             let time_difference = colosedDate.getTime() - intiatedDate.getTime();
@@ -795,38 +891,43 @@ namespace GenericDashboard {
                             //calculate days difference by dividing total milliseconds in a day  
                             let days_difference = time_difference / (1000 * 60 * 60 * 24);
 
-                            let daystoCloseItem = Math.floor(days_difference);
-
-                            //TODO item current state
-                            //itemCurrentStateData.openToCloseDays = daystoCloseItem;
+                            let daysToCloseItem = Math.floor(days_difference);
 
                             //process closure functionality
                             if(ByCategoryLabelData.closureData.length > 0){
                                 ByCategoryLabelData.closureData.forEach(closureObject => {
-                                    closureObject.closedItemsData.push(item.itemRef);
-                                    closureObject.closureTimeData.push(daystoCloseItem);
+                                    if(closureObject.renderChart == 'Y'){
+                                        closureObject.closedItemsData.push(item.itemRef);
+                                        closureObject.closureTimeData.push(daysToCloseItem);
+                                    }
+
+                                    if(closureObject.showInTable == 'Y'){
+                                        let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === closureObject.tableHeader);
+                                        itemCurrentStateData.tableValues[headerIndex] = daysToCloseItem;
+                                    }
                                 });
                             }
 
                             //process avg functionality
                             if(ByCategoryLabelData.avgData.length > 0){
                                 ByCategoryLabelData.avgData.forEach(avgObject => {
-                                    let closureTimeLabelIndex = avgObject.stateDesc.length;
+                                    if(avgObject.renderChart == 'Y'){
+                                        let closureTimeLabelIndex = avgObject.stateDesc.length;
 
-                                    if(closureTimeLabelIndex <=0){
-                                        closureTimeLabelIndex = 1;
+                                        if(closureTimeLabelIndex <=0){
+                                            closureTimeLabelIndex = 1;
+                                        }
+
+                                        avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][0] += daysToCloseItem;
+                                        avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][1] += 1;
                                     }
-
-                                    avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][0] += daystoCloseItem;
-                                    avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][1] += 1;
                                 });
                             }
                         }
                     }
                 }
 
-                //TODO current state
-                //ByCategoryLabelData.itemCurrentStateDetails.push(itemCurrentStateData);
+                ByCategoryLabelData.itemCurrentStateValues.push(itemCurrentStateData);
             }
 
             //updating avg functionality data
