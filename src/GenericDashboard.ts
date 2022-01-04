@@ -186,7 +186,7 @@ namespace GenericDashboard {
 
             categoriesFunctionalities.forEach(category => {
 
-                let itemCurrentStateTableHeaders: any[] = [];
+                let itemCurrentStateTableHeaders: any[] = ['Item'];
                 let itemCurrentStateValues: ItemCurrentStateData[] = [];
                 let groupByData: groupByObject[] = [];
                 let groupByStateData: groupByStateObject[] = [];
@@ -445,7 +445,6 @@ namespace GenericDashboard {
             };
 
             //prepare chart config and render
-            //$("#DeptWiseoverviewChart div").remove();
             $(`#${groupId}-Chart div`).remove();
 
             $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
@@ -455,6 +454,149 @@ namespace GenericDashboard {
             $(`#${groupId}-Chart svg`).click(function () {
                 that.filterByLabel({ type: "" })
             });
+        }
+
+
+        renderGroupByStateChart(stateWiseData,stateColors,groupId){
+            let that = this;
+            //prepare template
+            let groupByStateChartParams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    columns: stateWiseData,
+                    type : 'pie',
+                    onclick: function (d, i) {
+                        setTimeout(() => {
+                            that.filterByLabel({ type: d.id });
+                        }, 100);
+                    }
+                },
+                color: {
+                    pattern: stateColors
+                },
+                pie: {
+                    label: {
+                        format: function (value: any, ratio: any, id: any) {
+                            return (value);
+                        }
+                    }
+                },
+                tooltip: {
+                    format: {
+                        value: function (value : any, ratio: any, id: any, index: any) { return value; }
+                    }
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let groupByStateChart = c3.generate(groupByStateChartParams);
+
+            $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+            });
+        }
+
+        renderAvgChart(states,statusWiseAvgData,groupId){
+            //prepare template
+            let avgChartparams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    x : 'x',
+                    columns: [
+                        ['x', ...states],
+                        statusWiseAvgData
+                    ],
+                    type: 'bar'
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let avgChart = c3.generate(avgChartparams);
+        }
+
+        renderClosureChart(closedItemsData,closureTimeData,groupId){
+            let that = this;
+            //prepare template
+            let closureChartparams: c3.ChartConfiguration = {
+               bindto: `#${groupId}Graph`,
+               data: {
+                   x : 'x',
+                   columns: [
+                    ['x', ...closedItemsData],
+                    closureTimeData
+                   ],
+                   type: 'bar',
+                   onclick: function (d, i) {
+                       setTimeout(() => {
+                           that.filterByLabel({ type: closedItemsData[d.x] });
+                       }, 100);
+                   }
+               },
+               axis: {
+                   x: {
+                       type: 'category'
+                   }
+               }
+           };
+
+           //prepare chart config and render
+           $(`#${groupId}-Chart div`).remove();
+
+           $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+           let closureChart = c3.generate(closureChartparams);
+
+           $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+           });
+        }
+
+        renderTrackerChart(trackerStates,stateTrackerData,stateColors,groupId){
+            //prepare template
+            let trackerChartparams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                size: {
+                    height: 900
+                },
+                data: {
+                    x : 'x',
+                    columns: stateTrackerData,
+                    type: 'bar',
+                    groups: [
+                              trackerStates
+                            ],
+                    order: null
+                },
+                color: {
+                    pattern: stateColors
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    },
+                    rotated: true
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let trackerChart = c3.generate(trackerChartparams);
         }
 
         filterByLabel(filter: any) {
@@ -469,6 +611,59 @@ namespace GenericDashboard {
                 $(`#${this.pluginTableId}Table tbody tr`).hide();
                 $(`#${this.pluginTableId}Table tbody tr.${filterDataClass}`).show();
             }
+        }
+
+
+        renderPluginTable(itemCurrentStateTableHeaders: any[],itemCurrentStateValues: ItemCurrentStateData[]) {
+            let that = this;
+
+            let table = $(`#${that.pluginTableId}Table`);
+            $(".addedItem", table).remove();
+            $(".addedHeader", table).remove();
+
+            let tableHeader = $('<tr />');
+            tableHeader.attr("class", "addedHeader");
+
+            itemCurrentStateTableHeaders.forEach(
+                (headerLabel) => {
+                    tableHeader.append('<th>' + headerLabel +'</th>');
+                }
+            );
+
+            $(`#${that.pluginTableId}TableHeader`).append(tableHeader);
+
+            itemCurrentStateValues.forEach(
+                (itemCurrentStateData) => {
+                    let tableRow = $(`<tr id="${that.pluginTableId}Row" />`);
+                    let classAttr = "addedItem";
+
+                    itemCurrentStateData.attributes.forEach((attribute) => {
+                        classAttr += " " + attribute.split(' ').join('-').replaceAll('&','-');
+                    });
+
+                    tableRow.attr("class", classAttr);
+
+                    let itemRowData = $("<td/>");
+                    tableRow.append(itemRowData);
+                    itemRowData.text(itemCurrentStateData.id + "!");
+                    itemRowData.data("ref", itemCurrentStateData.id + "!");
+
+                    itemCurrentStateData.tableValues.forEach(
+                        (rowValue) => {
+                            let labelRowData = $("<td>"+ rowValue +"</td>");
+                            tableRow.append(labelRowData);
+                        }
+                    );
+                    
+                    $(`#${that.pluginTableId}RowList`).append(tableRow);
+                }
+            );
+
+            $(`table#${that.pluginTableId}Table`).highlightReferences();
+            $(`table#${that.pluginTableId}Table`).tablesorter();
+
+            this.filterByLabel({ type: "" });
+
         }
 
         renderCategoryWiseData(cat: string) {
@@ -491,8 +686,36 @@ namespace GenericDashboard {
                 ByCategoryLabelData.groupByData.forEach(groupByObject => {
                     that.renderGroupByChart(groupByObject.labelsDesc,groupByObject.groupWiseData,groupByObject.id);
                 });
-            }    
+            }
 
+            if(ByCategoryLabelData.groupByStateData.length > 0){
+                ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
+                    that.renderGroupByStateChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);
+                });
+            }
+
+            if(ByCategoryLabelData.avgData.length > 0){
+                ByCategoryLabelData.avgData.forEach(avgObject => {
+                    that.renderAvgChart(avgObject.stateDesc,avgObject.statusWiseAvgData,avgObject.id);
+                });
+            }
+
+            if(ByCategoryLabelData.closureData.length > 0){
+                ByCategoryLabelData.closureData.forEach(closureObject => {
+                    that.renderClosureChart(closureObject.closedItemsData,closureObject.closureTimeData,closureObject.id);
+                });
+            }
+
+            if(ByCategoryLabelData.trackerData.length > 0){
+                ByCategoryLabelData.trackerData.forEach(trackerObject => {
+                    that.renderTrackerChart(trackerObject.stateDesc,trackerObject.stateTrackerData,trackerObject.stateColors,trackerObject.id);
+                });
+            }
+
+
+            if(ByCategoryLabelData.itemCurrentStateValues.length > 0){
+                that.renderPluginTable(ByCategoryLabelData.itemCurrentStateTableHeaders,ByCategoryLabelData.itemCurrentStateValues);
+            }
             
         }
 
@@ -733,6 +956,7 @@ namespace GenericDashboard {
                                 if(groupByStateObject.showInTable == 'Y'){
                                     let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
                                     itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
+                                    itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
                                 }
                             }
                         });
