@@ -15,6 +15,7 @@
                             "contentType": "chart",
                             "contentConfig": {
                                 "id" : "dept",
+                                "functionality" : "groupBy",
                                 "title" : "Department wise CAPA count overview",
                                 "dateFilterRequired" : "Y",
                                 "contentClass" : "chart"
@@ -25,6 +26,7 @@
                             "contentType": "chart",
                             "contentConfig": {
                                 "id" : "cat",
+                                "functionality" : "groupBy",
                                 "title" : "Category wise CAPA count overview",
                                 "dateFilterRequired" : "Y",
                                 "contentClass" : "chart"
@@ -39,6 +41,7 @@
                             "contentType": "chart",
                             "contentConfig": {
                                 "id" : "status",
+                                "functionality" : "groupByState",
                                 "title" : "Status wise CAPA count overview",
                                 "dateFilterRequired" : "Y",
                                 "contentClass" : "chart"
@@ -49,6 +52,7 @@
                             "contentType": "chart",
                             "contentConfig": {
                                 "id" : "avg",
+                                "functionality" : "avg",
                                 "title" : "Average time state wise overview",
                                 "dateFilterRequired" : "N",
                                 "contentClass" : "chart"
@@ -63,6 +67,7 @@
                             "contentType": "chart",
                             "contentConfig": {
                                 "id" : "closure",
+                                "functionality" : "closure",
                                 "title" : "CAPA closure time overview",
                                 "dateFilterRequired" : "Y",
                                 "contentClass" : "closureTimeChart"
@@ -77,6 +82,7 @@
                             "contentType": "chart",
                             "contentConfig": {
                                 "id" : "tracker",
+                                "functionality" : "tracker",
                                 "title" : "CAPA Tracker",
                                 "dateFilterRequired" : "Y",
                                 "contentClass" : "bigChart"
@@ -91,6 +97,7 @@
                             "contentType": "table",
                             "contentConfig": {
                                 "id" : "CCSO",
+                                "functionality" : "table",
                                 "title" : "CAPA current status list",
                                 "dateFilterRequired" : "Y"
                             }

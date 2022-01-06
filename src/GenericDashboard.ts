@@ -136,6 +136,8 @@ namespace GenericDashboard {
 
         pluginTableId: string = "";
 
+        dateFilterEnablerMap = new Map();
+
         ByCategoryLabelDetails: ByCategoryLabelData[] = [];
 
         pluginConfig: any = IC.getSettingJSON("MSCO");
@@ -387,6 +389,143 @@ namespace GenericDashboard {
                     });
                 });
             }
+
+        }
+
+        initiateDateFilter(dateFilterId){
+
+            let that = this;
+            let enableDateFilter;
+
+            $("#"+dateFilterId+"-date-filter").hide();
+
+            $("#"+dateFilterId+"-date-filter-icon").click(function () {
+                
+                let dateFileterData = that.dateFilterEnablerMap.get(dateFilterId);
+                enableDateFilter = !dateFileterData.dateFilterEnabled;
+                dateFileterData.dateFilterEnabled = enableDateFilter;
+                that.dateFilterEnablerMap.set(dateFilterId,dateFileterData);
+
+                if(enableDateFilter){
+                    $("#"+dateFilterId+"-date-filter").show();
+                }else{
+                    $("#"+dateFilterId+"-date-filter").hide();
+
+                    let byCategoryLabelData = that.ByCategoryLabelDetails
+                    .find(({ category }) => category === that.currentCat);
+
+                    switch (dateFileterData.functionality) {
+                        case 'groupBy':
+                            if(byCategoryLabelData.groupByData.length > 0){
+                                byCategoryLabelData.groupByData.forEach(groupByObject => {
+                                    if(dateFilterId == groupByObject.id){
+                                        that.renderGroupByChart(groupByObject.labelsDesc,groupByObject.groupWiseData,groupByObject.id);
+                                    }
+                                });
+                            }
+                            break;
+                        case 'groupByState':
+                            if(byCategoryLabelData.groupByStateData.length > 0){
+                                byCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
+                                    if(dateFilterId == groupByStateObject.id){
+                                        that.renderGroupByStateChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);
+                                    }
+                                });
+                            }
+                            break;
+                        case 'avg':
+                            if(byCategoryLabelData.avgData.length > 0){
+                                byCategoryLabelData.avgData.forEach(avgObject => {
+                                    if(dateFilterId == avgObject.id){
+                                        that.renderAvgChart(avgObject.stateDesc,avgObject.statusWiseAvgData,avgObject.id);
+                                    }
+                                });
+                            }
+                            break;
+                        case 'closure':
+                            if(byCategoryLabelData.closureData.length > 0){
+                                byCategoryLabelData.closureData.forEach(closureObject => {
+                                    if(dateFilterId == closureObject.id){
+                                        that.renderClosureChart(closureObject.closedItemsData,closureObject.closureTimeData,closureObject.id);
+                                    }
+                                });
+                            }
+                            break; 
+                        case 'tracker':
+                            if(byCategoryLabelData.trackerData.length > 0){
+                                byCategoryLabelData.trackerData.forEach(trackerObject => {
+                                    if(dateFilterId == trackerObject.id){
+                                        that.renderTrackerChart(trackerObject.stateDesc,trackerObject.stateTrackerData,trackerObject.stateColors,trackerObject.id);
+                                    }
+                                });
+                            }
+                            break; 
+                        case 'table':
+                            if(byCategoryLabelData.itemCurrentStateValues.length > 0){
+                                that.renderPluginTable(byCategoryLabelData.itemCurrentStateTableHeaders,byCategoryLabelData.itemCurrentStateValues);
+                            }
+                            break;
+                   }
+                }
+            });
+
+            //Initiating date range selection section
+            let fromDate = $("#"+dateFilterId+"-fromdate", that._root);
+            let toDate = $("#"+dateFilterId+"-todate", that._root);
+            let goButton = $("#"+dateFilterId+"-gobutton", that._root);
+
+            //MM/dd/YYYY 
+            //ml.UI.DateTime.getSimpleDateTimeFormatMoment()
+            fromDate.datetimepicker({
+                format: 'MM/DD/YYYY',
+                maxDate: 'now'
+            });
+            toDate.datetimepicker({
+                defaultDate: new Date(),
+                maxDate: 'now',
+                useCurrent: false, //Important! 
+                format: 'MM/DD/YYYY'
+            });
+            ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+
+            fromDate.on("dp.change", function (e: any) {
+                toDate.data("DateTimePicker").minDate(e.date);
+                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            });
+            toDate.on("dp.change", function (e: any) {
+                fromDate.data("DateTimePicker").maxDate(e.date);
+                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            });
+
+            $("#"+dateFilterId+"-gobutton").click(function () {
+
+                let fromDateSelected = fromDate.data("DateTimePicker").date();
+                let toDateSelected = toDate.data("DateTimePicker").date();
+                
+                let byCategoryLabelData = that.ByCategoryLabelDetails
+                .find(({ category }) => category === that.currentCat);
+
+                // switch (dateFilterId) {
+                //     case 'dept':
+                //         that.renderDeptChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
+                //         break;
+                //     case 'cat':
+                //         that.renderCatChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
+                //         break;
+                //     case 'status':
+                //         that.renderStatusChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
+                //         break;
+                //     case 'closure':
+                //         that.renderClosureTimeChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
+                //         break; 
+                //     case 'tracker':
+                //         that.renderTrackerChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
+                //         break; 
+                //     case 'cst':
+                //         that.renderTableByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
+                //         break;           
+                // };
+            });
 
         }
 
@@ -755,6 +894,9 @@ namespace GenericDashboard {
                                         let dateFilterDom = "";
 
                                         if(contentConfig.dateFilterRequired == 'Y'){
+
+                                            that.dateFilterEnablerMap.set(contentConfig.id,{functionality:contentConfig.functionality,dateFilterEnabled: false});
+
                                             dateFilterIconDom = `
                                                 <i id="${contentConfig.id}-date-filter-icon" 
                                                 class="far fa-calendar-alt" aria-hidden="true" style="padding-left:12px;cursor:pointer" 
