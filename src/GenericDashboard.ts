@@ -138,6 +138,8 @@ namespace GenericDashboard {
 
         dateFilterEnablerMap = new Map();
 
+        allChartsMap = new Map();
+
         ByCategoryLabelDetails: ByCategoryLabelData[] = [];
 
         pluginConfig: any = IC.getSettingJSON("MSCO");
@@ -168,8 +170,8 @@ namespace GenericDashboard {
             that.dateFilterEnablerMap.forEach((values,keys)=>{
                 that.initiateDateFilter(keys);
             });
-
-            //TODO copy button
+            
+            setTimeout(o => that.installCopyButtons(that.pluginConfig.title), 10);
 
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
@@ -396,6 +398,50 @@ namespace GenericDashboard {
 
         }
 
+        installCopyButtons(title: string) {
+            let that = this;
+            
+            let savedWidth = 0;
+
+            that.allChartsMap.forEach((value,key)=>{
+
+                ml.UI.copyBuffer($(`#${key}-ChartTitle`,this._root), "copy  to clipboard", $(`.panel-body:has(#${key}-Chart)`), this._root, (copied: JQuery) => {
+                    $(`#${key}-date-filter`,copied).remove();
+                    let title_ = $(`#${key}-ChartTitle`,this._root).text();
+                    $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
+        
+                    ml.UI.fixC3ForCopy(copied);
+        
+                },"",()=>{
+                    savedWidth = $(`#${key}-Chart svg`,this._root).width();
+                    let chartObject = value;
+                    chartObject.resize({width:590});
+                },()=>{
+                    let chartObject = value;
+                    chartObject.resize({width:savedWidth})
+                });
+                
+            });
+    
+            
+
+            ml.UI.copyBuffer($(`#${that.pluginTableId}TableHeader`,this._root), "copy list to clipboard", $("#currentStatusList",this._root), this._root, (copied: JQuery) => {
+                $(".doNotCopy", copied).remove();
+    
+                var filter = $(`#${that.pluginTableId}InputFilter`,this._root).val();
+               
+                $(".hidden",copied).remove();
+           
+                $("#id", copied).each( (i,item)=>{ $(item).text($(item).data("ref") +"!")  } );
+    
+                $(`#${that.pluginTableId}InputFilter`,copied).remove();
+
+                $(`#${that.pluginTableId}-date-filter`,copied).remove();
+
+                $(`#${that.pluginTableId}TitleForCopy`, copied).html("<div><h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) + "</span> <br/>" + (filter != "" ? "<b>Filter : </b>" + filter + "<br/>" : "") + "</div>");
+            });
+        }
+
         initiateDateFilter(dateFilterId){
 
             let that = this;
@@ -595,6 +641,8 @@ namespace GenericDashboard {
 
             let groupByChart = c3.generate(groupByChartparams);
 
+            that.allChartsMap.set(groupId,groupByChart);
+
             $(`#${groupId}-Chart svg`).click(function () {
                 that.filterByLabel({ type: "" })
             });
@@ -669,12 +717,15 @@ namespace GenericDashboard {
 
             let groupByStateChart = c3.generate(groupByStateChartParams);
 
+            that.allChartsMap.set(groupId,groupByStateChart);
+
             $(`#${groupId}-Chart svg`).click(function () {
                 that.filterByLabel({ type: "" })
             });
         }
 
         renderAvgChart(states,statusWiseAvgData,groupId){
+            let that = this;
             //prepare template
             let avgChartparams: c3.ChartConfiguration = {
                 bindto: `#${groupId}Graph`,
@@ -699,6 +750,8 @@ namespace GenericDashboard {
             $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
 
             let avgChart = c3.generate(avgChartparams);
+
+            that.allChartsMap.set(groupId,avgChart);
         }
 
         renderClosureChartByDateRanges(fromDateVal: any, toDateVal: any,byCategoryLabelData: ByCategoryLabelData, groupId: String) {
@@ -763,6 +816,8 @@ namespace GenericDashboard {
 
            let closureChart = c3.generate(closureChartparams);
 
+           that.allChartsMap.set(groupId,closureChart);
+
            $(`#${groupId}-Chart svg`).click(function () {
                 that.filterByLabel({ type: "" })
            });
@@ -799,6 +854,7 @@ namespace GenericDashboard {
        }
 
         renderTrackerChart(trackerStates,stateTrackerData,stateColors,groupId){
+            let that = this;
             //prepare template
             let trackerChartparams: c3.ChartConfiguration = {
                 bindto: `#${groupId}Graph`,
@@ -831,6 +887,8 @@ namespace GenericDashboard {
             $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
 
             let trackerChart = c3.generate(trackerChartparams);
+
+            that.allChartsMap.set(groupId,trackerChart);
         }
 
         filterByLabel(filter: any) {
@@ -889,7 +947,7 @@ namespace GenericDashboard {
                 }
             );
 
-            $(`#${that.pluginTableId}TableHeader`).append(tableHeader);
+            $(`#${that.pluginTableId}-TableHeader`).append(tableHeader);
 
             itemCurrentStateValues.forEach(
                 (itemCurrentStateData) => {
@@ -1048,6 +1106,7 @@ namespace GenericDashboard {
                                     let tableColumnDom = "";
                                      
                                     if(columnConfig.contentType == "chart"){
+                                        that.allChartsMap.set(contentConfig.id,'');
                                         chartColumnDom = `
                                             <div class="col-lg-${columnConfig.size} ">
                                                 <div class="panel panel-default">
@@ -1089,7 +1148,7 @@ namespace GenericDashboard {
                                                         ${dateFilterDom}
                                                         <div class="table-responsive">
                                                             <table class="table table-condensed table-borderless table-hover" id="${contentConfig.id}Table">
-                                                                <thead id="${contentConfig.id}TableHeader">
+                                                                <thead id="${contentConfig.id}-TableHeader">
                                                                 </thead>
                                                                 <tbody id="${contentConfig.id}RowList">
                                                                 </tbody>
