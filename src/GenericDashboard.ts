@@ -190,7 +190,7 @@ namespace GenericDashboard {
         initiateByCategoryLabelData(){
 
             let that = this;
-            let categoriesFunctionalities = that.pluginConfig.categoriesFunctionalies;
+            let categoriesFunctionalities = that.pluginConfig.categoriesFunctionalities;
 
             categoriesFunctionalities.forEach(category => {
 
