@@ -1158,7 +1158,7 @@ namespace GenericDashboard {
 
             itemCurrentStateValues.forEach(
                 (itemCurrentStateData) => {
-                    let tableRow = $(`<tr id="${that.pluginTableId}Row" />`);
+                    let tableRow = $(`<tr/>`);
                     let classAttr = "addedItem";
 
                     itemCurrentStateData.attributes.forEach((attribute) => {
@@ -1268,19 +1268,23 @@ namespace GenericDashboard {
                                         groupByStateObject.stateWiseData[stateIndex][1] += 1;
                                     }
                                     itemCurrentSateIndex = stateIndex;
+                                    if(groupByStateObject.showInTable == 'Y'){
+                                        let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
+                                        itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
+                                        itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
+                                    }
                                 }else if((label.reset.length !== label.set.length) && stateIndex > itemCurrentSateIndex) {
                                     if(groupByStateObject.renderChart == 'Y'){
                                         groupByStateObject.stateWiseData[itemCurrentSateIndex][1] -= 1;
                                         groupByStateObject.stateWiseData[stateIndex][1] += 1;
                                     }
                                     itemCurrentSateIndex = stateIndex;
-                                }
-
-                                if(groupByStateObject.showInTable == 'Y'){
-                                    let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
-                                    itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
-                                    itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
-                                }
+                                    if(groupByStateObject.showInTable == 'Y'){
+                                        let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
+                                        itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
+                                        itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
+                                    }
+                                }   
                             }
                         });
                     }
