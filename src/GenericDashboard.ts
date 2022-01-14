@@ -563,9 +563,6 @@ namespace GenericDashboard {
 
             that.allChartsMap.forEach((value,key)=>{
 
-                console.log("Key:"+key);
-                console.log("Value:"+value);
-
                 ml.UI.copyBuffer($(`#${key}-ChartTitle`,this._root), "copy  to clipboard", $(`.panel-body:has(#${key}-Chart)`), this._root, (copied: JQuery) => {
                     console.log("start");
                     $(`#${key}-date-filter`,copied).remove();
@@ -576,19 +573,14 @@ namespace GenericDashboard {
 
                     console.log("end");
         
-                },"",()=>{
-                    console.log("start1");
-                    console.log("key:"+key);
+                },"",()=>{    
                     savedWidth = $(`#${key}-Chart svg`,this._root).width();
-                    console.log(JSON.stringify(value));
-                    let chartObject = value;
+                    let chartObject = that.allChartsMap.get(key);
                     chartObject.resize({width:590});
-                    console.log("end1");
-                },()=>{
-                    console.log("start2");
-                    let chartObject = value;
+                    
+                },()=>{     
+                    let chartObject = that.allChartsMap.get(key);
                     chartObject.resize({width:savedWidth});
-                    console.log("end2");
                 });
                 
             });
