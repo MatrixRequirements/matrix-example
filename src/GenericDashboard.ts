@@ -602,9 +602,9 @@ namespace GenericDashboard {
             }
 
 
-            // if(ByCategoryLabelData.itemCurrentStateValues.length > 0){
-            //     that.renderPluginTable(ByCategoryLabelData.itemCurrentStateTableHeaders,ByCategoryLabelData.itemCurrentStateValues);
-            // }
+            if(ByCategoryLabelData.itemCurrentStateValues.length > 0){
+                that.renderPluginTable(ByCategoryLabelData.itemCurrentStateTableHeaders,ByCategoryLabelData.itemCurrentStateValues);
+            }
             
         }
 
@@ -811,6 +811,58 @@ namespace GenericDashboard {
             let trackerChart = c3.generate(trackerChartparams);
 
             that.allChartsMap.set(groupId,trackerChart);
+        }
+
+        renderPluginTable(itemCurrentStateTableHeaders: any[],itemCurrentStateValues: ItemCurrentStateData[]) {
+            let that = this;
+
+            let table = $(`#${that.pluginTableId}Table`);
+            $(".addedItem", table).remove();
+            $(".addedHeader", table).remove();
+
+            let tableHeader = $('<tr />');
+            tableHeader.attr("class", "addedHeader");
+
+            itemCurrentStateTableHeaders.forEach(
+                (headerLabel) => {
+                    tableHeader.append('<th>' + headerLabel +'</th>');
+                }
+            );
+
+            $(`#${that.pluginTableId}-TableHeader`).append(tableHeader);
+
+            itemCurrentStateValues.forEach(
+                (itemCurrentStateData) => {
+                    let tableRow = $(`<tr id="${that.pluginTableId}Row" />`);
+                    let classAttr = "addedItem";
+
+                    itemCurrentStateData.attributes.forEach((attribute) => {
+                        classAttr += " " + attribute.split(' ').join('-').replaceAll('&','-');
+                    });
+
+                    tableRow.attr("class", classAttr);
+
+                    let itemRowData = $("<td/>");
+                    tableRow.append(itemRowData);
+                    itemRowData.text(itemCurrentStateData.id + "!");
+                    itemRowData.data("ref", itemCurrentStateData.id + "!");
+
+                    itemCurrentStateData.tableValues.forEach(
+                        (rowValue) => {
+                            let labelRowData = $("<td>"+ rowValue +"</td>");
+                            tableRow.append(labelRowData);
+                        }
+                    );
+                    
+                    $(`#${that.pluginTableId}RowList`).append(tableRow);
+                }
+            );
+
+            $(`table#${that.pluginTableId}Table`).highlightReferences();
+            $(`table#${that.pluginTableId}Table`).tablesorter();
+
+            this.filterByLabel({ type: "" });
+
         }
 
 
