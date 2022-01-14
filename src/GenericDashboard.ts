@@ -1416,6 +1416,9 @@ namespace GenericDashboard {
                     ){
                         ByCategoryLabelData.trackerData.forEach(trackerObject => {
                             trackerObject.stateTrackerData = trackerObject.stateTrackerInitialData;
+                            if(item.itemRef == 'CA-15'){
+                                console.log("debug");
+                            }
                         });
                     }
 
