@@ -1457,6 +1457,8 @@ namespace GenericDashboard {
                             if(ByCategoryLabelData.avgData.length > 0){
                                 ByCategoryLabelData.avgData.forEach(avgObject => {
                                     if(avgObject.renderChart == 'Y'){
+                                        console.log("Item:"+item.itemRef);
+                                        console.log('avgObject:'+JSON.stringify(avgObject));
                                         let closureTimeLabelIndex = avgObject.stateDesc.length;
 
                                         if(closureTimeLabelIndex <=0){
