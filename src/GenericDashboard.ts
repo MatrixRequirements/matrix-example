@@ -1410,7 +1410,7 @@ namespace GenericDashboard {
                 if(ByCategoryLabelData.trackerData.length > 0) {
 
                     if(item.itemRef == "CA-15"){
-                        //debug
+                        console.log("debug");
                     }
 
                     if( (itemCurrentSateIndex == closedStateIndex)
