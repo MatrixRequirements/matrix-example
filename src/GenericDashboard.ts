@@ -44,6 +44,90 @@ namespace GenericDashboard {
         }
     }
 
+    interface groupByObject {
+        id: string;
+        renderChart: string;
+        showInTable: string;
+        tableHeader: string;
+        labels: any[];
+        labelsDesc: any[];
+        groupWiseData: any[];
+    }
+
+    interface groupByStateObject {
+        id: string;
+        renderChart: string;
+        showInTable: string;
+        tableHeader: string;
+        stateCodes: any[];
+        stateDesc: any[];
+        stateColors: any[];
+        stateWiseInitialData: any[];
+        stateWiseData: any[];
+    }
+
+    interface avgObject {
+        id: string;
+        renderChart: string;
+        stateCodes: any[];
+        stateDesc: any[];
+        allStateCodes: any[];
+        allStateDesc: any[];
+        statusWiseTotalDaysData: any[];
+        statusWiseAvgData: any[];
+        intialState: string;
+        closedState: string;
+        rejectedState: string; 
+    }
+
+    interface closureObject {
+        id: string;
+        renderChart: string;
+        showInTable: string;
+        tableHeader: string;
+        allStateCodes: any[];
+        allStateDesc: any[];
+        closedItemsData: any[];
+        closureTimeData: any[];
+        intialState: string;
+        closedState: string;
+        rejectedState: string; 
+    }
+
+    interface trackerObject {
+        id: string;
+        renderChart: string;
+        showInTable: string;
+        stateCodes: any[];
+        stateDesc: any[];
+        stateColors: any[];
+        allStateCodes: any[];
+        allStateDesc: any[];
+        stateTrackerInitialData: any[];
+        stateTrackerData: any[];
+        closedState: string;
+        rejectedState: string; 
+    }
+
+    interface ItemCurrentStateData {
+        id: string;
+        attributes: any[];
+        tableValues: any[];
+        InitiatedDate: Date;
+        ClosedDate: Date;
+    }
+
+    interface ByCategoryLabelData {
+        category: string;
+        groupByData: groupByObject[];
+        groupByStateData: groupByStateObject[];
+        avgData: avgObject[];
+        closureData: closureObject[];
+        trackerData: trackerObject[];
+        itemCurrentStateTableHeaders: any[];
+        itemCurrentStateValues: ItemCurrentStateData[];
+    }
+
     class GenericDashboardControl extends BaseControl {
 
         pluginTableId: string = "";
@@ -53,6 +137,8 @@ namespace GenericDashboard {
         allChartsMap = new Map();
 
         dateFilterEnablerMap = new Map();
+
+        ByCategoryLabelDetails: ByCategoryLabelData[] = [];
 
         pluginConfig: any = IC.getSettingJSON("MSCO");
 
@@ -69,6 +155,7 @@ namespace GenericDashboard {
         initPage() {
             let that = this;
             that.renderHTML();
+            that.initiateByCategoryLabelData();
         }
 
         renderHTML() {
@@ -284,6 +371,161 @@ namespace GenericDashboard {
 
             return genericHtmlDom;
 
+        }
+
+        initiateByCategoryLabelData(){
+
+            let that = this;
+            let categoriesFunctionalities = that.pluginConfig.categoriesFunctionalities;
+
+            categoriesFunctionalities.forEach(category => {
+
+                let itemCurrentStateTableHeaders: any[] = ['Item'];
+                let itemCurrentStateValues: ItemCurrentStateData[] = [];
+                let groupByData: groupByObject[] = [];
+                let groupByStateData: groupByStateObject[] = [];
+                let avgData: avgObject[] = [];
+                let closureData: closureObject[] = [];
+                let trackerData: trackerObject[] = [];
+
+                category.functionalities.forEach(functionality => {
+
+                    switch (functionality.type) {
+                        case 'groupBy':
+                            let groupWiseInitials = Array(functionality.labels.length).fill(0);
+                            let groupByObject: groupByObject = {
+                                id: functionality.id,
+                                renderChart: functionality.renderChart,
+                                showInTable: functionality.showInTable,
+                                tableHeader: functionality.tableHeader,
+                                labels: functionality.labels,
+                                labelsDesc: functionality.labelsDesc,
+                                groupWiseData: [category.id + ' ' + functionality.title , ...groupWiseInitials]
+                            };
+                            groupByData.push(groupByObject);
+                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            break;
+                        case 'groupByState':
+                            let statusWiseData: any[] = [];
+
+                            functionality.labelsDesc.forEach(labelDesc => {
+                                statusWiseData.push([labelDesc, 0]);
+                            });
+
+                            let groupByStateObject: groupByStateObject = {
+                                id: functionality.id,
+                                renderChart: functionality.renderChart,
+                                showInTable: functionality.showInTable,
+                                tableHeader: functionality.tableHeader,
+                                stateCodes: functionality.labels,
+                                stateDesc: functionality.labelsDesc,
+                                stateColors: functionality.labelColors,
+                                stateWiseInitialData: JSON.parse(JSON.stringify(statusWiseData)),
+                                stateWiseData: JSON.parse(JSON.stringify(statusWiseData))
+                            };
+
+                            groupByStateData.push(groupByStateObject);
+                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            break;
+                        case 'avg':
+                            let SateWiseAvgInitials: any[] = [];
+                            let statusWiseTotalDaysData: any[] = [];
+
+                            functionality.labels.forEach(label => {
+                                SateWiseAvgInitials.push(0);
+                                statusWiseTotalDaysData.push([0,0]);
+                            });
+
+                            functionality.labelsDesc.push("Closure Time");
+                            SateWiseAvgInitials.push(0);
+                            statusWiseTotalDaysData.push([0,0]);
+
+                            let avgObject: avgObject = {
+                                id: functionality.id,
+                                renderChart: functionality.renderChart,
+                                stateCodes: functionality.labels,
+                                stateDesc: functionality.labelsDesc,
+                                allStateCodes: functionality.allLabels,
+                                allStateDesc: functionality.allLabelDesc,
+                                statusWiseTotalDaysData: statusWiseTotalDaysData,
+                                statusWiseAvgData: [category.id + ' ' + functionality.title , ...SateWiseAvgInitials],
+                                intialState: functionality.initialSateLabel,
+                                closedState: functionality.closedStateLabel,
+                                rejectedState: functionality.rejectedStateLabel
+                            };
+
+                            avgData.push(avgObject);
+
+                            break;
+                        case 'closure':
+                            let closedItemsData: any[] = [];
+                            let closureObject: closureObject = {
+                                id: functionality.id,
+                                renderChart: functionality.renderChart,
+                                showInTable: functionality.showInTable,
+                                tableHeader: functionality.tableHeader,
+                                allStateCodes: functionality.allLabels,
+                                allStateDesc: functionality.allLabelDesc,
+                                closedItemsData: closedItemsData,
+                                closureTimeData: [category.id + ' ' + functionality.title],
+                                intialState: functionality.initialSateLabel,
+                                closedState: functionality.closedStateLabel,
+                                rejectedState: functionality.rejectedStateLabel
+                            };
+
+                            closureData.push(closureObject);
+                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            break; 
+                        case 'tracker':
+                            let stateTrackerData: any[] = [['x']];
+
+                            functionality.labelsDesc.forEach(labelDesc => {
+                                stateTrackerData.push([labelDesc]);
+                            });
+
+                            let trackerObject: trackerObject = {
+                                id: functionality.id,
+                                renderChart: functionality.renderChart,
+                                showInTable: functionality.showInTable,
+                                stateCodes: functionality.labels,
+                                stateDesc: functionality.labelsDesc,
+                                stateColors: functionality.labelColors,
+                                allStateCodes: functionality.allLabels,
+                                allStateDesc: functionality.allLabelDesc,
+                                stateTrackerInitialData: JSON.parse(JSON.stringify(stateTrackerData)),
+                                stateTrackerData: JSON.parse(JSON.stringify(stateTrackerData)),
+                                closedState: functionality.closedStateLabel,
+                                rejectedState: functionality.rejectedStateLabel
+                            };
+
+                            trackerData.push(trackerObject);
+                            
+                            functionality.allLabelDesc.forEach(lableDesc => {
+                                itemCurrentStateTableHeaders.push(lableDesc);
+                            });
+
+                            break;    
+                    };     
+
+                });
+
+                let ByCategoryLabelData: ByCategoryLabelData = {
+                    category: category.id,
+                    groupByData: groupByData,
+                    groupByStateData: groupByStateData,
+                    avgData: avgData,
+                    closureData: closureData,
+                    trackerData: trackerData,
+                    itemCurrentStateTableHeaders: itemCurrentStateTableHeaders,
+                    itemCurrentStateValues: itemCurrentStateValues
+                }
+
+                this.ByCategoryLabelDetails.push(ByCategoryLabelData);
+            });
+
+            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+                console.log("ByCategoryLabelData:"+JSON.stringify(ByCategoryLabelData));
+            }
         }
 
         renderCategoryWiseData(cat: string) {
