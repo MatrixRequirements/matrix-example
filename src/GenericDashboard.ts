@@ -576,6 +576,7 @@ namespace GenericDashboard {
                 },"",()=>{
                     console.log("start1");
                     savedWidth = $(`#${key}-Chart svg`,this._root).width();
+                    console.log(JSON.stringify(value));
                     let chartObject = value;
                     chartObject.resize({width:590});
                     console.log("end1");
