@@ -1476,20 +1476,20 @@ namespace GenericDashboard {
                             }
 
                             //process avg functionality
-                            if(ByCategoryLabelData.avgData.length > 0){
-                                ByCategoryLabelData.avgData.forEach(avgObject => {
-                                    if(avgObject.renderChart == 'Y'){
-                                        let closureTimeLabelIndex = avgObject.stateDesc.length;
+                            // if(ByCategoryLabelData.avgData.length > 0){
+                            //     ByCategoryLabelData.avgData.forEach(avgObject => {
+                            //         if(avgObject.renderChart == 'Y'){
+                            //             let closureTimeLabelIndex = avgObject.stateDesc.length;
 
-                                        if(closureTimeLabelIndex <=0){
-                                            closureTimeLabelIndex = 1;
-                                        }
+                            //             if(closureTimeLabelIndex <=0){
+                            //                 closureTimeLabelIndex = 1;
+                            //             }
 
-                                        avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][0] += daysToCloseItem;
-                                        avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][1] += 1;
-                                    }
-                                });
-                            }
+                            //             avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][0] += daysToCloseItem;
+                            //             avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][1] += 1;
+                            //         }
+                            //     });
+                            // }
                         }
                     }
                 }
