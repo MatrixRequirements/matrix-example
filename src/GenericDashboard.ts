@@ -564,19 +564,26 @@ namespace GenericDashboard {
             that.allChartsMap.forEach((value,key)=>{
 
                 ml.UI.copyBuffer($(`#${key}-ChartTitle`,this._root), "copy  to clipboard", $(`.panel-body:has(#${key}-Chart)`), this._root, (copied: JQuery) => {
+                    console.log("start");
                     $(`#${key}-date-filter`,copied).remove();
                     let title_ = $(`#${key}-ChartTitle`,this._root).text();
                     $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
         
                     ml.UI.fixC3ForCopy(copied);
+
+                    console.log("end");
         
                 },"",()=>{
+                    console.log("start1");
                     savedWidth = $(`#${key}-Chart svg`,this._root).width();
                     let chartObject = value;
                     chartObject.resize({width:590});
+                    console.log("end1");
                 },()=>{
+                    console.log("start2");
                     let chartObject = value;
-                    chartObject.resize({width:savedWidth})
+                    chartObject.resize({width:savedWidth});
+                    console.log("end2");
                 });
                 
             });
