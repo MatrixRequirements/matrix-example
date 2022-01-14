@@ -583,11 +583,11 @@ namespace GenericDashboard {
                 });
             }
 
-            // if(ByCategoryLabelData.avgData.length > 0){
-            //     ByCategoryLabelData.avgData.forEach(avgObject => {
-            //         that.renderAvgChart(avgObject.stateDesc,avgObject.statusWiseAvgData,avgObject.id);
-            //     });
-            // }
+            if(ByCategoryLabelData.avgData.length > 0){
+                ByCategoryLabelData.avgData.forEach(avgObject => {
+                    that.renderAvgChart(avgObject.stateDesc,avgObject.statusWiseAvgData,avgObject.id);
+                });
+            }
 
             // if(ByCategoryLabelData.closureData.length > 0){
             //     ByCategoryLabelData.closureData.forEach(closureObject => {
@@ -706,6 +706,36 @@ namespace GenericDashboard {
             });
         }
 
+        renderAvgChart(states,statusWiseAvgData,groupId){
+            let that = this;
+            //prepare template
+            let avgChartparams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    x : 'x',
+                    columns: [
+                        ['x', ...states],
+                        statusWiseAvgData
+                    ],
+                    type: 'bar'
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let avgChart = c3.generate(avgChartparams);
+
+            that.allChartsMap.set(groupId,avgChart);
+        }
+
 
         processLabelsData(labels: XRLabelEntry[]){
             let that = this;
@@ -799,81 +829,81 @@ namespace GenericDashboard {
                         });
                     }
 
-                    // //getting state number of days required for avg,tracker and closure functionality
-                    // if((ByCategoryLabelData.avgData.length > 0) 
-                    //     || (ByCategoryLabelData.trackerData.length > 0)
-                    //     || (ByCategoryLabelData.closureData.length > 0)
-                    //     ){
-                    //     //get the number of days label state was in
-                    //     label.set.sort((a, b) => a.version - b.version);
-                    //     label.reset.sort((a, b) => a.version - b.version);
+                    //getting state number of days required for avg,tracker and closure functionality
+                    if((ByCategoryLabelData.avgData.length > 0) 
+                        || (ByCategoryLabelData.trackerData.length > 0)
+                        || (ByCategoryLabelData.closureData.length > 0)
+                        ){
+                        //get the number of days label state was in
+                        label.set.sort((a, b) => a.version - b.version);
+                        label.reset.sort((a, b) => a.version - b.version);
 
-                    //     labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
-                    //         let stateDays: number;
-                    //         if (label.reset[currentIndex]) {
-                    //             const setDate = new Date(currentValue.dateIso);
-                    //             const resetDate = new Date(label.reset[currentIndex].dateIso);
+                        labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
+                            let stateDays: number;
+                            if (label.reset[currentIndex]) {
+                                const setDate = new Date(currentValue.dateIso);
+                                const resetDate = new Date(label.reset[currentIndex].dateIso);
 
-                    //             let time_difference = resetDate.getTime() - setDate.getTime();
+                                let time_difference = resetDate.getTime() - setDate.getTime();
 
-                    //             //calculate days difference by dividing total milliseconds in a day  
-                    //             let days_difference = time_difference / (1000 * 60 * 60 * 24);
+                                //calculate days difference by dividing total milliseconds in a day  
+                                let days_difference = time_difference / (1000 * 60 * 60 * 24);
 
-                    //             stateDays = Math.floor(days_difference);
-                    //         } else {
-                    //             const setDate = new Date(currentValue.dateIso);
-                    //             const resetDate = new Date();
+                                stateDays = Math.floor(days_difference);
+                            } else {
+                                const setDate = new Date(currentValue.dateIso);
+                                const resetDate = new Date();
 
-                    //             let time_difference = resetDate.getTime() - setDate.getTime();
+                                let time_difference = resetDate.getTime() - setDate.getTime();
 
-                    //             //calculate days difference by dividing total milliseconds in a day  
-                    //             let days_difference = time_difference / (1000 * 60 * 60 * 24);
+                                //calculate days difference by dividing total milliseconds in a day  
+                                let days_difference = time_difference / (1000 * 60 * 60 * 24);
 
-                    //             stateDays = Math.floor(days_difference);
-                    //         }
+                                stateDays = Math.floor(days_difference);
+                            }
 
-                    //         return accumulator + stateDays;
+                            return accumulator + stateDays;
 
-                    //     }, 0);
-                    // }
+                        }, 0);
+                    }
 
                     
 
-                    // //process avg functionality
-                    // if(ByCategoryLabelData.avgData.length > 0){
-                    //     ByCategoryLabelData.avgData.forEach(avgObject => {
+                    //process avg functionality
+                    if(ByCategoryLabelData.avgData.length > 0){
+                        ByCategoryLabelData.avgData.forEach(avgObject => {
 
-                    //         let stateIndex = avgObject.allStateCodes.findIndex(stateCode => stateCode === label.label);
-                    //         if(stateIndex > -1 && (label.reset.length !== label.set.length)){
-                    //             itemCurrentSateIndex = stateIndex;
-                    //         }
+                            let stateIndex = avgObject.allStateCodes.findIndex(stateCode => stateCode === label.label);
+                            if(stateIndex > -1 && (label.reset.length !== label.set.length)){
+                                itemCurrentSateIndex = stateIndex;
+                            }
 
-                    //         initialStateIndex = avgObject.allStateCodes.findIndex(stateCode => stateCode === avgObject.intialState);
-                    //         closedStateIndex = avgObject.allStateCodes.findIndex(stateCode => stateCode === avgObject.closedState);
-                    //         rejectedStateIndex = avgObject.allStateCodes.findIndex(stateCode => stateCode === avgObject.rejectedState);
+                            initialStateIndex = avgObject.allStateCodes.findIndex(stateCode => stateCode === avgObject.intialState);
+                            closedStateIndex = avgObject.allStateCodes.findIndex(stateCode => stateCode === avgObject.closedState);
+                            rejectedStateIndex = avgObject.allStateCodes.findIndex(stateCode => stateCode === avgObject.rejectedState);
 
-                    //         if(stateIndex == initialStateIndex){
-                    //             initalStateData.push(label);
-                    //             initalStateData[0].set.sort((a, b) => a.version - b.version);
-                    //             let intiatedDate = new Date(initalStateData[0].set[0].dateIso);
-                    //             itemCurrentStateData.InitiatedDate = intiatedDate;
-                    //         }
+                            if(stateIndex == initialStateIndex){
+                                initalStateData.push(label);
+                                initalStateData[0].set.sort((a, b) => a.version - b.version);
+                                let intiatedDate = new Date(initalStateData[0].set[0].dateIso);
+                                itemCurrentStateData.InitiatedDate = intiatedDate;
+                            }
     
-                    //         if(stateIndex == closedStateIndex){
-                    //             closeStateData.push(label);
-                    //         }
+                            if(stateIndex == closedStateIndex){
+                                closeStateData.push(label);
+                            }
 
-                    //         if(label.reset.length == label.set.length){
-                    //             if(avgObject.renderChart == 'Y'){
-                    //                 let avgStateIndex = avgObject.stateCodes.findIndex(stateCode => stateCode === label.label);
-                    //                 if(avgStateIndex > -1){
-                    //                     avgObject.statusWiseTotalDaysData[avgStateIndex][0] += labelstateDaysCount;
-                    //                     avgObject.statusWiseTotalDaysData[avgStateIndex][1] += 1;
-                    //                 }
-                    //             }
-                    //         }
-                    //     });
-                    // }
+                            if(label.reset.length == label.set.length){
+                                if(avgObject.renderChart == 'Y'){
+                                    let avgStateIndex = avgObject.stateCodes.findIndex(stateCode => stateCode === label.label);
+                                    if(avgStateIndex > -1){
+                                        avgObject.statusWiseTotalDaysData[avgStateIndex][0] += labelstateDaysCount;
+                                        avgObject.statusWiseTotalDaysData[avgStateIndex][1] += 1;
+                                    }
+                                }
+                            }
+                        });
+                    }
 
                     // //process tracker functionality
                     // if(ByCategoryLabelData.trackerData.length > 0){
@@ -992,18 +1022,18 @@ namespace GenericDashboard {
             }
 
             //updating avg functionality data
-            // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
-            //     ByCategoryLabelData.avgData.forEach(avgObject => {
-            //         avgObject.statusWiseTotalDaysData.forEach((element,index) => {
-            //             let avgData = 0;
-            //             if(element[1] !== 0){
-            //                 avgData = element[0]/element[1]
-            //             }
-            //             avgObject.statusWiseAvgData[index + 1] = avgData.toFixed(2);
-            //         });
+            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+                ByCategoryLabelData.avgData.forEach(avgObject => {
+                    avgObject.statusWiseTotalDaysData.forEach((element,index) => {
+                        let avgData = 0;
+                        if(element[1] !== 0){
+                            avgData = element[0]/element[1]
+                        }
+                        avgObject.statusWiseAvgData[index + 1] = avgData.toFixed(2);
+                    });
 
-            //     });
-            // }
+                });
+            }
 
             // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
             //     console.log("category:"+ByCategoryLabelData.category)
