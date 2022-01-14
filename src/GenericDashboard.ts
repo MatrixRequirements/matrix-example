@@ -1409,14 +1409,13 @@ namespace GenericDashboard {
 
                 if(ByCategoryLabelData.trackerData.length > 0) {
 
-                    if(item.itemRef == "CA-15"){
-                        console.log("debug");
-                    }
-
                     if( (itemCurrentSateIndex == closedStateIndex)
                         || (itemCurrentSateIndex == rejectedStateIndex)
                     ){
                         ByCategoryLabelData.trackerData.forEach(trackerObject => {
+                            if(item.itemRef == "CA-15"){
+                                console.log("debug");
+                            }
                             trackerObject.stateTrackerData = trackerObject.stateTrackerInitialData;
                         });
                     }
