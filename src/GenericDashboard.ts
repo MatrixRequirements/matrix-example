@@ -115,6 +115,7 @@ namespace GenericDashboard {
         tableValues: any[];
         InitiatedDate: Date;
         ClosedDate: Date;
+        currentState: string;
     }
 
     interface ByCategoryLabelData {
@@ -1057,8 +1058,8 @@ namespace GenericDashboard {
 
                         byCategoryLabelData.itemCurrentStateValues.forEach(
                            (itemCurrentStateData) => {
-                                if(itemCurrentStateData.InitiatedDate && 
-                                (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
+                                if(itemCurrentStateData.InitiatedDate && itemCurrentStateData.currentState !== trackerObject.closedState
+                                 && (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
                                     stateTrackerData[0].push(itemCurrentStateData.id);
                                     trackerObject.stateDesc.forEach(
                                         (trackState, stateIndex) => {
@@ -1232,9 +1233,10 @@ namespace GenericDashboard {
                     attributes: [],
                     tableValues: itemCurrentStateTableInitials,
                     InitiatedDate: null,
-                    ClosedDate: null
+                    ClosedDate: null,
+                    currentState: ''
                 };
-                
+
                 if(ByCategoryLabelData.trackerData.length > 0) {      
                     ByCategoryLabelData.trackerData.forEach(trackerObject => {
                         trackerObject.stateTrackerInitialData = JSON.parse(JSON.stringify(trackerObject.stateTrackerData));
@@ -1275,6 +1277,7 @@ namespace GenericDashboard {
                                         groupByStateObject.stateWiseData[stateIndex][1] += 1;
                                     }
                                     itemCurrentSateIndex = stateIndex;
+                                    itemCurrentStateData.currentState = label.label;
                                     if(groupByStateObject.showInTable == 'Y'){
                                         let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
                                         itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
@@ -1286,6 +1289,7 @@ namespace GenericDashboard {
                                         groupByStateObject.stateWiseData[stateIndex][1] += 1;
                                     }
                                     itemCurrentSateIndex = stateIndex;
+                                    itemCurrentStateData.currentState = label.label;
                                     if(groupByStateObject.showInTable == 'Y'){
                                         let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
                                         itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
@@ -1379,6 +1383,7 @@ namespace GenericDashboard {
                             let stateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === label.label);
                             if(stateIndex > -1 && (label.reset.length !== label.set.length)){
                                 itemCurrentSateIndex = stateIndex;
+                                itemCurrentStateData.currentState = label.label;
                             }
 
                             closedStateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === trackerObject.closedState);
