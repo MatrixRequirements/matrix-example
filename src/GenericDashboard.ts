@@ -589,11 +589,11 @@ namespace GenericDashboard {
                 });
             }
 
-            // if(ByCategoryLabelData.closureData.length > 0){
-            //     ByCategoryLabelData.closureData.forEach(closureObject => {
-            //         that.renderClosureChart(closureObject.closedItemsData,closureObject.closureTimeData,closureObject.id);
-            //     });
-            // }
+            if(ByCategoryLabelData.closureData.length > 0){
+                ByCategoryLabelData.closureData.forEach(closureObject => {
+                    that.renderClosureChart(closureObject.closedItemsData,closureObject.closureTimeData,closureObject.id);
+                });
+            }
 
             // if(ByCategoryLabelData.trackerData.length > 0){
             //     ByCategoryLabelData.trackerData.forEach(trackerObject => {
@@ -734,6 +734,45 @@ namespace GenericDashboard {
             let avgChart = c3.generate(avgChartparams);
 
             that.allChartsMap.set(groupId,avgChart);
+        }
+
+        renderClosureChart(closedItemsData,closureTimeData,groupId){
+            let that = this;
+            //prepare template
+            let closureChartparams: c3.ChartConfiguration = {
+               bindto: `#${groupId}Graph`,
+               data: {
+                   x : 'x',
+                   columns: [
+                    ['x', ...closedItemsData],
+                    closureTimeData
+                   ],
+                   type: 'bar',
+                   onclick: function (d, i) {
+                       setTimeout(() => {
+                           that.filterByLabel({ type: closedItemsData[d.x] });
+                       }, 100);
+                   }
+               },
+               axis: {
+                   x: {
+                       type: 'category'
+                   }
+               }
+           };
+
+           //prepare chart config and render
+           $(`#${groupId}-Chart div`).remove();
+
+           $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+           let closureChart = c3.generate(closureChartparams);
+
+           that.allChartsMap.set(groupId,closureChart);
+
+           $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+           });
         }
 
 
@@ -960,63 +999,63 @@ namespace GenericDashboard {
                 // }
                
 
-                // if( (ByCategoryLabelData.avgData.length > 0) 
-                //     || (ByCategoryLabelData.closureData.length > 0)
-                // ){
-                //     if(itemCurrentSateIndex == closedStateIndex){
+                if( (ByCategoryLabelData.avgData.length > 0) 
+                    || (ByCategoryLabelData.closureData.length > 0)
+                ){
+                    if(itemCurrentSateIndex == closedStateIndex){
 
-                //         if(initalStateData.length > 0 && closeStateData.length > 0){
+                        if(initalStateData.length > 0 && closeStateData.length > 0){
 
-                //             initalStateData[0].set.sort((a, b) => a.version - b.version);
-                //             closeStateData[0].set.sort((a, b) => b.version - a.version);
+                            initalStateData[0].set.sort((a, b) => a.version - b.version);
+                            closeStateData[0].set.sort((a, b) => b.version - a.version);
 
-                //             const intiatedDate = new Date(initalStateData[0].set[0].dateIso);
-                //             const colosedDate = new Date(closeStateData[0].set[0].dateIso);
+                            const intiatedDate = new Date(initalStateData[0].set[0].dateIso);
+                            const colosedDate = new Date(closeStateData[0].set[0].dateIso);
 
-                //             itemCurrentStateData.InitiatedDate = intiatedDate;
-                //             itemCurrentStateData.ClosedDate = colosedDate;
+                            itemCurrentStateData.InitiatedDate = intiatedDate;
+                            itemCurrentStateData.ClosedDate = colosedDate;
 
 
-                //             let time_difference = colosedDate.getTime() - intiatedDate.getTime();
+                            let time_difference = colosedDate.getTime() - intiatedDate.getTime();
 
-                //             //calculate days difference by dividing total milliseconds in a day  
-                //             let days_difference = time_difference / (1000 * 60 * 60 * 24);
+                            //calculate days difference by dividing total milliseconds in a day  
+                            let days_difference = time_difference / (1000 * 60 * 60 * 24);
 
-                //             let daysToCloseItem = Math.floor(days_difference);
+                            let daysToCloseItem = Math.floor(days_difference);
 
-                //             //process closure functionality
-                //             if(ByCategoryLabelData.closureData.length > 0){
-                //                 ByCategoryLabelData.closureData.forEach(closureObject => {
-                //                     if(closureObject.renderChart == 'Y'){
-                //                         closureObject.closedItemsData.push(item.itemRef);
-                //                         closureObject.closureTimeData.push(daysToCloseItem);
-                //                     }
+                            //process closure functionality
+                            if(ByCategoryLabelData.closureData.length > 0){
+                                ByCategoryLabelData.closureData.forEach(closureObject => {
+                                    if(closureObject.renderChart == 'Y'){
+                                        closureObject.closedItemsData.push(item.itemRef);
+                                        closureObject.closureTimeData.push(daysToCloseItem);
+                                    }
 
-                //                     if(closureObject.showInTable == 'Y'){
-                //                         let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === closureObject.tableHeader);
-                //                         itemCurrentStateData.tableValues[headerIndex] = daysToCloseItem;
-                //                     }
-                //                 });
-                //             }
+                                    if(closureObject.showInTable == 'Y'){
+                                        let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === closureObject.tableHeader);
+                                        itemCurrentStateData.tableValues[headerIndex] = daysToCloseItem;
+                                    }
+                                });
+                            }
 
-                //             //process avg functionality
-                //             if(ByCategoryLabelData.avgData.length > 0){
-                //                 ByCategoryLabelData.avgData.forEach(avgObject => {
-                //                     if(avgObject.renderChart == 'Y'){
-                //                         let closureTimeLabelIndex = avgObject.stateDesc.length;
+                            //process avg functionality
+                            if(ByCategoryLabelData.avgData.length > 0){
+                                ByCategoryLabelData.avgData.forEach(avgObject => {
+                                    if(avgObject.renderChart == 'Y'){
+                                        let closureTimeLabelIndex = avgObject.stateDesc.length;
 
-                //                         if(closureTimeLabelIndex <=0){
-                //                             closureTimeLabelIndex = 1;
-                //                         }
+                                        if(closureTimeLabelIndex <=0){
+                                            closureTimeLabelIndex = 1;
+                                        }
 
-                //                         avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][0] += daysToCloseItem;
-                //                         avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][1] += 1;
-                //                     }
-                //                 });
-                //             }
-                //         }
-                //     }
-                // }
+                                        avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][0] += daysToCloseItem;
+                                        avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][1] += 1;
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
 
                 ByCategoryLabelData.itemCurrentStateValues.push(itemCurrentStateData);
             }
