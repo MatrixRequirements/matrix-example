@@ -261,8 +261,8 @@ namespace GenericDashboard {
                                 });
                             }
 
-                            chartRowDom = `<div class="row doNotCopy">${chartColumnsDom}</div>`;
-                            tableRowDom = tableColumnsDom
+                            chartRowDom += `<div class="row doNotCopy">${chartColumnsDom}</div>`;
+                            tableRowDom += tableColumnsDom
                     });
 
                     genericChartRowDom += chartRowDom;
