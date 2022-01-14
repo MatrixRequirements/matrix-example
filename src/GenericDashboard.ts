@@ -577,11 +577,11 @@ namespace GenericDashboard {
                 });
             }
 
-            // if(ByCategoryLabelData.groupByStateData.length > 0){
-            //     ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
-            //         that.renderGroupByStateChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);
-            //     });
-            // }
+            if(ByCategoryLabelData.groupByStateData.length > 0){
+                ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
+                    that.renderGroupByStateChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);
+                });
+            }
 
             // if(ByCategoryLabelData.avgData.length > 0){
             //     ByCategoryLabelData.avgData.forEach(avgObject => {
@@ -661,6 +661,51 @@ namespace GenericDashboard {
             });
         }
 
+        renderGroupByStateChart(stateWiseData,stateColors,groupId){
+            let that = this;
+            //prepare template
+            let groupByStateChartParams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    columns: stateWiseData,
+                    type : 'pie',
+                    onclick: function (d, i) {
+                        setTimeout(() => {
+                            that.filterByLabel({ type: d.id });
+                        }, 100);
+                    }
+                },
+                color: {
+                    pattern: stateColors
+                },
+                pie: {
+                    label: {
+                        format: function (value: any, ratio: any, id: any) {
+                            return (value);
+                        }
+                    }
+                },
+                tooltip: {
+                    format: {
+                        value: function (value : any, ratio: any, id: any, index: any) { return value; }
+                    }
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let groupByStateChart = c3.generate(groupByStateChartParams);
+
+            that.allChartsMap.set(groupId,groupByStateChart);
+
+            $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+            });
+        }
+
 
         processLabelsData(labels: XRLabelEntry[]){
             let that = this;
@@ -725,34 +770,34 @@ namespace GenericDashboard {
                         });
                     }
 
-                    // //process groupByState functionality
-                    // if(ByCategoryLabelData.groupByStateData.length > 0){
-                    //     ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
+                    //process groupByState functionality
+                    if(ByCategoryLabelData.groupByStateData.length > 0){
+                        ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
 
-                    //         let stateIndex = groupByStateObject.stateCodes.findIndex(stateCode => stateCode === label.label);
+                            let stateIndex = groupByStateObject.stateCodes.findIndex(stateCode => stateCode === label.label);
 
-                    //         if(stateIndex > -1){
-                    //             if((label.reset.length !== label.set.length) && itemCurrentSateIndex < 0){
-                    //                 if(groupByStateObject.renderChart == 'Y'){
-                    //                     groupByStateObject.stateWiseData[stateIndex][1] += 1;
-                    //                 }
-                    //                 itemCurrentSateIndex = stateIndex;
-                    //             }else if((label.reset.length !== label.set.length) && stateIndex > itemCurrentSateIndex) {
-                    //                 if(groupByStateObject.renderChart == 'Y'){
-                    //                     groupByStateObject.stateWiseData[itemCurrentSateIndex][1] -= 1;
-                    //                     groupByStateObject.stateWiseData[stateIndex][1] += 1;
-                    //                 }
-                    //                 itemCurrentSateIndex = stateIndex;
-                    //             }
+                            if(stateIndex > -1){
+                                if((label.reset.length !== label.set.length) && itemCurrentSateIndex < 0){
+                                    if(groupByStateObject.renderChart == 'Y'){
+                                        groupByStateObject.stateWiseData[stateIndex][1] += 1;
+                                    }
+                                    itemCurrentSateIndex = stateIndex;
+                                }else if((label.reset.length !== label.set.length) && stateIndex > itemCurrentSateIndex) {
+                                    if(groupByStateObject.renderChart == 'Y'){
+                                        groupByStateObject.stateWiseData[itemCurrentSateIndex][1] -= 1;
+                                        groupByStateObject.stateWiseData[stateIndex][1] += 1;
+                                    }
+                                    itemCurrentSateIndex = stateIndex;
+                                }
 
-                    //             if(groupByStateObject.showInTable == 'Y'){
-                    //                 let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
-                    //                 itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
-                    //                 itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
-                    //             }
-                    //         }
-                    //     });
-                    // }
+                                if(groupByStateObject.showInTable == 'Y'){
+                                    let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
+                                    itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
+                                    itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
+                                }
+                            }
+                        });
+                    }
 
                     // //getting state number of days required for avg,tracker and closure functionality
                     // if((ByCategoryLabelData.avgData.length > 0) 
@@ -960,16 +1005,16 @@ namespace GenericDashboard {
             //     });
             // }
 
-            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
-                console.log("category:"+ByCategoryLabelData.category)
-                console.log("groupByData:"+JSON.stringify(ByCategoryLabelData.groupByData));
-                console.log("groupByStateData:"+JSON.stringify(ByCategoryLabelData.groupByStateData));
-                console.log("avgData:"+JSON.stringify(ByCategoryLabelData.avgData));
-                console.log("closureData:"+JSON.stringify(ByCategoryLabelData.closureData));
-                console.log("trackerData:"+JSON.stringify(ByCategoryLabelData.trackerData));
-                console.log("itemCurrentStateTableHeaders:"+JSON.stringify(ByCategoryLabelData.itemCurrentStateTableHeaders));
-                console.log("itemCurrentStateValues:"+JSON.stringify(ByCategoryLabelData.itemCurrentStateValues));
-            }
+            // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+            //     console.log("category:"+ByCategoryLabelData.category)
+            //     console.log("groupByData:"+JSON.stringify(ByCategoryLabelData.groupByData));
+            //     console.log("groupByStateData:"+JSON.stringify(ByCategoryLabelData.groupByStateData));
+            //     console.log("avgData:"+JSON.stringify(ByCategoryLabelData.avgData));
+            //     console.log("closureData:"+JSON.stringify(ByCategoryLabelData.closureData));
+            //     console.log("trackerData:"+JSON.stringify(ByCategoryLabelData.trackerData));
+            //     console.log("itemCurrentStateTableHeaders:"+JSON.stringify(ByCategoryLabelData.itemCurrentStateTableHeaders));
+            //     console.log("itemCurrentStateValues:"+JSON.stringify(ByCategoryLabelData.itemCurrentStateValues));
+            // }
 
         }
 
