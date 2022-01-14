@@ -595,11 +595,11 @@ namespace GenericDashboard {
                 });
             }
 
-            // if(ByCategoryLabelData.trackerData.length > 0){
-            //     ByCategoryLabelData.trackerData.forEach(trackerObject => {
-            //         that.renderTrackerChart(trackerObject.stateDesc,trackerObject.stateTrackerData,trackerObject.stateColors,trackerObject.id);
-            //     });
-            // }
+            if(ByCategoryLabelData.trackerData.length > 0){
+                ByCategoryLabelData.trackerData.forEach(trackerObject => {
+                    that.renderTrackerChart(trackerObject.stateDesc,trackerObject.stateTrackerData,trackerObject.stateColors,trackerObject.id);
+                });
+            }
 
 
             // if(ByCategoryLabelData.itemCurrentStateValues.length > 0){
@@ -775,6 +775,44 @@ namespace GenericDashboard {
            });
         }
 
+        renderTrackerChart(trackerStates,stateTrackerData,stateColors,groupId){
+            let that = this;
+            //prepare template
+            let trackerChartparams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                size: {
+                    height: 900
+                },
+                data: {
+                    x : 'x',
+                    columns: stateTrackerData,
+                    type: 'bar',
+                    groups: [
+                              trackerStates
+                            ],
+                    order: null
+                },
+                color: {
+                    pattern: stateColors
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    },
+                    rotated: true
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let trackerChart = c3.generate(trackerChartparams);
+
+            that.allChartsMap.set(groupId,trackerChart);
+        }
+
 
         processLabelsData(labels: XRLabelEntry[]){
             let that = this;
@@ -945,58 +983,58 @@ namespace GenericDashboard {
                     }
 
                     // //process tracker functionality
-                    // if(ByCategoryLabelData.trackerData.length > 0){
-                    //     ByCategoryLabelData.trackerData.forEach(trackerObject => {
+                    if(ByCategoryLabelData.trackerData.length > 0){
+                        ByCategoryLabelData.trackerData.forEach(trackerObject => {
 
-                    //         let stateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === label.label);
-                    //         if(stateIndex > -1 && (label.reset.length !== label.set.length)){
-                    //             itemCurrentSateIndex = stateIndex;
-                    //         }
+                            let stateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === label.label);
+                            if(stateIndex > -1 && (label.reset.length !== label.set.length)){
+                                itemCurrentSateIndex = stateIndex;
+                            }
 
-                    //         closedStateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === trackerObject.closedState);
-                    //         rejectedStateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === trackerObject.rejectedState);
+                            closedStateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === trackerObject.closedState);
+                            rejectedStateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === trackerObject.rejectedState);
 
-                    //         if(trackerObject.renderChart == 'Y'){
-                    //             let trackerStateIndex = trackerObject.stateCodes.findIndex(stateCode => stateCode === label.label);
-                    //             if(trackerStateIndex > -1){
-                    //                 if(itemIndex > -1){
-                    //                     trackerObject.stateTrackerData[trackerStateIndex + 1][itemIndex + 1] = labelstateDaysCount;
-                    //                 }else{
-                    //                     trackerObject.stateTrackerData[0].push(item.itemRef);
-                    //                     itemIndex = trackerObject.stateTrackerData[0].length - 2;
-                    //                     for (let i = 0; i <= trackerObject.stateCodes.length - 1; i++) {
-                    //                         trackerObject.stateTrackerData[i + 1].push(0);
-                    //                     }
-                    //                     trackerObject.stateTrackerData[trackerStateIndex + 1][itemIndex + 1] = labelstateDaysCount;
-                    //                 }
-                    //             }
-                    //         }
+                            if(trackerObject.renderChart == 'Y'){
+                                let trackerStateIndex = trackerObject.stateCodes.findIndex(stateCode => stateCode === label.label);
+                                if(trackerStateIndex > -1){
+                                    if(itemIndex > -1){
+                                        trackerObject.stateTrackerData[trackerStateIndex + 1][itemIndex + 1] = labelstateDaysCount;
+                                    }else{
+                                        trackerObject.stateTrackerData[0].push(item.itemRef);
+                                        itemIndex = trackerObject.stateTrackerData[0].length - 2;
+                                        for (let i = 0; i <= trackerObject.stateCodes.length - 1; i++) {
+                                            trackerObject.stateTrackerData[i + 1].push(0);
+                                        }
+                                        trackerObject.stateTrackerData[trackerStateIndex + 1][itemIndex + 1] = labelstateDaysCount;
+                                    }
+                                }
+                            }
 
-                    //         if(trackerObject.showInTable == 'Y'){
+                            if(trackerObject.showInTable == 'Y'){
 
-                    //             let stateDesc = trackerObject.allStateDesc[stateIndex];
-                    //             let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === stateDesc);
-                    //             itemCurrentStateData.tableValues[headerIndex] = labelstateDaysCount;
+                                let stateDesc = trackerObject.allStateDesc[stateIndex];
+                                let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === stateDesc);
+                                itemCurrentStateData.tableValues[headerIndex] = labelstateDaysCount;
 
-                    //         }
+                            }
 
 
-                    //     });
-                    // }
+                        });
+                    }
 
                 }
 
-                // if(ByCategoryLabelData.trackerData.length > 0) {
+                if(ByCategoryLabelData.trackerData.length > 0) {
 
-                //     if( (itemCurrentSateIndex == closedStateIndex)
-                //         || (itemCurrentSateIndex == rejectedStateIndex)
-                //     ){
-                //         ByCategoryLabelData.trackerData.forEach(trackerObject => {
-                //             trackerObject.stateTrackerData = trackerObject.stateTrackerInitialData;
-                //         });
-                //     }
+                    if( (itemCurrentSateIndex == closedStateIndex)
+                        || (itemCurrentSateIndex == rejectedStateIndex)
+                    ){
+                        ByCategoryLabelData.trackerData.forEach(trackerObject => {
+                            trackerObject.stateTrackerData = trackerObject.stateTrackerInitialData;
+                        });
+                    }
 
-                // }
+                }
                
 
                 if( (ByCategoryLabelData.avgData.length > 0) 
