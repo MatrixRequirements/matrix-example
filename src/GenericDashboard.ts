@@ -156,6 +156,12 @@ namespace GenericDashboard {
             let that = this;
             that.renderHTML();
             that.initiateByCategoryLabelData();
+
+            //Add a waiting spinning item
+            let spinningWait = ml.UI.getSpinningWait("Please wait...");
+            $("#waiting", that._root).append(spinningWait);
+ 
+            $(".spinningWait", that._root).show();
         }
 
         renderHTML() {
@@ -523,9 +529,9 @@ namespace GenericDashboard {
                 this.ByCategoryLabelDetails.push(ByCategoryLabelData);
             });
 
-            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
-                console.log("ByCategoryLabelData:"+JSON.stringify(ByCategoryLabelData));
-            }
+            // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+            //     console.log("ByCategoryLabelData:"+JSON.stringify(ByCategoryLabelData));
+            // }
         }
 
         renderCategoryWiseData(cat: string) {
