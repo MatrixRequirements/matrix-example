@@ -1369,6 +1369,8 @@ namespace GenericDashboard {
                     if(ByCategoryLabelData.trackerData.length > 0){
                         ByCategoryLabelData.trackerData.forEach(trackerObject => {
 
+                            trackerObject.stateTrackerInitialData = JSON.parse(JSON.stringify(trackerObject.stateTrackerData));
+
                             let stateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === label.label);
                             if(stateIndex > -1 && (label.reset.length !== label.set.length)){
                                 itemCurrentSateIndex = stateIndex;
@@ -1413,9 +1415,6 @@ namespace GenericDashboard {
                         || (itemCurrentSateIndex == rejectedStateIndex)
                     ){
                         ByCategoryLabelData.trackerData.forEach(trackerObject => {
-                            if(item.itemRef == "CA-15"){
-                                console.log("debug");
-                            }
                             trackerObject.stateTrackerData = trackerObject.stateTrackerInitialData;
                         });
                     }
