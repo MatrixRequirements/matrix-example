@@ -563,6 +563,9 @@ namespace GenericDashboard {
 
             that.allChartsMap.forEach((value,key)=>{
 
+                console.log("Key:"+key);
+                console.log("Value:"+value);
+
                 ml.UI.copyBuffer($(`#${key}-ChartTitle`,this._root), "copy  to clipboard", $(`.panel-body:has(#${key}-Chart)`), this._root, (copied: JQuery) => {
                     console.log("start");
                     $(`#${key}-date-filter`,copied).remove();
