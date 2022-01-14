@@ -1054,7 +1054,11 @@ namespace GenericDashboard {
             if(byCategoryLabelData.trackerData.length > 0){
                 byCategoryLabelData.trackerData.forEach(trackerObject => {
                     if(trackerObject.id == groupId){
-                        let stateTrackerData: any = JSON.parse(JSON.stringify(trackerObject.stateTrackerInitialData));
+                        let stateTrackerData: any[] = [['x']];
+
+                        trackerObject.stateDesc.forEach(labelDesc => {
+                            stateTrackerData.push([labelDesc]);
+                        });
 
                         byCategoryLabelData.itemCurrentStateValues.forEach(
                            (itemCurrentStateData) => {
