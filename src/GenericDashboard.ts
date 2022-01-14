@@ -134,6 +134,8 @@ namespace GenericDashboard {
 
         currentCat: string = "";
 
+        currentFilter: string = "";
+
         allChartsMap = new Map();
 
         dateFilterEnablerMap = new Map();
@@ -162,6 +164,25 @@ namespace GenericDashboard {
             $("#waiting", that._root).append(spinningWait);
  
             $(".spinningWait", that._root).show();
+
+
+            // that.dateFilterEnablerMap.forEach((values,keys)=>{
+            //     that.initiateDateFilter(keys);
+            // });
+            
+            // setTimeout(o => that.installCopyButtons(that.pluginConfig.title), 10);
+
+            //Get the data and render it
+            Matrix.Labels.projectLabelHistory().then((result) => {
+                $(".spinningWait", that._root).hide();
+                //$("#MCSONoItems", that._root).hide();
+                that.processLabelsData(result);
+                that.renderCategoryWiseData("");
+            }).then(() => {
+                //Let's remove the spinning wait
+                $(".spinningWait",that._root).hide();
+                //$("#MCSONoItems", that._root).show();
+            });
         }
 
         renderHTML() {
@@ -547,14 +568,14 @@ namespace GenericDashboard {
 
             $("#selectedCat", this._root).text(cat);
 
-            // let ByCategoryLabelData = this.ByCategoryLabelDetails
-            //     .find(({ category }) => category === this.currentCat);
+            let ByCategoryLabelData = this.ByCategoryLabelDetails
+                .find(({ category }) => category === this.currentCat);
 
-            // if(ByCategoryLabelData.groupByData.length > 0){
-            //     ByCategoryLabelData.groupByData.forEach(groupByObject => {
-            //         that.renderGroupByChart(groupByObject.labelsDesc,groupByObject.groupWiseData,groupByObject.id);
-            //     });
-            // }
+            if(ByCategoryLabelData.groupByData.length > 0){
+                ByCategoryLabelData.groupByData.forEach(groupByObject => {
+                    that.renderGroupByChart(groupByObject.labelsDesc,groupByObject.groupWiseData,groupByObject.id);
+                });
+            }
 
             // if(ByCategoryLabelData.groupByStateData.length > 0){
             //     ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
@@ -586,6 +607,372 @@ namespace GenericDashboard {
             // }
             
         }
+
+        filterByLabel(filter: any) {
+            this.currentFilter = filter.type;
+            let filterDataClass = "";
+            if (filter.type == "") {
+                //Show all
+                $(`#${this.pluginTableId}Table tbody tr`).show();
+            }
+            else {
+                filterDataClass = filter.type.split(' ').join('-').replaceAll('&','-');
+                $(`#${this.pluginTableId}Table tbody tr`).hide();
+                $(`#${this.pluginTableId}Table tbody tr.${filterDataClass}`).show();
+            }
+        }
+
+        renderGroupByChart(labels,grouoWiseData,groupId){
+            let that = this;
+             //prepare template "${contentConfig.id}-Chart"
+             let groupByChartparams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    x : 'x',
+                    columns: [
+                        ['x', ...labels],
+                        grouoWiseData
+                    ],
+                    type: 'bar',
+                    onclick: function (d, i) {
+                        setTimeout(() => {
+                            that.filterByLabel({ type: labels[d.x] });
+                        }, 100);
+                    }
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let groupByChart = c3.generate(groupByChartparams);
+
+            that.allChartsMap.set(groupId,groupByChart);
+
+            $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+            });
+        }
+
+
+        processLabelsData(labels: XRLabelEntry[]){
+            let that = this;
+            let pluginCategories = that.pluginConfig.categories;
+
+            for (const item of labels) {
+
+                let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
+
+                if(itemCategory && (!pluginCategories.includes(itemCategory))){
+                    continue;
+                }
+
+                let ByCategoryLabelData: ByCategoryLabelData;
+                let itemCurrentSateIndex = -1;
+                let initialStateIndex = -1;
+                let closedStateIndex = -1;
+                let rejectedStateIndex = -1;
+                let itemIndex = -1;
+                let labelstateDaysCount;
+
+                let initalStateData = [];
+                let closeStateData = [];
+
+                for (const ByCategoryData of this.ByCategoryLabelDetails) {
+                    if (itemCategory == ByCategoryData.category) {
+                        ByCategoryLabelData = ByCategoryData;
+                        break;
+                    }
+                }
+
+                let itemCurrentStateTableInitials : any[] = [];
+
+                itemCurrentStateTableInitials = Array(ByCategoryLabelData.itemCurrentStateTableHeaders.length).fill("");
+
+                let itemCurrentStateData : ItemCurrentStateData = {
+                    id: item.itemRef,
+                    attributes: [],
+                    tableValues: itemCurrentStateTableInitials,
+                    InitiatedDate: null,
+                    ClosedDate: null
+                };
+                
+                for (const label of item.labels) {
+
+                    //process groupBy functionality
+                    if(ByCategoryLabelData.groupByData.length > 0){
+                        ByCategoryLabelData.groupByData.forEach(groupByObject => {
+                            let labelIndex = groupByObject.labels.findIndex(labelCode => labelCode === label.label);
+
+                            if(labelIndex > -1 && (label.reset.length !== label.set.length)){
+                                if(groupByObject.renderChart == 'Y'){
+                                    groupByObject.groupWiseData[labelIndex + 1] += 1;
+                                }
+            
+                                if(groupByObject.showInTable == 'Y'){
+                                    let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByObject.tableHeader);
+                                    itemCurrentStateData.tableValues[headerIndex] = groupByObject.labelsDesc[labelIndex];
+                                    itemCurrentStateData.attributes.push(groupByObject.labelsDesc[labelIndex]);
+                                }
+                            }
+                        });
+                    }
+
+                    // //process groupByState functionality
+                    // if(ByCategoryLabelData.groupByStateData.length > 0){
+                    //     ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
+
+                    //         let stateIndex = groupByStateObject.stateCodes.findIndex(stateCode => stateCode === label.label);
+
+                    //         if(stateIndex > -1){
+                    //             if((label.reset.length !== label.set.length) && itemCurrentSateIndex < 0){
+                    //                 if(groupByStateObject.renderChart == 'Y'){
+                    //                     groupByStateObject.stateWiseData[stateIndex][1] += 1;
+                    //                 }
+                    //                 itemCurrentSateIndex = stateIndex;
+                    //             }else if((label.reset.length !== label.set.length) && stateIndex > itemCurrentSateIndex) {
+                    //                 if(groupByStateObject.renderChart == 'Y'){
+                    //                     groupByStateObject.stateWiseData[itemCurrentSateIndex][1] -= 1;
+                    //                     groupByStateObject.stateWiseData[stateIndex][1] += 1;
+                    //                 }
+                    //                 itemCurrentSateIndex = stateIndex;
+                    //             }
+
+                    //             if(groupByStateObject.showInTable == 'Y'){
+                    //                 let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
+                    //                 itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
+                    //                 itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
+                    //             }
+                    //         }
+                    //     });
+                    // }
+
+                    // //getting state number of days required for avg,tracker and closure functionality
+                    // if((ByCategoryLabelData.avgData.length > 0) 
+                    //     || (ByCategoryLabelData.trackerData.length > 0)
+                    //     || (ByCategoryLabelData.closureData.length > 0)
+                    //     ){
+                    //     //get the number of days label state was in
+                    //     label.set.sort((a, b) => a.version - b.version);
+                    //     label.reset.sort((a, b) => a.version - b.version);
+
+                    //     labelstateDaysCount = label.set.reduce((accumulator, currentValue, currentIndex, set) => {
+                    //         let stateDays: number;
+                    //         if (label.reset[currentIndex]) {
+                    //             const setDate = new Date(currentValue.dateIso);
+                    //             const resetDate = new Date(label.reset[currentIndex].dateIso);
+
+                    //             let time_difference = resetDate.getTime() - setDate.getTime();
+
+                    //             //calculate days difference by dividing total milliseconds in a day  
+                    //             let days_difference = time_difference / (1000 * 60 * 60 * 24);
+
+                    //             stateDays = Math.floor(days_difference);
+                    //         } else {
+                    //             const setDate = new Date(currentValue.dateIso);
+                    //             const resetDate = new Date();
+
+                    //             let time_difference = resetDate.getTime() - setDate.getTime();
+
+                    //             //calculate days difference by dividing total milliseconds in a day  
+                    //             let days_difference = time_difference / (1000 * 60 * 60 * 24);
+
+                    //             stateDays = Math.floor(days_difference);
+                    //         }
+
+                    //         return accumulator + stateDays;
+
+                    //     }, 0);
+                    // }
+
+                    
+
+                    // //process avg functionality
+                    // if(ByCategoryLabelData.avgData.length > 0){
+                    //     ByCategoryLabelData.avgData.forEach(avgObject => {
+
+                    //         let stateIndex = avgObject.allStateCodes.findIndex(stateCode => stateCode === label.label);
+                    //         if(stateIndex > -1 && (label.reset.length !== label.set.length)){
+                    //             itemCurrentSateIndex = stateIndex;
+                    //         }
+
+                    //         initialStateIndex = avgObject.allStateCodes.findIndex(stateCode => stateCode === avgObject.intialState);
+                    //         closedStateIndex = avgObject.allStateCodes.findIndex(stateCode => stateCode === avgObject.closedState);
+                    //         rejectedStateIndex = avgObject.allStateCodes.findIndex(stateCode => stateCode === avgObject.rejectedState);
+
+                    //         if(stateIndex == initialStateIndex){
+                    //             initalStateData.push(label);
+                    //             initalStateData[0].set.sort((a, b) => a.version - b.version);
+                    //             let intiatedDate = new Date(initalStateData[0].set[0].dateIso);
+                    //             itemCurrentStateData.InitiatedDate = intiatedDate;
+                    //         }
+    
+                    //         if(stateIndex == closedStateIndex){
+                    //             closeStateData.push(label);
+                    //         }
+
+                    //         if(label.reset.length == label.set.length){
+                    //             if(avgObject.renderChart == 'Y'){
+                    //                 let avgStateIndex = avgObject.stateCodes.findIndex(stateCode => stateCode === label.label);
+                    //                 if(avgStateIndex > -1){
+                    //                     avgObject.statusWiseTotalDaysData[avgStateIndex][0] += labelstateDaysCount;
+                    //                     avgObject.statusWiseTotalDaysData[avgStateIndex][1] += 1;
+                    //                 }
+                    //             }
+                    //         }
+                    //     });
+                    // }
+
+                    // //process tracker functionality
+                    // if(ByCategoryLabelData.trackerData.length > 0){
+                    //     ByCategoryLabelData.trackerData.forEach(trackerObject => {
+
+                    //         let stateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === label.label);
+                    //         if(stateIndex > -1 && (label.reset.length !== label.set.length)){
+                    //             itemCurrentSateIndex = stateIndex;
+                    //         }
+
+                    //         closedStateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === trackerObject.closedState);
+                    //         rejectedStateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === trackerObject.rejectedState);
+
+                    //         if(trackerObject.renderChart == 'Y'){
+                    //             let trackerStateIndex = trackerObject.stateCodes.findIndex(stateCode => stateCode === label.label);
+                    //             if(trackerStateIndex > -1){
+                    //                 if(itemIndex > -1){
+                    //                     trackerObject.stateTrackerData[trackerStateIndex + 1][itemIndex + 1] = labelstateDaysCount;
+                    //                 }else{
+                    //                     trackerObject.stateTrackerData[0].push(item.itemRef);
+                    //                     itemIndex = trackerObject.stateTrackerData[0].length - 2;
+                    //                     for (let i = 0; i <= trackerObject.stateCodes.length - 1; i++) {
+                    //                         trackerObject.stateTrackerData[i + 1].push(0);
+                    //                     }
+                    //                     trackerObject.stateTrackerData[trackerStateIndex + 1][itemIndex + 1] = labelstateDaysCount;
+                    //                 }
+                    //             }
+                    //         }
+
+                    //         if(trackerObject.showInTable == 'Y'){
+
+                    //             let stateDesc = trackerObject.allStateDesc[stateIndex];
+                    //             let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === stateDesc);
+                    //             itemCurrentStateData.tableValues[headerIndex] = labelstateDaysCount;
+
+                    //         }
+
+
+                    //     });
+                    // }
+
+                }
+
+                // if(ByCategoryLabelData.trackerData.length > 0) {
+
+                //     if( (itemCurrentSateIndex == closedStateIndex)
+                //         || (itemCurrentSateIndex == rejectedStateIndex)
+                //     ){
+                //         ByCategoryLabelData.trackerData.forEach(trackerObject => {
+                //             trackerObject.stateTrackerData = trackerObject.stateTrackerInitialData;
+                //         });
+                //     }
+
+                // }
+               
+
+                // if( (ByCategoryLabelData.avgData.length > 0) 
+                //     || (ByCategoryLabelData.closureData.length > 0)
+                // ){
+                //     if(itemCurrentSateIndex == closedStateIndex){
+
+                //         if(initalStateData.length > 0 && closeStateData.length > 0){
+
+                //             initalStateData[0].set.sort((a, b) => a.version - b.version);
+                //             closeStateData[0].set.sort((a, b) => b.version - a.version);
+
+                //             const intiatedDate = new Date(initalStateData[0].set[0].dateIso);
+                //             const colosedDate = new Date(closeStateData[0].set[0].dateIso);
+
+                //             itemCurrentStateData.InitiatedDate = intiatedDate;
+                //             itemCurrentStateData.ClosedDate = colosedDate;
+
+
+                //             let time_difference = colosedDate.getTime() - intiatedDate.getTime();
+
+                //             //calculate days difference by dividing total milliseconds in a day  
+                //             let days_difference = time_difference / (1000 * 60 * 60 * 24);
+
+                //             let daysToCloseItem = Math.floor(days_difference);
+
+                //             //process closure functionality
+                //             if(ByCategoryLabelData.closureData.length > 0){
+                //                 ByCategoryLabelData.closureData.forEach(closureObject => {
+                //                     if(closureObject.renderChart == 'Y'){
+                //                         closureObject.closedItemsData.push(item.itemRef);
+                //                         closureObject.closureTimeData.push(daysToCloseItem);
+                //                     }
+
+                //                     if(closureObject.showInTable == 'Y'){
+                //                         let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === closureObject.tableHeader);
+                //                         itemCurrentStateData.tableValues[headerIndex] = daysToCloseItem;
+                //                     }
+                //                 });
+                //             }
+
+                //             //process avg functionality
+                //             if(ByCategoryLabelData.avgData.length > 0){
+                //                 ByCategoryLabelData.avgData.forEach(avgObject => {
+                //                     if(avgObject.renderChart == 'Y'){
+                //                         let closureTimeLabelIndex = avgObject.stateDesc.length;
+
+                //                         if(closureTimeLabelIndex <=0){
+                //                             closureTimeLabelIndex = 1;
+                //                         }
+
+                //                         avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][0] += daysToCloseItem;
+                //                         avgObject.statusWiseTotalDaysData[closureTimeLabelIndex-1][1] += 1;
+                //                     }
+                //                 });
+                //             }
+                //         }
+                //     }
+                // }
+
+                ByCategoryLabelData.itemCurrentStateValues.push(itemCurrentStateData);
+            }
+
+            //updating avg functionality data
+            // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+            //     ByCategoryLabelData.avgData.forEach(avgObject => {
+            //         avgObject.statusWiseTotalDaysData.forEach((element,index) => {
+            //             let avgData = 0;
+            //             if(element[1] !== 0){
+            //                 avgData = element[0]/element[1]
+            //             }
+            //             avgObject.statusWiseAvgData[index + 1] = avgData.toFixed(2);
+            //         });
+
+            //     });
+            // }
+
+            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+                console.log("category:"+ByCategoryLabelData.category)
+                console.log("groupByData:"+JSON.stringify(ByCategoryLabelData.groupByData));
+                console.log("groupByStateData:"+JSON.stringify(ByCategoryLabelData.groupByStateData));
+                console.log("avgData:"+JSON.stringify(ByCategoryLabelData.avgData));
+                console.log("closureData:"+JSON.stringify(ByCategoryLabelData.closureData));
+                console.log("trackerData:"+JSON.stringify(ByCategoryLabelData.trackerData));
+                console.log("itemCurrentStateTableHeaders:"+JSON.stringify(ByCategoryLabelData.itemCurrentStateTableHeaders));
+                console.log("itemCurrentStateValues:"+JSON.stringify(ByCategoryLabelData.itemCurrentStateValues));
+            }
+
+        }
+
     }
 }
 
