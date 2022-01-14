@@ -134,7 +134,7 @@ namespace GenericDashboard {
         preparePluginHtmlTemplate() {
             let that = this;
 
-            let genericDomStyle = that.pluginConfig.layoutDomStyle;
+            let genericDomStyle = "";
 
             let waitElementDom = `
                 <div  style="margin:10px;">
@@ -146,7 +146,7 @@ namespace GenericDashboard {
 
             let genericTableRowDom = "";
 
-            if(that.pluginConfig.layoutConfig && that.pluginConfig.layoutConfig.length > 0){
+            if(that.pluginConfig.layoutConfig){
                 let layoutConfig = that.pluginConfig.layoutConfig;
                 genericDomStyle = layoutConfig.layoutDomStyle;
                 if(layoutConfig.rowConfig && layoutConfig.rowConfig.length > 0){
