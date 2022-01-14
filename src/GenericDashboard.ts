@@ -1235,6 +1235,13 @@ namespace GenericDashboard {
                     ClosedDate: null
                 };
                 
+                if(ByCategoryLabelData.trackerData.length > 0) {      
+                    ByCategoryLabelData.trackerData.forEach(trackerObject => {
+                        trackerObject.stateTrackerInitialData = JSON.parse(JSON.stringify(trackerObject.stateTrackerData));
+                    });
+                }
+
+                
                 for (const label of item.labels) {
 
                     //process groupBy functionality
@@ -1369,8 +1376,6 @@ namespace GenericDashboard {
                     if(ByCategoryLabelData.trackerData.length > 0){
                         ByCategoryLabelData.trackerData.forEach(trackerObject => {
 
-                            trackerObject.stateTrackerInitialData = JSON.parse(JSON.stringify(trackerObject.stateTrackerData));
-
                             let stateIndex = trackerObject.allStateCodes.findIndex(stateCode => stateCode === label.label);
                             if(stateIndex > -1 && (label.reset.length !== label.set.length)){
                                 itemCurrentSateIndex = stateIndex;
@@ -1416,9 +1421,6 @@ namespace GenericDashboard {
                     ){
                         ByCategoryLabelData.trackerData.forEach(trackerObject => {
                             trackerObject.stateTrackerData = trackerObject.stateTrackerInitialData;
-                            if(item.itemRef == 'CA-15'){
-                                console.log("debug");
-                            }
                         });
                     }
 
