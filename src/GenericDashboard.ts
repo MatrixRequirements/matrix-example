@@ -848,9 +848,11 @@ namespace GenericDashboard {
                     itemRowData.data("ref", itemCurrentStateData.id + "!");
 
                     itemCurrentStateData.tableValues.forEach(
-                        (rowValue) => {
-                            let labelRowData = $("<td>"+ rowValue +"</td>");
-                            tableRow.append(labelRowData);
+                        (rowValue,rowIndex) => {
+                            if(rowIndex != 0){
+                                let labelRowData = $("<td>"+ rowValue +"</td>");
+                                tableRow.append(labelRowData);
+                            } 
                         }
                     );
                     
