@@ -166,11 +166,11 @@ namespace GenericDashboard {
             $(".spinningWait", that._root).show();
 
 
-            // that.dateFilterEnablerMap.forEach((values,keys)=>{
-            //     that.initiateDateFilter(keys);
-            // });
+            that.dateFilterEnablerMap.forEach((values,keys)=>{
+                that.initiateDateFilter(keys);
+            });
             
-            // setTimeout(o => that.installCopyButtons(that.pluginConfig.title), 10);
+            setTimeout(o => that.installCopyButtons(that.pluginConfig.title), 10);
 
             //Get the data and render it
             Matrix.Labels.projectLabelHistory().then((result) => {
@@ -555,6 +555,185 @@ namespace GenericDashboard {
             // }
         }
 
+        installCopyButtons(title: string) {
+            let that = this;
+            
+            let savedWidth = 0;
+
+            that.allChartsMap.forEach((value,key)=>{
+
+                ml.UI.copyBuffer($(`#${key}-ChartTitle`,this._root), "copy  to clipboard", $(`.panel-body:has(#${key}-Chart)`), this._root, (copied: JQuery) => {
+                    $(`#${key}-date-filter`,copied).remove();
+                    let title_ = $(`#${key}-ChartTitle`,this._root).text();
+                    $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
+        
+                    ml.UI.fixC3ForCopy(copied);
+        
+                },"",()=>{
+                    savedWidth = $(`#${key}-Chart svg`,this._root).width();
+                    let chartObject = value;
+                    chartObject.resize({width:590});
+                },()=>{
+                    let chartObject = value;
+                    chartObject.resize({width:savedWidth})
+                });
+                
+            });
+    
+            
+
+            ml.UI.copyBuffer($(`#${that.pluginTableId}TableHeader`,this._root), "copy list to clipboard", $("#currentStatusList",this._root), this._root, (copied: JQuery) => {
+                $(".doNotCopy", copied).remove();
+    
+                var filter = $(`#${that.pluginTableId}InputFilter`,this._root).val();
+               
+                $(".hidden",copied).remove();
+           
+                $("#id", copied).each( (i,item)=>{ $(item).text($(item).data("ref") +"!")  } );
+    
+                $(`#${that.pluginTableId}InputFilter`,copied).remove();
+
+                $(`#${that.pluginTableId}-date-filter`,copied).remove();
+
+                $(`#${that.pluginTableId}TitleForCopy`, copied).html("<div><h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) + "</span> <br/>" + (filter != "" ? "<b>Filter : </b>" + filter + "<br/>" : "") + "</div>");
+            });
+        }
+
+        initiateDateFilter(dateFilterId){
+
+            let that = this;
+            let enableDateFilter;
+
+            $("#"+dateFilterId+"-date-filter").hide();
+
+            $("#"+dateFilterId+"-date-filter-icon").click(function () {
+                
+                let dateFileterData = that.dateFilterEnablerMap.get(dateFilterId);
+                enableDateFilter = !dateFileterData.dateFilterEnabled;
+                dateFileterData.dateFilterEnabled = enableDateFilter;
+                that.dateFilterEnablerMap.set(dateFilterId,dateFileterData);
+
+                if(enableDateFilter){
+                    $("#"+dateFilterId+"-date-filter").show();
+                }else{
+                    $("#"+dateFilterId+"-date-filter").hide();
+
+                    let byCategoryLabelData = that.ByCategoryLabelDetails
+                    .find(({ category }) => category === that.currentCat);
+
+                    switch (dateFileterData.functionality) {
+                        case 'groupBy':
+                            if(byCategoryLabelData.groupByData.length > 0){
+                                byCategoryLabelData.groupByData.forEach(groupByObject => {
+                                    if(dateFilterId == groupByObject.id){
+                                        that.renderGroupByChart(groupByObject.labelsDesc,groupByObject.groupWiseData,groupByObject.id);
+                                    }
+                                });
+                            }
+                            break;
+                        case 'groupByState':
+                            if(byCategoryLabelData.groupByStateData.length > 0){
+                                byCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
+                                    if(dateFilterId == groupByStateObject.id){
+                                        that.renderGroupByStateChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);
+                                    }
+                                });
+                            }
+                            break;
+                        case 'avg':
+                            if(byCategoryLabelData.avgData.length > 0){
+                                byCategoryLabelData.avgData.forEach(avgObject => {
+                                    if(dateFilterId == avgObject.id){
+                                        that.renderAvgChart(avgObject.stateDesc,avgObject.statusWiseAvgData,avgObject.id);
+                                    }
+                                });
+                            }
+                            break;
+                        case 'closure':
+                            if(byCategoryLabelData.closureData.length > 0){
+                                byCategoryLabelData.closureData.forEach(closureObject => {
+                                    if(dateFilterId == closureObject.id){
+                                        that.renderClosureChart(closureObject.closedItemsData,closureObject.closureTimeData,closureObject.id);
+                                    }
+                                });
+                            }
+                            break; 
+                        case 'tracker':
+                            if(byCategoryLabelData.trackerData.length > 0){
+                                byCategoryLabelData.trackerData.forEach(trackerObject => {
+                                    if(dateFilterId == trackerObject.id){
+                                        that.renderTrackerChart(trackerObject.stateDesc,trackerObject.stateTrackerData,trackerObject.stateColors,trackerObject.id);
+                                    }
+                                });
+                            }
+                            break; 
+                        case 'table':
+                            if(byCategoryLabelData.itemCurrentStateValues.length > 0){
+                                that.renderPluginTable(byCategoryLabelData.itemCurrentStateTableHeaders,byCategoryLabelData.itemCurrentStateValues);
+                            }
+                            break;
+                   }
+                }
+            });
+
+            //Initiating date range selection section
+            let fromDate = $("#"+dateFilterId+"-fromdate", that._root);
+            let toDate = $("#"+dateFilterId+"-todate", that._root);
+            let goButton = $("#"+dateFilterId+"-gobutton", that._root);
+
+            //MM/dd/YYYY 
+            //ml.UI.DateTime.getSimpleDateTimeFormatMoment()
+            fromDate.datetimepicker({
+                format: 'MM/DD/YYYY',
+                maxDate: 'now'
+            });
+            toDate.datetimepicker({
+                defaultDate: new Date(),
+                maxDate: 'now',
+                useCurrent: false, //Important! 
+                format: 'MM/DD/YYYY'
+            });
+            ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+
+            fromDate.on("dp.change", function (e: any) {
+                toDate.data("DateTimePicker").minDate(e.date);
+                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            });
+            toDate.on("dp.change", function (e: any) {
+                fromDate.data("DateTimePicker").maxDate(e.date);
+                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            });
+
+            $("#"+dateFilterId+"-gobutton").click(function () {
+
+                let fromDateSelected = fromDate.data("DateTimePicker").date();
+                let toDateSelected = toDate.data("DateTimePicker").date();
+                let dateFileterData = that.dateFilterEnablerMap.get(dateFilterId);
+                
+                let byCategoryLabelData = that.ByCategoryLabelDetails
+                .find(({ category }) => category === that.currentCat);
+
+                switch (dateFileterData.functionality) {
+                    case 'groupBy':
+                        that.renderGroupByChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        break;
+                    case 'groupByState':
+                        that.renderGroupByStateChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        break;
+                    case 'closure':
+                        that.renderClosureChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        break; 
+                    case 'tracker':
+                        that.renderTrackerChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        break; 
+                    case 'table':
+                        that.renderPluginTableByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
+                        break;           
+                };
+            });
+
+        }
+
         renderCategoryWiseData(cat: string) {
             let that = this;
 
@@ -622,6 +801,37 @@ namespace GenericDashboard {
             }
         }
 
+        renderGroupByChartByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            if(byCategoryLabelData.groupByData.length > 0){
+                byCategoryLabelData.groupByData.forEach(groupByObject => {
+
+                    if(groupByObject.id == groupId){
+
+                        let groupWiseInitials = Array(groupByObject.labels.length).fill(0);
+                        let groupWiseData =  [ groupByObject.groupWiseData[0] , ...groupWiseInitials];
+
+                        byCategoryLabelData.itemCurrentStateValues.forEach(
+                            (itemCurrentStateData) => {
+
+                                if(itemCurrentStateData.InitiatedDate && 
+                                    (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
+
+                                        let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByObject.tableHeader);
+                                        let groupByLabelIndex = groupByObject.labelsDesc.findIndex(labelDesc => labelDesc === itemCurrentStateData.tableValues[headerIndex]);
+                                        groupWiseData[groupByLabelIndex + 1] += 1;
+                                }
+                        });
+
+                        this.renderGroupByChart(groupByObject.labelsDesc,groupWiseData,groupByObject.id);
+                    }
+                });
+            }
+        }
+
         renderGroupByChart(labels,grouoWiseData,groupId){
             let that = this;
              //prepare template "${contentConfig.id}-Chart"
@@ -659,6 +869,36 @@ namespace GenericDashboard {
             $(`#${groupId}-Chart svg`).click(function () {
                 that.filterByLabel({ type: "" })
             });
+        }
+
+        renderGroupByStateChartByDateRanges(fromDateVal: any, toDateVal: any,byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            if(byCategoryLabelData.groupByStateData.length > 0){
+                byCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
+
+                    if(groupByStateObject.id == groupId){
+                        let statusWiseData: any = JSON.parse(JSON.stringify(groupByStateObject.stateWiseInitialData));
+
+                        byCategoryLabelData.itemCurrentStateValues.forEach(
+                            (itemCurrentStateData) => {
+                                if(itemCurrentStateData.InitiatedDate && 
+                                    (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
+
+                                        let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
+                                        let groupByStateLabelIndex = groupByStateObject.stateDesc.findIndex(labelDesc => labelDesc === itemCurrentStateData.tableValues[headerIndex]);
+                                        statusWiseData[groupByStateLabelIndex][1] += 1;
+
+                                }
+                        });
+
+                        this.renderGroupByStateChart(statusWiseData,groupByStateObject.stateColors,groupByStateObject.id);
+                        
+                    }
+                });
+            }
         }
 
         renderGroupByStateChart(stateWiseData,stateColors,groupId){
@@ -736,6 +976,36 @@ namespace GenericDashboard {
             that.allChartsMap.set(groupId,avgChart);
         }
 
+        renderClosureChartByDateRanges(fromDateVal: any, toDateVal: any,byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            if(byCategoryLabelData.closureData.length > 0){
+                byCategoryLabelData.closureData.forEach(closureObject => {
+                    if(closureObject.id == groupId){
+                   
+                        let closedItemsData = [];
+                        let closureTimeData: any[] = [closureObject.closureTimeData[0]];
+
+                        byCategoryLabelData.itemCurrentStateValues.forEach(
+                            (itemCurrentStateData) => {
+                            if(itemCurrentStateData.ClosedDate && 
+                                (itemCurrentStateData.ClosedDate >= fromDate && itemCurrentStateData.ClosedDate <= toDate)){ 
+                                   
+                                    let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === closureObject.tableHeader);
+                                    closedItemsData.push(itemCurrentStateData.id);
+                                    closureTimeData.push(itemCurrentStateData.tableValues[headerIndex]);
+
+                            }
+                        });
+
+                        this.renderClosureChart(closedItemsData,closureTimeData,closureObject.id);
+                    }
+                });
+            }
+        }
+
         renderClosureChart(closedItemsData,closureTimeData,groupId){
             let that = this;
             //prepare template
@@ -775,6 +1045,36 @@ namespace GenericDashboard {
            });
         }
 
+        renderTrackerChartByDateRanges(fromDateVal: any, toDateVal: any,byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            if(byCategoryLabelData.trackerData.length > 0){
+                byCategoryLabelData.trackerData.forEach(trackerObject => {
+                    if(trackerObject.id == groupId){
+                        let stateTrackerData: any = JSON.parse(JSON.stringify(trackerObject.stateTrackerInitialData));
+
+                        byCategoryLabelData.itemCurrentStateValues.forEach(
+                           (itemCurrentStateData) => {
+                                if(itemCurrentStateData.InitiatedDate && 
+                                (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
+                                    stateTrackerData[0].push(itemCurrentStateData.id);
+                                    trackerObject.stateDesc.forEach(
+                                        (trackState, stateIndex) => {
+                                            let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === trackState);
+                                            let stateDays = itemCurrentStateData.tableValues[headerIndex];
+                                            stateTrackerData[stateIndex +1].push(stateDays);
+                                    });
+                                }
+                        });
+
+                        this.renderTrackerChart(trackerObject.stateDesc,stateTrackerData,trackerObject.stateColors,trackerObject.id);
+                    }
+                });
+            }
+        }
+
         renderTrackerChart(trackerStates,stateTrackerData,stateColors,groupId){
             let that = this;
             //prepare template
@@ -811,6 +1111,31 @@ namespace GenericDashboard {
             let trackerChart = c3.generate(trackerChartparams);
 
             that.allChartsMap.set(groupId,trackerChart);
+        }
+
+        renderPluginTableByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+            let itemCurrentStateDetailsByDateRange: ItemCurrentStateData[] = [];
+
+            byCategoryLabelData.itemCurrentStateValues.forEach(
+                (itemCurrentStateData) => {
+
+                    if(
+                       (itemCurrentStateData.InitiatedDate && 
+                       (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate))
+                       ||
+                       (itemCurrentStateData.ClosedDate && 
+                        (itemCurrentStateData.ClosedDate >= fromDate && itemCurrentStateData.ClosedDate <= toDate))
+                    )
+                    {
+
+                        itemCurrentStateDetailsByDateRange.push(itemCurrentStateData);
+                    }
+            });
+
+            this.renderPluginTable(byCategoryLabelData.itemCurrentStateTableHeaders,itemCurrentStateDetailsByDateRange);
         }
 
         renderPluginTable(itemCurrentStateTableHeaders: any[],itemCurrentStateValues: ItemCurrentStateData[]) {
