@@ -1,0 +1,240 @@
+{
+    "title": "CC/CCA/DC Status Overview",
+    "folder": "DASHBOARDS",
+    "order": 3000,
+    "icon": "fal fa-chart-bar",
+    "name": "CC/CCA/DC Status Overview",
+    "version": "1.0.0",
+    "layoutConfig": {
+        "rowConfig": [
+            {
+                "columnConfig": [
+                    {
+                        "size": 12,
+                        "contentType": "chart",
+                        "contentConfig": {
+                            "id" : "dept",
+                            "functionality" : "groupBy",
+                            "title" : "Department wise CC/DC count overview",
+                            "dateFilterRequired" : "Y",
+                            "contentClass" : "chart"
+                        }
+                    }
+                ]
+            },
+            {
+                "columnConfig": [
+                    {
+                        "size": 6,
+                        "contentType": "chart",
+                        "contentConfig": {
+                            "id" : "status",
+                            "functionality" : "groupByState",
+                            "title" : "Status wise CC/DC overview",
+                            "dateFilterRequired" : "Y",
+                            "contentClass" : "chart"
+                        }
+                    },
+                    {
+                        "size": 6,
+                        "contentType": "chart",
+                        "contentConfig": {
+                            "id" : "avg",
+                            "functionality" : "avg",
+                            "title" : "Average time state wise overview",
+                            "dateFilterRequired" : "N",
+                            "contentClass" : "chart"
+                        }
+                    }
+                ]
+            },
+            {
+                "columnConfig": [
+                    {
+                        "size": 12,
+                        "contentType": "chart",
+                        "contentConfig": {
+                            "id" : "tracker",
+                            "functionality" : "tracker",
+                            "title" : "CC/DC Tracker",
+                            "dateFilterRequired" : "Y",
+                            "contentClass" : "bigChart"
+                        }
+                    }
+                ]
+            },
+            {
+                "columnConfig": [
+                    {
+                        "size": 12,
+                        "contentType": "table",
+                        "contentConfig": {
+                            "id" : "CCDCO",
+                            "functionality" : "table",
+                            "title" : "CCDC current status list",
+                            "dateFilterRequired" : "Y"
+                        }
+                    }
+                ]
+            }
+        ],
+        "layoutDomStyle":" .chart { width: 90%; min-height: 350px; cursor:pointer; } .dateFilter{ display:flex; margin-left: 45px; } .filterDates { width: 115px; margin: 0 6px; } .date-filter-form-control { height: 20px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; } .date-filter-btn { margin-bottom: 0; margin-left: 12px; font-weight: 400; text-align: center; white-space: nowrap; vertical-align: middle; touch-action: manipulation; cursor: pointer; background-image: none; border: 1px solid transparent; padding: 0px 5px; font-size: 12px; line-height: 1.42857143; border-radius: 4px; } .tableDateFilter{ display:flex; margin-left: 350px; } .closureTimeChart{ width: 90%; min-height: 315px; cursor:pointer; } .bigChart{ width: 90%; min-height: 900px; cursor:pointer; }",
+    },
+    "categories":["CC","CCA","DC"],
+    "categoriesFunctionalities":[
+        {
+            "id":"CC",
+            "functionalities": [
+                {
+                    "id": "dept",
+                    "type": "groupBy",
+                    "renderChart": "Y",
+                    "showInTable": "Y",
+                    "tableHeader": "Department",
+                    "title": "count by department",
+                    "labels": ["QC", "RA", "Production", "PUR", "MICRO", "PACK", "Design", "HR", "SUC", "ST", "UT", "QA"],
+                    "labelsDesc": ["QC", "RA", "Prod", "PUR", "MICRO", "PACK", "D&D", "HR", "SUC", "ST", "Utility", "QA"]
+                },
+                {
+                    "id": "status",
+                    "type": "groupByState",
+                    "renderChart": "Y",
+                    "showInTable": "Y",
+                    "tableHeader": "Current State",
+                    "labels": ["CCN1", "CCN2", "CCN3", "CCN4", "CCN5", "CCR"],
+                    "labelsDesc": ["CC Initiated", "CC Approved", "UI", "IV", "CC Closed", "CC Rejected"],
+                    "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4", "#2ca02c", "#8c564b"]
+                },
+                {
+                    "id": "avg",
+                    "type": "avg",
+                    "renderChart": "Y",
+                    "title": "average time spent in state",
+                    "labels": ["CCN1", "CCN2", "CCN3", "CCN4"],
+                    "labelsDesc": ["CC Initiated", "CC Approved", "UI", "IV"],
+                    "allLabels": ["CCN1", "CCN2", "CCN3", "CCN4", "CCN5", "CCR"],
+                    "allLabelDesc": ["CC Initiated", "CC Approved", "UI", "IV", "CC Closed", "CC Rejected"],
+                    "initialSateLabel": "CCN1",
+                    "closedStateLabel": "CCN5",
+                    "rejectedStateLabel": "CCR"
+                },
+                {
+                    "id": "tracker",
+                    "type": "tracker",
+                    "renderChart": "Y",
+                    "showInTable": "Y",
+                    "labels": ["CCN1", "CCN2", "CCN3", "CCN4"],
+                    "labelsDesc": ["CC Initiated", "CC Approved", "UI", "IV"],
+                    "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4"],
+                    "allLabels": ["CCN1", "CCN2", "CCN3", "CCN4", "CCN5", "CCR"],
+                    "allLabelDesc": ["CC Initiated", "CC Approved", "UI", "IV", "CC Closed", "CC Rejected"],
+                    "closedStateLabel": "CCN5",
+                    "rejectedStateLabel": "CCR"
+                }
+            ]
+        },
+        {
+            "id":"CCA",
+            "functionalities": [
+                {
+                    "id": "dept",
+                    "type": "groupBy",
+                    "renderChart": "Y",
+                    "showInTable": "Y",
+                    "tableHeader": "Department",
+                    "title": "count by department",
+                    "labels": ["QC", "RA", "Production", "PUR", "MICRO", "PACK", "Design", "HR", "SUC", "ST", "UT", "QA"],
+                    "labelsDesc": ["QC", "RA", "Prod", "PUR", "MICRO", "PACK", "D&D", "HR", "SUC", "ST", "Utility", "QA"]
+                },
+                {
+                    "id": "status",
+                    "type": "groupByState",
+                    "renderChart": "Y",
+                    "showInTable": "Y",
+                    "tableHeader": "Current State",
+                    "labels": ["CCN1", "CCN2", "CCN3", "CCN4", "CCN5", "CCR"],
+                    "labelsDesc": ["CC Initiated", "CC Approved", "UI", "IV", "CC Closed", "CC Rejected"],
+                    "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4", "#2ca02c", "#8c564b"]
+                },
+                {
+                    "id": "avg",
+                    "type": "avg",
+                    "renderChart": "Y",
+                    "title": "average time spent in state",
+                    "labels": ["CCN1", "CCN2", "CCN3", "CCN4"],
+                    "labelsDesc": ["CC Initiated", "CC Approved", "UI", "IV"],
+                    "allLabels": ["CCN1", "CCN2", "CCN3", "CCN4", "CCN5", "CCR"],
+                    "allLabelDesc": ["CC Initiated", "CC Approved", "UI", "IV", "CC Closed", "CC Rejected"],
+                    "initialSateLabel": "CCN1",
+                    "closedStateLabel": "CCN5",
+                    "rejectedStateLabel": "CCR"
+                },
+                {
+                    "id": "tracker",
+                    "type": "tracker",
+                    "renderChart": "Y",
+                    "showInTable": "Y",
+                    "labels": ["CCN1", "CCN2", "CCN3", "CCN4"],
+                    "labelsDesc": ["CC Initiated", "CC Approved", "UI", "IV"],
+                    "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4"],
+                    "allLabels": ["CCN1", "CCN2", "CCN3", "CCN4", "CCN5", "CCR"],
+                    "allLabelDesc": ["CC Initiated", "CC Approved", "UI", "IV", "CC Closed", "CC Rejected"],
+                    "closedStateLabel": "CCN5",
+                    "rejectedStateLabel": "CCR"
+                }
+            ]
+        },
+        {
+            "id":"DC",
+            "functionalities": [
+                {
+                    "id": "dept",
+                    "type": "groupBy",
+                    "renderChart": "Y",
+                    "showInTable": "Y",
+                    "tableHeader": "Department",
+                    "title": "count by department",
+                    "labels": ["QC", "RA", "Production", "PUR", "MICRO", "PACK", "Design", "HR", "SUC", "ST", "UT", "QA"],
+                    "labelsDesc": ["QC", "RA", "Prod", "PUR", "MICRO", "PACK", "D&D", "HR", "SUC", "ST", "Utility", "QA"]
+                },
+                {
+                    "id": "status",
+                    "type": "groupByState",
+                    "renderChart": "Y",
+                    "showInTable": "Y",
+                    "tableHeader": "Current State",
+                    "labels": ["DCN1", "DCN2", "DCN3", "DCN4","DR1"],
+                    "labelsDesc": ["DC Initiated", "Approved by HOD", "DC Approved", "DC Closed", "DC Rejected"],
+                    "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#2ca02c", "#8c564b"]
+                },
+                {
+                    "id": "avg",
+                    "type": "avg",
+                    "renderChart": "Y",
+                    "title": "average time spent in state",
+                    "labels": ["DCN1", "DCN2", "DCN3"],
+                    "labelsDesc": ["DC Initiated", "Approved by HOD", "DC Approved"],
+                    "allLabels": ["DCN1", "DCN2", "DCN3", "DCN4","DR1"],
+                    "allLabelDesc": ["DC Initiated", "Approved by HOD", "DC Approved", "DC Closed", "DC Rejected"],
+                    "initialSateLabel": "DCN1",
+                    "closedStateLabel": "DCN4",
+                    "rejectedStateLabel": "DR1"
+                },
+                {
+                    "id": "tracker",
+                    "type": "tracker",
+                    "renderChart": "Y",
+                    "showInTable": "Y",
+                    "labels": ["DCN1", "DCN2", "DCN3"],
+                    "labelsDesc": ["DC Initiated", "Approved by HOD", "DC Approved"],
+                    "labelColors": ["#d62728", "#ff7f0e", "#9467bd"],
+                    "allLabels": ["DCN1", "DCN2", "DCN3", "DCN4","DR1"],
+                    "allLabelDesc": ["DC Initiated", "Approved by HOD", "DC Approved", "DC Closed", "DC Rejected"],
+                    "closedStateLabel": "DCN4",
+                    "rejectedStateLabel": "DR1"
+                }
+            ]
+        }
+    ]
+   
+}

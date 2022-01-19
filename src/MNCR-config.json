@@ -1,0 +1,159 @@
+{
+    "title": "NCR Status Overview",
+    "folder": "DASHBOARDS",
+    "order": 3000,
+    "icon": "fal fa-chart-bar",
+    "name": "NCR Status Overview",
+    "version": "1.0.0",
+    "layoutConfig": {
+        "rowConfig": [
+            {
+                "columnConfig": [
+                    {
+                        "size": 6,
+                        "contentType": "chart",
+                        "contentConfig": {
+                            "id" : "dept",
+                            "functionality" : "groupBy",
+                            "title" : "Department wise NCR count overview",
+                            "dateFilterRequired" : "Y",
+                            "contentClass" : "chart"
+                        }
+                    },
+                    {
+                        "size": 6,
+                        "contentType": "chart",
+                        "contentConfig": {
+                            "id" : "cat",
+                            "functionality" : "groupBy",
+                            "title" : "Category wise NCR count overview",
+                            "dateFilterRequired" : "Y",
+                            "contentClass" : "chart"
+                        }
+                    }
+                ]
+            },
+            {
+                "columnConfig": [
+                    {
+                        "size": 6,
+                        "contentType": "chart",
+                        "contentConfig": {
+                            "id" : "status",
+                            "functionality" : "groupByState",
+                            "title" : "Status wise NCR overview",
+                            "dateFilterRequired" : "Y",
+                            "contentClass" : "chart"
+                        }
+                    },
+                    {
+                        "size": 6,
+                        "contentType": "chart",
+                        "contentConfig": {
+                            "id" : "avg",
+                            "functionality" : "avg",
+                            "title" : "Average time state wise overview",
+                            "dateFilterRequired" : "N",
+                            "contentClass" : "chart"
+                        }
+                    }
+                ]
+            },
+            {
+                "columnConfig": [
+                    {
+                        "size": 12,
+                        "contentType": "chart",
+                        "contentConfig": {
+                            "id" : "tracker",
+                            "functionality" : "tracker",
+                            "title" : "NCR Tracker",
+                            "dateFilterRequired" : "Y",
+                            "contentClass" : "bigChart"
+                        }
+                    }
+                ]
+            },
+            {
+                "columnConfig": [
+                    {
+                        "size": 12,
+                        "contentType": "table",
+                        "contentConfig": {
+                            "id" : "NCRO",
+                            "functionality" : "table",
+                            "title" : "NCR current status list",
+                            "dateFilterRequired" : "Y"
+                        }
+                    }
+                ]
+            }
+        ],
+        "layoutDomStyle":" .chart { width: 90%; min-height: 350px; cursor:pointer; } .dateFilter{ display:flex; margin-left: 45px; } .filterDates { width: 115px; margin: 0 6px; } .date-filter-form-control { height: 20px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; } .date-filter-btn { margin-bottom: 0; margin-left: 12px; font-weight: 400; text-align: center; white-space: nowrap; vertical-align: middle; touch-action: manipulation; cursor: pointer; background-image: none; border: 1px solid transparent; padding: 0px 5px; font-size: 12px; line-height: 1.42857143; border-radius: 4px; } .tableDateFilter{ display:flex; margin-left: 350px; } .closureTimeChart{ width: 90%; min-height: 315px; cursor:pointer; } .bigChart{ width: 90%; min-height: 900px; cursor:pointer; }",
+    },
+    "categories":["NCR"],
+    "categoriesFunctionalities":[
+        {
+            "id":"NCR",
+            "functionalities": [
+                {
+                    "id": "dept",
+                    "type": "groupBy",
+                    "renderChart": "Y",
+                    "showInTable": "Y",
+                    "tableHeader": "Department",
+                    "title": "count by department",
+                    "labels": ["QC", "RA", "Production", "PUR", "MICRO", "PACK", "Design", "HR", "SUC", "ST", "UT", "QA"],
+                    "labelsDesc": ["QC", "RA", "Prod", "PUR", "MICRO", "PACK", "D&D", "HR", "SUC", "ST", "Utility", "QA"]
+                },
+                {
+                    "id": "cat",
+                    "type": "groupBy",
+                    "renderChart": "Y",
+                    "showInTable": "Y",
+                    "tableHeader": "Category",
+                    "title": "count by category",
+                    "labels": ["IN", "INP", "MFG", "QCN"],
+                    "labelsDesc": ["Incoming - RM", "Incoming - PM", "Manufacturing", "QC"]
+                },
+                {
+                    "id": "status",
+                    "type": "groupByState",
+                    "renderChart": "Y",
+                    "showInTable": "Y",
+                    "tableHeader": "Current State",
+                    "labels": ["CR1", "CR2", "CR3"],
+                    "labelsDesc": ["NCR Initiated", "NCR Approved", "NCR Closed"],
+                    "labelColors": ["#d62728", "#ff7f0e","#2ca02c"]
+                },
+                {
+                    "id": "avg",
+                    "type": "avg",
+                    "renderChart": "Y",
+                    "title": "average time spent in state",
+                    "labels": ["CR1", "CR2"],
+                    "labelsDesc": ["NCR Initiated", "NCR Approved"],
+                    "allLabels": ["CR1", "CR2", "CR3"],
+                    "allLabelDesc": ["NCR Initiated", "NCR Approved", "NCR Closed"],
+                    "initialSateLabel": "CR1",
+                    "closedStateLabel": "CR3",
+                    "rejectedStateLabel": ""
+                },
+                {
+                    "id": "tracker",
+                    "type": "tracker",
+                    "renderChart": "Y",
+                    "showInTable": "Y",
+                    "labels": ["CR1", "CR2"],
+                    "labelsDesc": ["NCR Initiated", "NCR Approved"],
+                    "labelColors": ["#d62728", "#ff7f0e"],
+                    "allLabels": ["CR1", "CR2", "CR3"],
+                    "allLabelDesc": ["NCR Initiated", "NCR Approved", "NCR Closed"],
+                    "closedStateLabel": "CR3",
+                    "rejectedStateLabel": ""
+                }
+            ]
+        }
+    ]
+   
+}
