@@ -6,28 +6,34 @@ namespace GenericDashboard {
 
     export class GenericDashboard implements IPlugin {
 
-        pluginConfig: any;
+        pluginsConfig: any;
 
         // Implement to pass back additional pages to be displayed in the tree
         getProjectPages(): IProjectPageParam[] {
 
-            if (!IC.getSettingJSON( "MSCO")) return [];
+            if (!IC.getSettingJSON("PluginsConfig")) return [];
 
-            this.pluginConfig = IC.getSettingJSON("MSCO");
+            this.pluginsConfig = IC.getSettingJSON("PluginsConfig");
         
             let pages: IProjectPageParam[] = [];
-            pages.push({
-                id: "MCSO",
-                title: this.pluginConfig.title,
-                folder: this.pluginConfig.folder,
-                order: this.pluginConfig.order,
-                icon: this.pluginConfig.icon,
-                usesFilters: true,
-                render: (options: IPluginPanelOptions) => {
-                    const control = new GenericDashboardControl(options.control);
-                    control.initPage(this.pluginConfig);
-                },
+
+            this.pluginsConfig.forEach(pluginConfig => {
+
+                pages.push({
+                    id: pluginConfig.id,
+                    title: pluginConfig.title,
+                    folder: pluginConfig.folder,
+                    order: pluginConfig.order,
+                    icon: pluginConfig.icon,
+                    usesFilters: true,
+                    render: (options: IPluginPanelOptions) => {
+                        const control = new GenericDashboardControl(options.control);
+                        control.initPage(pluginConfig);
+                    },
+                });
+                
             });
+           
 
             return pages;
         }
@@ -36,11 +42,13 @@ namespace GenericDashboard {
         isDefault = true;
 
         getPluginName(): string {
-            return this.pluginConfig.name;
+            //return this.pluginConfig.name;
+            return "Generic plugin";
         }
 
         getPluginVersion(): string {
-            return this.pluginConfig.version;
+            //return this.pluginConfig.version;
+            return "1.0.0";
         }
     }
 
