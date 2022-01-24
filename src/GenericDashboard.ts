@@ -17,7 +17,7 @@ namespace GenericDashboard {
         
             let pages: IProjectPageParam[] = [];
 
-            this.pluginsConfig.forEach(pluginConfig => {
+            this.pluginsConfig.plugins.forEach(pluginConfig => {
 
                 pages.push({
                     id: pluginConfig.id,
