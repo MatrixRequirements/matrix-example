@@ -25,7 +25,7 @@ namespace GenericDashboard {
                 usesFilters: true,
                 render: (options: IPluginPanelOptions) => {
                     const control = new GenericDashboardControl(options.control);
-                    control.initPage();
+                    control.initPage("MCSO");
                 },
             });
 
@@ -143,7 +143,9 @@ namespace GenericDashboard {
 
         ByCategoryLabelDetails: ByCategoryLabelData[] = [];
 
-        pluginConfig: any = IC.getSettingJSON("MSCO");
+        pluginConfig: any;
+
+       // pluginConfig: any = IC.getSettingJSON("MSCO");
 
         destroy(): void { }
 
@@ -155,8 +157,9 @@ namespace GenericDashboard {
 
         resizeItem(newWidth?: number, force?: boolean): void { }
 
-        initPage() {
+        initPage(id) {
             let that = this;
+            that.pluginConfig = IC.getSettingJSON(id);
             that.renderHTML();
             that.initiateByCategoryLabelData();
 
