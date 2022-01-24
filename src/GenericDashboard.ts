@@ -143,7 +143,7 @@ namespace GenericDashboard {
 
         ByCategoryLabelDetails: ByCategoryLabelData[] = [];
 
-        pluginConfig: any;
+        pluginConfig: any = {};
 
        // pluginConfig: any = IC.getSettingJSON("MSCO");
 
