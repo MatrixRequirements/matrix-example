@@ -25,7 +25,7 @@ namespace GenericDashboard {
                 usesFilters: true,
                 render: (options: IPluginPanelOptions) => {
                     const control = new GenericDashboardControl(options.control);
-                    control.initPage("MCSO");
+                    control.initPage(this.pluginConfig);
                 },
             });
 
@@ -157,9 +157,9 @@ namespace GenericDashboard {
 
         resizeItem(newWidth?: number, force?: boolean): void { }
 
-        initPage(id) {
+        initPage(pluginConfig : any) {
             let that = this;
-            that.pluginConfig = IC.getSettingJSON(id);
+            that.pluginConfig = pluginConfig;
             that.renderHTML();
             that.initiateByCategoryLabelData();
 
