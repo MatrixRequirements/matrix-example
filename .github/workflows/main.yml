@@ -30,16 +30,24 @@ jobs:
           npm install
           npm run build
 
-      - name: Extract name and version from package.json
+      - name: Extract version from package.json
         uses: sergeysova/jq-action@v2
-        id: nameversion
+        id: version
         with:  
-          cmd: 'jq ".name + \"-\" + .version" package.json -r'
+          cmd: 'jq ".version" package.json -r'
+
+      - name: Extract name from package.json
+        uses: sergeysova/jq-action@v2
+        id: name
+        with:  
+          cmd: 'jq ".name" package.json -r'
 
       - name: Copy the build result
         run: |
           mkdir -p dist/js
-          mv dist/plugin.js dist/js/${{steps.nameversion.outputs.value}}_${{github.run_number}}.js
+          outputfile="dist/js/${{steps.name.outputs.value}}.js"
+          echo "// ${{steps.name.outputs.value}} ${{steps.version.outputs.value}}_${{github.run_number}}\n\n" > $outputfile
+          cat dist/plugin.js >> $outputfile
 
       - uses: actions/upload-artifact@v2
         with:
