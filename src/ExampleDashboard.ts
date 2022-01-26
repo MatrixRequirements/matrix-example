@@ -1,3 +1,5 @@
+// <VERSION_INFO_PLACEHOLDER>
+
 /// <reference path="api/Matrix.Labels.ts" />
 
 // Use a namespace to isolate your plugin code

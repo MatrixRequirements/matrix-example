@@ -25,21 +25,16 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Install dependencies and compile
-        run: |
-          npm install
-          npm run build
-
       - name: Extract version from package.json
         uses: sergeysova/jq-action@v2
         id: version
-        with:  
+        with:
           cmd: 'jq ".version" package.json -r'
 
       - name: Extract name from package.json
         uses: sergeysova/jq-action@v2
         id: name
-        with:  
+        with:
           cmd: 'jq ".name" package.json -r'
 
       - name: Extract description from package.json
@@ -48,20 +43,25 @@ jobs:
         with:
           cmd: 'jq ".description" package.json -r'
 
+      - name: Patch build info into files
+        run: |
+          find . -type f -exec sed -i "s/<PLUGIN_NAME_PLACEHOLDER>/${{steps.description.outputs.value}} (${{steps.name.outputs.value}})/g" {} +
+          find . -type f -exec sed -i "s/<PLUGIN_VERSION_PLACEHOLDER>/${{steps.version.outputs.value}}_${{github.run_number}}/g" {} +
+          find . -type f -exec sed -i "s/<VERSION_INFO_PLACEHOLDER>/${{steps.name.outputs.value}} ${{steps.version.outputs.value}}_${{github.run_number}} from $GITHUB_REPOSITORY/g" {} +
+
+      - name: Install dependencies and compile
+        run: |
+          npm install
+          npm run build
+
       - name: Copy the build result
         run: |
           mkdir -p dist/js
-          outputfile="dist/js/${{steps.name.outputs.value}}.js"
-          echo "// ${{steps.name.outputs.value}} ${{steps.version.outputs.value}}_${{github.run_number}} from $GITHUB_REPOSITORY" > $outputfile
-          echo "" >> $outputfile
-          cat dist/plugin.js >> $outputfile
-          sed -i "s/<PLUGIN_NAME_PLACEHOLDER>/${{steps.description.outputs.value}} (${{steps.name.outputs.value}})/g" $outputfile
-          sed -i "s/<PLUGIN_VERSION_PLACEHOLDER>/${{steps.version.outputs.value}}_${{github.run_number}}/g" $outputfile
+          mv dist/plugin.js dist/js/${{steps.name.outputs.value}}.js
 
       - uses: actions/upload-artifact@v2
         with:
           name: ${{steps.name.outputs.value}}-${{steps.version.outputs.value}}_${{github.run_number}}
           path: |
             dist
-            !dist/plugin.js
             !dist/plugin.tsbuildinfo
