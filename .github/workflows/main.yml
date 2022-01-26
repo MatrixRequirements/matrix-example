@@ -54,6 +54,10 @@ jobs:
           npm install
           npm run build
 
+      - name: Lint the code
+        run: |
+          npm run lint
+
       - name: Copy the build result
         run: |
           mkdir -p dist/js

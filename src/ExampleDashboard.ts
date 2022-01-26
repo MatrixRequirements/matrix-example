@@ -41,31 +41,40 @@ namespace ExampleDashboardWithTable {
     }
 
     class ExampleDashboardControl extends BaseControl {
+        destroy(): void {
+            // cleanup if needed
+        }
 
-        destroy(): void {}
-
-        getValue(): any {}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        getValue(): any {
+            // get control value
+        }
 
         hasChanged(): boolean {
             return false;
         }
 
-        resizeItem(newWidth?: number, force?: boolean): void {}
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        resizeItem(newWidth?: number, force?: boolean): void {
+            // handle resizing
+        }
 
         // Set up the page, load data and then render the content
         initPage() {
             this.renderHTML();
             //Add a waiting spinning item
-            let spinningWait =ml.UI.getSpinningWait("Loading");
-            $("#waiting",this._root).append(spinningWait);
-            
+            const spinningWait = ml.UI.getSpinningWait("Loading");
+            $("#waiting", this._root).append(spinningWait);
+
             //Get the data and render it
-            Matrix.Labels.projectLabelHistory().then((result) => {
-                this.renderResult(result);
-            }).then(()=>{
-                //Let's remove the spinning wait
-                spinningWait.remove();
-            });
+            Matrix.Labels.projectLabelHistory()
+                .then((result) => {
+                    this.renderResult(result);
+                })
+                .then(() => {
+                    //Let's remove the spinning wait
+                    spinningWait.remove();
+                });
         }
 
         renderHTML() {
@@ -75,22 +84,26 @@ namespace ExampleDashboardWithTable {
             ml.UI.getPageTitle("Example with table").prependTo(this._root);
         }
 
-        private renderResult(result:XRLabelEntry[]) {
-            result.forEach((item)=>{
-
-                let clonedTemplate =  $("#itemExampleDashboardList .template",this._root).clone();
-                //Remove the template and hidden classes 
-                clonedTemplate.attr("class","");
-                $(".title",clonedTemplate).text(item.itemRef + "!");
-                $(".content",clonedTemplate).text(item.labels.map((l)=>{ return l.label }).join(","));
-                clonedTemplate.appendTo($("#itemExampleDashboardList tbody",this._root));
-
-            })
+        private renderResult(result: XRLabelEntry[]) {
+            result.forEach((item) => {
+                const clonedTemplate = $("#itemExampleDashboardList .template", this._root).clone();
+                //Remove the template and hidden classes
+                clonedTemplate.attr("class", "");
+                $(".title", clonedTemplate).text(item.itemRef + "!");
+                $(".content", clonedTemplate).text(
+                    item.labels
+                        .map((l) => {
+                            return l.label;
+                        })
+                        .join(",")
+                );
+                clonedTemplate.appendTo($("#itemExampleDashboardList tbody", this._root));
+            });
             const tableDiv = $("table#itemExampleDashboardList");
             tableDiv.highlightReferences();
             tableDiv.tablesorter();
         }
-        
+
         // HTML template
         ExampleHTMLDom = `<div class="panel-body-v-scroll fillHeight">
         <style>
@@ -125,7 +138,7 @@ namespace ExampleDashboardWithTable {
                 </table>
          </div>
         </div>
-        `
+        `;
     }
 }
 
