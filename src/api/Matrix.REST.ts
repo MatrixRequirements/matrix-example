@@ -1,6 +1,7 @@
 /// <reference path="../../lib/core.d.ts" />
 /// <reference path="../../lib/admin.d.ts" />
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace Matrix {
     export namespace REST {
         /**

@@ -7,13 +7,18 @@
     "build": "tsc -b",
     "watch": "tsc -b --watch",
     "pretty": "prettier --write src/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf dist",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src --ext .ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
     "@types/jquery": "^3.5.5",
+    "@typescript-eslint/eslint-plugin": "^5.10.1",
+    "@typescript-eslint/parser": "^5.10.1",
+    "eslint": "^8.7.0",
     "prettier": "^2.2.1",
     "typescript": "^4.1.5",
     "@types/bootstrap": "3.3.32",
