@@ -9,6 +9,7 @@ namespace Matrix {
          */
         export function projectLabelHistory(): Promise<XRLabelEntry[]> {
             return new Promise<XRLabelEntry[]>((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 Matrix.REST.projectGETRequest("/labelhistory")
                     .then((data: XRLabelHistory) => resolve(data.entries as XRLabelEntry[]))
                     .catch((error) => reject(error));

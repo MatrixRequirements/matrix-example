@@ -1,8 +1,13 @@
+// <VERSION_INFO_PLACEHOLDER>
+
 /// <reference path="api/Matrix.Labels.ts" />
 
 // Use a namespace to isolate your plugin code
 // This avoids conflicts with other plugins
 namespace GenericDashboard {
+    // These will be replaced by the build
+    const PLUGIN_NAME = "<PLUGIN_NAME_PLACEHOLDER>";
+    const PLUGIN_VERSION = "<PLUGIN_VERSION_PLACEHOLDER>";
 
     export class GenericDashboard implements IPlugin {
 
@@ -42,13 +47,11 @@ namespace GenericDashboard {
         isDefault = true;
 
         getPluginName(): string {
-            //return this.pluginConfig.name;
-            return "Generic plugin";
+            return PLUGIN_NAME;
         }
 
         getPluginVersion(): string {
-            //return this.pluginConfig.version;
-            return "1.0.0";
+            return PLUGIN_VERSION;
         }
     }
 
