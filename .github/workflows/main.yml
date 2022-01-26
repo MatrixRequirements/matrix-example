@@ -49,8 +49,8 @@ jobs:
           echo "// ${{steps.name.outputs.value}} ${{steps.version.outputs.value}}_${{github.run_number}} from $GITHUB_REPOSITORY" > $outputfile
           echo "" >> $outputfile
           cat dist/plugin.js >> $outputfile
-          sed -i "s/<PLUGIN_NAME_PLACEHOLDER>/${{steps.name.outputs.value}}/g"
-          sed -i "s/<PLUGIN_VERSION_PLACEHOLDER>/${{steps.version.outputs.value}}_${{github.run_number}}/g"
+          sed -i "s/<PLUGIN_NAME_PLACEHOLDER>/${{steps.name.outputs.value}}/g" $outputfile
+          sed -i "s/<PLUGIN_VERSION_PLACEHOLDER>/${{steps.version.outputs.value}}_${{github.run_number}}/g" $outputfile
 
       - uses: actions/upload-artifact@v2
         with:
