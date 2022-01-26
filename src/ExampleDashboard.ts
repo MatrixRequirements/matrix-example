@@ -11,7 +11,7 @@ namespace ExampleDashboardWithTable {
     export class ExampleDashboardWithTable implements IPlugin {
         // Implement to pass back additional pages to be displayed in the tree
         getProjectPages(): IProjectPageParam[] {
-            let pages: IProjectPageParam[] = [];
+            const pages: IProjectPageParam[] = [];
             pages.push({
                 id: "EXTAB",
                 title: "Example with table",
