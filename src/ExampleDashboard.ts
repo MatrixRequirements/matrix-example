@@ -30,18 +30,12 @@ namespace ExampleDashboardWithTable {
         isDefault = true;
 
         getPluginName(): string {
-            return "Example with table";
+            return PLUGIN_NAME;
         }
 
         getPluginVersion(): string {
-            return "0.0.1";
+            return PLUGIN_VERSION;
         }
-    }
-
-    // Data we will use for display
-    interface OpenTime {
-        id: string;
-        time: Date;
     }
 
     class ExampleDashboardControl extends BaseControl {
@@ -80,8 +74,6 @@ namespace ExampleDashboardWithTable {
         }
 
         private renderResult(result:XRLabelEntry[]) {
-         
-
             result.forEach((item)=>{
 
                 let clonedTemplate =  $("#itemExampleDashboardList .template",this._root).clone();
@@ -92,21 +84,17 @@ namespace ExampleDashboardWithTable {
                 clonedTemplate.appendTo($("#itemExampleDashboardList tbody",this._root));
 
             })
-            $("table#itemExampleDashboardList").highlightReferences();
-            $("table#itemExampleDashboardList").tablesorter();
-
-
+            const tableDiv = $("table#itemExampleDashboardList");
+            tableDiv.highlightReferences();
+            tableDiv.tablesorter();
         }
-        
-        
-        
         
         // HTML template
         ExampleHTMLDom = `<div class="panel-body-v-scroll fillHeight">
         <style>
         /* If required */
         </style>
-        <div class="row" id="waiting" class=""></div>
+        <div class="row" id="waiting"></div>
             <div class="panel-body" id="ExamplePanel">
                 <div id="">   
                     <div class="panel panel-default">
@@ -137,7 +125,6 @@ namespace ExampleDashboardWithTable {
         </div>
         `
     }
-
 }
 
 // Register the plugin
