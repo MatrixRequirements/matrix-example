@@ -46,8 +46,8 @@ jobs:
       - name: Patch build info into files
         run: |
           find src -type f -exec sed -i "s/<PLUGIN_NAME_PLACEHOLDER>/${{steps.description.outputs.value}} (${{steps.name.outputs.value}})/g" {} +
+          find src -type f -exec sed -i "s/<PLUGIN_VERSION_PLACEHOLDER>/${{steps.version.outputs.value}}_${{github.run_number}}/g" {} +
 
-#          find src -type f -exec sed -i "s/<PLUGIN_VERSION_PLACEHOLDER>/${{steps.version.outputs.value}}_${{github.run_number}}/g" {} +
 #          find src -type f -exec sed -i "s/<VERSION_INFO_PLACEHOLDER>/${{steps.name.outputs.value}} ${{steps.version.outputs.value}}_${{github.run_number}} from $GITHUB_REPOSITORY/g" {} +
 
       - name: Install dependencies and compile
