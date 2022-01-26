@@ -1,7 +1,7 @@
 {
   "name": "example_plugin",
   "version": "1.0.0",
-  "description": "",
+  "description": "Matrix Example Plugin",
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",
