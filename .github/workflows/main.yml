@@ -46,7 +46,8 @@ jobs:
         run: |
           mkdir -p dist/js
           outputfile="dist/js/${{steps.name.outputs.value}}.js"
-          echo "// ${{steps.name.outputs.value}} ${{steps.version.outputs.value}}_${{github.run_number}}\\n\\n" > $outputfile
+          echo "// ${{steps.name.outputs.value}} ${{steps.version.outputs.value}}_${{github.run_number}} from $GITHUB_REPOSITORY" > $outputfile
+          echo "" >> $outputfile
           cat dist/plugin.js >> $outputfile
 
       - uses: actions/upload-artifact@v2
