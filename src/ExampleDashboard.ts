@@ -3,6 +3,9 @@
 // Use a namespace to isolate your plugin code
 // This avoids conflicts with other plugins
 namespace ExampleDashboardWithTable {
+    const PLUGIN_NAME = "<PLUGIN_NAME_PLACEHOLDER>";
+    const PLUGIN_VERSION = "<PLUGIN_VERSION_PLACEHOLDER>";
+
     export class ExampleDashboardWithTable implements IPlugin {
         // Implement to pass back additional pages to be displayed in the tree
         getProjectPages(): IProjectPageParam[] {
