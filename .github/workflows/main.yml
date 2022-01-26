@@ -46,12 +46,13 @@ jobs:
         run: |
           mkdir -p dist/js
           outputfile="dist/js/${{steps.name.outputs.value}}.js"
-          echo "// ${{steps.name.outputs.value}} ${{steps.version.outputs.value}}_${{github.run_number}}\n\n" > $outputfile
+          echo "// ${{steps.name.outputs.value}} ${{steps.version.outputs.value}}_${{github.run_number}}\\n\\n" > $outputfile
           cat dist/plugin.js >> $outputfile
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{steps.nameversion.outputs.value}}_${{github.run_number}}
+          name: ${{steps.name.outputs.value}}-${{steps.version.outputs.value}}_${{github.run_number}}
           path: |
             dist
+            !dist/plugin.js
             !dist/plugin.tsbuildinfo
