@@ -77,6 +77,20 @@ namespace GenericDashboard {
         stateWiseData: any[];
     }
 
+    interface groupByStackObject {
+        id: string;
+        renderChart: string;
+        showInTable: string;
+        tableHeader: string;
+        categoryCodes: any[];
+        categoryDesc: any[];
+        groupByCodes: any[];
+        groupByCodesDesc: any[];
+        groupByCodeColors: any[];
+        groupByStackInitialData: any[];
+        groupByStackData: any[];
+    }
+
     interface avgObject {
         id: string;
         renderChart: string;
@@ -133,6 +147,7 @@ namespace GenericDashboard {
         category: string;
         groupByData: groupByObject[];
         groupByStateData: groupByStateObject[];
+        groupByStackData: groupByStackObject[];
         avgData: avgObject[];
         closureData: closureObject[];
         trackerData: trackerObject[];
@@ -426,6 +441,7 @@ namespace GenericDashboard {
                 let itemCurrentStateValues: ItemCurrentStateData[] = [];
                 let groupByData: groupByObject[] = [];
                 let groupByStateData: groupByStateObject[] = [];
+                let groupByStackData: groupByStackObject[] = [];
                 let avgData: avgObject[] = [];
                 let closureData: closureObject[] = [];
                 let trackerData: trackerObject[] = [];
@@ -469,6 +485,32 @@ namespace GenericDashboard {
                             groupByStateData.push(groupByStateObject);
                             itemCurrentStateTableHeaders.push(functionality.tableHeader);
                             break;
+                        case 'groupByStack':
+                            let groupByStackChartData: any[] = [];
+
+                            let emptyInitials = Array(functionality.categoryLabels.length).fill(0);
+
+                            functionality.groupByLabelsDesc.forEach(labelDesc => {
+                                groupByStackChartData.push([labelDesc, ...emptyInitials]);
+                            });
+
+                            let groupByStackObject: groupByStackObject = {
+                                id: functionality.id,
+                                renderChart: functionality.renderChart,
+                                showInTable: functionality.showInTable,
+                                tableHeader: functionality.tableHeader,
+                                categoryCodes: functionality.categoryLabels,
+                                categoryDesc: functionality.categoryLabelsDesc,
+                                groupByCodes: functionality.groupByLabels,
+                                groupByCodesDesc: functionality.groupByLabelsDesc,
+                                groupByCodeColors: functionality.groupByLabelColors,
+                                groupByStackInitialData: JSON.parse(JSON.stringify(groupByStackChartData)),
+                                groupByStackData: JSON.parse(JSON.stringify(groupByStackChartData))
+                            };
+
+                            groupByStackData.push(groupByStackObject);
+                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            break;    
                         case 'avg':
                             let SateWiseAvgInitials: any[] = [];
                             let statusWiseTotalDaysData: any[] = [];
@@ -555,6 +597,7 @@ namespace GenericDashboard {
                     category: category.id,
                     groupByData: groupByData,
                     groupByStateData: groupByStateData,
+                    groupByStackData: groupByStackData,
                     avgData: avgData,
                     closureData: closureData,
                     trackerData: trackerData,
@@ -659,6 +702,15 @@ namespace GenericDashboard {
                                 });
                             }
                             break;
+                        case 'groupByStack':
+                            if(byCategoryLabelData.groupByStackData.length > 0){
+                                byCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
+                                    if(dateFilterId == groupByStackObject.id){
+                                        that.renderGroupByStackChart(groupByStackObject.groupByStackData,groupByStackObject.groupByCodesDesc,groupByStackObject.categoryDesc,groupByStackObject.groupByCodeColors,groupByStackObject.id);
+                                    }
+                                });
+                            }
+                            break;    
                         case 'avg':
                             if(byCategoryLabelData.avgData.length > 0){
                                 byCategoryLabelData.avgData.forEach(avgObject => {
@@ -778,6 +830,12 @@ namespace GenericDashboard {
             if(ByCategoryLabelData.groupByStateData.length > 0){
                 ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
                     that.renderGroupByStateChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);
+                });
+            }
+
+            if(ByCategoryLabelData.groupByStackData.length > 0){
+                ByCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
+                    that.renderGroupByStackChart(groupByStackObject.groupByStackData,groupByStackObject.groupByCodesDesc,groupByStackObject.categoryDesc,groupByStackObject.groupByCodeColors,groupByStackObject.id);
                 });
             }
 
@@ -963,6 +1021,42 @@ namespace GenericDashboard {
             $(`#${groupId}-Chart svg`).click(function () {
                 that.filterByLabel({ type: "" })
             });
+        }
+
+        renderGroupByStackChart(stackColumnData,stackGroupLabels,stackCategories,stackColors,groupId){
+            let that = this;
+            //prepare template
+            let groupByStackChartParams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    columns: stackColumnData,
+                    type: 'bar',
+                    groups: [
+                        stackGroupLabels
+                    ]
+                },
+                axis: {
+                    x: {
+                        type: 'category',
+                        categories: stackCategories
+                    },
+                    y: {
+                        show: true
+                    }
+                },
+                color: {
+                    pattern: stackColors
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let groupByStackChart = c3.generate(groupByStackChartParams);
+
+            that.allChartsMap.set(groupId,groupByStackChart);
         }
 
         renderAvgChart(states,statusWiseAvgData,groupId){
@@ -1236,6 +1330,10 @@ namespace GenericDashboard {
                 let itemIndex = -1;
                 let labelstateDaysCount;
 
+                let groupByStackCurrentCategory = new Map();
+                let groupByStackCurrentgroup = new Map();
+
+
                 let initalStateData = [];
                 let closeStateData = [];
 
@@ -1286,6 +1384,20 @@ namespace GenericDashboard {
                             }
                         });
                     }
+
+                    //process groupByStack functionality
+                    if(ByCategoryLabelData.groupByStackData.length > 0){
+                        ByCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
+                            let categoryLabelIndex = groupByStackObject.categoryCodes.findIndex(categoryCode => categoryCode === label.label);
+                            let groupLabelIndex = groupByStackObject.groupByCodes.findIndex(groupCode => groupCode === label.label);
+
+                            if(categoryLabelIndex > -1 && (label.reset.length !== label.set.length)){
+                                groupByStackCurrentCategory.set(groupByStackObject.id,categoryLabelIndex);
+                            }else if(groupLabelIndex > -1 && (label.reset.length !== label.set.length)){
+                                groupByStackCurrentgroup.set(groupByStackObject.id,groupLabelIndex);
+                            }
+                        });
+                    }        
 
                     //process groupByState functionality
                     if(ByCategoryLabelData.groupByStateData.length > 0){
@@ -1440,6 +1552,22 @@ namespace GenericDashboard {
                     }
 
                 }
+
+                if(ByCategoryLabelData.groupByStackData.length > 0){
+                    ByCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
+                        let categoryLabelIndex = groupByStackCurrentCategory.get(groupByStackObject.id);
+                        let groupLabelIndex = groupByStackCurrentgroup.get(groupByStackObject.id);
+
+                        if(categoryLabelIndex && groupLabelIndex){
+                            let groupDesc = groupByStackObject.groupByCodesDesc[groupLabelIndex];
+                            groupByStackObject.groupByStackData.forEach(stackGroupData => {
+                                if(stackGroupData[0] == groupDesc){
+                                    stackGroupData[categoryLabelIndex + 1] += 1;
+                                }
+                            });
+                        }
+                    });
+                } 
 
                 if(ByCategoryLabelData.trackerData.length > 0) {
 
