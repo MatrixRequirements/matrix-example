@@ -1558,13 +1558,18 @@ namespace GenericDashboard {
                         let categoryLabelIndex = groupByStackCurrentCategory.get(groupByStackObject.id);
                         let groupLabelIndex = groupByStackCurrentgroup.get(groupByStackObject.id);
 
+                        console.log("categoryLabelIndex:"+categoryLabelIndex);
+                        console.log("groupLabelIndex:"+groupLabelIndex);
+
                         if(categoryLabelIndex && groupLabelIndex){
                             let groupDesc = groupByStackObject.groupByCodesDesc[groupLabelIndex];
+                            console.log("groupDesc:"+groupDesc);
                             groupByStackObject.groupByStackData.forEach(stackGroupData => {
                                 if(stackGroupData[0] == groupDesc){
                                     stackGroupData[categoryLabelIndex + 1] += 1;
                                 }
                             });
+                            console.log("groupByStackData:"+JSON.stringify(groupByStackObject.groupByStackData));
                         }
                     });
                 } 
