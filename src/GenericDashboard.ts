@@ -1605,8 +1605,13 @@ namespace GenericDashboard {
                         let categoryLabelData = groupByStackCurrentCategory.get(groupByStackObject.id);
                         let groupLabelData = groupByStackCurrentgroup.get(groupByStackObject.id);
 
-                        let categoryLabelIndex = categoryLabelData.labelIndex;
-                        let groupLabelIndex = groupLabelData.labelIndex;
+                        let categoryLabelIndex = -1;
+                        let groupLabelIndex = -1;
+
+                        if(categoryLabelData && groupLabelData){
+                            categoryLabelIndex = categoryLabelData.labelIndex;
+                            groupLabelIndex = groupLabelData.labelIndex;
+                        }
 
 
                         if(categoryLabelIndex >= 0 && groupLabelIndex >= 0){
