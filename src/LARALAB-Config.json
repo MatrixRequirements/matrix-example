@@ -19,7 +19,7 @@
                                     "id": "status",
                                     "functionality": "groupByState",
                                     "title": "Classification wise CR count overview",
-                                    "dateFilterRequired": "N",
+                                    "dateFilterRequired": "Y",
                                     "contentClass": "chart"
                                 }
                             },
@@ -30,7 +30,7 @@
                                     "id": "status-stack",
                                     "functionality": "groupByStack",
                                     "title": "Classfication wise CR status count overview",
-                                    "dateFilterRequired": "N",
+                                    "dateFilterRequired": "Y",
                                     "contentClass": "chart"
                                 }
                             }

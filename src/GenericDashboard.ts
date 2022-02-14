@@ -89,6 +89,7 @@ namespace GenericDashboard {
         groupByCodeColors: any[];
         groupByStackInitialData: any[];
         groupByStackData: any[];
+        currentLabelData: groupByStackCurrentData[];
     }
 
     interface avgObject {
@@ -132,6 +133,13 @@ namespace GenericDashboard {
         stateTrackerData: any[];
         closedState: string;
         rejectedState: string; 
+    }
+
+    interface groupByStackCurrentData {
+        id: string;
+        currentCategoryLabel: string;
+        currentgroupLabel: string;
+        currentgroupLabelSetDate: Date;
     }
 
     interface ItemCurrentStateData {
@@ -445,6 +453,7 @@ namespace GenericDashboard {
                 let avgData: avgObject[] = [];
                 let closureData: closureObject[] = [];
                 let trackerData: trackerObject[] = [];
+                let currentLabelData: groupByStackCurrentData[] = [];
 
                 category.functionalities.forEach(functionality => {
 
@@ -505,7 +514,8 @@ namespace GenericDashboard {
                                 groupByCodesDesc: functionality.groupByLabelsDesc,
                                 groupByCodeColors: functionality.groupByLabelColors,
                                 groupByStackInitialData: JSON.parse(JSON.stringify(groupByStackChartData)),
-                                groupByStackData: JSON.parse(JSON.stringify(groupByStackChartData))
+                                groupByStackData: JSON.parse(JSON.stringify(groupByStackChartData)),
+                                currentLabelData: currentLabelData
                             };
 
                             groupByStackData.push(groupByStackObject);
@@ -791,6 +801,9 @@ namespace GenericDashboard {
                     case 'groupByState':
                         that.renderGroupByStateChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
                         break;
+                    case 'groupByStack':
+                        that.renderGroupByStackChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        break;    
                     case 'closure':
                         that.renderClosureChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
                         break; 
@@ -1021,6 +1034,38 @@ namespace GenericDashboard {
             $(`#${groupId}-Chart svg`).click(function () {
                 that.filterByLabel({ type: "" })
             });
+        }
+
+        renderGroupByStackChartByDateRanges(fromDateVal: any, toDateVal: any,byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            if(byCategoryLabelData.groupByStackData.length > 0){
+                byCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
+
+                    if(groupByStackObject.id == groupId){
+                        let stackWiseData: any = JSON.parse(JSON.stringify(groupByStackObject.groupByStackInitialData));
+
+                        groupByStackObject.currentLabelData.forEach((itemCurrentLabelData) => {
+                            if(itemCurrentLabelData.currentgroupLabelSetDate && 
+                                (itemCurrentLabelData.currentgroupLabelSetDate >= fromDate && itemCurrentLabelData.currentgroupLabelSetDate <= toDate)){
+
+                                    let categoryLabelIndex = groupByStackObject.categoryDesc.findIndex(labelDesc => labelDesc === itemCurrentLabelData.currentCategoryLabel);
+                                    
+                                    stackWiseData.forEach(stackGroupData => {
+                                        if(stackGroupData[0] == itemCurrentLabelData.currentgroupLabel){
+                                            stackGroupData[categoryLabelIndex + 1] += 1;
+                                        }
+                                    }); 
+                            }
+                        });
+
+                        this.renderGroupByStackChart(stackWiseData,groupByStackObject.groupByCodesDesc,groupByStackObject.categoryDesc,groupByStackObject.groupByCodeColors,groupByStackObject.id);
+                        
+                    }
+                });
+            }
         }
 
         renderGroupByStackChart(stackColumnData,stackGroupLabels,stackCategories,stackColors,groupId){
@@ -1392,10 +1437,11 @@ namespace GenericDashboard {
                             let groupLabelIndex = groupByStackObject.groupByCodes.findIndex(groupCode => groupCode === label.label);
 
                             if(categoryLabelIndex > -1 && (label.reset.length !== label.set.length)){
-                                groupByStackCurrentCategory.set(groupByStackObject.id,categoryLabelIndex);
+                                groupByStackCurrentCategory.set(groupByStackObject.id,{label: label, labelIndex: categoryLabelIndex});
                             }else if(groupLabelIndex > -1 && (label.reset.length !== label.set.length)){
-                                groupByStackCurrentgroup.set(groupByStackObject.id,groupLabelIndex);
-                            }
+                                groupByStackCurrentgroup.set(groupByStackObject.id,{label: label, labelIndex: groupLabelIndex});
+                            }  
+
                         });
                     }        
 
@@ -1555,16 +1601,35 @@ namespace GenericDashboard {
 
                 if(ByCategoryLabelData.groupByStackData.length > 0){
                     ByCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
-                        let categoryLabelIndex = groupByStackCurrentCategory.get(groupByStackObject.id);
-                        let groupLabelIndex = groupByStackCurrentgroup.get(groupByStackObject.id);
+
+                        let categoryLabelData = groupByStackCurrentCategory.get(groupByStackObject.id);
+                        let groupLabelData = groupByStackCurrentgroup.get(groupByStackObject.id);
+
+                        let categoryLabelIndex = categoryLabelData.labelIndex;
+                        let groupLabelIndex = groupLabelData.labelIndex;
+
+
                         if(categoryLabelIndex >= 0 && groupLabelIndex >= 0){
                             let groupDesc = groupByStackObject.groupByCodesDesc[groupLabelIndex];
+                            let categoryDesc = groupByStackObject.groupByCodesDesc[groupLabelIndex];
                             
                             groupByStackObject.groupByStackData.forEach(stackGroupData => {
                                 if(stackGroupData[0] == groupDesc){
                                     stackGroupData[categoryLabelIndex + 1] += 1;
                                 }
                             });
+
+                            groupLabelData.label.set.sort((a, b) => b.version - a.version);
+                            let currentLableSetDate = new Date(groupLabelData.label.set[0].dateIso);
+
+                            let groupByLabelCurrentData: groupByStackCurrentData = {
+                                id: item.itemRef,
+                                currentCategoryLabel: categoryDesc,
+                                currentgroupLabel: groupDesc,
+                                currentgroupLabelSetDate: currentLableSetDate
+                            };
+
+                            groupByStackObject.currentLabelData.push(groupByLabelCurrentData);
                         }
                     });
                 } 
