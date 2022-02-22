@@ -239,9 +239,11 @@ namespace GenericDashboard {
         processNeedlesData(needles: XRTrimNeedleItem[]){
             
             needles.forEach((needleItem) => {
-                let itemId = needleItem.itemOrFolderRef.substring(0,needleItem.itemOrFolderRef.lastIndexOf('-'));
-                let itemDueDate = needleItem.fieldVal[0].value;
-                this.OpenItemsDueDateMap.set(itemId,itemDueDate);
+                if(needleItem.fieldVal.length > 0){
+                    let itemId = needleItem.itemOrFolderRef.substring(0,needleItem.itemOrFolderRef.lastIndexOf('-'));
+                    let itemDueDate = needleItem.fieldVal[0].value;
+                    this.OpenItemsDueDateMap.set(itemId,itemDueDate);
+                }
             });
         }
 
