@@ -658,6 +658,7 @@ namespace GenericDashboard {
                     category: category.id,
                     groupByData: groupByData,
                     groupByStateData: groupByStateData,
+                    groupByStateOverdueData: groupByStateOverdueData,
                     groupByStackData: groupByStackData,
                     avgData: avgData,
                     closureData: closureData,
