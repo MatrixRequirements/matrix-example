@@ -1512,30 +1512,33 @@ namespace GenericDashboard {
                             let stateIndex = groupByStateObject.stateCodes.findIndex(stateCode => stateCode === label.label);
 
                             if(stateIndex > -1){
-                                if((label.reset.length !== label.set.length) && itemCurrentSateIndex < 0){
+                                //if((label.reset.length !== label.set.length) && itemCurrentSateIndex < 0){
+                                if(label.reset.length !== label.set.length){    
                                     if(groupByStateObject.renderChart == 'Y'){
                                         groupByStateObject.stateWiseData[stateIndex][1] += 1;
                                     }
-                                    itemCurrentSateIndex = stateIndex;
+                                    //itemCurrentSateIndex = stateIndex;
                                     itemCurrentStateData.currentState = label.label;
                                     if(groupByStateObject.showInTable == 'Y'){
                                         let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
                                         itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
                                         itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
                                     }
-                                }else if((label.reset.length !== label.set.length) && stateIndex > itemCurrentSateIndex) {
-                                    if(groupByStateObject.renderChart == 'Y'){
-                                        groupByStateObject.stateWiseData[itemCurrentSateIndex][1] -= 1;
-                                        groupByStateObject.stateWiseData[stateIndex][1] += 1;
-                                    }
-                                    itemCurrentSateIndex = stateIndex;
-                                    itemCurrentStateData.currentState = label.label;
-                                    if(groupByStateObject.showInTable == 'Y'){
-                                        let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
-                                        itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
-                                        itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
-                                    }
-                                }   
+                                }
+                                
+                                // else if((label.reset.length !== label.set.length) && stateIndex > itemCurrentSateIndex) {
+                                //     if(groupByStateObject.renderChart == 'Y'){
+                                //         groupByStateObject.stateWiseData[itemCurrentSateIndex][1] -= 1;
+                                //         groupByStateObject.stateWiseData[stateIndex][1] += 1;
+                                //     }
+                                //     itemCurrentSateIndex = stateIndex;
+                                //     itemCurrentStateData.currentState = label.label;
+                                //     if(groupByStateObject.showInTable == 'Y'){
+                                //         let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
+                                //         itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
+                                //         itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
+                                //     }
+                                // }   
                             }
                         });
                     }
@@ -1548,7 +1551,8 @@ namespace GenericDashboard {
                             let openStateIndex = groupByStateOverDueObject.stateCodes.findIndex(stateCode => stateCode === groupByStateOverDueObject.openState);
 
                             if(stateIndex > -1){
-                                if((label.reset.length !== label.set.length) && itemCurrentSateIndex < 0){
+                                //if((label.reset.length !== label.set.length) && itemCurrentSateIndex < 0){
+                                if(label.reset.length !== label.set.length){    
                                     if(groupByStateOverDueObject.renderChart == 'Y'){
                                         groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
                                     }
@@ -1559,22 +1563,24 @@ namespace GenericDashboard {
                                         itemCurrentStateData.tableValues[headerIndex] = groupByStateOverDueObject.stateDesc[stateIndex];
                                         itemCurrentStateData.attributes.push(groupByStateOverDueObject.stateDesc[stateIndex]);
                                     }
-                                }else if((label.reset.length !== label.set.length) && stateIndex > itemCurrentSateIndex) {
-                                    if(groupByStateOverDueObject.renderChart == 'Y'){
-                                        groupByStateOverDueObject.stateWiseData[itemCurrentSateIndex][1] -= 1;
-                                        if(itemCurrentSateIndex == openStateIndex){
-                                            groupByStateOverDueObject.stateWiseData[groupByStateOverDueObject.stateDesc.length-1][1] -= 1;
-                                        }
-                                        groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
-                                    }
-                                    itemCurrentSateIndex = stateIndex;
-                                    itemCurrentStateData.currentState = label.label;
-                                    if(groupByStateOverDueObject.showInTable == 'Y'){
-                                        let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateOverDueObject.tableHeader);
-                                        itemCurrentStateData.tableValues[headerIndex] = groupByStateOverDueObject.stateDesc[stateIndex];
-                                        itemCurrentStateData.attributes.push(groupByStateOverDueObject.stateDesc[stateIndex]);
-                                    }
-                                }  
+                                }
+                                
+                                // else if((label.reset.length !== label.set.length) && stateIndex > itemCurrentSateIndex) {
+                                //     if(groupByStateOverDueObject.renderChart == 'Y'){
+                                //         groupByStateOverDueObject.stateWiseData[itemCurrentSateIndex][1] -= 1;
+                                //         if(itemCurrentSateIndex == openStateIndex){
+                                //             groupByStateOverDueObject.stateWiseData[groupByStateOverDueObject.stateDesc.length-1][1] -= 1;
+                                //         }
+                                //         groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
+                                //     }
+                                //     itemCurrentSateIndex = stateIndex;
+                                //     itemCurrentStateData.currentState = label.label;
+                                //     if(groupByStateOverDueObject.showInTable == 'Y'){
+                                //         let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateOverDueObject.tableHeader);
+                                //         itemCurrentStateData.tableValues[headerIndex] = groupByStateOverDueObject.stateDesc[stateIndex];
+                                //         itemCurrentStateData.attributes.push(groupByStateOverDueObject.stateDesc[stateIndex]);
+                                //     }
+                                // }  
                                 
                                 if(itemCurrentSateIndex == openStateIndex){
                                     let itemDueDate = this.OpenItemsDueDateMap.get(item.itemRef);
