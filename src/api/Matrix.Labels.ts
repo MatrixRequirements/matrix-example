@@ -15,5 +15,18 @@ namespace Matrix {
                     .catch((error) => reject(error));
             });
         }
+
+        /**
+         * Get needles by category and field id for all items in a project
+         */
+        export function getNeedlesByCategoryAndFiledId(category: string, fieldId: Number): Promise<XRTrimNeedleItem[]> {
+            return new Promise<XRTrimNeedleItem[]>((resolve, reject) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                Matrix.REST.projectGETRequest("/needle?search=mrql:category="+category+"&fieldsOut="+fieldId)
+                    .then((data: XRTrimNeedle) => resolve(data.needles as XRTrimNeedleItem[]))
+                    .catch((error) => reject(error));
+            });
+        }
+
     }
 }

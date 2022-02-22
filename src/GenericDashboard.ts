@@ -73,6 +73,7 @@ namespace GenericDashboard {
         stateCodes: any[];
         stateDesc: any[];
         stateColors: any[];
+        openState: string;
         stateWiseInitialData: any[];
         stateWiseData: any[];
     }
@@ -156,6 +157,7 @@ namespace GenericDashboard {
         groupByData: groupByObject[];
         groupByStateData: groupByStateObject[];
         groupByStackData: groupByStackObject[];
+        groupByStateOverdueData: groupByStateObject[];
         avgData: avgObject[];
         closureData: closureObject[];
         trackerData: trackerObject[];
@@ -175,9 +177,15 @@ namespace GenericDashboard {
 
         dateFilterEnablerMap = new Map();
 
+        OpenItemsDueDateMap = new Map();
+
         ByCategoryLabelDetails: ByCategoryLabelData[] = [];
 
         pluginConfig: any = {};
+
+        isOverDueFunctionalityEnabled : boolean = false;
+        overDueFunctionalityCategory : string = "";
+        overDueFunctionalityFiledId : Number = 0;
 
        // pluginConfig: any = IC.getSettingJSON("MSCO");
 
@@ -210,8 +218,38 @@ namespace GenericDashboard {
             
             setTimeout(o => that.installCopyButtons(that.pluginConfig.title), 10);
 
-            //Get the data and render it
-            Matrix.Labels.projectLabelHistory().then((result) => {
+
+            if(that.isOverDueFunctionalityEnabled){
+                //Get the needle data
+                Matrix.Labels.getNeedlesByCategoryAndFiledId(that.overDueFunctionalityCategory,
+                                                             that.overDueFunctionalityFiledId).then((result) => {
+                   that.processNeedlesData(result);
+                   that.getLabelsData();
+                }).then(() => {
+                    //Remove the spinning wait
+                    $(".spinningWait",that._root).hide();
+                });
+
+            }else{
+                that.getLabelsData();
+            }
+           
+        }
+
+        processNeedlesData(needles: XRTrimNeedleItem[]){
+            
+            needles.forEach((needleItem) => {
+                let itemId = needleItem.itemOrFolderRef.substring(0,needleItem.itemOrFolderRef.lastIndexOf('-'));
+                let itemDueDate = needleItem.fieldVal[0].value;
+                this.OpenItemsDueDateMap.set(itemId,itemDueDate);
+            });
+        }
+
+        getLabelsData() {
+            let that = this;
+
+             //Get the data and render it
+             Matrix.Labels.projectLabelHistory().then((result) => {
                 $(".spinningWait", that._root).hide();
                 //$("#MCSONoItems", that._root).hide();
                 that.processLabelsData(result);
@@ -221,6 +259,7 @@ namespace GenericDashboard {
                 $(".spinningWait",that._root).hide();
                 //$("#MCSONoItems", that._root).show();
             });
+
         }
 
         renderHTML() {
@@ -449,6 +488,7 @@ namespace GenericDashboard {
                 let itemCurrentStateValues: ItemCurrentStateData[] = [];
                 let groupByData: groupByObject[] = [];
                 let groupByStateData: groupByStateObject[] = [];
+                let groupByStateOverdueData: groupByStateObject[] = [];
                 let groupByStackData: groupByStackObject[] = [];
                 let avgData: avgObject[] = [];
                 let closureData: closureObject[] = [];
@@ -472,6 +512,7 @@ namespace GenericDashboard {
                             groupByData.push(groupByObject);
                             itemCurrentStateTableHeaders.push(functionality.tableHeader);
                             break;
+                        case 'statusOverdue':    
                         case 'groupByState':
                             let statusWiseData: any[] = [];
 
@@ -487,11 +528,21 @@ namespace GenericDashboard {
                                 stateCodes: functionality.labels,
                                 stateDesc: functionality.labelsDesc,
                                 stateColors: functionality.labelColors,
+                                openState: "",
                                 stateWiseInitialData: JSON.parse(JSON.stringify(statusWiseData)),
                                 stateWiseData: JSON.parse(JSON.stringify(statusWiseData))
                             };
 
-                            groupByStateData.push(groupByStateObject);
+                            if(functionality.type == "groupByState"){
+                                groupByStateData.push(groupByStateObject);
+                            }else{
+                                groupByStateObject.openState = functionality.openStateLabel;
+                                groupByStateOverdueData.push(groupByStateObject);
+                                that.isOverDueFunctionalityEnabled = true;
+                                that.overDueFunctionalityCategory = category.id;
+                                that.overDueFunctionalityFiledId = functionality.overDueFieldId;
+                            }
+                            
                             itemCurrentStateTableHeaders.push(functionality.tableHeader);
                             break;
                         case 'groupByStack':
@@ -843,6 +894,12 @@ namespace GenericDashboard {
             if(ByCategoryLabelData.groupByStateData.length > 0){
                 ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
                     that.renderGroupByStateChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);
+                });
+            }
+
+            if(ByCategoryLabelData.groupByStateOverdueData.length > 0){
+                ByCategoryLabelData.groupByStateOverdueData.forEach(groupByStateOverDueObject => {
+                    that.renderGroupByStateChart(groupByStateOverDueObject.stateWiseData,groupByStateOverDueObject.stateColors,groupByStateOverDueObject.id);
                 });
             }
 
@@ -1476,6 +1533,55 @@ namespace GenericDashboard {
                                         itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
                                     }
                                 }   
+                            }
+                        });
+                    }
+
+                    //process groupByStateOverDue functionality
+                    if(ByCategoryLabelData.groupByStateOverdueData.length > 0){
+                        ByCategoryLabelData.groupByStateOverdueData.forEach(groupByStateOverDueObject => {
+
+                            let stateIndex = groupByStateOverDueObject.stateCodes.findIndex(stateCode => stateCode === label.label);
+                            let openStateIndex = groupByStateOverDueObject.stateCodes.findIndex(stateCode => stateCode === groupByStateOverDueObject.openState);
+
+                            if(stateIndex > -1){
+                                if((label.reset.length !== label.set.length) && itemCurrentSateIndex < 0){
+                                    if(groupByStateOverDueObject.renderChart == 'Y'){
+                                        groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
+                                    }
+                                    itemCurrentSateIndex = stateIndex;
+                                    itemCurrentStateData.currentState = label.label;
+                                    if(groupByStateOverDueObject.showInTable == 'Y'){
+                                        let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateOverDueObject.tableHeader);
+                                        itemCurrentStateData.tableValues[headerIndex] = groupByStateOverDueObject.stateDesc[stateIndex];
+                                        itemCurrentStateData.attributes.push(groupByStateOverDueObject.stateDesc[stateIndex]);
+                                    }
+                                }else if((label.reset.length !== label.set.length) && stateIndex > itemCurrentSateIndex) {
+                                    if(groupByStateOverDueObject.renderChart == 'Y'){
+                                        groupByStateOverDueObject.stateWiseData[itemCurrentSateIndex][1] -= 1;
+                                        if(itemCurrentSateIndex == openStateIndex){
+                                            groupByStateOverDueObject.stateWiseData[groupByStateOverDueObject.stateDesc.length-1][1] -= 1;
+                                        }
+                                        groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
+                                    }
+                                    itemCurrentSateIndex = stateIndex;
+                                    itemCurrentStateData.currentState = label.label;
+                                    if(groupByStateOverDueObject.showInTable == 'Y'){
+                                        let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateOverDueObject.tableHeader);
+                                        itemCurrentStateData.tableValues[headerIndex] = groupByStateOverDueObject.stateDesc[stateIndex];
+                                        itemCurrentStateData.attributes.push(groupByStateOverDueObject.stateDesc[stateIndex]);
+                                    }
+                                }  
+                                
+                                if(itemCurrentSateIndex == openStateIndex){
+                                    let itemDueDate = this.OpenItemsDueDateMap.get(item.itemRef);
+                                    //check for overdue
+                                    if(new Date(itemDueDate) < new Date()){
+                                        if(groupByStateOverDueObject.renderChart == 'Y'){
+                                            groupByStateOverDueObject.stateWiseData[groupByStateOverDueObject.stateDesc.length-1][1] += 1;
+                                        }
+                                    }
+                                }
                             }
                         });
                     }
