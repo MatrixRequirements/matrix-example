@@ -63,6 +63,7 @@ namespace GenericDashboard {
         labels: any[];
         labelsDesc: any[];
         groupWiseData: any[];
+        currentLabelData: groupByObjectCurrentData[];
     }
 
     interface groupByStateObject {
@@ -142,6 +143,12 @@ namespace GenericDashboard {
         closedState: string;
         rejectedState: string;
         currentState: string; 
+    }
+
+    interface groupByObjectCurrentData {
+        id: string;
+        currentLabel: string;
+        currentLabelSetDate: Date;
     }
 
     interface groupByStackCurrentData {
@@ -503,7 +510,8 @@ namespace GenericDashboard {
                 let avgData: avgObject[] = [];
                 let closureData: closureObject[] = [];
                 let trackerData: trackerObject[] = [];
-                let currentLabelData: groupByStackCurrentData[] = [];
+                let groupByStackCurrentLabelData: groupByStackCurrentData[] = [];
+                let groupByObjectcurrentLabelData: groupByObjectCurrentData[];
 
                 category.functionalities.forEach(functionality => {
 
@@ -517,7 +525,8 @@ namespace GenericDashboard {
                                 tableHeader: functionality.tableHeader,
                                 labels: functionality.labels,
                                 labelsDesc: functionality.labelsDesc,
-                                groupWiseData: [category.id + ' ' + functionality.title , ...groupWiseInitials]
+                                groupWiseData: [category.id + ' ' + functionality.title , ...groupWiseInitials],
+                                currentLabelData: groupByObjectcurrentLabelData
                             };
                             groupByData.push(groupByObject);
                             itemCurrentStateTableHeaders.push(functionality.tableHeader);
@@ -577,7 +586,7 @@ namespace GenericDashboard {
                                 groupByCodeColors: functionality.groupByLabelColors,
                                 groupByStackInitialData: JSON.parse(JSON.stringify(groupByStackChartData)),
                                 groupByStackData: JSON.parse(JSON.stringify(groupByStackChartData)),
-                                currentLabelData: currentLabelData
+                                currentLabelData: groupByStackCurrentLabelData
                             };
 
                             groupByStackData.push(groupByStackObject);
@@ -980,16 +989,27 @@ namespace GenericDashboard {
                         let groupWiseInitials = Array(groupByObject.labels.length).fill(0);
                         let groupWiseData =  [ groupByObject.groupWiseData[0] , ...groupWiseInitials];
 
-                        byCategoryLabelData.itemCurrentStateValues.forEach(
+                        // byCategoryLabelData.itemCurrentStateValues.forEach(
+                        //     (itemCurrentStateData) => {
+
+                        //         if(itemCurrentStateData.InitiatedDate && 
+                        //             (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
+
+                        //                 let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByObject.tableHeader);
+                        //                 let groupByLabelIndex = groupByObject.labelsDesc.findIndex(labelDesc => labelDesc === itemCurrentStateData.tableValues[headerIndex]);
+                        //                 groupWiseData[groupByLabelIndex + 1] += 1;
+                        //         }
+                        // });
+
+                        groupByObject.currentLabelData.forEach(
                             (itemCurrentStateData) => {
 
-                                if(itemCurrentStateData.InitiatedDate && 
-                                    (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
-
-                                        let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByObject.tableHeader);
-                                        let groupByLabelIndex = groupByObject.labelsDesc.findIndex(labelDesc => labelDesc === itemCurrentStateData.tableValues[headerIndex]);
+                                if(itemCurrentStateData.currentLabelSetDate && 
+                                    (itemCurrentStateData.currentLabelSetDate >= fromDate && itemCurrentStateData.currentLabelSetDate <= toDate)){
+                                        let groupByLabelIndex = groupByObject.labels.findIndex(labelCode => labelCode === itemCurrentStateData.currentLabel);
                                         groupWiseData[groupByLabelIndex + 1] += 1;
                                 }
+
                         });
 
                         this.renderGroupByChart(groupByObject.labelsDesc,groupWiseData,groupByObject.id);
@@ -1493,6 +1513,19 @@ namespace GenericDashboard {
                                     let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByObject.tableHeader);
                                     itemCurrentStateData.tableValues[headerIndex] = groupByObject.labelsDesc[labelIndex];
                                     itemCurrentStateData.attributes.push(groupByObject.labelsDesc[labelIndex]);
+                                }
+
+                                if(this.dateFilterEnablerMap.get(groupByObject.id)){
+                                    label.set.sort((a, b) => b.version - a.version);
+                                    let currentLableSetDate = new Date(label.set[0].dateIso);
+
+                                    let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
+                                        id: item.itemRef,
+                                        currentLabel: label.label,
+                                        currentLabelSetDate: currentLableSetDate
+                                    };
+
+                                    groupByObject.currentLabelData.push(groupByObjectcurrentLabelData);
                                 }
                             }
                         });
