@@ -78,6 +78,7 @@ namespace GenericDashboard {
         stateWiseInitialData: any[];
         stateWiseData: any[];
         currentState: string;
+        currentLabelData: groupByObjectCurrentData[];
     }
 
     interface groupByStackObject {
@@ -511,7 +512,7 @@ namespace GenericDashboard {
                 let closureData: closureObject[] = [];
                 let trackerData: trackerObject[] = [];
                 let groupByStackCurrentLabelData: groupByStackCurrentData[] = [];
-                let groupByObjectcurrentLabelData: groupByObjectCurrentData[];
+                let groupByObjectCurrentLabelData: groupByObjectCurrentData[] = [];
 
                 category.functionalities.forEach(functionality => {
 
@@ -526,7 +527,7 @@ namespace GenericDashboard {
                                 labels: functionality.labels,
                                 labelsDesc: functionality.labelsDesc,
                                 groupWiseData: [category.id + ' ' + functionality.title , ...groupWiseInitials],
-                                currentLabelData: groupByObjectcurrentLabelData
+                                currentLabelData: JSON.parse(JSON.stringify(groupByObjectCurrentLabelData))
                             };
                             groupByData.push(groupByObject);
                             itemCurrentStateTableHeaders.push(functionality.tableHeader);
@@ -550,7 +551,8 @@ namespace GenericDashboard {
                                 openState: "",
                                 stateWiseInitialData: JSON.parse(JSON.stringify(statusWiseData)),
                                 stateWiseData: JSON.parse(JSON.stringify(statusWiseData)),
-                                currentState: ""
+                                currentState: "",
+                                currentLabelData: JSON.parse(JSON.stringify(groupByObjectCurrentLabelData))
                             };
 
                             if(functionality.type == "groupByState"){
@@ -791,6 +793,15 @@ namespace GenericDashboard {
                                 });
                             }
                             break;
+                        case 'statusOverdue':
+                            if(byCategoryLabelData.groupByStateOverdueData.length > 0){
+                                byCategoryLabelData.groupByStateOverdueData.forEach(groupByStateOverdueObject => {
+                                    if(dateFilterId == groupByStateOverdueObject.id){
+                                        that.renderGroupByStateChart(groupByStateOverdueObject.stateWiseData,groupByStateOverdueObject.stateColors,groupByStateOverdueObject.id);
+                                    }
+                                });
+                            }
+                            break;    
                         case 'groupByStack':
                             if(byCategoryLabelData.groupByStackData.length > 0){
                                 byCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
@@ -880,6 +891,9 @@ namespace GenericDashboard {
                     case 'groupByState':
                         that.renderGroupByStateChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
                         break;
+                    case 'statusOverdue':
+                        that.renderGroupByStateOverdueChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        break;    
                     case 'groupByStack':
                         that.renderGroupByStackChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
                         break;    
@@ -1068,19 +1082,79 @@ namespace GenericDashboard {
                     if(groupByStateObject.id == groupId){
                         let statusWiseData: any = JSON.parse(JSON.stringify(groupByStateObject.stateWiseInitialData));
 
-                        byCategoryLabelData.itemCurrentStateValues.forEach(
+                        // byCategoryLabelData.itemCurrentStateValues.forEach(
+                        //     (itemCurrentStateData) => {
+                        //         if(itemCurrentStateData.InitiatedDate && 
+                        //             (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
+
+                        //                 let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
+                        //                 let groupByStateLabelIndex = groupByStateObject.stateDesc.findIndex(labelDesc => labelDesc === itemCurrentStateData.tableValues[headerIndex]);
+                        //                 statusWiseData[groupByStateLabelIndex][1] += 1;
+
+                        //         }
+                        // });
+
+                        groupByStateObject.currentLabelData.forEach(
                             (itemCurrentStateData) => {
-                                if(itemCurrentStateData.InitiatedDate && 
-                                    (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
 
-                                        let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
-                                        let groupByStateLabelIndex = groupByStateObject.stateDesc.findIndex(labelDesc => labelDesc === itemCurrentStateData.tableValues[headerIndex]);
+                                if(itemCurrentStateData.currentLabelSetDate && 
+                                    (itemCurrentStateData.currentLabelSetDate >= fromDate && itemCurrentStateData.currentLabelSetDate <= toDate)){
+                                        let groupByStateLabelIndex = groupByStateObject.stateCodes.findIndex(labelCode => labelCode === itemCurrentStateData.currentLabel);
                                         statusWiseData[groupByStateLabelIndex][1] += 1;
-
                                 }
+
                         });
 
                         this.renderGroupByStateChart(statusWiseData,groupByStateObject.stateColors,groupByStateObject.id);
+                        
+                    }
+                });
+            }
+        }
+
+        renderGroupByStateOverdueChartByDateRanges(fromDateVal: any, toDateVal: any,byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            if(byCategoryLabelData.groupByStateOverdueData.length > 0){
+                byCategoryLabelData.groupByStateOverdueData.forEach(groupByStateOverdueObject => {
+
+                    if(groupByStateOverdueObject.id == groupId){
+                        let statusWiseData: any = JSON.parse(JSON.stringify(groupByStateOverdueObject.stateWiseInitialData));
+
+                        // byCategoryLabelData.itemCurrentStateValues.forEach(
+                        //     (itemCurrentStateData) => {
+                        //         if(itemCurrentStateData.InitiatedDate && 
+                        //             (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
+
+                        //                 let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
+                        //                 let groupByStateLabelIndex = groupByStateObject.stateDesc.findIndex(labelDesc => labelDesc === itemCurrentStateData.tableValues[headerIndex]);
+                        //                 statusWiseData[groupByStateLabelIndex][1] += 1;
+
+                        //         }
+                        // });
+
+                        groupByStateOverdueObject.currentLabelData.forEach(
+                            (itemCurrentStateData) => {
+
+                                if(itemCurrentStateData.currentLabelSetDate && 
+                                    (itemCurrentStateData.currentLabelSetDate >= fromDate && itemCurrentStateData.currentLabelSetDate <= toDate)){
+                                        let groupByStateLabelIndex = groupByStateOverdueObject.stateCodes.findIndex(labelCode => labelCode === itemCurrentStateData.currentLabel);
+                                        statusWiseData[groupByStateLabelIndex][1] += 1;
+                                }
+
+                                if(itemCurrentStateData.currentLabel == groupByStateOverdueObject.openState){
+                                    let itemDueDate = this.OpenItemsDueDateMap.get(itemCurrentStateData.id);
+                                    //check for overdue
+                                    if(new Date(itemDueDate) < new Date()){
+                                        statusWiseData[groupByStateOverdueObject.stateDesc.length-1][1] += 1;
+                                    }
+                                }
+
+                        });
+
+                        this.renderGroupByStateChart(statusWiseData,groupByStateOverdueObject.stateColors,groupByStateOverdueObject.id);
                         
                     }
                 });
@@ -1567,6 +1641,19 @@ namespace GenericDashboard {
                                         itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
                                         itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
                                     }
+
+                                    if(this.dateFilterEnablerMap.get(groupByStateObject.id)){
+                                        label.set.sort((a, b) => b.version - a.version);
+                                        let currentLableSetDate = new Date(label.set[0].dateIso);
+    
+                                        let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
+                                            id: item.itemRef,
+                                            currentLabel: label.label,
+                                            currentLabelSetDate: currentLableSetDate
+                                        };
+    
+                                        groupByStateObject.currentLabelData.push(groupByObjectcurrentLabelData);
+                                    }
                                 }else if((label.reset.length !== label.set.length) && stateIndex > currentStateIndex) {
                                     if(groupByStateObject.renderChart == 'Y'){
                                         groupByStateObject.stateWiseData[currentStateIndex][1] -= 1;
@@ -1578,6 +1665,18 @@ namespace GenericDashboard {
                                         let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
                                         itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
                                         itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
+                                    }
+                                    if(this.dateFilterEnablerMap.get(groupByStateObject.id)){
+                                        label.set.sort((a, b) => b.version - a.version);
+                                        let currentLableSetDate = new Date(label.set[0].dateIso);
+    
+                                        let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
+                                            id: item.itemRef,
+                                            currentLabel: label.label,
+                                            currentLabelSetDate: currentLableSetDate
+                                        };
+    
+                                        groupByStateObject.currentLabelData.push(groupByObjectcurrentLabelData);
                                     }
                                 }   
                             }
@@ -1607,6 +1706,18 @@ namespace GenericDashboard {
                                         itemCurrentStateData.tableValues[headerIndex] = groupByStateOverDueObject.stateDesc[stateIndex];
                                         itemCurrentStateData.attributes.push(groupByStateOverDueObject.stateDesc[stateIndex]);
                                     }
+                                    if(this.dateFilterEnablerMap.get(groupByStateOverDueObject.id)){
+                                        label.set.sort((a, b) => b.version - a.version);
+                                        let currentLableSetDate = new Date(label.set[0].dateIso);
+    
+                                        let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
+                                            id: item.itemRef,
+                                            currentLabel: label.label,
+                                            currentLabelSetDate: currentLableSetDate
+                                        };
+    
+                                        groupByStateOverDueObject.currentLabelData.push(groupByObjectcurrentLabelData);
+                                    }
                                 }else if((label.reset.length !== label.set.length) && stateIndex > currentStateIndex) {
                                     if(groupByStateOverDueObject.renderChart == 'Y'){
                                         groupByStateOverDueObject.stateWiseData[currentStateIndex][1] -= 1;
@@ -1621,6 +1732,18 @@ namespace GenericDashboard {
                                         let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateOverDueObject.tableHeader);
                                         itemCurrentStateData.tableValues[headerIndex] = groupByStateOverDueObject.stateDesc[stateIndex];
                                         itemCurrentStateData.attributes.push(groupByStateOverDueObject.stateDesc[stateIndex]);
+                                    }
+                                    if(this.dateFilterEnablerMap.get(groupByStateOverDueObject.id)){
+                                        label.set.sort((a, b) => b.version - a.version);
+                                        let currentLableSetDate = new Date(label.set[0].dateIso);
+    
+                                        let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
+                                            id: item.itemRef,
+                                            currentLabel: label.label,
+                                            currentLabelSetDate: currentLableSetDate
+                                        };
+    
+                                        groupByStateOverDueObject.currentLabelData.push(groupByObjectcurrentLabelData);
                                     }
                                 }  
                                 
