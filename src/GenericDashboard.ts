@@ -128,6 +128,7 @@ namespace GenericDashboard {
         currentState: string;
         initiatedDate: Date;
         closedDate: Date;
+        currentLabelData: closureObjectCurrentData[];
     }
 
     interface trackerObject {
@@ -143,7 +144,8 @@ namespace GenericDashboard {
         stateTrackerData: any[];
         closedState: string;
         rejectedState: string;
-        currentState: string; 
+        currentState: string;
+        currentLabelData: Map<string, trackerObjectCurrentData>;
     }
 
     interface groupByObjectCurrentData {
@@ -157,6 +159,19 @@ namespace GenericDashboard {
         currentCategoryLabel: string;
         currentgroupLabel: string;
         currentgroupLabelSetDate: Date;
+    }
+
+    interface closureObjectCurrentData {
+        id: string;
+        daysToClose: number;
+        closedDate: Date;
+    }
+
+    interface trackerObjectCurrentData {
+        id: string;
+        currentState: string;
+        currentStateSetDate: Date;
+        itemStateDays: Map<string, Number>;
     }
 
     interface ItemCurrentStateData {
@@ -513,6 +528,8 @@ namespace GenericDashboard {
                 let trackerData: trackerObject[] = [];
                 let groupByStackCurrentLabelData: groupByStackCurrentData[] = [];
                 let groupByObjectCurrentLabelData: groupByObjectCurrentData[] = [];
+                let closureLabelCurrentData: closureObjectCurrentData[] = [];
+                let trackerLabelCurrentData: Map<string, trackerObjectCurrentData> = new Map<string, trackerObjectCurrentData>();
 
                 category.functionalities.forEach(functionality => {
 
@@ -643,7 +660,8 @@ namespace GenericDashboard {
                                 rejectedState: functionality.rejectedStateLabel,
                                 currentState: "",
                                 initiatedDate: null,
-                                closedDate: null
+                                closedDate: null,
+                                currentLabelData: closureLabelCurrentData
                             };
 
                             closureData.push(closureObject);
@@ -669,7 +687,8 @@ namespace GenericDashboard {
                                 stateTrackerData: JSON.parse(JSON.stringify(stateTrackerData)),
                                 closedState: functionality.closedStateLabel,
                                 rejectedState: functionality.rejectedStateLabel,
-                                currentState: ""
+                                currentState: "",
+                                currentLabelData: trackerLabelCurrentData
                             };
 
                             trackerData.push(trackerObject);
@@ -1316,16 +1335,28 @@ namespace GenericDashboard {
                         let closedItemsData = [];
                         let closureTimeData: any[] = [closureObject.closureTimeData[0]];
 
-                        byCategoryLabelData.itemCurrentStateValues.forEach(
-                            (itemCurrentStateData) => {
-                            if(itemCurrentStateData.ClosedDate && 
-                                (itemCurrentStateData.ClosedDate >= fromDate && itemCurrentStateData.ClosedDate <= toDate)){ 
+                        // byCategoryLabelData.itemCurrentStateValues.forEach(
+                        //     (itemCurrentStateData) => {
+                        //     if(itemCurrentStateData.ClosedDate && 
+                        //         (itemCurrentStateData.ClosedDate >= fromDate && itemCurrentStateData.ClosedDate <= toDate)){ 
                                    
-                                    let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === closureObject.tableHeader);
-                                    closedItemsData.push(itemCurrentStateData.id);
-                                    closureTimeData.push(itemCurrentStateData.tableValues[headerIndex]);
+                        //             let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === closureObject.tableHeader);
+                        //             closedItemsData.push(itemCurrentStateData.id);
+                        //             closureTimeData.push(itemCurrentStateData.tableValues[headerIndex]);
 
-                            }
+                        //     }
+                        // });
+
+                        closureObject.currentLabelData.forEach(
+                            (itemCurrentStateData) => {
+
+                                if(itemCurrentStateData.closedDate && 
+                                    (itemCurrentStateData.closedDate >= fromDate && itemCurrentStateData.closedDate <= toDate)){
+                                        closedItemsData.push(itemCurrentStateData.id);
+                                        closureTimeData.push(itemCurrentStateData.daysToClose);
+
+                                }
+
                         });
 
                         this.renderClosureChart(closedItemsData,closureTimeData,closureObject.id);
@@ -1398,6 +1429,23 @@ namespace GenericDashboard {
                                             let stateDays = itemCurrentStateData.tableValues[headerIndex];
                                             stateTrackerData[stateIndex +1].push(stateDays);
                                     });
+                                }
+                        });
+
+                        trackerObject.currentLabelData.forEach(
+                            (itemCurrentStateData,itemId)=>{
+                                if(itemCurrentStateData.currentStateSetDate && itemCurrentStateData.currentState !== trackerObject.closedState
+                                    && (itemCurrentStateData.currentStateSetDate >= fromDate && itemCurrentStateData.currentStateSetDate <= toDate)){
+                                        stateTrackerData[0].push(itemCurrentStateData.id);
+                                        trackerObject.stateCodes.forEach(
+                                            (trackState, stateIndex) => {
+                                                let stateDays = itemCurrentStateData.itemStateDays.get(trackState);
+                                                if(stateDays){
+                                                    stateTrackerData[stateIndex +1].push(stateDays);
+                                                }else{
+                                                    stateTrackerData[stateIndex +1].push("");
+                                                }    
+                                        });
                                 }
                         });
 
@@ -1884,6 +1932,35 @@ namespace GenericDashboard {
                                         }
                                         trackerObject.stateTrackerData[trackerStateIndex + 1][itemIndex + 1] = labelstateDaysCount;
                                     }
+
+                                    if(this.dateFilterEnablerMap.get(trackerObject.id)){
+                                        let currentLableSetDate = null;
+                                        let currentState = null;
+                                        if(label.reset.length !== label.set.length){
+                                            label.set.sort((a, b) => b.version - a.version);
+                                            currentLableSetDate = new Date(label.set[0].dateIso);
+                                            currentState = label.label;
+                                        }
+
+                                        let trackerItemCurrentData = trackerObject.currentLabelData.get(item.itemRef);
+
+                                        if(trackerItemCurrentData){
+                                            trackerItemCurrentData.currentState = currentState;
+                                            trackerItemCurrentData.currentStateSetDate = currentLableSetDate;
+                                            trackerItemCurrentData.itemStateDays.set(label.label,labelstateDaysCount);
+                                            trackerObject.currentLabelData.set(item.itemRef,trackerItemCurrentData);
+
+                                        }else{
+                                            let trackerObjectCurrentData: trackerObjectCurrentData = {
+                                                id: item.itemRef,
+                                                currentState: currentState,
+                                                currentStateSetDate: currentLableSetDate,
+                                                itemStateDays: new Map<string, Number>()
+                                            };
+                                            trackerObjectCurrentData.itemStateDays.set(label.label,labelstateDaysCount);
+                                            trackerObject.currentLabelData.set(item.itemRef,trackerObjectCurrentData);
+                                        }
+                                    }
                                 }
                             }
 
@@ -1894,7 +1971,6 @@ namespace GenericDashboard {
                                 itemCurrentStateData.tableValues[headerIndex] = labelstateDaysCount;
 
                             }
-
 
                         });
                     }
@@ -1992,6 +2068,16 @@ namespace GenericDashboard {
                                 if(closureObject.showInTable == 'Y'){
                                     let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === closureObject.tableHeader);
                                     itemCurrentStateData.tableValues[headerIndex] = daysToCloseItem;
+                                }
+                                if(this.dateFilterEnablerMap.get(closureObject.id) && closureObject.closedDate){
+                                
+                                    let closureItemsCurrentData: closureObjectCurrentData = {
+                                        id: item.itemRef,
+                                        daysToClose: daysToCloseItem,
+                                        closedDate: closureObject.closedDate
+                                    };
+    
+                                    closureObject.currentLabelData.push(closureItemsCurrentData);
                                 }
                             }
                         }
