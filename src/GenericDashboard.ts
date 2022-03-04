@@ -1022,18 +1022,6 @@ namespace GenericDashboard {
                         let groupWiseInitials = Array(groupByObject.labels.length).fill(0);
                         let groupWiseData =  [ groupByObject.groupWiseData[0] , ...groupWiseInitials];
 
-                        // byCategoryLabelData.itemCurrentStateValues.forEach(
-                        //     (itemCurrentStateData) => {
-
-                        //         if(itemCurrentStateData.InitiatedDate && 
-                        //             (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
-
-                        //                 let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByObject.tableHeader);
-                        //                 let groupByLabelIndex = groupByObject.labelsDesc.findIndex(labelDesc => labelDesc === itemCurrentStateData.tableValues[headerIndex]);
-                        //                 groupWiseData[groupByLabelIndex + 1] += 1;
-                        //         }
-                        // });
-
                         groupByObject.currentLabelData.forEach(
                             (itemCurrentStateData) => {
 
@@ -1101,18 +1089,6 @@ namespace GenericDashboard {
                     if(groupByStateObject.id == groupId){
                         let statusWiseData: any = JSON.parse(JSON.stringify(groupByStateObject.stateWiseInitialData));
 
-                        // byCategoryLabelData.itemCurrentStateValues.forEach(
-                        //     (itemCurrentStateData) => {
-                        //         if(itemCurrentStateData.InitiatedDate && 
-                        //             (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
-
-                        //                 let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
-                        //                 let groupByStateLabelIndex = groupByStateObject.stateDesc.findIndex(labelDesc => labelDesc === itemCurrentStateData.tableValues[headerIndex]);
-                        //                 statusWiseData[groupByStateLabelIndex][1] += 1;
-
-                        //         }
-                        // });
-
                         groupByStateObject.currentLabelData.forEach(
                             (itemCurrentStateData) => {
 
@@ -1141,18 +1117,6 @@ namespace GenericDashboard {
 
                     if(groupByStateOverdueObject.id == groupId){
                         let statusWiseData: any = JSON.parse(JSON.stringify(groupByStateOverdueObject.stateWiseInitialData));
-
-                        // byCategoryLabelData.itemCurrentStateValues.forEach(
-                        //     (itemCurrentStateData) => {
-                        //         if(itemCurrentStateData.InitiatedDate && 
-                        //             (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
-
-                        //                 let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
-                        //                 let groupByStateLabelIndex = groupByStateObject.stateDesc.findIndex(labelDesc => labelDesc === itemCurrentStateData.tableValues[headerIndex]);
-                        //                 statusWiseData[groupByStateLabelIndex][1] += 1;
-
-                        //         }
-                        // });
 
                         groupByStateOverdueObject.currentLabelData.forEach(
                             (itemCurrentStateData) => {
@@ -1335,18 +1299,6 @@ namespace GenericDashboard {
                         let closedItemsData = [];
                         let closureTimeData: any[] = [closureObject.closureTimeData[0]];
 
-                        // byCategoryLabelData.itemCurrentStateValues.forEach(
-                        //     (itemCurrentStateData) => {
-                        //     if(itemCurrentStateData.ClosedDate && 
-                        //         (itemCurrentStateData.ClosedDate >= fromDate && itemCurrentStateData.ClosedDate <= toDate)){ 
-                                   
-                        //             let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === closureObject.tableHeader);
-                        //             closedItemsData.push(itemCurrentStateData.id);
-                        //             closureTimeData.push(itemCurrentStateData.tableValues[headerIndex]);
-
-                        //     }
-                        // });
-
                         closureObject.currentLabelData.forEach(
                             (itemCurrentStateData) => {
 
@@ -1416,20 +1368,6 @@ namespace GenericDashboard {
 
                         trackerObject.stateDesc.forEach(labelDesc => {
                             stateTrackerData.push([labelDesc]);
-                        });
-
-                        byCategoryLabelData.itemCurrentStateValues.forEach(
-                           (itemCurrentStateData) => {
-                                if(itemCurrentStateData.InitiatedDate && itemCurrentStateData.currentState !== trackerObject.closedState
-                                 && (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate)){
-                                    stateTrackerData[0].push(itemCurrentStateData.id);
-                                    trackerObject.stateDesc.forEach(
-                                        (trackState, stateIndex) => {
-                                            let headerIndex = byCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === trackState);
-                                            let stateDays = itemCurrentStateData.tableValues[headerIndex];
-                                            stateTrackerData[stateIndex +1].push(stateDays);
-                                    });
-                                }
                         });
 
                         trackerObject.currentLabelData.forEach(
@@ -1640,6 +1578,7 @@ namespace GenericDashboard {
                                 if(this.dateFilterEnablerMap.get(groupByObject.id)){
                                     label.set.sort((a, b) => b.version - a.version);
                                     let currentLableSetDate = new Date(label.set[0].dateIso);
+                                    itemCurrentStateData.InitiatedDate = currentLableSetDate;
 
                                     let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
                                         id: item.itemRef,
@@ -1693,6 +1632,7 @@ namespace GenericDashboard {
                                     if(this.dateFilterEnablerMap.get(groupByStateObject.id)){
                                         label.set.sort((a, b) => b.version - a.version);
                                         let currentLableSetDate = new Date(label.set[0].dateIso);
+                                        itemCurrentStateData.InitiatedDate = currentLableSetDate;
     
                                         let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
                                             id: item.itemRef,
@@ -1717,6 +1657,7 @@ namespace GenericDashboard {
                                     if(this.dateFilterEnablerMap.get(groupByStateObject.id)){
                                         label.set.sort((a, b) => b.version - a.version);
                                         let currentLableSetDate = new Date(label.set[0].dateIso);
+                                        itemCurrentStateData.InitiatedDate = currentLableSetDate;
     
                                         let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
                                             id: item.itemRef,
@@ -1757,6 +1698,7 @@ namespace GenericDashboard {
                                     if(this.dateFilterEnablerMap.get(groupByStateOverDueObject.id)){
                                         label.set.sort((a, b) => b.version - a.version);
                                         let currentLableSetDate = new Date(label.set[0].dateIso);
+                                        itemCurrentStateData.InitiatedDate = currentLableSetDate;
     
                                         let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
                                             id: item.itemRef,
@@ -1784,6 +1726,7 @@ namespace GenericDashboard {
                                     if(this.dateFilterEnablerMap.get(groupByStateOverDueObject.id)){
                                         label.set.sort((a, b) => b.version - a.version);
                                         let currentLableSetDate = new Date(label.set[0].dateIso);
+                                        itemCurrentStateData.InitiatedDate = currentLableSetDate;
     
                                         let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
                                             id: item.itemRef,
@@ -1899,12 +1842,14 @@ namespace GenericDashboard {
                                 label.set.sort((a, b) => a.version - b.version);
                                 let intiatedDate = new Date(label.set[0].dateIso);
                                 closureObject.initiatedDate = intiatedDate;
+                                itemCurrentStateData.InitiatedDate = intiatedDate;
                             }
     
                             if(stateIndex == closedStateIndex){
                                 label.set.sort((a, b) => b.version - a.version);
                                 const colosedDate = new Date(label.set[0].dateIso);
                                 closureObject.closedDate = colosedDate;
+                                itemCurrentStateData.ClosedDate = colosedDate;
                             }
                         });
                     }
@@ -1940,6 +1885,7 @@ namespace GenericDashboard {
                                             label.set.sort((a, b) => b.version - a.version);
                                             currentLableSetDate = new Date(label.set[0].dateIso);
                                             currentState = label.label;
+                                            itemCurrentStateData.InitiatedDate = currentLableSetDate;
                                         }
 
                                         let trackerItemCurrentData = trackerObject.currentLabelData.get(item.itemRef);
@@ -2004,6 +1950,7 @@ namespace GenericDashboard {
 
                             groupLabelData.label.set.sort((a, b) => b.version - a.version);
                             let currentLableSetDate = new Date(groupLabelData.label.set[0].dateIso);
+                            itemCurrentStateData.InitiatedDate = currentLableSetDate;
 
                             let groupByLabelCurrentData: groupByStackCurrentData = {
                                 id: item.itemRef,
