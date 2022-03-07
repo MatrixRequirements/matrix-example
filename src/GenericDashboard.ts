@@ -1951,8 +1951,10 @@ namespace GenericDashboard {
                                 }
                             });
 
-                            groupLabelData.label.set.sort((a, b) => b.version - a.version);
-                            let currentLableSetDate = new Date(groupLabelData.label.set[0].dateIso);
+                            // groupLabelData.label.set.sort((a, b) => b.version - a.version);
+                            // let currentLableSetDate = new Date(groupLabelData.label.set[0].dateIso);
+                            categoryLabelData.label.set.sort((a, b) => b.version - a.version);
+                            let currentLableSetDate = new Date(categoryLabelData.label.set[0].dateIso);
                             itemCurrentStateData.InitiatedDate = currentLableSetDate;
 
                             let groupByLabelCurrentData: groupByStackCurrentData = {
