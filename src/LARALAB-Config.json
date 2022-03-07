@@ -65,8 +65,8 @@
                             "id": "status",
                             "type": "groupByState",
                             "renderChart": "Y",
-                            "showInTable": "N",
-                            "tableHeader": "",
+                            "showInTable": "Y",
+                            "tableHeader": "Classification",
                             "labels": [
                                 "Management",
                                 "Regulatory",

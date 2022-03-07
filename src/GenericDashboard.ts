@@ -1681,65 +1681,68 @@ namespace GenericDashboard {
 
                             let stateIndex = groupByStateOverDueObject.stateCodes.findIndex(stateCode => stateCode === label.label);
                             let openStateIndex = groupByStateOverDueObject.stateCodes.findIndex(stateCode => stateCode === groupByStateOverDueObject.openState);
-                            let currentStateIndex = -1;
+                            //let currentStateIndex = -1;
 
                             if(stateIndex > -1){
-                                if(groupByStateOverDueObject.currentState){
-                                    currentStateIndex = groupByStateOverDueObject.stateCodes.findIndex(stateCode => stateCode === groupByStateOverDueObject.currentState);
+                                // if(groupByStateOverDueObject.currentState){
+                                //     currentStateIndex = groupByStateOverDueObject.stateCodes.findIndex(stateCode => stateCode === groupByStateOverDueObject.currentState);
+                                // }
+                                //if((label.reset.length !== label.set.length) && currentStateIndex < 0){
+                                if(label.reset.length !== label.set.length){
+                                    if(groupByStateOverDueObject.renderChart == 'Y'){
+                                        groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
+                                    }
+                                    groupByStateOverDueObject.currentState = label.label;
+                                    itemCurrentStateData.currentState = label.label;
+                                    if(groupByStateOverDueObject.showInTable == 'Y'){
+                                        let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateOverDueObject.tableHeader);
+                                        itemCurrentStateData.tableValues[headerIndex] = groupByStateOverDueObject.stateDesc[stateIndex];
+                                        itemCurrentStateData.attributes.push(groupByStateOverDueObject.stateDesc[stateIndex]);
+                                    }
+                                    if(this.dateFilterEnablerMap.get(groupByStateOverDueObject.id)){
+                                        label.set.sort((a, b) => b.version - a.version);
+                                        let currentLableSetDate = new Date(label.set[0].dateIso);
+                                        itemCurrentStateData.InitiatedDate = currentLableSetDate;
+    
+                                        let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
+                                            id: item.itemRef,
+                                            currentLabel: label.label,
+                                            currentLabelSetDate: currentLableSetDate
+                                        };
+    
+                                        groupByStateOverDueObject.currentLabelData.push(groupByObjectcurrentLabelData);
+                                    }
                                 }
-                                if((label.reset.length !== label.set.length) && currentStateIndex < 0){
-                                    if(groupByStateOverDueObject.renderChart == 'Y'){
-                                        groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
-                                    }
-                                    groupByStateOverDueObject.currentState = label.label;
-                                    itemCurrentStateData.currentState = label.label;
-                                    if(groupByStateOverDueObject.showInTable == 'Y'){
-                                        let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateOverDueObject.tableHeader);
-                                        itemCurrentStateData.tableValues[headerIndex] = groupByStateOverDueObject.stateDesc[stateIndex];
-                                        itemCurrentStateData.attributes.push(groupByStateOverDueObject.stateDesc[stateIndex]);
-                                    }
-                                    if(this.dateFilterEnablerMap.get(groupByStateOverDueObject.id)){
-                                        label.set.sort((a, b) => b.version - a.version);
-                                        let currentLableSetDate = new Date(label.set[0].dateIso);
-                                        itemCurrentStateData.InitiatedDate = currentLableSetDate;
+                                
+                                // else if((label.reset.length !== label.set.length) && stateIndex > currentStateIndex) {
+                                //     if(groupByStateOverDueObject.renderChart == 'Y'){
+                                //         groupByStateOverDueObject.stateWiseData[currentStateIndex][1] -= 1;
+                                //         if(currentStateIndex == openStateIndex){
+                                //             groupByStateOverDueObject.stateWiseData[groupByStateOverDueObject.stateDesc.length-1][1] -= 1;
+                                //         }
+                                //         groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
+                                //     }
+                                //     groupByStateOverDueObject.currentState = label.label;
+                                //     itemCurrentStateData.currentState = label.label;
+                                //     if(groupByStateOverDueObject.showInTable == 'Y'){
+                                //         let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateOverDueObject.tableHeader);
+                                //         itemCurrentStateData.tableValues[headerIndex] = groupByStateOverDueObject.stateDesc[stateIndex];
+                                //         itemCurrentStateData.attributes.push(groupByStateOverDueObject.stateDesc[stateIndex]);
+                                //     }
+                                //     if(this.dateFilterEnablerMap.get(groupByStateOverDueObject.id)){
+                                //         label.set.sort((a, b) => b.version - a.version);
+                                //         let currentLableSetDate = new Date(label.set[0].dateIso);
+                                //         itemCurrentStateData.InitiatedDate = currentLableSetDate;
     
-                                        let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
-                                            id: item.itemRef,
-                                            currentLabel: label.label,
-                                            currentLabelSetDate: currentLableSetDate
-                                        };
+                                //         let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
+                                //             id: item.itemRef,
+                                //             currentLabel: label.label,
+                                //             currentLabelSetDate: currentLableSetDate
+                                //         };
     
-                                        groupByStateOverDueObject.currentLabelData.push(groupByObjectcurrentLabelData);
-                                    }
-                                }else if((label.reset.length !== label.set.length) && stateIndex > currentStateIndex) {
-                                    if(groupByStateOverDueObject.renderChart == 'Y'){
-                                        groupByStateOverDueObject.stateWiseData[currentStateIndex][1] -= 1;
-                                        if(currentStateIndex == openStateIndex){
-                                            groupByStateOverDueObject.stateWiseData[groupByStateOverDueObject.stateDesc.length-1][1] -= 1;
-                                        }
-                                        groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
-                                    }
-                                    groupByStateOverDueObject.currentState = label.label;
-                                    itemCurrentStateData.currentState = label.label;
-                                    if(groupByStateOverDueObject.showInTable == 'Y'){
-                                        let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateOverDueObject.tableHeader);
-                                        itemCurrentStateData.tableValues[headerIndex] = groupByStateOverDueObject.stateDesc[stateIndex];
-                                        itemCurrentStateData.attributes.push(groupByStateOverDueObject.stateDesc[stateIndex]);
-                                    }
-                                    if(this.dateFilterEnablerMap.get(groupByStateOverDueObject.id)){
-                                        label.set.sort((a, b) => b.version - a.version);
-                                        let currentLableSetDate = new Date(label.set[0].dateIso);
-                                        itemCurrentStateData.InitiatedDate = currentLableSetDate;
-    
-                                        let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
-                                            id: item.itemRef,
-                                            currentLabel: label.label,
-                                            currentLabelSetDate: currentLableSetDate
-                                        };
-    
-                                        groupByStateOverDueObject.currentLabelData.push(groupByObjectcurrentLabelData);
-                                    }
-                                }  
+                                //         groupByStateOverDueObject.currentLabelData.push(groupByObjectcurrentLabelData);
+                                //     }
+                                // }  
                                 
                                 if(currentStateIndex == openStateIndex){
                                     let itemDueDate = this.OpenItemsDueDateMap.get(item.itemRef);
