@@ -1943,7 +1943,7 @@ namespace GenericDashboard {
 
                         if(categoryLabelIndex >= 0 && groupLabelIndex >= 0){
                             let groupDesc = groupByStackObject.groupByCodesDesc[groupLabelIndex];
-                            let categoryDesc = groupByStackObject.groupByCodesDesc[groupLabelIndex];
+                            let categoryDesc = groupByStackObject.categoryDesc[categoryLabelIndex];
                             
                             groupByStackObject.groupByStackData.forEach(stackGroupData => {
                                 if(stackGroupData[0] == groupDesc){
