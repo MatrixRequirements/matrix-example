@@ -1612,12 +1612,13 @@ namespace GenericDashboard {
                         ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
 
                             let stateIndex = groupByStateObject.stateCodes.findIndex(stateCode => stateCode === label.label);
-                            let currentStateIndex = -1;
+                            //let currentStateIndex = -1;
                             if(stateIndex > -1){
-                                if(groupByStateObject.currentState){
-                                    currentStateIndex = groupByStateObject.stateCodes.findIndex(stateCode => stateCode === groupByStateObject.currentState);
-                                }
-                                if((label.reset.length !== label.set.length) && currentStateIndex < 0){
+                                // if(groupByStateObject.currentState){
+                                //     currentStateIndex = groupByStateObject.stateCodes.findIndex(stateCode => stateCode === groupByStateObject.currentState);
+                                // }
+                                //if((label.reset.length !== label.set.length) && currentStateIndex < 0){
+                                if(label.reset.length !== label.set.length){    
                                     if(groupByStateObject.renderChart == 'Y'){
                                         groupByStateObject.stateWiseData[stateIndex][1] += 1;
                                     }
@@ -1642,32 +1643,34 @@ namespace GenericDashboard {
     
                                         groupByStateObject.currentLabelData.push(groupByObjectcurrentLabelData);
                                     }
-                                }else if((label.reset.length !== label.set.length) && stateIndex > currentStateIndex) {
-                                    if(groupByStateObject.renderChart == 'Y'){
-                                        groupByStateObject.stateWiseData[currentStateIndex][1] -= 1;
-                                        groupByStateObject.stateWiseData[stateIndex][1] += 1;
-                                    }
-                                    groupByStateObject.currentState = label.label;
-                                    itemCurrentStateData.currentState = label.label;
-                                    if(groupByStateObject.showInTable == 'Y'){
-                                        let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
-                                        itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
-                                        itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
-                                    }
-                                    if(this.dateFilterEnablerMap.get(groupByStateObject.id)){
-                                        label.set.sort((a, b) => b.version - a.version);
-                                        let currentLableSetDate = new Date(label.set[0].dateIso);
-                                        itemCurrentStateData.InitiatedDate = currentLableSetDate;
+                                }
+                                
+                                // else if((label.reset.length !== label.set.length) && stateIndex > currentStateIndex) {
+                                //     if(groupByStateObject.renderChart == 'Y'){
+                                //         groupByStateObject.stateWiseData[currentStateIndex][1] -= 1;
+                                //         groupByStateObject.stateWiseData[stateIndex][1] += 1;
+                                //     }
+                                //     groupByStateObject.currentState = label.label;
+                                //     itemCurrentStateData.currentState = label.label;
+                                //     if(groupByStateObject.showInTable == 'Y'){
+                                //         let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
+                                //         itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
+                                //         itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
+                                //     }
+                                //     if(this.dateFilterEnablerMap.get(groupByStateObject.id)){
+                                //         label.set.sort((a, b) => b.version - a.version);
+                                //         let currentLableSetDate = new Date(label.set[0].dateIso);
+                                //         itemCurrentStateData.InitiatedDate = currentLableSetDate;
     
-                                        let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
-                                            id: item.itemRef,
-                                            currentLabel: label.label,
-                                            currentLabelSetDate: currentLableSetDate
-                                        };
+                                //         let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
+                                //             id: item.itemRef,
+                                //             currentLabel: label.label,
+                                //             currentLabelSetDate: currentLableSetDate
+                                //         };
     
-                                        groupByStateObject.currentLabelData.push(groupByObjectcurrentLabelData);
-                                    }
-                                }   
+                                //         groupByStateObject.currentLabelData.push(groupByObjectcurrentLabelData);
+                                //     }
+                                // }   
                             }
                         });
                     }
