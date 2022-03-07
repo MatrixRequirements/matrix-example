@@ -1680,7 +1680,7 @@ namespace GenericDashboard {
                         ByCategoryLabelData.groupByStateOverdueData.forEach(groupByStateOverDueObject => {
 
                             let stateIndex = groupByStateOverDueObject.stateCodes.findIndex(stateCode => stateCode === label.label);
-                            let openStateIndex = groupByStateOverDueObject.stateCodes.findIndex(stateCode => stateCode === groupByStateOverDueObject.openState);
+                            //let openStateIndex = groupByStateOverDueObject.stateCodes.findIndex(stateCode => stateCode === groupByStateOverDueObject.openState);
                             //let currentStateIndex = -1;
 
                             if(stateIndex > -1){
@@ -1744,7 +1744,8 @@ namespace GenericDashboard {
                                 //     }
                                 // }  
                                 
-                                if(currentStateIndex == openStateIndex){
+                                //if(currentStateIndex == openStateIndex){
+                                if(groupByStateOverDueObject.currentState == groupByStateOverDueObject.openState){    
                                     let itemDueDate = this.OpenItemsDueDateMap.get(item.itemRef);
                                     //check for overdue
                                     if(new Date(itemDueDate) < new Date()){
