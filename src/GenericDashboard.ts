@@ -1125,14 +1125,13 @@ namespace GenericDashboard {
                                     (itemCurrentStateData.currentLabelSetDate >= fromDate && itemCurrentStateData.currentLabelSetDate <= toDate)){
                                         let groupByStateLabelIndex = groupByStateOverdueObject.stateCodes.findIndex(labelCode => labelCode === itemCurrentStateData.currentLabel);
                                         statusWiseData[groupByStateLabelIndex][1] += 1;
-                                }
-
-                                if(itemCurrentStateData.currentLabel == groupByStateOverdueObject.openState){
-                                    let itemDueDate = this.OpenItemsDueDateMap.get(itemCurrentStateData.id);
-                                    //check for overdue
-                                    if(new Date(itemDueDate) < new Date()){
-                                        statusWiseData[groupByStateOverdueObject.stateDesc.length-1][1] += 1;
-                                    }
+                                        if(itemCurrentStateData.currentLabel == groupByStateOverdueObject.openState){
+                                            let itemDueDate = this.OpenItemsDueDateMap.get(itemCurrentStateData.id);
+                                            //check for overdue
+                                            if(new Date(itemDueDate) < new Date()){
+                                                statusWiseData[groupByStateOverdueObject.stateDesc.length-1][1] += 1;
+                                            }
+                                        }
                                 }
 
                         });
