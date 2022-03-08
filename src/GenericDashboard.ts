@@ -1689,11 +1689,22 @@ namespace GenericDashboard {
                                 // }
                                 //if((label.reset.length !== label.set.length) && currentStateIndex < 0){
                                 if(label.reset.length !== label.set.length){
-                                    if(groupByStateOverDueObject.renderChart == 'Y'){
-                                        groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
-                                    }
                                     groupByStateOverDueObject.currentState = label.label;
                                     itemCurrentStateData.currentState = label.label;
+
+                                    if(groupByStateOverDueObject.renderChart == 'Y'){
+                                        groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
+                                        if(itemCurrentStateData.currentState == groupByStateOverDueObject.openState){    
+                                            let itemDueDate = this.OpenItemsDueDateMap.get(item.itemRef);
+                                            //check for overdue
+                                            if(new Date(itemDueDate) < new Date()){
+                                                if(groupByStateOverDueObject.renderChart == 'Y'){
+                                                    groupByStateOverDueObject.stateWiseData[groupByStateOverDueObject.stateDesc.length-1][1] += 1;
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     if(groupByStateOverDueObject.showInTable == 'Y'){
                                         let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateOverDueObject.tableHeader);
                                         itemCurrentStateData.tableValues[headerIndex] = groupByStateOverDueObject.stateDesc[stateIndex];
@@ -1743,17 +1754,7 @@ namespace GenericDashboard {
                                 //         groupByStateOverDueObject.currentLabelData.push(groupByObjectcurrentLabelData);
                                 //     }
                                 // }  
-                                
-                                //if(currentStateIndex == openStateIndex){
-                                if(groupByStateOverDueObject.currentState == groupByStateOverDueObject.openState){    
-                                    let itemDueDate = this.OpenItemsDueDateMap.get(item.itemRef);
-                                    //check for overdue
-                                    if(new Date(itemDueDate) < new Date()){
-                                        if(groupByStateOverDueObject.renderChart == 'Y'){
-                                            groupByStateOverDueObject.stateWiseData[groupByStateOverDueObject.stateDesc.length-1][1] += 1;
-                                        }
-                                    }
-                                }
+                               
                             }
                         });
                     }
