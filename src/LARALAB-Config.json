@@ -39,7 +39,7 @@
                     {
                         "columnConfig": [
                             {
-                                "size": 6,
+                                "size": 12,
                                 "contentType": "chart",
                                 "contentConfig": {
                                     "id": "status-overdue",
@@ -47,6 +47,20 @@
                                     "title": "Status wise CR count overview",
                                     "dateFilterRequired": "Y",
                                     "contentClass": "chart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 12,
+                                "contentType": "table",
+                                "contentConfig": {
+                                    "id" : "CCSO",
+                                    "functionality" : "table",
+                                    "title" : "CAPA current status list",
+                                    "dateFilterRequired" : "Y"
                                 }
                             }
                         ]
@@ -149,8 +163,8 @@
                             "id": "status-overdue",
                             "type": "statusOverdue",
                             "renderChart": "Y",
-                            "showInTable": "N",
-                            "tableHeader": "",
+                            "showInTable": "Y",
+                            "tableHeader": "Current State",
                             "overDueFieldId": 1618,
                             "openStateLabel": "CRO",
                             "labels": [
