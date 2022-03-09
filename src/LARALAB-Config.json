@@ -176,7 +176,7 @@
                                 "Open",
                                 "Approved",
                                 "Closed",
-                                "Overdue"
+                                "Open and Overdue"
                             ],
                             "labelColors": [
                                 "#d62728",

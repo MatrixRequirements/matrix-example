@@ -1124,13 +1124,17 @@ namespace GenericDashboard {
                                 if(itemCurrentStateData.currentLabelSetDate && 
                                     (itemCurrentStateData.currentLabelSetDate >= fromDate && itemCurrentStateData.currentLabelSetDate <= toDate)){
                                         let groupByStateLabelIndex = groupByStateOverdueObject.stateCodes.findIndex(labelCode => labelCode === itemCurrentStateData.currentLabel);
-                                        statusWiseData[groupByStateLabelIndex][1] += 1;
+                                        
                                         if(itemCurrentStateData.currentLabel == groupByStateOverdueObject.openState){
                                             let itemDueDate = this.OpenItemsDueDateMap.get(itemCurrentStateData.id);
                                             //check for overdue
                                             if(new Date(itemDueDate) < new Date()){
                                                 statusWiseData[groupByStateOverdueObject.stateDesc.length-1][1] += 1;
+                                            }else{
+                                                statusWiseData[groupByStateLabelIndex][1] += 1;
                                             }
+                                        }else{
+                                            statusWiseData[groupByStateLabelIndex][1] += 1;
                                         }
                                 }
 
@@ -1679,6 +1683,7 @@ namespace GenericDashboard {
                         ByCategoryLabelData.groupByStateOverdueData.forEach(groupByStateOverDueObject => {
 
                             let stateIndex = groupByStateOverDueObject.stateCodes.findIndex(stateCode => stateCode === label.label);
+                            let isCurrentStateOverDue = false;
                             //let openStateIndex = groupByStateOverDueObject.stateCodes.findIndex(stateCode => stateCode === groupByStateOverDueObject.openState);
                             //let currentStateIndex = -1;
 
@@ -1692,22 +1697,31 @@ namespace GenericDashboard {
                                     itemCurrentStateData.currentState = label.label;
 
                                     if(groupByStateOverDueObject.renderChart == 'Y'){
-                                        groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
                                         if(itemCurrentStateData.currentState == groupByStateOverDueObject.openState){    
                                             let itemDueDate = this.OpenItemsDueDateMap.get(item.itemRef);
                                             //check for overdue
                                             if(new Date(itemDueDate) < new Date()){
-                                                if(groupByStateOverDueObject.renderChart == 'Y'){
-                                                    groupByStateOverDueObject.stateWiseData[groupByStateOverDueObject.stateDesc.length-1][1] += 1;
-                                                }
+                                                groupByStateOverDueObject.stateWiseData[groupByStateOverDueObject.stateDesc.length-1][1] += 1;
+                                                itemCurrentStateData.currentState = groupByStateOverDueObject.stateDesc[groupByStateOverDueObject.stateDesc.length-1];
+                                                isCurrentStateOverDue = true;
+                                            }else{
+                                                groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
                                             }
+                                        }else{
+                                            groupByStateOverDueObject.stateWiseData[stateIndex][1] += 1;
                                         }
                                     }
 
                                     if(groupByStateOverDueObject.showInTable == 'Y'){
                                         let headerIndex = ByCategoryLabelData.itemCurrentStateTableHeaders.findIndex(header => header === groupByStateOverDueObject.tableHeader);
-                                        itemCurrentStateData.tableValues[headerIndex] = groupByStateOverDueObject.stateDesc[stateIndex];
-                                        itemCurrentStateData.attributes.push(groupByStateOverDueObject.stateDesc[stateIndex]);
+                                        let tableValue; 
+                                        if(isCurrentStateOverDue){
+                                            tableValue = itemCurrentStateData.currentState;
+                                        }else{
+                                            tableValue = groupByStateOverDueObject.stateDesc[stateIndex];
+                                        }
+                                        itemCurrentStateData.tableValues[headerIndex] = tableValue;
+                                        itemCurrentStateData.attributes.push(tableValue);
                                     }
                                     if(this.dateFilterEnablerMap.get(groupByStateOverDueObject.id)){
                                         label.set.sort((a, b) => b.version - a.version);
