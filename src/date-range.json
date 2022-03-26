@@ -1,0 +1,77 @@
+{
+    "plugins": [
+        {
+            "id": "CAPAO",
+            "title": "CAPA Status Overview",
+            "folder": "DASHBOARDS",
+            "order": 3000,
+            "icon": "fal fa-chart-bar",
+            "name": "CAPA Status Overview",
+            "version": "1.11.0",
+            "layoutConfig": {
+                "rowConfig": [
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 6,
+                                "contentType": "date-range-chart",
+                                "contentConfig": {
+                                    "id" : "date-range",
+                                    "functionality" : "dateRangeComapre",
+                                    "title" : "Compare CAPA count by date ranges",
+                                    "dateRanges": ["week","month","threeMonths","sixMonths","twelveMonths","ytd","moreThanYear","dateCompare"],
+                                    "displayDateRanges": ["Week","Month","3Months","6Months","12Months","YTD",">Year","Date Compare"],
+                                    "defaultDateRange": "week",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "chart"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "layoutDomStyle":" .chart { width: 90%; min-height: 350px; cursor:pointer; } .dateFilter{ display:flex; margin-left: 45px; } .filterDates { width: 115px; margin: 0 6px; } .date-filter-form-control { height: 20px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; } .date-filter-btn { margin-bottom: 0; margin-left: 12px; font-weight: 400; text-align: center; white-space: nowrap; vertical-align: middle; touch-action: manipulation; cursor: pointer; background-image: none; border: 1px solid transparent; padding: 0px 5px; font-size: 12px; line-height: 1.42857143; border-radius: 4px; } .tableDateFilter{ display:flex; margin-left: 350px; } .closureTimeChart{ width: 90%; min-height: 315px; cursor:pointer; } .bigChart{ width: 90%; min-height: 900px; cursor:pointer; } .timerangenormal{ background-color: rgb(255, 255, 255);  color: rgb(0, 128, 0); } .timerangeselected{ background-color: #337ab7; color: #f6fbfd; } .date-range-container{ display:flex; margin-left: 40px; }",
+            },
+            "categories":["CA","PA"],
+            "categoriesFunctionalities":[
+                {
+                    "id":"CA",
+                    "functionalities": [
+                        {
+                            "id": "date-range",
+                            "type": "dateRangeComapre",
+                            "renderChart": "Y",
+                            "showInTable": "N",
+                            "tableHeader": "",
+                            "title": "CAPA count by date ranges",
+                            "dateRanges": ["week","month","threeMonths","sixMonths","twelveMonths","ytd","moreThanYear","dateCompare"],
+                            "displayDateRanges": ["Week","Month","3Months","6Months","12Months","YTD",">Year","Date Compare"],
+                            "defaultDateRange": "week",
+                            "labels": ["AN1", "AN2", "AN3", "AN4", "AN5", "CAR"],
+                            "labelsDesc": ["CA Initiated", "CA Approved", "RCA Approved", "WFEC", "CA Closed", "CA Rejected"],
+                            "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4", "#2ca02c", "#8c564b"]
+                        }
+                    ]
+        
+                },
+                {
+                    "id":"PA",
+                    "functionalities": [
+                        {
+                            "id": "date-range",
+                            "type": "dateRangeComapre",
+                            "renderChart": "Y",
+                            "showInTable": "N",
+                            "tableHeader": "",
+                            "title": "CAPA count by date ranges",
+                            "dateRanges": ["week","month","threeMonths","sixMonths","twelveMonths","ytd","moreThanYear","dateCompare"],
+                            "defaultDateRange": "week",
+                            "labels": ["PN1", "PN2", "PN3", "PN4", "PAC", "PAR"],
+                            "labelsDesc": ["PA Initiated", "PA Approved", "RCA Approved", "WFEC", "PA Closed", "PA Rejected"],
+                            "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4", "#2ca02c", "#8c564b"]
+                        }
+                    ]
+                }
+            ] 
+        }
+    ]
+}

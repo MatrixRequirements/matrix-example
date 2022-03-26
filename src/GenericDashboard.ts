@@ -402,7 +402,7 @@ namespace GenericDashboard {
 
                                             let dateFilterClass = "";
 
-                                            if(columnConfig.contentType == "chart"){
+                                            if((columnConfig.contentType == "chart") || (columnConfig.contentType == "date-range-chart")){
                                                 dateFilterClass = "dateFilter";
                                             }else if(columnConfig.contentType == "table"){
                                                 dateFilterClass = "tableDateFilter";
@@ -423,8 +423,60 @@ namespace GenericDashboard {
 
                                     let chartColumnDom = "";
                                     let tableColumnDom = "";
-                                     
-                                    if(columnConfig.contentType == "chart"){
+
+                                    if(columnConfig.contentType == "date-range-chart"){
+                                        that.allChartsMap.set(contentConfig.id,'');
+                                        
+                                        let dateRangeDom = "";
+                                        let dateRangesDom = "";
+
+                                        contentConfig.dateRanges.forEach((dateRange,index) => {
+                                            let dateRangeDisplay = contentConfig.displayDateRanges[index];
+
+                                            let dateRangeClass = "";
+
+                                            if(contentConfig.defaultDateRange == dateRange){
+                                                dateRangeClass = "timerangeselected";
+                                            }else{
+                                                dateRangeClass = "timerangenormal";
+                                            }
+
+                                            dateRangeDom = `
+                                                <div class="btn-group labelTools">
+                                                    <button id="${dateRange}Range" class="btn btn-default btn-xs ${dateRangeClass}">${dateRangeDisplay}</button>
+                                                </div>
+                                            `;
+
+                                            dateRangesDom += dateRangeDom;
+
+                                        });
+
+
+                                        let dateRangesCompleteDom = `
+                                            <div id="timeSeriesChartRangeFilter" class="date-range-container">
+                                                ${dateRangesDom}
+                                            </div>
+                                        `;
+
+                                        chartColumnDom = `
+                                            <div class="col-lg-${columnConfig.size} ">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title" id="${contentConfig.id}-ChartTitle">
+                                                        ${contentConfig.title}
+                                                        </h3>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <div class='copyTitle'> </div>
+                                                        ${dateRangesCompleteDom}
+                                                        ${dateFilterDom}
+                                                        <div id="${contentConfig.id}-Chart" class="${contentConfig.contentClass}"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `;
+
+                                    }else if(columnConfig.contentType == "chart"){
                                         that.allChartsMap.set(contentConfig.id,'');
                                         chartColumnDom = `
                                             <div class="col-lg-${columnConfig.size} ">
