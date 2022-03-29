@@ -218,6 +218,29 @@ namespace GenericDashboard {
         overDueFunctionalityCategory : string = "";
         overDueFunctionalityFiledId : Number = 0;
 
+
+
+        //date range functionality variables
+        currentTimeRangeSelected: string = "";
+
+        currentWeekCategoryData: any[] = [];
+        currentMonthCategoryData: any = {};
+        threeMonthsCategoryData: any[] = [];
+        sixMonthsCategoryData: any[] = [];
+        twelveMonthsCategoryData: any[] = [];
+        ytdCategoryData: any[] = [];
+        moreThanYearCategoryData: any[] = [];
+
+        currentWeekColumnsData: any[] = [];
+        currentMonthColumnsData: any[] = [];
+        threeMonthsColumnsData: any[] = [];
+        sixMonthsColumnsData: any[] = [];
+        twelveMonthsColumnsData: any[] = [];
+        ytdColumnsData: any[] = [];
+        moreThanYearColumnsData: any[] = [];
+
+
+
        // pluginConfig: any = IC.getSettingJSON("MSCO");
 
         destroy(): void { }
@@ -426,6 +449,8 @@ namespace GenericDashboard {
 
                                     if(columnConfig.contentType == "date-range-chart"){
                                         that.allChartsMap.set(contentConfig.id,'');
+
+                                        that.currentTimeRangeSelected = contentConfig.defaultDateRange;
                                         
                                         let dateRangeDom = "";
                                         let dateRangesDom = "";
@@ -982,6 +1007,71 @@ namespace GenericDashboard {
 
         }
 
+        initiateDateRangeActions(range,contentId,displayLabels,labelColors){
+            let that = this;
+            let columnData;
+            let categoryData;
+
+            $("#"+range+"Range").click(function () {
+
+                if(range == "dateCompare"){
+                    $("#"+contentId+"-date-filter").show();
+                }else{
+                    $("#"+contentId+"-date-filter").hide();
+                }
+                
+                if (that.currentTimeRangeSelected !== range) {
+                    $("#"+range+"Range").removeClass("timerangenormal");
+                    $("#"+range+"Range").addClass("timerangeselected");
+
+                    $('#' + that.currentTimeRangeSelected + 'Range').removeClass("timerangeselected");
+                    $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
+
+                    that.currentTimeRangeSelected = range;
+                    
+                    if(range !== "dateCompare"){
+
+                        switch (range) {
+                            case 'week':
+                                columnData = that.currentWeekColumnsData;
+                                categoryData = that.currentWeekCategoryData;
+                                break;
+                            case 'month':
+                                columnData = that.currentMonthColumnsData;
+                                categoryData = that.currentMonthCategoryData;
+                                break;
+                            case 'threeMonths':
+                                columnData = that.threeMonthsColumnsData;
+                                categoryData = that.threeMonthsCategoryData;
+                                break;    
+                            case 'sixMonths':
+                                columnData = that.sixMonthsColumnsData;
+                                categoryData = that.sixMonthsCategoryData;
+                                break;    
+                            case 'twelveMonths':
+                                columnData = that.twelveMonthsColumnsData;
+                                categoryData = that.twelveMonthsCategoryData;
+                                break; 
+                            case 'ytd':
+                                columnData = that.ytdColumnsData;
+                                categoryData = that.ytdCategoryData;
+                                break; 
+                            case 'moreThanYear':
+                                columnData = that.moreThanYearColumnsData;
+                                categoryData = that.moreThanYearCategoryData;
+                                break;           
+                        };
+
+                        that.renderDateRangeChart(columnData, categoryData, displayLabels,labelColors,contentId);
+                    }
+                }
+
+            });
+
+        }
+
+
+
         renderCategoryWiseData(cat: string) {
             let that = this;
 
@@ -1059,6 +1149,49 @@ namespace GenericDashboard {
                 $(`#${this.pluginTableId}Table tbody tr`).hide();
                 $(`#${this.pluginTableId}Table tbody tr.${filterDataClass}`).show();
             }
+        }
+
+
+        renderDateRangeChart(chartColumnsData, chartCategoryData, groupLabels, groupColors, groupId) {
+            let that = this;
+            //prepare template
+            let dateRangeChartparams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    columns: chartColumnsData,
+                    type: 'bar',
+                    groups: [
+                        groupLabels
+                    ]
+                },
+                axis: {
+                    x: {
+                        type: 'category',
+                        categories: chartCategoryData
+
+                    },
+                    y: {
+                        show: false
+                    }
+                },
+                color: {
+                    pattern: groupColors
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let dateRangeChart = c3.generate(dateRangeChartparams);
+
+            that.allChartsMap.set(groupId,dateRangeChart);
+
+            $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+            });
+
         }
 
         renderGroupByChartByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData, groupId: String) {
