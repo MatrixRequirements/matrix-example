@@ -148,6 +148,16 @@ namespace GenericDashboard {
         currentLabelData: Map<string, trackerObjectCurrentData>;
     }
 
+    interface dateRangeComapreObject {
+        id: string;
+        renderChart: string;
+        showInTable: string;
+        labels: any[];
+        labelsDesc: any[];
+        labelColors: any[];
+        currentLabelData: Map<string, groupByObjectCurrentData>;
+    }
+
     interface groupByObjectCurrentData {
         id: string;
         currentLabel: string;
@@ -192,6 +202,7 @@ namespace GenericDashboard {
         avgData: avgObject[];
         closureData: closureObject[];
         trackerData: trackerObject[];
+        dateRangeComapreData: dateRangeComapreObject[];
         itemCurrentStateTableHeaders: any[];
         itemCurrentStateValues: ItemCurrentStateData[];
     }
@@ -269,8 +280,6 @@ namespace GenericDashboard {
             that.dateFilterEnablerMap.forEach((values,keys)=>{
                 that.initiateDateFilter(keys);
             });
-
-            that.initiateDateRangeActions("month","date-range");
             
             setTimeout(o => that.installCopyButtons(that.pluginConfig.title), 10);
 
@@ -607,6 +616,7 @@ namespace GenericDashboard {
                 let avgData: avgObject[] = [];
                 let closureData: closureObject[] = [];
                 let trackerData: trackerObject[] = [];
+                let dateRangeComapreData: dateRangeComapreObject[] = [];
                 let groupByStackCurrentLabelData: groupByStackCurrentData[] = [];
                 let groupByObjectCurrentLabelData: groupByObjectCurrentData[] = [];
                 let closureLabelCurrentData: closureObjectCurrentData[] = [];
@@ -778,7 +788,23 @@ namespace GenericDashboard {
                                 itemCurrentStateTableHeaders.push(lableDesc);
                             });
 
-                            break;    
+                            break;  
+                        case 'dateRangeComapre':
+                            
+                            let dateRangeComapreObject: dateRangeComapreObject = {
+                                id: functionality.id,
+                                renderChart: functionality.renderChart,
+                                showInTable: functionality.showInTable,
+                                labels: functionality.labels,
+                                labelsDesc: functionality.labelsDesc,
+                                labelColors: functionality.labelColors,
+                                currentLabelData: JSON.parse(JSON.stringify(groupByObjectCurrentLabelData))
+                            };
+                            dateRangeComapreData.push(dateRangeComapreObject);
+                            functionality.dateRanges.forEach(dateRange => {
+                                that.initiateDateRangeActions(dateRange,functionality.id);
+                            });
+                            break;      
                     };     
 
                 });
@@ -792,6 +818,7 @@ namespace GenericDashboard {
                     avgData: avgData,
                     closureData: closureData,
                     trackerData: trackerData,
+                    dateRangeComapreData: dateRangeComapreData,
                     itemCurrentStateTableHeaders: itemCurrentStateTableHeaders,
                     itemCurrentStateValues: itemCurrentStateValues
                 }
