@@ -474,6 +474,8 @@ namespace GenericDashboard {
 
                                             dateRangesDom += dateRangeDom;
 
+                                            that.initiateDateRangeActions(dateRange,contentConfig.id);
+
                                         });
 
 
@@ -999,18 +1001,20 @@ namespace GenericDashboard {
                     case 'tracker':
                         that.renderTrackerChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
                         break; 
+                    case 'dateRangeComapre':
+                        that.renderDateRangeComapreDataByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        break;      
                     case 'table':
                         that.renderPluginTableByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
-                        break;           
+                        break; 
+                                 
                 };
             });
 
         }
 
-        initiateDateRangeActions(range,contentId,displayLabels,labelColors){
+        initiateDateRangeActions(range,contentId){
             let that = this;
-            let columnData;
-            let categoryData;
 
             $("#"+range+"Range").click(function () {
 
@@ -1030,44 +1034,53 @@ namespace GenericDashboard {
                     that.currentTimeRangeSelected = range;
                     
                     if(range !== "dateCompare"){
-
-                        switch (range) {
-                            case 'week':
-                                columnData = that.currentWeekColumnsData;
-                                categoryData = that.currentWeekCategoryData;
-                                break;
-                            case 'month':
-                                columnData = that.currentMonthColumnsData;
-                                categoryData = that.currentMonthCategoryData;
-                                break;
-                            case 'threeMonths':
-                                columnData = that.threeMonthsColumnsData;
-                                categoryData = that.threeMonthsCategoryData;
-                                break;    
-                            case 'sixMonths':
-                                columnData = that.sixMonthsColumnsData;
-                                categoryData = that.sixMonthsCategoryData;
-                                break;    
-                            case 'twelveMonths':
-                                columnData = that.twelveMonthsColumnsData;
-                                categoryData = that.twelveMonthsCategoryData;
-                                break; 
-                            case 'ytd':
-                                columnData = that.ytdColumnsData;
-                                categoryData = that.ytdCategoryData;
-                                break; 
-                            case 'moreThanYear':
-                                columnData = that.moreThanYearColumnsData;
-                                categoryData = that.moreThanYearCategoryData;
-                                break;           
-                        };
-
-                        that.renderDateRangeChart(columnData, categoryData, displayLabels,labelColors,contentId);
+                        that.renderDateRangeByAction(range,contentId);
                     }
                 }
 
             });
 
+        }
+
+        renderDateRangeByAction(range,contentId){
+            let that = this;
+            let columnData;
+            let categoryData;
+
+            switch (range) {
+                case 'week':
+                    columnData = that.currentWeekColumnsData;
+                    categoryData = that.currentWeekCategoryData;
+                    break;
+                case 'month':
+                    columnData = that.currentMonthColumnsData;
+                    categoryData = that.currentMonthCategoryData;
+                    break;
+                case 'threeMonths':
+                    columnData = that.threeMonthsColumnsData;
+                    categoryData = that.threeMonthsCategoryData;
+                    break;    
+                case 'sixMonths':
+                    columnData = that.sixMonthsColumnsData;
+                    categoryData = that.sixMonthsCategoryData;
+                    break;    
+                case 'twelveMonths':
+                    columnData = that.twelveMonthsColumnsData;
+                    categoryData = that.twelveMonthsCategoryData;
+                    break; 
+                case 'ytd':
+                    columnData = that.ytdColumnsData;
+                    categoryData = that.ytdCategoryData;
+                    break; 
+                case 'moreThanYear':
+                    columnData = that.moreThanYearColumnsData;
+                    categoryData = that.moreThanYearCategoryData;
+                    break;           
+            };
+
+            console.log("rendering "+range+" chart");
+
+            //that.renderDateRangeChart(columnData, categoryData, displayLabels,labelColors,contentId);
         }
 
 
@@ -1149,6 +1162,10 @@ namespace GenericDashboard {
                 $(`#${this.pluginTableId}Table tbody tr`).hide();
                 $(`#${this.pluginTableId}Table tbody tr.${filterDataClass}`).show();
             }
+        }
+
+        renderDateRangeComapreDataByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+            console.log("Render date compare data");
         }
 
 
