@@ -269,6 +269,8 @@ namespace GenericDashboard {
             that.dateFilterEnablerMap.forEach((values,keys)=>{
                 that.initiateDateFilter(keys);
             });
+
+            that.initiateDateRangeActions("month","date-range");
             
             setTimeout(o => that.installCopyButtons(that.pluginConfig.title), 10);
 
