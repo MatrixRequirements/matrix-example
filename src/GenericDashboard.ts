@@ -437,7 +437,11 @@ namespace GenericDashboard {
                                             let dateFilterClass = "";
 
                                             if((columnConfig.contentType == "chart") || (columnConfig.contentType == "date-range-chart")){
-                                                dateFilterClass = "dateFilter";
+                                                if(columnConfig.size == 12){
+                                                    dateFilterClass = "dateFilterSize12";
+                                                }else if(columnConfig.size == 6){
+                                                    dateFilterClass = "dateFilter";
+                                                }
                                             }else if(columnConfig.contentType == "table"){
                                                 dateFilterClass = "tableDateFilter";
                                             }
