@@ -131,6 +131,16 @@ namespace GenericDashboard {
         currentLabelData: closureObjectCurrentData[];
     }
 
+    interface dateRangeCompareObject {
+        id: string;
+        renderChart: string;
+        showInTable: string;
+        labels: any[];
+        labelsDesc: any[];
+        labelColors: any[];
+        currentLabelData: groupByObjectCurrentData[];
+    }
+
     interface trackerObject {
         id: string;
         renderChart: string;
@@ -146,16 +156,6 @@ namespace GenericDashboard {
         rejectedState: string;
         currentState: string;
         currentLabelData: Map<string, trackerObjectCurrentData>;
-    }
-
-    interface dateRangeComapreObject {
-        id: string;
-        renderChart: string;
-        showInTable: string;
-        labels: any[];
-        labelsDesc: any[];
-        labelColors: any[];
-        currentLabelData: Map<string, groupByObjectCurrentData>;
     }
 
     interface groupByObjectCurrentData {
@@ -202,7 +202,7 @@ namespace GenericDashboard {
         avgData: avgObject[];
         closureData: closureObject[];
         trackerData: trackerObject[];
-        dateRangeComapreData: dateRangeComapreObject[];
+        dateRangeCompareData: dateRangeCompareObject[];
         itemCurrentStateTableHeaders: any[];
         itemCurrentStateValues: ItemCurrentStateData[];
     }
@@ -620,10 +620,11 @@ namespace GenericDashboard {
                 let avgData: avgObject[] = [];
                 let closureData: closureObject[] = [];
                 let trackerData: trackerObject[] = [];
-                let dateRangeComapreData: dateRangeComapreObject[] = [];
+                let dateRangeCompareData: dateRangeCompareObject[] = [];
                 let groupByStackCurrentLabelData: groupByStackCurrentData[] = [];
                 let groupByObjectCurrentLabelData: groupByObjectCurrentData[] = [];
                 let closureLabelCurrentData: closureObjectCurrentData[] = [];
+                let dateRangeCompareCurrentLabelData: groupByObjectCurrentData[] = [];
                 let trackerLabelCurrentData: Map<string, trackerObjectCurrentData> = new Map<string, trackerObjectCurrentData>();
 
                 category.functionalities.forEach(functionality => {
@@ -795,16 +796,16 @@ namespace GenericDashboard {
                             break;  
                         case 'dateRangeComapre':
                             
-                            let dateRangeComapreObject: dateRangeComapreObject = {
+                            let dateRangeComapreObject: dateRangeCompareObject = {
                                 id: functionality.id,
                                 renderChart: functionality.renderChart,
                                 showInTable: functionality.showInTable,
                                 labels: functionality.labels,
                                 labelsDesc: functionality.labelsDesc,
                                 labelColors: functionality.labelColors,
-                                currentLabelData: JSON.parse(JSON.stringify(groupByObjectCurrentLabelData))
+                                currentLabelData: dateRangeCompareCurrentLabelData
                             };
-                            dateRangeComapreData.push(dateRangeComapreObject);
+                            dateRangeCompareData.push(dateRangeComapreObject);
                             functionality.dateRanges.forEach(dateRange => {
                                 that.initiateDateRangeActions(dateRange,functionality.id);
                             });
@@ -822,7 +823,7 @@ namespace GenericDashboard {
                     avgData: avgData,
                     closureData: closureData,
                     trackerData: trackerData,
-                    dateRangeComapreData: dateRangeComapreData,
+                    dateRangeCompareData: dateRangeCompareData,
                     itemCurrentStateTableHeaders: itemCurrentStateTableHeaders,
                     itemCurrentStateValues: itemCurrentStateValues
                 }
@@ -2106,6 +2107,29 @@ namespace GenericDashboard {
                                 const colosedDate = new Date(label.set[0].dateIso);
                                 closureObject.closedDate = colosedDate;
                                 itemCurrentStateData.ClosedDate = colosedDate;
+                            }
+                        });
+                    }
+
+                    //process dateRangeComapre functionality
+                    if(ByCategoryLabelData.dateRangeCompareData.length > 0){
+                        ByCategoryLabelData.dateRangeCompareData.forEach(dateRangeCompareObject => {
+                            let labelIndex = dateRangeCompareObject.labels.findIndex(labelCode => labelCode === label.label);
+
+                            if(labelIndex > -1 && (label.reset.length !== label.set.length)){
+                                if(dateRangeCompareObject.renderChart == 'Y'){
+
+                                    label.set.sort((a, b) => b.version - a.version);
+                                    let currentLableSetDate = new Date(label.set[0].dateIso);
+
+                                    let dateRangeComapreCurrentLabelData: groupByObjectCurrentData = {
+                                        id: item.itemRef,
+                                        currentLabel: label.label,
+                                        currentLabelSetDate: currentLableSetDate
+                                    };
+
+                                    dateRangeCompareObject.currentLabelData.push(dateRangeComapreCurrentLabelData);  
+                                }
                             }
                         });
                     }
