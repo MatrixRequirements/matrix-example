@@ -135,9 +135,12 @@ namespace GenericDashboard {
         id: string;
         renderChart: string;
         showInTable: string;
+        dateRanges: any[];
+        defaultDateRange: string;
         labels: any[];
         labelsDesc: any[];
         labelColors: any[];
+        leastStatusSetDate: Date;
         currentLabelData: groupByObjectCurrentData[];
     }
 
@@ -800,9 +803,12 @@ namespace GenericDashboard {
                                 id: functionality.id,
                                 renderChart: functionality.renderChart,
                                 showInTable: functionality.showInTable,
+                                dateRanges: functionality.dateRanges,
+                                defaultDateRange: functionality.defaultDateRange,
                                 labels: functionality.labels,
                                 labelsDesc: functionality.labelsDesc,
                                 labelColors: functionality.labelColors,
+                                leastStatusSetDate: null,
                                 currentLabelData: dateRangeCompareCurrentLabelData
                             };
                             dateRangeCompareData.push(dateRangeComapreObject);
@@ -1112,9 +1118,17 @@ namespace GenericDashboard {
                     break;           
             };
 
-            console.log("rendering "+range+" chart");
+            let ByCategoryLabelData = this.ByCategoryLabelDetails
+                .find(({ category }) => category === this.currentCat);
 
-            //that.renderDateRangeChart(columnData, categoryData, displayLabels,labelColors,contentId);
+            if(ByCategoryLabelData.dateRangeCompareData.length > 0){
+                ByCategoryLabelData.dateRangeCompareData.forEach(dateRangeCompareObject => {
+                    if(dateRangeCompareObject.id == contentId){
+                        that.renderDateRangeChart(columnData,categoryData,dateRangeCompareObject.labelsDesc,
+                            dateRangeCompareObject.labelColors,dateRangeCompareObject.id); 
+                    }   
+                });
+            }
         }
 
 
@@ -1177,6 +1191,25 @@ namespace GenericDashboard {
                 });
             }
 
+            if(ByCategoryLabelData.dateRangeCompareData.length > 0){
+                ByCategoryLabelData.dateRangeCompareData.forEach(dateRangeCompareObject => {
+                    that.prepareDateRangeCompareChartData(dateRangeCompareObject.currentLabelData, dateRangeCompareObject.labelsDesc, 
+                        dateRangeCompareObject.dateRanges, dateRangeCompareObject.leastStatusSetDate);
+                    
+                    if (that.currentTimeRangeSelected !== dateRangeCompareObject.defaultDateRange) {
+                        $('#' + dateRangeCompareObject.defaultDateRange + 'Range').removeClass("timerangenormal");
+                        $('#' + dateRangeCompareObject.defaultDateRange + 'Range').addClass("timerangeselected");
+        
+                        $('#' + that.currentTimeRangeSelected + 'Range').removeClass("timerangeselected");
+                        $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
+        
+                        that.currentTimeRangeSelected = dateRangeCompareObject.defaultDateRange;
+                    }  
+
+                    that.renderDateRangeChart(that.currentWeekColumnsData,that.currentWeekCategoryData,dateRangeCompareObject.labelsDesc,
+                        dateRangeCompareObject.labelColors,dateRangeCompareObject.id);    
+                });
+            }
 
             if(ByCategoryLabelData.itemCurrentStateValues.length > 0){
                 that.renderPluginTable(ByCategoryLabelData.itemCurrentStateTableHeaders,ByCategoryLabelData.itemCurrentStateValues);
@@ -1196,6 +1229,270 @@ namespace GenericDashboard {
                 $(`#${this.pluginTableId}Table tbody tr`).hide();
                 $(`#${this.pluginTableId}Table tbody tr.${filterDataClass}`).show();
             }
+        }
+
+        private prepareCurrentMonthCategories(month, year, _start) {
+            let weeks = [],
+                categories = [],
+                firstDate = new Date(year, month, 1),
+                lastDate = new Date(year, month + 1, 0),
+                numDays = lastDate.getDate();
+            let c = Date()
+            let start = 1;
+            let weekIndex = 1;
+            let end = 7 - firstDate.getDay();
+            if (_start == 'monday') {
+                if (firstDate.getDay() === 0) {
+                    end = 1;
+                } else {
+                    end = 7 - firstDate.getDay() + 1;
+                }
+            }
+
+            while (start <= numDays) {
+
+                let _s = new Date(year, month, start + 1).toJSON().slice(0, 10);
+                let _e = new Date(year, month, end + 1).toJSON().slice(0, 10);
+
+                weeks.push({ start: _s, end: _e });
+                categories.push("Week" + weekIndex + "(" + _s + " to " + _e + ")");
+                weekIndex += 1;
+                start = end + 1;
+                end = end + 7;
+                end = start === 1 && end === 8 ? 1 : end;
+                if (end > numDays) {
+                    end = numDays;
+                }
+            }
+
+            let currentMonthCategoryData = {
+                categories: categories,
+                weeks: weeks
+            };
+
+            return currentMonthCategoryData;
+        }
+
+        private prepareCurrentWeekCategories() {
+            let currentDate = new Date();
+            let currentWeek = [];
+            let dateOfWeekDay, formattedDate;
+
+            if (currentDate.getDay() == 0) {
+                dateOfWeekDay = currentDate.getDate() - 7;
+            } else {
+                dateOfWeekDay = currentDate.getDate() - currentDate.getDay();
+            }
+
+            let startDate = new Date(currentDate.setDate(dateOfWeekDay));
+
+            for (let i = 1; i <= 7; i++) {
+                let formattedDate = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().slice(0, 10);
+                currentWeek.push(formattedDate);
+            }
+
+            return currentWeek;
+        }
+
+        private getMonthNames() {
+            const monthNames = ["Jan", "Feb", "March", "April", "May", "June",
+                "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+
+            return monthNames;
+        }
+
+        private prepareMonthWiseCategories(previousMonths) {
+
+            let monthNames = this.getMonthNames();
+
+            let previousMonthsCategoryData = [];
+
+            for (let i = previousMonths - 1; i >= 0; i--) {
+                let currentDate = new Date();
+                let currentMonth = currentDate.getMonth();
+                currentDate.setMonth(currentMonth - i);
+                previousMonthsCategoryData.push(monthNames[currentDate.getMonth()] + " " + currentDate.getFullYear())
+            }
+
+            return previousMonthsCategoryData;
+        }
+
+        private prepareYtdCategories(month, year) {
+
+            let monthNames = this.getMonthNames();
+            let ytdCategoryData = [];
+
+            for (let i = 0; i <= month; i++) {
+                ytdCategoryData.push(monthNames[i] + " " + year);
+            }
+
+            return ytdCategoryData;
+        }
+
+        private prepareMoreThanYearCategories(year, leastStatusSetDate) {
+            let leastStatusSetYear = new Date(leastStatusSetDate).getFullYear();
+            let moreThanYearCategoryData = [];
+
+            while (leastStatusSetYear !== year) {
+                moreThanYearCategoryData.push(leastStatusSetYear);
+                leastStatusSetYear += 1;
+            }
+
+            moreThanYearCategoryData.push(year);
+
+            return moreThanYearCategoryData;
+
+        }
+
+        private prepareInitialColumns(categoiesLength, labels) {
+
+            let emptyInitials = Array(categoiesLength).fill(0);
+            let initialColumns = [];
+
+            labels.forEach(
+                (label) => {
+                    initialColumns.push([label, ...emptyInitials]);
+            });
+
+            return initialColumns;
+        }
+
+        private prepareCurrentWeekColumnData(currentStatus, currentStausSetDate, categoriesData, columnsData) {
+
+            let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
+            let currentStatusSetDate = new Date(currentStausSetDate);
+            categoriesData.forEach((categoryData, index) => {
+                if ((currentStatusSetDate <= new Date(categoryData)) && (new Date(categoryData) <= new Date())) {
+                    columnsData[statusColumnIndex][index + 1] += 1;
+                }
+            });
+        }
+
+        private prepareCurrentMonthColumnData(currentStatus, currentStausSetDate, categoriesData, columnsData) {
+
+            let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
+            let currentStatusSetDate = new Date(currentStausSetDate);
+            categoriesData.weeks.forEach((categoryData, index) => {
+                if ((currentStatusSetDate <= new Date(categoryData.start) || currentStatusSetDate <= new Date(categoryData.end))
+                    && (new Date(categoryData.start) <= new Date())) {
+                    columnsData[statusColumnIndex][index + 1] += 1;
+                }
+            });
+        }
+
+        private prepareMonthWiseColumnData(currentStatus, currentStausSetDate, categoriesData, columnsData) {
+            let monthNames = this.getMonthNames();
+            let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
+            let currentStatusSetDate = new Date(currentStausSetDate);
+            let formattedCurrentStatusSetDate = new Date(monthNames[currentStatusSetDate.getMonth()] + " " + currentStatusSetDate.getFullYear());
+            categoriesData.forEach((categoryData, index) => {
+                if (formattedCurrentStatusSetDate <= new Date(categoryData)) {
+                    columnsData[statusColumnIndex][index + 1] += 1;
+                }
+            });
+        }
+
+        private prepareMoreThanYearColumnData(currentStatus, currentStausSetDate, categoriesData, columnsData) {
+
+            let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
+            let currentStatusSetDate = new Date(currentStausSetDate);
+            let formattedCurrentStatusSetDate = new Date(currentStatusSetDate.getFullYear());
+            categoriesData.forEach((categoryData, index) => {
+                if (formattedCurrentStatusSetDate <= new Date(categoryData)) {
+                    columnsData[statusColumnIndex][index + 1] += 1;
+                }
+            });
+        }
+
+        private prepareDateRangeCompareChartData(labelsCurrentStateData: groupByObjectCurrentData[], labelsDesc: any[], dateRanges: any[], leastStatusSetDate: Date) {
+
+            let currentDate = new Date();
+            let currentMonth = currentDate.getMonth();
+            let currentYear = currentDate.getFullYear();
+
+
+            labelsCurrentStateData.forEach(
+                (labelCurrentData) => {
+
+                    dateRanges.forEach(
+                        (dateRange) =>{
+                            switch (dateRange) {
+                                case 'week':
+                                    this.currentWeekCategoryData = [];
+                                    this.currentWeekColumnsData = [];
+                                    this.currentWeekCategoryData = this.prepareCurrentWeekCategories();
+                                    this.currentWeekColumnsData = this.prepareInitialColumns(this.currentWeekCategoryData.length,labelsDesc);
+                                    this.prepareCurrentWeekColumnData(labelCurrentData.currentLabel,
+                                        labelCurrentData.currentLabelSetDate,
+                                        this.currentWeekCategoryData,
+                                        this.currentWeekColumnsData);
+                                    break;
+                                case 'month':
+                                    this.currentMonthCategoryData = {};
+                                    this.currentMonthColumnsData = [];
+                                    this.currentMonthCategoryData = this.prepareCurrentMonthCategories(currentMonth, currentYear, 'monday');
+                                    this.currentMonthColumnsData = this.prepareInitialColumns(this.currentMonthCategoryData.categories.length,labelsDesc);
+                                    this.prepareCurrentMonthColumnData(labelCurrentData.currentLabel,
+                                        labelCurrentData.currentLabelSetDate,
+                                        this.currentMonthCategoryData,
+                                        this.currentMonthColumnsData);
+                
+                                    break;
+                                case 'threeMonths':
+                                    this.threeMonthsCategoryData = [];
+                                    this.threeMonthsColumnsData = [];
+                                    this.threeMonthsCategoryData = this.prepareMonthWiseCategories(3);
+                                    this.threeMonthsColumnsData = this.prepareInitialColumns(this.threeMonthsCategoryData.length,labelsDesc);
+                                    this.prepareMonthWiseColumnData(labelCurrentData.currentLabel,
+                                        labelCurrentData.currentLabelSetDate,
+                                        this.threeMonthsCategoryData,
+                                        this.threeMonthsColumnsData);
+                                    break;    
+                                case 'sixMonths':
+                                    this.sixMonthsCategoryData = [];
+                                    this.sixMonthsColumnsData = [];
+                                    this.sixMonthsCategoryData = this.prepareMonthWiseCategories(6);
+                                    this.sixMonthsColumnsData = this.prepareInitialColumns(this.sixMonthsCategoryData.length,labelsDesc);
+                                    this.prepareMonthWiseColumnData(labelCurrentData.currentLabel,
+                                        labelCurrentData.currentLabelSetDate,
+                                        this.sixMonthsCategoryData,
+                                        this.sixMonthsColumnsData);
+                                    break;    
+                                case 'twelveMonths':
+                                    this.twelveMonthsCategoryData = [];
+                                    this.twelveMonthsColumnsData = [];
+                                    this.twelveMonthsCategoryData = this.prepareMonthWiseCategories(12);
+                                    this.twelveMonthsColumnsData = this.prepareInitialColumns(this.twelveMonthsCategoryData.length,labelsDesc);
+                                    this.prepareMonthWiseColumnData(labelCurrentData.currentLabel,
+                                        labelCurrentData.currentLabelSetDate,
+                                        this.twelveMonthsCategoryData,
+                                        this.twelveMonthsColumnsData);
+                                    break; 
+                                case 'ytd':
+                                    this.ytdCategoryData = [];
+                                    this.ytdColumnsData = [];
+                                    this.ytdCategoryData = this.prepareYtdCategories(currentMonth, currentYear);
+                                    this.ytdColumnsData = this.prepareInitialColumns(this.ytdCategoryData.length,labelsDesc);
+                                    this.prepareMonthWiseColumnData(labelCurrentData.currentLabel,
+                                        labelCurrentData.currentLabelSetDate,
+                                        this.ytdCategoryData,
+                                        this.ytdColumnsData);                
+                                    break; 
+                                case 'moreThanYear':
+                                    this.moreThanYearCategoryData = [];
+                                    this.moreThanYearColumnsData = [];
+                                    this.moreThanYearCategoryData = this.prepareMoreThanYearCategories(currentYear, leastStatusSetDate);
+                                    this.moreThanYearColumnsData = this.prepareInitialColumns(this.moreThanYearCategoryData.length,labelsDesc);
+                                    this.prepareMoreThanYearColumnData(labelCurrentData.currentLabel,
+                                        labelCurrentData.currentLabelSetDate,
+                                        this.moreThanYearCategoryData,
+                                        this.moreThanYearColumnsData);
+                                    break;           
+                            };
+                    });
+
+            });
+
         }
 
         renderDateRangeComapreDataByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData, groupId: String) {
@@ -2121,6 +2418,10 @@ namespace GenericDashboard {
 
                                     label.set.sort((a, b) => b.version - a.version);
                                     let currentLableSetDate = new Date(label.set[0].dateIso);
+
+                                   if((!dateRangeCompareObject.leastStatusSetDate) || (currentLableSetDate < dateRangeCompareObject.leastStatusSetDate)){
+                                        dateRangeCompareObject.leastStatusSetDate = currentLableSetDate;
+                                   }
 
                                     let dateRangeComapreCurrentLabelData: groupByObjectCurrentData = {
                                         id: item.itemRef,
