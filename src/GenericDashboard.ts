@@ -2425,7 +2425,7 @@ namespace GenericDashboard {
 
                                     let dateRangeComapreCurrentLabelData: groupByObjectCurrentData = {
                                         id: item.itemRef,
-                                        currentLabel: label.label,
+                                        currentLabel: dateRangeCompareObject.labelsDesc[labelIndex],
                                         currentLabelSetDate: currentLableSetDate
                                     };
 
