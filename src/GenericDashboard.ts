@@ -1404,11 +1404,67 @@ namespace GenericDashboard {
             });
         }
 
-        private prepareDateRangeCompareChartData(labelsCurrentStateData: groupByObjectCurrentData[], labelsDesc: any[], dateRanges: any[], leastStatusSetDate: Date) {
+
+        private prepareDateRangeCompareChartInitialData(dateRanges: any[], labelsDesc: any[], leastStatusSetDate: Date) {
 
             let currentDate = new Date();
             let currentMonth = currentDate.getMonth();
             let currentYear = currentDate.getFullYear();
+
+            dateRanges.forEach(
+                (dateRange) =>{
+                    switch (dateRange) {
+                        case 'week':
+                            this.currentWeekCategoryData = [];
+                            this.currentWeekColumnsData = [];
+                            this.currentWeekCategoryData = this.prepareCurrentWeekCategories();
+                            this.currentWeekColumnsData = this.prepareInitialColumns(this.currentWeekCategoryData.length,labelsDesc);
+                            
+                            break;
+                        case 'month':
+                            this.currentMonthCategoryData = {};
+                            this.currentMonthColumnsData = [];
+                            this.currentMonthCategoryData = this.prepareCurrentMonthCategories(currentMonth, currentYear, 'monday');
+                            this.currentMonthColumnsData = this.prepareInitialColumns(this.currentMonthCategoryData.categories.length,labelsDesc);
+                            break;
+                        case 'threeMonths':
+                            this.threeMonthsCategoryData = [];
+                            this.threeMonthsColumnsData = [];
+                            this.threeMonthsCategoryData = this.prepareMonthWiseCategories(3);
+                            this.threeMonthsColumnsData = this.prepareInitialColumns(this.threeMonthsCategoryData.length,labelsDesc);
+                            break;    
+                        case 'sixMonths':
+                            this.sixMonthsCategoryData = [];
+                            this.sixMonthsColumnsData = [];
+                            this.sixMonthsCategoryData = this.prepareMonthWiseCategories(6);
+                            this.sixMonthsColumnsData = this.prepareInitialColumns(this.sixMonthsCategoryData.length,labelsDesc);
+                            break;    
+                        case 'twelveMonths':
+                            this.twelveMonthsCategoryData = [];
+                            this.twelveMonthsColumnsData = [];
+                            this.twelveMonthsCategoryData = this.prepareMonthWiseCategories(12);
+                            this.twelveMonthsColumnsData = this.prepareInitialColumns(this.twelveMonthsCategoryData.length,labelsDesc);
+                            break; 
+                        case 'ytd':
+                            this.ytdCategoryData = [];
+                            this.ytdColumnsData = [];
+                            this.ytdCategoryData = this.prepareYtdCategories(currentMonth, currentYear);
+                            this.ytdColumnsData = this.prepareInitialColumns(this.ytdCategoryData.length,labelsDesc);
+                            break; 
+                        case 'moreThanYear':
+                            this.moreThanYearCategoryData = [];
+                            this.moreThanYearColumnsData = [];
+                            this.moreThanYearCategoryData = this.prepareMoreThanYearCategories(currentYear, leastStatusSetDate);
+                            this.moreThanYearColumnsData = this.prepareInitialColumns(this.moreThanYearCategoryData.length,labelsDesc);
+                            break;           
+                    };
+            });
+
+        }
+
+        private prepareDateRangeCompareChartData(labelsCurrentStateData: groupByObjectCurrentData[], labelsDesc: any[], dateRanges: any[], leastStatusSetDate: Date) {
+
+            this.prepareDateRangeCompareChartInitialData(dateRanges, labelsDesc, leastStatusSetDate);
 
 
             labelsCurrentStateData.forEach(
@@ -1418,20 +1474,12 @@ namespace GenericDashboard {
                         (dateRange) =>{
                             switch (dateRange) {
                                 case 'week':
-                                    this.currentWeekCategoryData = [];
-                                    this.currentWeekColumnsData = [];
-                                    this.currentWeekCategoryData = this.prepareCurrentWeekCategories();
-                                    this.currentWeekColumnsData = this.prepareInitialColumns(this.currentWeekCategoryData.length,labelsDesc);
-                                    this.prepareCurrentWeekColumnData(labelCurrentData.currentLabel,
+                                this.prepareCurrentWeekColumnData(labelCurrentData.currentLabel,
                                         labelCurrentData.currentLabelSetDate,
                                         this.currentWeekCategoryData,
                                         this.currentWeekColumnsData);
                                     break;
                                 case 'month':
-                                    this.currentMonthCategoryData = {};
-                                    this.currentMonthColumnsData = [];
-                                    this.currentMonthCategoryData = this.prepareCurrentMonthCategories(currentMonth, currentYear, 'monday');
-                                    this.currentMonthColumnsData = this.prepareInitialColumns(this.currentMonthCategoryData.categories.length,labelsDesc);
                                     this.prepareCurrentMonthColumnData(labelCurrentData.currentLabel,
                                         labelCurrentData.currentLabelSetDate,
                                         this.currentMonthCategoryData,
@@ -1439,50 +1487,30 @@ namespace GenericDashboard {
                 
                                     break;
                                 case 'threeMonths':
-                                    this.threeMonthsCategoryData = [];
-                                    this.threeMonthsColumnsData = [];
-                                    this.threeMonthsCategoryData = this.prepareMonthWiseCategories(3);
-                                    this.threeMonthsColumnsData = this.prepareInitialColumns(this.threeMonthsCategoryData.length,labelsDesc);
                                     this.prepareMonthWiseColumnData(labelCurrentData.currentLabel,
                                         labelCurrentData.currentLabelSetDate,
                                         this.threeMonthsCategoryData,
                                         this.threeMonthsColumnsData);
                                     break;    
                                 case 'sixMonths':
-                                    this.sixMonthsCategoryData = [];
-                                    this.sixMonthsColumnsData = [];
-                                    this.sixMonthsCategoryData = this.prepareMonthWiseCategories(6);
-                                    this.sixMonthsColumnsData = this.prepareInitialColumns(this.sixMonthsCategoryData.length,labelsDesc);
                                     this.prepareMonthWiseColumnData(labelCurrentData.currentLabel,
                                         labelCurrentData.currentLabelSetDate,
                                         this.sixMonthsCategoryData,
                                         this.sixMonthsColumnsData);
                                     break;    
                                 case 'twelveMonths':
-                                    this.twelveMonthsCategoryData = [];
-                                    this.twelveMonthsColumnsData = [];
-                                    this.twelveMonthsCategoryData = this.prepareMonthWiseCategories(12);
-                                    this.twelveMonthsColumnsData = this.prepareInitialColumns(this.twelveMonthsCategoryData.length,labelsDesc);
                                     this.prepareMonthWiseColumnData(labelCurrentData.currentLabel,
                                         labelCurrentData.currentLabelSetDate,
                                         this.twelveMonthsCategoryData,
                                         this.twelveMonthsColumnsData);
                                     break; 
                                 case 'ytd':
-                                    this.ytdCategoryData = [];
-                                    this.ytdColumnsData = [];
-                                    this.ytdCategoryData = this.prepareYtdCategories(currentMonth, currentYear);
-                                    this.ytdColumnsData = this.prepareInitialColumns(this.ytdCategoryData.length,labelsDesc);
                                     this.prepareMonthWiseColumnData(labelCurrentData.currentLabel,
                                         labelCurrentData.currentLabelSetDate,
                                         this.ytdCategoryData,
                                         this.ytdColumnsData);                
                                     break; 
                                 case 'moreThanYear':
-                                    this.moreThanYearCategoryData = [];
-                                    this.moreThanYearColumnsData = [];
-                                    this.moreThanYearCategoryData = this.prepareMoreThanYearCategories(currentYear, leastStatusSetDate);
-                                    this.moreThanYearColumnsData = this.prepareInitialColumns(this.moreThanYearCategoryData.length,labelsDesc);
                                     this.prepareMoreThanYearColumnData(labelCurrentData.currentLabel,
                                         labelCurrentData.currentLabelSetDate,
                                         this.moreThanYearCategoryData,
