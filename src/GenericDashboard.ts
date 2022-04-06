@@ -1094,7 +1094,7 @@ namespace GenericDashboard {
                     break;
                 case 'month':
                     columnData = that.currentMonthColumnsData;
-                    categoryData = that.currentMonthCategoryData;
+                    categoryData = that.currentMonthCategoryData.categories;
                     break;
                 case 'threeMonths':
                     columnData = that.threeMonthsColumnsData;
