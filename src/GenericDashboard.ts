@@ -1633,7 +1633,7 @@ namespace GenericDashboard {
             );
 
 
-            this.renderDateRangeCompareChart(dateFilterChartCategoryData,dateFilterChartColumnsData,groupId);
+            this.renderDateRangeCompareChart(dateFilterChartColumnsData,dateFilterChartCategoryData,groupId);
         }
 
         renderDateRangeCompareChart(chartColumnsData, chartCategoryData, groupId){
