@@ -1535,16 +1535,18 @@ namespace GenericDashboard {
 
             let daterangeCompareLabels = [];
             let dateFilterChartCategoryData = [];
-            let dateFilterChartColumnsData : any = [
-                ['From:'+formattedFromDate, 0, 0,0,0],
-                ['To:'+formattedToDate, 0, 0,0,0]
-            ];
+            let dateFilterChartColumnsData : any = [];
 
             if(byCategoryLabelData.dateRangeCompareData.length > 0){
                 byCategoryLabelData.dateRangeCompareData.forEach(dateRangeCompareObject => {
                     if(dateRangeCompareObject.id == groupId){
                         dateFilterChartCategoryData = dateRangeCompareObject.labelsDesc;
                         daterangeCompareLabels = dateRangeCompareObject.labels;
+                        let daterangeCompareLabelInitials = Array(dateRangeCompareObject.labels.length).fill(0);
+                        dateFilterChartColumnsData = [
+                            ['From:'+formattedFromDate, ...daterangeCompareLabelInitials],
+                            ['To:'+formattedToDate, ...daterangeCompareLabelInitials]
+                        ];
                     }
                 });
             }
