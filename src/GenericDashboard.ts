@@ -212,6 +212,8 @@ namespace GenericDashboard {
 
     class GenericDashboardControl extends BaseControl {
 
+        labelHistoryData: XRLabelEntry[] = [];
+
         pluginTableId: string = "";
 
         currentCat: string = "";
@@ -322,6 +324,7 @@ namespace GenericDashboard {
              Matrix.Labels.projectLabelHistory().then((result) => {
                 $(".spinningWait", that._root).hide();
                 //$("#MCSONoItems", that._root).hide();
+                this.labelHistoryData = result;
                 that.processLabelsData(result);
                 that.renderCategoryWiseData("");
             }).then(() => {
@@ -1524,7 +1527,148 @@ namespace GenericDashboard {
         }
 
         renderDateRangeComapreDataByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData, groupId: String) {
-            console.log("Render date compare data");
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            let formattedFromDate = new Date(fromDate.setDate(fromDate.getDate() + 1)).toISOString().slice(0, 10);
+            let formattedToDate = new Date(toDate.setDate(toDate.getDate() + 1)).toISOString().slice(0, 10);
+
+            let daterangeCompareLabels = [];
+            let dateFilterChartCategoryData = [];
+            let dateFilterChartColumnsData : any = [
+                ['From:'+formattedFromDate, 0, 0,0,0],
+                ['To:'+formattedToDate, 0, 0,0,0]
+            ];
+
+            if(byCategoryLabelData.dateRangeCompareData.length > 0){
+                byCategoryLabelData.dateRangeCompareData.forEach(dateRangeCompareObject => {
+                    if(dateRangeCompareObject.id == groupId){
+                        dateFilterChartCategoryData = dateRangeCompareObject.labelsDesc;
+                        daterangeCompareLabels = dateRangeCompareObject.labels;
+                    }
+                });
+            }
+
+            this.labelHistoryData.forEach(
+                (labelHistoryRecord) => {
+                    let itemCategory = labelHistoryRecord.itemRef.substring(0, labelHistoryRecord.itemRef.indexOf('-'));
+                    if(itemCategory == this.currentCat){
+                        let labelHistoryData_ = { ...labelHistoryRecord };
+                        let fromDateLabels: XRLabelChange[] = [];
+                        let toDateLabels: XRLabelChange[] = [];
+
+                        labelHistoryData_.labels.forEach(
+                            (labelStatusHistoryrecord) => {
+                                let fromDateLabelStatusData = {...labelStatusHistoryrecord};
+                                let toDateLabelStatusData = {...labelStatusHistoryrecord};
+
+                                fromDateLabelStatusData.set = [];
+                                fromDateLabelStatusData.reset = [];
+
+                                toDateLabelStatusData.set = [];
+                                toDateLabelStatusData.reset = [];
+
+                                labelStatusHistoryrecord.set.forEach(
+                                    (setDateRecord)=>{
+                                        let dateRecord = new Date(setDateRecord.dateIso);
+
+                                        if(dateRecord <= fromDate){
+                                            fromDateLabelStatusData.set.push(setDateRecord);
+                                        }
+
+                                        if(dateRecord <= toDate){
+                                            toDateLabelStatusData.set.push(setDateRecord);
+                                        }
+                                    }
+                                );
+                                
+                                labelStatusHistoryrecord.reset.forEach(
+                                    (resetDateRecord)=>{
+                                        let dateRecord = new Date(resetDateRecord.dateIso);
+
+                                        if(dateRecord <= fromDate){
+                                            fromDateLabelStatusData.reset.push(resetDateRecord);
+                                        }
+
+                                        if(dateRecord <= toDate){
+                                            toDateLabelStatusData.reset.push(resetDateRecord);
+                                        }
+                                    }
+                                );
+
+                                if(fromDateLabelStatusData.set.length > 0 || fromDateLabelStatusData.reset.length > 0){
+                                    fromDateLabels.push(fromDateLabelStatusData);
+                                }
+
+                                if(toDateLabelStatusData.set.length > 0 || toDateLabelStatusData.reset.length > 0){
+                                    toDateLabels.push(toDateLabelStatusData);
+                                }
+
+                            }
+                        );
+
+                        if(fromDateLabels.length > 0){
+                            fromDateLabels.forEach((fromDateLabel) => {
+                                let labelIndex = daterangeCompareLabels.findIndex(labelCode => labelCode === fromDateLabel.label);
+
+                                if(labelIndex > -1 && (fromDateLabel.reset.length !== fromDateLabel.set.length)){
+                                    dateFilterChartColumnsData[0][labelIndex + 1] += 1;  
+                                }
+                            });
+                        }
+                        
+                        if(toDateLabels.length > 0){
+                            toDateLabels.forEach((toDateLabel) => {
+                                let labelIndex = daterangeCompareLabels.findIndex(labelCode => labelCode === toDateLabel.label);
+
+                                if(labelIndex > -1 && (toDateLabel.reset.length !== toDateLabel.set.length)){
+                                    dateFilterChartColumnsData[1][labelIndex + 1] += 1;
+                                }
+                            });
+                        }
+                   }
+                }
+            );
+
+
+            this.renderDateRangeCompareChart(dateFilterChartCategoryData,dateFilterChartColumnsData,groupId);
+        }
+
+        renderDateRangeCompareChart(chartColumnsData, chartCategoryData, groupId){
+            let that = this;
+            let dateRangeCompareChartParams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    columns: chartColumnsData,
+                    type: 'bar'
+                },
+                axis: {
+                    x: {
+                        type: 'category',
+                        categories: chartCategoryData
+
+                    },
+                    y: {
+                        show: false
+                    }
+                },
+                color: {
+                    pattern: ['#17becf', '#9467bd']
+                }
+            };
+
+              //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let dateRangeChart = c3.generate(dateRangeCompareChartParams);
+
+            that.allChartsMap.set(groupId,dateRangeChart);
+
+            $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+            });
         }
 
 
