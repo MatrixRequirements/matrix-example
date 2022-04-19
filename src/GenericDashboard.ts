@@ -246,6 +246,8 @@ namespace GenericDashboard {
         twelveMonthsCategoryData: any[] = [];
         ytdCategoryData: any[] = [];
         moreThanYearCategoryData: any[] = [];
+        quarterlyCYCategoryData: any = {};
+        quarterlyFYCategoryData: any = {};
 
         currentWeekColumnsData: any[] = [];
         currentMonthColumnsData: any[] = [];
@@ -254,6 +256,8 @@ namespace GenericDashboard {
         twelveMonthsColumnsData: any[] = [];
         ytdColumnsData: any[] = [];
         moreThanYearColumnsData: any[] = [];
+        quarterlyCYColumnsData: any[] = [];
+        quarterlyFYColumnsData: any[] = [];
 
 
 
@@ -1118,7 +1122,15 @@ namespace GenericDashboard {
                 case 'moreThanYear':
                     columnData = that.moreThanYearColumnsData;
                     categoryData = that.moreThanYearCategoryData;
-                    break;           
+                    break;  
+                case 'quarterlyCY':
+                    columnData = that.quarterlyCYColumnsData;
+                    categoryData = that.quarterlyCYCategoryData;
+                    break;  
+                case 'quarterlyFY':
+                    columnData = that.quarterlyFYColumnsData;
+                    categoryData = that.quarterlyFYCategoryData;
+                    break;                   
             };
 
             let ByCategoryLabelData = this.ByCategoryLabelDetails
@@ -1232,6 +1244,46 @@ namespace GenericDashboard {
                 $(`#${this.pluginTableId}Table tbody tr`).hide();
                 $(`#${this.pluginTableId}Table tbody tr.${filterDataClass}`).show();
             }
+        }
+
+        private prepareQuarterlyCYCategories(year) {
+            let months = [];
+            let categories = [];
+              
+            categories.push("Quater1", "Quater2", "Quater3", "Quater4");
+            months.push(
+                { start: new Date(year, 0, 2).toJSON().slice(0, 10), end: new Date(year, 2, 32).toJSON().slice(0, 10) },
+                { start: new Date(year, 3, 2).toJSON().slice(0, 10), end: new Date(year, 5, 31).toJSON().slice(0, 10) },
+                { start: new Date(year, 6, 2).toJSON().slice(0, 10), end: new Date(year, 8, 31).toJSON().slice(0, 10) },
+                { start: new Date(year, 9, 2).toJSON().slice(0, 10), end: new Date(year, 11, 32).toJSON().slice(0, 10) }
+            );
+
+            let quarterlyCYCategoryData = {
+                categories: categories,
+                months: months
+            };
+
+            return quarterlyCYCategoryData;
+        }
+
+        private prepareQuarterlyFYCategories(year) {
+            let months = [];
+            let categories = [];
+              
+            categories.push("Quater1", "Quater2", "Quater3", "Quater4");
+            months.push(
+                { start: new Date(year, 3, 2).toJSON().slice(0, 10), end: new Date(year, 5, 31).toJSON().slice(0, 10) },
+                { start: new Date(year, 6, 2).toJSON().slice(0, 10), end: new Date(year, 8, 31).toJSON().slice(0, 10) },
+                { start: new Date(year, 9, 2).toJSON().slice(0, 10), end: new Date(year, 11, 32).toJSON().slice(0, 10) },
+                { start: new Date(year, 0, 2).toJSON().slice(0, 10), end: new Date(year, 2, 32).toJSON().slice(0, 10) }
+            );
+
+            let quarterlyFYCategoryData = {
+                categories: categories,
+                months: months
+            };
+
+            return quarterlyFYCategoryData;
         }
 
         private prepareCurrentMonthCategories(month, year, _start) {
@@ -1383,6 +1435,18 @@ namespace GenericDashboard {
             });
         }
 
+        private prepareQuarterlyColumnData(currentStatus, currentStausSetDate, categoriesData, columnsData) {
+
+            let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
+            let currentStatusSetDate = new Date(currentStausSetDate);
+            categoriesData.months.forEach((categoryData, index) => {
+                if ((currentStatusSetDate <= new Date(categoryData.start) || currentStatusSetDate <= new Date(categoryData.end))
+                    && (new Date(categoryData.start) <= new Date())) {
+                    columnsData[statusColumnIndex][index + 1] += 1;
+                }
+            });
+        }
+
         private prepareMonthWiseColumnData(currentStatus, currentStausSetDate, categoriesData, columnsData) {
             let monthNames = this.getMonthNames();
             let statusColumnIndex = columnsData.findIndex(column => column[0] === currentStatus);
@@ -1459,7 +1523,19 @@ namespace GenericDashboard {
                             this.moreThanYearColumnsData = [];
                             this.moreThanYearCategoryData = this.prepareMoreThanYearCategories(currentYear, leastStatusSetDate);
                             this.moreThanYearColumnsData = this.prepareInitialColumns(this.moreThanYearCategoryData.length,labelsDesc);
-                            break;           
+                            break; 
+                        case 'quarterlyCY':
+                            this.quarterlyCYCategoryData = [];
+                            this.quarterlyCYColumnsData = [];
+                            this.quarterlyCYCategoryData = this.prepareQuarterlyCYCategories(currentYear);
+                            this.quarterlyCYColumnsData = this.prepareInitialColumns(this.moreThanYearCategoryData.length,labelsDesc);
+                            break;
+                        case 'quarterlyFY':
+                            this.quarterlyFYCategoryData = [];
+                            this.quarterlyFYColumnsData = [];
+                            this.quarterlyFYCategoryData = this.prepareQuarterlyFYCategories(currentYear);
+                            this.quarterlyFYColumnsData = this.prepareInitialColumns(this.moreThanYearCategoryData.length,labelsDesc);
+                            break;              
                     };
             });
 
@@ -1518,7 +1594,19 @@ namespace GenericDashboard {
                                         labelCurrentData.currentLabelSetDate,
                                         this.moreThanYearCategoryData,
                                         this.moreThanYearColumnsData);
-                                    break;           
+                                    break;
+                                case 'quarterlyCY':
+                                    this.prepareQuarterlyColumnData(labelCurrentData.currentLabel,
+                                        labelCurrentData.currentLabelSetDate,
+                                        this.quarterlyCYCategoryData,
+                                        this.quarterlyCYColumnsData);
+                                    break;    
+                                case 'quarterlyFY':
+                                    this.prepareQuarterlyColumnData(labelCurrentData.currentLabel,
+                                        labelCurrentData.currentLabelSetDate,
+                                        this.quarterlyFYCategoryData,
+                                        this.quarterlyFYColumnsData);
+                                    break;               
                             };
                     });
 
