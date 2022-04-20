@@ -1125,11 +1125,11 @@ namespace GenericDashboard {
                     break;  
                 case 'quarterlyCY':
                     columnData = that.quarterlyCYColumnsData;
-                    categoryData = that.quarterlyCYCategoryData;
+                    categoryData = that.quarterlyCYCategoryData.categories;
                     break;  
                 case 'quarterlyFY':
                     columnData = that.quarterlyFYColumnsData;
-                    categoryData = that.quarterlyFYCategoryData;
+                    categoryData = that.quarterlyFYCategoryData.categories;
                     break;                   
             };
 
