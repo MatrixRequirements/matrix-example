@@ -1275,7 +1275,7 @@ namespace GenericDashboard {
                 { start: new Date(year, 3, 2).toJSON().slice(0, 10), end: new Date(year, 5, 31).toJSON().slice(0, 10) },
                 { start: new Date(year, 6, 2).toJSON().slice(0, 10), end: new Date(year, 8, 31).toJSON().slice(0, 10) },
                 { start: new Date(year, 9, 2).toJSON().slice(0, 10), end: new Date(year, 11, 32).toJSON().slice(0, 10) },
-                { start: new Date(year, 0, 2).toJSON().slice(0, 10), end: new Date(year, 2, 32).toJSON().slice(0, 10) }
+                { start: new Date(year+1, 0, 2).toJSON().slice(0, 10), end: new Date(year+1, 2, 32).toJSON().slice(0, 10) }
             );
 
             let quarterlyFYCategoryData = {
