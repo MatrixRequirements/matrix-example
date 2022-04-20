@@ -1528,13 +1528,13 @@ namespace GenericDashboard {
                             this.quarterlyCYCategoryData = [];
                             this.quarterlyCYColumnsData = [];
                             this.quarterlyCYCategoryData = this.prepareQuarterlyCYCategories(currentYear);
-                            this.quarterlyCYColumnsData = this.prepareInitialColumns(this.moreThanYearCategoryData.length,labelsDesc);
+                            this.quarterlyCYColumnsData = this.prepareInitialColumns(this.quarterlyCYCategoryData.categories.length,labelsDesc);
                             break;
                         case 'quarterlyFY':
                             this.quarterlyFYCategoryData = [];
                             this.quarterlyFYColumnsData = [];
                             this.quarterlyFYCategoryData = this.prepareQuarterlyFYCategories(currentYear);
-                            this.quarterlyFYColumnsData = this.prepareInitialColumns(this.moreThanYearCategoryData.length,labelsDesc);
+                            this.quarterlyFYColumnsData = this.prepareInitialColumns(this.quarterlyFYCategoryData.categories.length,labelsDesc);
                             break;              
                     };
             });
