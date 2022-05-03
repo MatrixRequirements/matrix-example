@@ -900,6 +900,7 @@ namespace GenericDashboard {
                 let ByCategoryLabelData: ByCategoryLabelData = {
                     category: category.id,
                     groupByData: groupByData,
+                    groupByOperandsData: groupByOperandsData,
                     groupByStateData: groupByStateData,
                     groupByStateOverdueData: groupByStateOverdueData,
                     groupByStackData: groupByStackData,
