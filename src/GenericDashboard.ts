@@ -66,6 +66,17 @@ namespace GenericDashboard {
         currentLabelData: groupByObjectCurrentData[];
     }
 
+    interface groupByOperandsObject {
+        id: string;
+        renderChart: string;
+        showInTable: string;
+        tableHeader: string;
+        labels: any[];
+        labelsDesc: any[];
+        operandsData: Map<string, operandObjectData>;
+        groupWiseData: any[];
+    }
+
     interface groupByStateObject {
         id: string;
         renderChart: string;
@@ -187,6 +198,11 @@ namespace GenericDashboard {
         itemStateDays: Map<string, Number>;
     }
 
+    interface operandObjectData {
+        operand: string;
+        labelsState: Map<string, Boolean>;
+    }
+
     interface ItemCurrentStateData {
         id: string;
         attributes: any[];
@@ -199,6 +215,7 @@ namespace GenericDashboard {
     interface ByCategoryLabelData {
         category: string;
         groupByData: groupByObject[];
+        groupByOperandsData: groupByOperandsObject[];
         groupByStateData: groupByStateObject[];
         groupByStackData: groupByStackObject[];
         groupByStateOverdueData: groupByStateObject[];
@@ -614,6 +631,29 @@ namespace GenericDashboard {
 
         }
 
+        getOperandLabelsData(oprandConfig){
+
+            let operand = "&";
+            let operandLabels = oprandConfig.split(operand);
+            if(operandLabels.length == 1){
+                operand = "|";
+                operandLabels = oprandConfig.split(operand);
+                if(operandLabels.length == 1){
+                    operand = "!";
+                    operandLabels = oprandConfig.split(operand);
+                    if(operandLabels.length > 1){
+                        let emptyElement = operandLabels.shift();
+                    }else{
+                        operand = null;
+                        operandLabels = null;
+                    } 
+                }
+            }
+
+            return { operand : operand, operandLabels: operandLabels};
+
+        }
+
         initiateByCategoryLabelData(){
 
             let that = this;
@@ -624,6 +664,7 @@ namespace GenericDashboard {
                 let itemCurrentStateTableHeaders: any[] = ['Item'];
                 let itemCurrentStateValues: ItemCurrentStateData[] = [];
                 let groupByData: groupByObject[] = [];
+                let groupByOperandsData: groupByOperandsObject[] = [];
                 let groupByStateData: groupByStateObject[] = [];
                 let groupByStateOverdueData: groupByStateObject[] = [];
                 let groupByStackData: groupByStackObject[] = [];
@@ -636,6 +677,7 @@ namespace GenericDashboard {
                 let closureLabelCurrentData: closureObjectCurrentData[] = [];
                 let dateRangeCompareCurrentLabelData: groupByObjectCurrentData[] = [];
                 let trackerLabelCurrentData: Map<string, trackerObjectCurrentData> = new Map<string, trackerObjectCurrentData>();
+                let operandsData: Map<string, operandObjectData> = new Map<string, operandObjectData>();
 
                 category.functionalities.forEach(functionality => {
 
@@ -655,6 +697,34 @@ namespace GenericDashboard {
                             groupByData.push(groupByObject);
                             itemCurrentStateTableHeaders.push(functionality.tableHeader);
                             break;
+                        case 'groupBy-operands':
+                            functionality.labels.forEach((label,index) => {
+                                let operandLabelsData = that.getOperandLabelsData(label);
+                                if(operandLabelsData.operand){
+                                    let labelsState : Map<string, Boolean> = new Map<string, Boolean>();
+                                    operandLabelsData.operandLabels.forEach(operandLabel => {
+                                        labelsState.set(operandLabel,false);
+                                    });
+                                    let operandObjectData : operandObjectData =  {operand: operandLabelsData.operand,
+                                                                                  labelsState: labelsState
+                                                                                 };
+                                    operandsData.set(functionality.labelsDesc[index],operandObjectData);                                         
+                                }
+                            });
+                            let groupByoperandDataInitials = Array(functionality.labels.length).fill(0);
+                            let groupByOperandsObject: groupByOperandsObject = {
+                                id: functionality.id,
+                                renderChart: functionality.renderChart,
+                                showInTable: functionality.showInTable,
+                                tableHeader: functionality.tableHeader,
+                                labels: functionality.labels,
+                                labelsDesc: functionality.labelsDesc,
+                                groupWiseData: [category.id + ' ' + functionality.title , ...groupByoperandDataInitials],
+                                operandsData: operandsData
+                            };
+                            groupByOperandsData.push(groupByOperandsObject);
+                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            break;    
                         case 'statusOverdue':    
                         case 'groupByState':
                             let statusWiseData: any[] = [];

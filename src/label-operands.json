@@ -1,0 +1,69 @@
+{
+    "plugins" : [
+        {
+            "id": "CAPAO",
+            "title": "CAPA Status Overview",
+            "folder": "DASHBOARDS",
+            "order": 3000,
+            "icon": "fal fa-chart-bar",
+            "name": "CAPA Status Overview",
+            "version": "1.11.0",
+            "layoutConfig": {
+                "rowConfig": [
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 12,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "operands",
+                                    "functionality" : "groupBy",
+                                    "title" : "Labels with operands CAPA count overview",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "chart"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "layoutDomStyle":" .chart { width: 90%; min-height: 350px; cursor:pointer; } .dateFilter{ display:flex; margin-left: 45px; } .filterDates { width: 115px; margin: 0 6px; } .date-filter-form-control { height: 20px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; } .date-filter-btn { margin-bottom: 0; margin-left: 12px; font-weight: 400; text-align: center; white-space: nowrap; vertical-align: middle; touch-action: manipulation; cursor: pointer; background-image: none; border: 1px solid transparent; padding: 0px 5px; font-size: 12px; line-height: 1.42857143; border-radius: 4px; } .tableDateFilter{ display:flex; margin-left: 350px; } .closureTimeChart{ width: 90%; min-height: 315px; cursor:pointer; } .bigChart{ width: 90%; min-height: 900px; cursor:pointer; }",
+            },
+            "categories":["CA","PA"],
+            "categoriesFunctionalities":[
+                {
+                    "id":"CA",
+                    "functionalities": [
+                        {
+                            "id": "operands",
+                            "type": "groupBy-operands",
+                            "renderChart": "Y",
+                            "showInTable": "N",
+                            "tableHeader": "",
+                            "title": "count by label operands",
+                            "labels": ["ST&IA"],
+                            "labelsDesc": ["ST and IA"]
+                        }
+                    ]
+
+                },
+                {
+                    "id":"PA",
+                    "functionalities": [
+                        {
+                            "id": "operands",
+                            "type": "groupBy-operands",
+                            "renderChart": "Y",
+                            "showInTable": "N",
+                            "tableHeader": "",
+                            "title": "count by label operands",
+                            "labels": ["ST&IA"],
+                            "labelsDesc": ["ST and IA"]
+                        }
+                    ]
+
+                }
+            ]
+        
+        }
+    ]
+}
