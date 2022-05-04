@@ -2461,6 +2461,38 @@ namespace GenericDashboard {
                         });
                     }
 
+
+                    // interface groupByOperandsObject {
+                    //     id: string;
+                    //     renderChart: string;
+                    //     showInTable: string;
+                    //     tableHeader: string;
+                    //     labels: any[];
+                    //     labelsDesc: any[];
+                    //     operandsData: Map<string, operandObjectData>;
+                    //     groupWiseData: any[];
+                    // }
+                
+                    // interface operandObjectData {
+                    //     operand: string;
+                    //     labelsState: Map<string, Boolean>;
+                    // }
+                    //process groupBy-operands functionality
+                    if(ByCategoryLabelData.groupByOperandsData.length > 0){
+                        ByCategoryLabelData.groupByOperandsData.forEach(groupByOperandsObject => {
+
+                            groupByOperandsObject.operandsData.forEach((operandObjectData,operandDesc)=>{
+                                operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
+                                    if((operandLabel == label.label) && (label.reset.length !== label.set.length)){
+                                        isLabelSet = true;
+                                        operandObjectData.labelsState.set(operandLabel,isLabelSet);
+                                        groupByOperandsObject.operandsData.set(operandDesc,operandObjectData);
+                                    }
+                                });
+                            });
+                        });
+                    }
+
                     //process groupByStack functionality
                     if(ByCategoryLabelData.groupByStackData.length > 0){
                         ByCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
