@@ -2869,6 +2869,59 @@ namespace GenericDashboard {
 
                 }
 
+                // interface groupByOperandsObject {
+                //     id: string;
+                //     renderChart: string;
+                //     showInTable: string;
+                //     tableHeader: string;
+                //     labels: any[];
+                //     labelsDesc: any[];
+                //     operandsData: Map<string, operandObjectData>;
+                //     groupWiseData: any[];
+                // }
+            
+                // interface operandObjectData {
+                //     operand: string;
+                //     labelsState: Map<string, Boolean>;
+                // }
+                //process groupBy-operands functionality
+                if(ByCategoryLabelData.groupByOperandsData.length > 0){
+                    ByCategoryLabelData.groupByOperandsData.forEach(groupByOperandsObject => {
+
+                        groupByOperandsObject.operandsData.forEach((operandObjectData,operandDesc)=>{
+
+                            let isOperandConditionMatched : Boolean = false;
+
+                            if(operandObjectData.operand == "&"){
+
+                                operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
+                                    isOperandConditionMatched = isLabelSet;
+                                });
+
+                            }else if(operandObjectData.operand == "|"){
+
+                                operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
+                                    if(isLabelSet){
+                                        isOperandConditionMatched = isLabelSet;
+                                    }
+                                });
+
+                            }else if(operandObjectData.operand == "!"){
+                                operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
+                                    if(!isLabelSet){
+                                        isOperandConditionMatched = true;
+                                    }
+                                });
+                            }
+
+                            if(isOperandConditionMatched){
+                                let labelDescIndex = groupByOperandsObject.labelsDesc.findIndex(labeldesc => labeldesc === operandDesc);
+                                groupByOperandsObject.groupWiseData[labelDescIndex + 1] += 1;
+                            }    
+                        });
+                    });
+                }
+
                 if(ByCategoryLabelData.groupByStackData.length > 0){
                     ByCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
 
