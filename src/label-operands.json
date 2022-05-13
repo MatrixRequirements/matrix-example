@@ -40,8 +40,8 @@
                             "showInTable": "N",
                             "tableHeader": "",
                             "title": "count by label operands",
-                            "labels": ["ST&IA"],
-                            "labelsDesc": ["ST and IA"]
+                            "labels": ["C1&Production"],
+                            "labelsDesc": ["C1 and Production"]
                         }
                     ]
 
@@ -56,8 +56,8 @@
                             "showInTable": "N",
                             "tableHeader": "",
                             "title": "count by label operands",
-                            "labels": ["ST&IA"],
-                            "labelsDesc": ["ST and IA"]
+                            "labels": ["C1&Production"],
+                            "labelsDesc": ["C1 and Production"]
                         }
                     ]
 

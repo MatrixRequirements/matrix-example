@@ -2920,6 +2920,12 @@ namespace GenericDashboard {
                                 });
                             }
 
+                            operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
+                                operandObjectData.labelsState.set(operandLabel,false);
+                            });
+
+                            groupByOperandsObject.operandsData.set(operandDesc,operandObjectData);
+
                             if(isOperandConditionMatched){
                                 let labelDescIndex = groupByOperandsObject.labelsDesc.findIndex(labeldesc => labeldesc === operandDesc);
                                 groupByOperandsObject.groupWiseData[labelDescIndex + 1] += 1;
