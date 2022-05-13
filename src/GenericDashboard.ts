@@ -1241,6 +1241,12 @@ namespace GenericDashboard {
                 });
             }
 
+            if(ByCategoryLabelData.groupByOperandsData.length > 0){
+                ByCategoryLabelData.groupByOperandsData.forEach(groupByOperandsObject => {
+                    that.renderGroupByChart(groupByOperandsObject.labelsDesc,groupByOperandsObject.groupWiseData,groupByOperandsObject.id);
+                });
+            }
+
             if(ByCategoryLabelData.groupByStateData.length > 0){
                 ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
                     that.renderGroupByStateChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);

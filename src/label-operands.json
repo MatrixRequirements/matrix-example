@@ -19,7 +19,7 @@
                                     "id" : "operands",
                                     "functionality" : "groupBy",
                                     "title" : "Labels with operands CAPA count overview",
-                                    "dateFilterRequired" : "Y",
+                                    "dateFilterRequired" : "N",
                                     "contentClass" : "chart"
                                 }
                             }
