@@ -40,8 +40,8 @@
                             "showInTable": "N",
                             "tableHeader": "",
                             "title": "count by label operands",
-                            "labels": ["C1&Production"],
-                            "labelsDesc": ["C1 and Production"]
+                            "labels": ["C1&Production","AN5|MICRO","!MICRO"],
+                            "labelsDesc": ["C1 and Production","AN5 or MICRO","Not MICRO"]
                         }
                     ]
 
@@ -56,8 +56,8 @@
                             "showInTable": "N",
                             "tableHeader": "",
                             "title": "count by label operands",
-                            "labels": ["C1&Production"],
-                            "labelsDesc": ["C1 and Production"]
+                            "labels": ["C1&Production","AN5|MICRO","!MICRO"],
+                            "labelsDesc": ["C1 and Production","AN5 or MICRO","Not MICRO"]
                         }
                     ]
 
