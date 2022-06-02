@@ -1,6 +1,6 @@
 // <VERSION_INFO_PLACEHOLDER>
 
-import { Parser } from "expr-eval";
+//import { Parser } from "expr-eval";
 
 /// <reference path="api/Matrix.Labels.ts" />
 
@@ -1082,16 +1082,16 @@ namespace GenericDashboard {
                 useCurrent: false, //Important! 
                 format: 'MM/DD/YYYY'
             });
-            // ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
 
-            // fromDate.on("dp.change", function (e: any) {
-            //     toDate.data("DateTimePicker").minDate(e.date);
-            //     ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
-            // });
-            // toDate.on("dp.change", function (e: any) {
-            //     fromDate.data("DateTimePicker").maxDate(e.date);
-            //     ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
-            // });
+            fromDate.on("dp.change", function (e: any) {
+                toDate.data("DateTimePicker").minDate(e.date);
+                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            });
+            toDate.on("dp.change", function (e: any) {
+                fromDate.data("DateTimePicker").maxDate(e.date);
+                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            });
 
             $("#"+dateFilterId+"-gobutton").click(function () {
 
@@ -2390,9 +2390,9 @@ namespace GenericDashboard {
 
         processLabelsData(labels: XRLabelEntry[]){
 
-            const parser = new Parser();
-            let expr = parser.parse('2 * x + 1');
-            console.log(expr.evaluate({ x: 3 }));
+            // const parser = new Parser();
+            // let expr = parser.parse('2 * x + 1');
+            // console.log(expr.evaluate({ x: 3 }));
 
             let that = this;
             let pluginCategories = that.pluginConfig.categories;
