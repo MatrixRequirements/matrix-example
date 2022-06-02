@@ -1,6 +1,6 @@
 // <VERSION_INFO_PLACEHOLDER>
 
-//import { Parser } from "expr-eval";
+import { Parser } from "expr-eval";
 
 /// <reference path="api/Matrix.Labels.ts" />
 
