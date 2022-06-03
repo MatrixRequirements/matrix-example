@@ -2513,8 +2513,8 @@ namespace GenericDashboard {
                                     if(label.reset.length !== label.set.length){
                                         isLabelSet = "true";
                                     }
-                                    operandExpression.replace(label.label,isLabelSet);
-                                    groupByOperandsObject.operandsData.set(operandDesc,operandExpression);
+                                    let modifiedExpression = operandExpression.replace(label.label,isLabelSet);
+                                    groupByOperandsObject.operandsData.set(operandDesc,modifiedExpression);
                                 }
                                
                             });
@@ -2963,8 +2963,12 @@ namespace GenericDashboard {
 
                             let isOperandConditionMatched : Boolean = false;
 
-                            if(eval(operandExpression) == 1){
-                                isOperandConditionMatched = true;
+                            try{
+                                if(eval(operandExpression) == 1){
+                                    isOperandConditionMatched = true;
+                                }
+                            }catch(e){
+                                isOperandConditionMatched = false;
                             }
 
                             if(isOperandConditionMatched){
@@ -2972,6 +2976,12 @@ namespace GenericDashboard {
                                 groupByOperandsObject.groupWiseData[labelDescIndex + 1] += 1;
                             }    
                         });
+
+                        let operandsData: Map<string, string> = new Map<string, string>();
+                        groupByOperandsObject.labels.forEach((label,index) => {
+                            operandsData.set(groupByOperandsObject.labelsDesc[index],label);
+                        });
+                        groupByOperandsObject.operandsData = operandsData;
                     });
                 }
 
