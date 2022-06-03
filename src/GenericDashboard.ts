@@ -75,7 +75,7 @@ namespace GenericDashboard {
         tableHeader: string;
         labels: any[];
         labelsDesc: any[];
-        operandsData: Map<string, operandObjectData>;
+        operandsData: Map<string, string>;
         groupWiseData: any[];
     }
 
@@ -679,7 +679,7 @@ namespace GenericDashboard {
                 let closureLabelCurrentData: closureObjectCurrentData[] = [];
                 let dateRangeCompareCurrentLabelData: groupByObjectCurrentData[] = [];
                 let trackerLabelCurrentData: Map<string, trackerObjectCurrentData> = new Map<string, trackerObjectCurrentData>();
-                let operandsData: Map<string, operandObjectData> = new Map<string, operandObjectData>();
+                let operandsData: Map<string, string> = new Map<string, string>();
 
                 category.functionalities.forEach(functionality => {
 
@@ -701,17 +701,19 @@ namespace GenericDashboard {
                             break;
                         case 'groupBy-operands':
                             functionality.labels.forEach((label,index) => {
-                                let operandLabelsData = that.getOperandLabelsData(label);
-                                if(operandLabelsData.operand){
-                                    let labelsState : Map<string, Boolean> = new Map<string, Boolean>();
-                                    operandLabelsData.operandLabels.forEach(operandLabel => {
-                                        labelsState.set(operandLabel,false);
-                                    });
-                                    let operandObjectData : operandObjectData =  {operand: operandLabelsData.operand,
-                                                                                  labelsState: labelsState
-                                                                                 };
-                                    operandsData.set(functionality.labelsDesc[index],operandObjectData);                                         
-                                }
+                                // let operandLabelsData = that.getOperandLabelsData(label);
+                                // if(operandLabelsData.operand){
+                                //     let labelsState : Map<string, Boolean> = new Map<string, Boolean>();
+                                //     operandLabelsData.operandLabels.forEach(operandLabel => {
+                                //         labelsState.set(operandLabel,false);
+                                //     });
+                                //     let operandObjectData : operandObjectData =  {operand: operandLabelsData.operand,
+                                //                                                   labelsState: labelsState
+                                //                                                  };
+                                //     operandsData.set(functionality.labelsDesc[index],operandObjectData);                                         
+                                // }
+                                operandsData.set(functionality.labelsDesc[index],label); 
+
                             });
                             let groupByoperandDataInitials = Array(functionality.labels.length).fill(0);
                             let groupByOperandsObject: groupByOperandsObject = {
@@ -2494,14 +2496,27 @@ namespace GenericDashboard {
                     if(ByCategoryLabelData.groupByOperandsData.length > 0){
                         ByCategoryLabelData.groupByOperandsData.forEach(groupByOperandsObject => {
 
-                            groupByOperandsObject.operandsData.forEach((operandObjectData,operandDesc)=>{
-                                operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
-                                    if((operandLabel == label.label) && (label.reset.length !== label.set.length)){
-                                        isLabelSet = true;
-                                        operandObjectData.labelsState.set(operandLabel,isLabelSet);
-                                        groupByOperandsObject.operandsData.set(operandDesc,operandObjectData);
+                            // groupByOperandsObject.operandsData.forEach((operandObjectData,operandDesc)=>{
+                            //     operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
+                            //         if((operandLabel == label.label) && (label.reset.length !== label.set.length)){
+                            //             isLabelSet = true;
+                            //             operandObjectData.labelsState.set(operandLabel,isLabelSet);
+                            //             groupByOperandsObject.operandsData.set(operandDesc,operandObjectData);
+                            //         }
+                            //     });
+                            // });
+
+                            groupByOperandsObject.operandsData.forEach((operandExpression,operandDesc)=>{
+
+                                if(operandExpression.indexOf(label.label) > -1){
+                                    let isLabelSet = "false";
+                                    if(label.reset.length !== label.set.length){
+                                        isLabelSet = "true";
                                     }
-                                });
+                                    operandExpression.replace(label.label,isLabelSet);
+                                    groupByOperandsObject.operandsData.set(operandDesc,operandExpression);
+                                }
+                               
                             });
                         });
                     }
@@ -2898,40 +2913,59 @@ namespace GenericDashboard {
                 //     labelsState: Map<string, Boolean>;
                 // }
                 //process groupBy-operands functionality
+                // if(ByCategoryLabelData.groupByOperandsData.length > 0){
+                //     ByCategoryLabelData.groupByOperandsData.forEach(groupByOperandsObject => {
+
+                //         groupByOperandsObject.operandsData.forEach((operandObjectData,operandDesc)=>{
+
+                //             let isOperandConditionMatched : Boolean = false;
+
+                //             if(operandObjectData.operand == "&"){
+
+                //                 operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
+                //                     isOperandConditionMatched = isLabelSet;
+                //                 });
+
+                //             }else if(operandObjectData.operand == "|"){
+
+                //                 operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
+                //                     if(isLabelSet){
+                //                         isOperandConditionMatched = isLabelSet;
+                //                     }
+                //                 });
+
+                //             }else if(operandObjectData.operand == "!"){
+                //                 operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
+                //                     if(!isLabelSet){
+                //                         isOperandConditionMatched = true;
+                //                     }
+                //                 });
+                //             }
+
+                //             operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
+                //                 operandObjectData.labelsState.set(operandLabel,false);
+                //             });
+
+                //             groupByOperandsObject.operandsData.set(operandDesc,operandObjectData);
+
+                //             if(isOperandConditionMatched){
+                //                 let labelDescIndex = groupByOperandsObject.labelsDesc.findIndex(labeldesc => labeldesc === operandDesc);
+                //                 groupByOperandsObject.groupWiseData[labelDescIndex + 1] += 1;
+                //             }    
+                //         });
+                //     });
+                // }
+
                 if(ByCategoryLabelData.groupByOperandsData.length > 0){
                     ByCategoryLabelData.groupByOperandsData.forEach(groupByOperandsObject => {
 
-                        groupByOperandsObject.operandsData.forEach((operandObjectData,operandDesc)=>{
+                        groupByOperandsObject.operandsData.forEach((operandExpression,operandDesc)=>{
 
                             let isOperandConditionMatched : Boolean = false;
 
-                            if(operandObjectData.operand == "&"){
-
-                                operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
-                                    isOperandConditionMatched = isLabelSet;
-                                });
-
-                            }else if(operandObjectData.operand == "|"){
-
-                                operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
-                                    if(isLabelSet){
-                                        isOperandConditionMatched = isLabelSet;
-                                    }
-                                });
-
-                            }else if(operandObjectData.operand == "!"){
-                                operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
-                                    if(!isLabelSet){
-                                        isOperandConditionMatched = true;
-                                    }
-                                });
+                            if(eval(operandExpression) == 1){
+                                isOperandConditionMatched = true;
                             }
-
-                            operandObjectData.labelsState.forEach((isLabelSet,operandLabel)=>{
-                                operandObjectData.labelsState.set(operandLabel,false);
-                            });
-
-                            groupByOperandsObject.operandsData.set(operandDesc,operandObjectData);
 
                             if(isOperandConditionMatched){
                                 let labelDescIndex = groupByOperandsObject.labelsDesc.findIndex(labeldesc => labeldesc === operandDesc);
