@@ -40,9 +40,9 @@
                             "showInTable": "N",
                             "tableHeader": "",
                             "title": "count by label operands",
-                            "labels": ["C1&Production","AN5|MICRO","!MICRO"],
-                            "expressionLabels":[["C1","Production"],["AN5","MICRO"],["MICRO"]],
-                            "labelsDesc": ["C1 and Production","AN5 or MICRO","Not MICRO"]
+                            "labels": ["C1&Production","AN5|MICRO","!MICRO","C1&(Production|MICRO|QA)"],
+                            "expressionLabels":[["C1","Production"],["AN5","MICRO"],["MICRO"],["C1","Production","MICRO","QA"]],
+                            "labelsDesc": ["C1 and Production","AN5 or MICRO","Not MICRO","Complex expression"]
                         }
                     ]
 
@@ -57,9 +57,9 @@
                             "showInTable": "N",
                             "tableHeader": "",
                             "title": "count by label operands",
-                            "labels": ["C1&Production","AN5|MICRO","!MICRO"],
-                            "expressionLabels":[["C1","Production"],["AN5","MICRO"],["MICRO"]],
-                            "labelsDesc": ["C1 and Production","AN5 or MICRO","Not MICRO"]
+                            "labels": ["C1&Production","AN5|MICRO","!MICRO","C1&(Production|MICRO|QA)"],
+                            "expressionLabels":[["C1","Production"],["AN5","MICRO"],["MICRO"],["C1","Production","MICRO","QA"]],
+                            "labelsDesc": ["C1 and Production","AN5 or MICRO","Not MICRO","Complex expression"]
                         }
                     ]
 
