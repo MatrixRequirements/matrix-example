@@ -253,6 +253,11 @@ namespace GenericDashboard {
         overDueFunctionalityCategory : string = "";
         overDueFunctionalityFiledId : Number = 0;
 
+        //Needle source
+        isNeedleSourceEnabled : boolean = false;
+        needleSourceCategory : string = "";
+        needleSourceFieldId : Number = 0;
+
 
 
         //date range functionality variables
@@ -316,8 +321,19 @@ namespace GenericDashboard {
                 //Get the needle data
                 Matrix.Labels.getNeedlesByCategoryAndFiledId(that.overDueFunctionalityCategory,
                                                              that.overDueFunctionalityFiledId).then((result) => {
-                   that.processNeedlesData(result);
+                   that.processOverdueNeedlesData(result);
                    that.getLabelsData();
+                }).then(() => {
+                    //Remove the spinning wait
+                    $(".spinningWait",that._root).hide();
+                });
+
+            }else if(that.isNeedleSourceEnabled){
+                //Get the needle data
+                Matrix.Labels.getNeedlesByCategoryAndFiledId(that.needleSourceCategory,
+                                                             that.needleSourceFieldId).then((result) => {
+                   that.processNeedlesData(result);
+                   that.renderCategoryWiseData("");
                 }).then(() => {
                     //Remove the spinning wait
                     $(".spinningWait",that._root).hide();
@@ -329,7 +345,7 @@ namespace GenericDashboard {
            
         }
 
-        processNeedlesData(needles: XRTrimNeedleItem[]){
+        processOverdueNeedlesData(needles: XRTrimNeedleItem[]){
             
             needles.forEach((needleItem) => {
                 if(needleItem.fieldVal.length > 0){
@@ -702,7 +718,8 @@ namespace GenericDashboard {
                             groupByOperandsData.push(groupByOperandsObject);
                             itemCurrentStateTableHeaders.push(functionality.tableHeader);
                             break;    
-                        case 'statusOverdue':    
+                        case 'statusOverdue':
+                        case 'groupByGapAnalysis':    
                         case 'groupByState':
                             let statusWiseData: any[] = [];
 
@@ -727,12 +744,16 @@ namespace GenericDashboard {
 
                             if(functionality.type == "groupByState"){
                                 groupByStateData.push(groupByStateObject);
-                            }else{
+                            }else if(functionality.type == "groupByState"){
                                 groupByStateObject.openState = functionality.openStateLabel;
                                 groupByStateOverdueData.push(groupByStateObject);
                                 that.isOverDueFunctionalityEnabled = true;
                                 that.overDueFunctionalityCategory = category.id;
                                 that.overDueFunctionalityFiledId = functionality.overDueFieldId;
+                            }else if(functionality.type == "groupByGapAnalysis"){
+                                that.isNeedleSourceEnabled = true;
+                                that.needleSourceCategory = functionality.needleCategory;
+                                that.needleSourceFieldId = functionality.needleFieldId;
                             }
                             
                             itemCurrentStateTableHeaders.push(functionality.tableHeader);
@@ -2360,6 +2381,39 @@ namespace GenericDashboard {
 
             this.filterByLabel({ type: "" });
 
+        }
+
+        processNeedlesData(needles: XRTrimNeedleItem[]){
+
+            let ByCategoryLabelData: ByCategoryLabelData;
+
+            for (const ByCategoryData of this.ByCategoryLabelDetails) {
+                if (ByCategoryData.category === "QMS") {
+                    ByCategoryLabelData = ByCategoryData;
+                    break;
+                }
+            }
+                  
+            needles.forEach((needleItem) => {
+                if(needleItem.fieldVal.length > 0){
+                    let fieldValue = needleItem.fieldVal[0].value;
+
+                    //process groupByState functionality
+                    if(ByCategoryLabelData.groupByStateData.length > 0){
+                        ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
+
+                            let stateIndex = groupByStateObject.stateCodes.findIndex(stateCode => stateCode === fieldValue);
+                            
+                            if(stateIndex > -1){
+
+                                if(groupByStateObject.renderChart == 'Y'){
+                                    groupByStateObject.stateWiseData[stateIndex][1] += 1;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
         }
 
 
