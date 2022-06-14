@@ -752,6 +752,7 @@ namespace GenericDashboard {
                                 that.overDueFunctionalityCategory = category.id;
                                 that.overDueFunctionalityFiledId = functionality.overDueFieldId;
                             }else if(functionality.type == "groupByGapAnalysis"){
+                                groupByStateData.push(groupByStateObject);
                                 that.isNeedleSourceEnabled = true;
                                 that.needleSourceCategory = functionality.needleCategory;
                                 that.needleSourceFieldId = functionality.needleFieldId;
