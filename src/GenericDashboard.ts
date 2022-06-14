@@ -1233,55 +1233,55 @@ namespace GenericDashboard {
             let ByCategoryLabelData = this.ByCategoryLabelDetails
                 .find(({ category }) => category === this.currentCat);
 
-            if(ByCategoryLabelData.groupByData.length > 0){
+            if(ByCategoryLabelData.groupByData && ByCategoryLabelData.groupByData.length > 0){
                 ByCategoryLabelData.groupByData.forEach(groupByObject => {
                     that.renderGroupByChart(groupByObject.labelsDesc,groupByObject.groupWiseData,groupByObject.id);
                 });
             }
 
-            if(ByCategoryLabelData.groupByOperandsData.length > 0){
+            if(ByCategoryLabelData.groupByOperandsData && ByCategoryLabelData.groupByOperandsData.length > 0){
                 ByCategoryLabelData.groupByOperandsData.forEach(groupByOperandsObject => {
                     that.renderGroupByChart(groupByOperandsObject.labelsDesc,groupByOperandsObject.groupWiseData,groupByOperandsObject.id);
                 });
             }
 
-            if(ByCategoryLabelData.groupByStateData.length > 0){
+            if(ByCategoryLabelData.groupByStateData && ByCategoryLabelData.groupByStateData.length > 0){
                 ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
                     that.renderGroupByStateChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);
                 });
             }
 
-            if(ByCategoryLabelData.groupByStateOverdueData.length > 0){
+            if(ByCategoryLabelData.groupByStateOverdueData && ByCategoryLabelData.groupByStateOverdueData.length > 0){
                 ByCategoryLabelData.groupByStateOverdueData.forEach(groupByStateOverDueObject => {
                     that.renderGroupByStateChart(groupByStateOverDueObject.stateWiseData,groupByStateOverDueObject.stateColors,groupByStateOverDueObject.id);
                 });
             }
 
-            if(ByCategoryLabelData.groupByStackData.length > 0){
+            if(ByCategoryLabelData.groupByStackData && ByCategoryLabelData.groupByStackData.length > 0){
                 ByCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
                     that.renderGroupByStackChart(groupByStackObject.groupByStackData,groupByStackObject.groupByCodesDesc,groupByStackObject.categoryDesc,groupByStackObject.groupByCodeColors,groupByStackObject.id);
                 });
             }
 
-            if(ByCategoryLabelData.avgData.length > 0){
+            if(ByCategoryLabelData.avgData && ByCategoryLabelData.avgData.length > 0){
                 ByCategoryLabelData.avgData.forEach(avgObject => {
                     that.renderAvgChart(avgObject.stateDesc,avgObject.statusWiseAvgData,avgObject.id);
                 });
             }
 
-            if(ByCategoryLabelData.closureData.length > 0){
+            if(ByCategoryLabelData.closureData && ByCategoryLabelData.closureData.length > 0){
                 ByCategoryLabelData.closureData.forEach(closureObject => {
                     that.renderClosureChart(closureObject.closedItemsData,closureObject.closureTimeData,closureObject.id);
                 });
             }
 
-            if(ByCategoryLabelData.trackerData.length > 0){
+            if(ByCategoryLabelData.trackerData && ByCategoryLabelData.trackerData.length > 0){
                 ByCategoryLabelData.trackerData.forEach(trackerObject => {
                     that.renderTrackerChart(trackerObject.stateDesc,trackerObject.stateTrackerData,trackerObject.stateColors,trackerObject.id);
                 });
             }
 
-            if(ByCategoryLabelData.dateRangeCompareData.length > 0){
+            if(ByCategoryLabelData.dateRangeCompareData && ByCategoryLabelData.dateRangeCompareData.length > 0){
                 ByCategoryLabelData.dateRangeCompareData.forEach(dateRangeCompareObject => {
                     that.prepareDateRangeCompareChartData(dateRangeCompareObject.currentLabelData, dateRangeCompareObject.labelsDesc, 
                         dateRangeCompareObject.dateRanges, dateRangeCompareObject.leastStatusSetDate);
@@ -1301,7 +1301,7 @@ namespace GenericDashboard {
                 });
             }
 
-            if(ByCategoryLabelData.itemCurrentStateValues.length > 0){
+            if(ByCategoryLabelData.itemCurrentStateValues && ByCategoryLabelData.itemCurrentStateValues.length > 0){
                 that.renderPluginTable(ByCategoryLabelData.itemCurrentStateTableHeaders,ByCategoryLabelData.itemCurrentStateValues);
             }
             
