@@ -257,6 +257,7 @@ namespace GenericDashboard {
         isNeedleSourceEnabled : boolean = false;
         needleSourceCategory : string = "";
         needleSourceFieldId : Number = 0;
+        needleLabelCategory : string = "";
 
 
 
@@ -333,7 +334,7 @@ namespace GenericDashboard {
                 Matrix.Labels.getNeedlesByCategoryAndFiledId(that.needleSourceCategory,
                                                              that.needleSourceFieldId).then((result) => {
                    that.processNeedlesData(result);
-                   that.renderCategoryWiseData("");
+                   that.renderCategoryWiseData(that.needleLabelCategory);
                 }).then(() => {
                     //Remove the spinning wait
                     $(".spinningWait",that._root).hide();
@@ -754,6 +755,7 @@ namespace GenericDashboard {
                                 that.isNeedleSourceEnabled = true;
                                 that.needleSourceCategory = functionality.needleCategory;
                                 that.needleSourceFieldId = functionality.needleFieldId;
+                                that.needleLabelCategory = functionality.labelCategory;
                             }
                             
                             itemCurrentStateTableHeaders.push(functionality.tableHeader);

@@ -43,6 +43,7 @@
                             "needleSource": "Y",
                             "needleFieldId": "1671",
                             "needleCategory": "STD",
+                            "labelCategory": "QMS",
                             "labels": ["inprogress","fail","pass"],
                             "labelsDesc": ["In Progress","Failed","Passed"],
                             "labelColors": [ "#d62728","#8c564b","#2ca02c"]
