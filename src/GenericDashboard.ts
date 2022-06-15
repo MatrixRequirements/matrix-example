@@ -81,6 +81,7 @@ namespace GenericDashboard {
 
     interface groupByStateObject {
         id: string;
+        type: string;
         renderChart: string;
         showInTable: string;
         tableHeader: string;
@@ -730,6 +731,7 @@ namespace GenericDashboard {
 
                             let groupByStateObject: groupByStateObject = {
                                 id: functionality.id,
+                                type: functionality.type,
                                 renderChart: functionality.renderChart,
                                 showInTable: functionality.showInTable,
                                 tableHeader: functionality.tableHeader,
@@ -1250,7 +1252,11 @@ namespace GenericDashboard {
 
             if(ByCategoryLabelData.groupByStateData && ByCategoryLabelData.groupByStateData.length > 0){
                 ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
-                    that.renderGroupByStateChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);
+                    if(groupByStateObject.type == "groupByGapAnalysis"){
+                        that.renderGroupByStatePercentChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);
+                    }else{
+                        that.renderGroupByStateChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);
+                    }
                 });
             }
 
@@ -2048,6 +2054,39 @@ namespace GenericDashboard {
                     format: {
                         value: function (value : any, ratio: any, id: any, index: any) { return value; }
                     }
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let groupByStateChart = c3.generate(groupByStateChartParams);
+
+            that.allChartsMap.set(groupId,groupByStateChart);
+
+            $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+            });
+        }
+
+        renderGroupByStatePercentChart(stateWiseData,stateColors,groupId){
+            let that = this;
+            //prepare template
+            let groupByStateChartParams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    columns: stateWiseData,
+                    type : 'pie',
+                    onclick: function (d, i) {
+                        setTimeout(() => {
+                            that.filterByLabel({ type: d.id });
+                        }, 100);
+                    }
+                },
+                color: {
+                    pattern: stateColors
                 }
             };
 
