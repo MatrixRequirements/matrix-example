@@ -1,6 +1,6 @@
 // <VERSION_INFO_PLACEHOLDER>
 
-//import { Parser } from "expr-eval";
+import { Parser } from "expr-eval";
 
 /// <reference path="api/Matrix.Labels.ts" />
 
@@ -2461,9 +2461,9 @@ namespace GenericDashboard {
 
         processLabelsData(labels: XRLabelEntry[]){
 
-            // const parser = new Parser();
-            // let expr = parser.parse('2 * x + 1');
-            // console.log(expr.evaluate({ x: 3 }));
+            const parser = new Parser();
+            let expr = parser.parse('2 * x + 1');
+            console.log(expr.evaluate({ x: 3 }));
 
             let that = this;
             let pluginCategories = that.pluginConfig.categories;
