@@ -1083,16 +1083,16 @@ namespace GenericDashboard {
                 useCurrent: false, //Important! 
                 format: 'MM/DD/YYYY'
             });
-            ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            // ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
 
-            fromDate.on("dp.change", function (e: any) {
-                toDate.data("DateTimePicker").minDate(e.date);
-                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
-            });
-            toDate.on("dp.change", function (e: any) {
-                fromDate.data("DateTimePicker").maxDate(e.date);
-                ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
-            });
+            // fromDate.on("dp.change", function (e: any) {
+            //     toDate.data("DateTimePicker").minDate(e.date);
+            //     ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            // });
+            // toDate.on("dp.change", function (e: any) {
+            //     fromDate.data("DateTimePicker").maxDate(e.date);
+            //     ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
+            // });
 
             $("#"+dateFilterId+"-gobutton").click(function () {
 
