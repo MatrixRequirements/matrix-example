@@ -40,6 +40,7 @@ interface ItemCurrentStateData {
 
 interface groupByObject {
     id: string;
+    dataSourceType: string;
     renderChart: string;
     showInTable: string;
     tableHeader: string;
@@ -51,6 +52,7 @@ interface groupByObject {
 
 interface groupByOperandsObject {
     id: string;
+    dataSourceType: string;
     renderChart: string;
     showInTable: string;
     tableHeader: string;
@@ -62,6 +64,7 @@ interface groupByOperandsObject {
 
 interface groupByStateObject {
     id: string;
+    dataSourceType: string;
     type: string;
     renderChart: string;
     showInTable: string;
@@ -78,6 +81,7 @@ interface groupByStateObject {
 
 interface groupByStackObject {
     id: string;
+    dataSourceType: string;
     renderChart: string;
     showInTable: string;
     tableHeader: string;
@@ -93,6 +97,7 @@ interface groupByStackObject {
 
 interface avgObject {
     id: string;
+    dataSourceType: string;
     renderChart: string;
     stateCodes: any[];
     stateDesc: any[];
@@ -110,6 +115,7 @@ interface avgObject {
 
 interface closureObject {
     id: string;
+    dataSourceType: string;
     renderChart: string;
     showInTable: string;
     tableHeader: string;
@@ -128,6 +134,7 @@ interface closureObject {
 
 interface dateRangeCompareObject {
     id: string;
+    dataSourceType: string;
     renderChart: string;
     showInTable: string;
     dateRanges: any[];
@@ -141,6 +148,7 @@ interface dateRangeCompareObject {
 
 interface trackerObject {
     id: string;
+    dataSourceType: string;
     renderChart: string;
     showInTable: string;
     stateCodes: any[];

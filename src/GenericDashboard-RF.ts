@@ -2,6 +2,7 @@
 
 /// <reference path="api/Matrix.Labels.ts" />
 /// <reference path="commons/Commons.RenderTemplate.ts" />
+/// <reference path="commons/Commons.GenericFunctionalities.ts" />
 
 // Use a namespace to isolate your plugin code
 // This avoids conflicts with other plugins
@@ -73,8 +74,6 @@ namespace GenericDashboard {
         overDueFunctionalityCategory : string = "";
         overDueFunctionalityFiledId : Number = 0;
 
-        dashboardPluginSources: any[] = [];
-
         ByCategoryLabelDetails: ByCategoryLabelData[] = [];
 
         destroy(): void { }
@@ -103,6 +102,8 @@ namespace GenericDashboard {
             });
 
             setTimeout(o => that.installCopyButtons(pluginConfig.title), 10);
+
+            that.initiateDataSource(pluginConfig);
   
         }
 
@@ -119,6 +120,8 @@ namespace GenericDashboard {
             let dataSources = pluginConfig.dataSources;
 
             let dataSourcePromises = [];
+
+            let dashboardPluginSources: any[] = [];
 
             dataSources.forEach(dataSourceConfig => {
                 if(dataSourceConfig.type == "Needles"){
@@ -145,18 +148,20 @@ namespace GenericDashboard {
                 dataSourcePromisesResults.forEach( dataSourcePromiseResult => {
 
                     if(dataSourcePromiseResult.length > 0 && that.instanceOfXRTrimNeedleItem(dataSourcePromiseResult[0])){
-                        that.dashboardPluginSources.push({
+                        dashboardPluginSources.push({
                             "type" : "Needles",
                             "source" : dataSourcePromiseResult
                         })
                     }else if(dataSourcePromiseResult.length > 0 && that.instanceOfXRLabelEntry(dataSourcePromiseResult[0])){
-                        that.dashboardPluginSources.push({
+                        dashboardPluginSources.push({
                             "type" : "Labels",
                             "source" : dataSourcePromiseResult
                         })
                     }
 
                 });
+
+                //To do: call function to fill all functionalities data with data soruces
 
             }).catch(() => {
                 //Remove the spinning wait
@@ -277,6 +282,7 @@ namespace GenericDashboard {
                             let groupWiseInitials = Array(functionality.labels.length).fill(0);
                             let groupByObject: groupByObject = {
                                 id: functionality.id,
+                                dataSourceType: functionality.dataSourceType,
                                 renderChart: functionality.renderChart,
                                 showInTable: functionality.showInTable,
                                 tableHeader: functionality.tableHeader,
@@ -303,6 +309,7 @@ namespace GenericDashboard {
                             let groupByoperandDataInitials = Array(functionality.labels.length).fill(0);
                             let groupByOperandsObject: groupByOperandsObject = {
                                 id: functionality.id,
+                                dataSourceType: functionality.dataSourceType,
                                 renderChart: functionality.renderChart,
                                 showInTable: functionality.showInTable,
                                 tableHeader: functionality.tableHeader,
@@ -325,6 +332,7 @@ namespace GenericDashboard {
 
                             let groupByStateObject: groupByStateObject = {
                                 id: functionality.id,
+                                dataSourceType: functionality.dataSourceType,
                                 type: functionality.type,
                                 renderChart: functionality.renderChart,
                                 showInTable: functionality.showInTable,
@@ -364,6 +372,7 @@ namespace GenericDashboard {
 
                             let groupByStackObject: groupByStackObject = {
                                 id: functionality.id,
+                                dataSourceType: functionality.dataSourceType,
                                 renderChart: functionality.renderChart,
                                 showInTable: functionality.showInTable,
                                 tableHeader: functionality.tableHeader,
@@ -395,6 +404,7 @@ namespace GenericDashboard {
 
                             let avgObject: avgObject = {
                                 id: functionality.id,
+                                dataSourceType: functionality.dataSourceType,
                                 renderChart: functionality.renderChart,
                                 stateCodes: functionality.labels,
                                 stateDesc: functionality.labelsDesc,
@@ -417,6 +427,7 @@ namespace GenericDashboard {
                             let closedItemsData: any[] = [];
                             let closureObject: closureObject = {
                                 id: functionality.id,
+                                dataSourceType: functionality.dataSourceType,
                                 renderChart: functionality.renderChart,
                                 showInTable: functionality.showInTable,
                                 tableHeader: functionality.tableHeader,
@@ -445,6 +456,7 @@ namespace GenericDashboard {
 
                             let trackerObject: trackerObject = {
                                 id: functionality.id,
+                                dataSourceType: functionality.dataSourceType,
                                 renderChart: functionality.renderChart,
                                 showInTable: functionality.showInTable,
                                 stateCodes: functionality.labels,
@@ -471,6 +483,7 @@ namespace GenericDashboard {
                             
                             let dateRangeComapreObject: dateRangeCompareObject = {
                                 id: functionality.id,
+                                dataSourceType: functionality.dataSourceType,
                                 renderChart: functionality.renderChart,
                                 showInTable: functionality.showInTable,
                                 dateRanges: functionality.dateRanges,
@@ -740,6 +753,43 @@ namespace GenericDashboard {
                         break;  
                 };
             });
+
+        }
+
+        
+        processFunctionalitiesData(functionalityDataSources : any,pluginConfig : any){
+
+            let that = this;
+
+            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+
+                //process groupBy functionality
+                ByCategoryLabelData.groupByData.forEach(groupByObject => {
+
+                    let groupByObjectDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByObject.dataSourceType);
+
+                    Commons.GenericFunctionalities.processGroupByObjectData(groupByObject,
+                                                                            groupByObjectDataSource,
+                                                                            that.dateFilterEnablerMap,
+                                                                            ByCategoryLabelData.category,
+                                                                            ByCategoryLabelData.itemCurrentStateTableHeaders,
+                                                                            ByCategoryLabelData.itemCurrentStateValues
+                                                                           );
+
+                });
+
+                //process groupBy-operands functionality
+                ByCategoryLabelData.groupByOperandsData.forEach(groupByOperandsObject => {
+
+                    let groupByOperandsDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByOperandsObject.dataSourceType);
+
+                    Commons.GenericFunctionalities.processGroupByOperandsData(groupByOperandsObject,
+                                                                              groupByOperandsDataSource,
+                                                                              ByCategoryLabelData.category
+                                                                             );
+
+                });
+            }
 
         }
 
