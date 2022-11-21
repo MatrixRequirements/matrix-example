@@ -770,8 +770,8 @@ namespace GenericDashboard {
 
                     Commons.GenericFunctionalities.processGroupByObjectData(groupByObject,
                                                                             groupByObjectDataSource,
-                                                                            that.dateFilterEnablerMap,
                                                                             ByCategoryLabelData.category,
+                                                                            that.dateFilterEnablerMap,
                                                                             ByCategoryLabelData.itemCurrentStateTableHeaders,
                                                                             ByCategoryLabelData.itemCurrentStateValues
                                                                            );
@@ -787,6 +787,20 @@ namespace GenericDashboard {
                                                                               groupByOperandsDataSource,
                                                                               ByCategoryLabelData.category
                                                                              );
+
+                });
+
+                 //process groupByStack functionality
+                 ByCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
+
+                    let groupByStackDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByStackObject.dataSourceType);
+
+                    Commons.GenericFunctionalities.processGroupByStackData(groupByStackObject,
+                                                                           groupByStackDataSource,
+                                                                           ByCategoryLabelData.category,
+                                                                           ByCategoryLabelData.itemCurrentStateTableHeaders,
+                                                                           ByCategoryLabelData.itemCurrentStateValues
+                                                                          );
 
                 });
             }

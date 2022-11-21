@@ -3,10 +3,37 @@
 namespace Commons {
     export namespace GenericFunctionalities {
 
+        //common functions
+
+        function getitemCurrentStateData(itemId: string, 
+                                         itemCurrentStateValues: ItemCurrentStateData[],
+                                         itemCurrentStateTableHeaders: any): ItemCurrentStateData {
+
+            let itemCurrentStateData: ItemCurrentStateData =  itemCurrentStateValues.find((itemCurrentStateData) => itemCurrentStateData.id == itemId);
+
+            if(itemCurrentStateData == null){
+                let itemCurrentStateTableInitials : any[] = [];
+
+                itemCurrentStateTableInitials = Array(itemCurrentStateTableHeaders.length).fill("");
+
+                itemCurrentStateData = {
+                    id: itemId,
+                    attributes: [],
+                    tableValues: itemCurrentStateTableInitials,
+                    InitiatedDate: null,
+                    ClosedDate: null,
+                    currentState: ''
+                };
+            }
+
+            return itemCurrentStateData;
+
+        }
+
         export function processGroupByObjectData(groupByObject: groupByObject, 
                                                  groupByObjectDataSource: XRLabelEntry[], 
+                                                 functionalityCategory: string,
                                                  dateFilterEnablerMap: any,
-                                                 functionalityCategory: String,
                                                  itemCurrentStateTableHeaders: any,
                                                  itemCurrentStateValues: ItemCurrentStateData[]) {
 
@@ -18,22 +45,9 @@ namespace Commons {
                     continue;
                 }
 
-                let itemCurrentStateData: ItemCurrentStateData =  itemCurrentStateValues.find((itemCurrentStateData) => itemCurrentStateData.id == item.itemRef);
-
-                if(itemCurrentStateData == null){
-                    let itemCurrentStateTableInitials : any[] = [];
-
-                    itemCurrentStateTableInitials = Array(itemCurrentStateTableHeaders.length).fill("");
-
-                    itemCurrentStateData = {
-                        id: item.itemRef,
-                        attributes: [],
-                        tableValues: itemCurrentStateTableInitials,
-                        InitiatedDate: null,
-                        ClosedDate: null,
-                        currentState: ''
-                    };
-                }
+                let itemCurrentStateData: ItemCurrentStateData =  getitemCurrentStateData(item.itemRef, 
+                                                                                          itemCurrentStateValues,
+                                                                                          itemCurrentStateTableHeaders);
 
                 for (const label of item.labels) {
                     let labelIndex = groupByObject.labels.findIndex(labelCode => labelCode === label.label);
@@ -73,7 +87,7 @@ namespace Commons {
 
         export function processGroupByOperandsData(groupByOperandsObject: groupByOperandsObject, 
                                                    groupByOperandsDataSource: XRLabelEntry[],
-                                                   functionalityCategory: String) {
+                                                   functionalityCategory: string) {
              
             for (const item of groupByOperandsDataSource) { 
                 let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
@@ -125,6 +139,76 @@ namespace Commons {
                 });
             }                                   
 
+        }
+
+
+        export function processGroupByStackData(groupByStackObject: groupByStackObject, 
+                                                groupByStackDataSource: XRLabelEntry[],
+                                                functionalityCategory: string,
+                                                itemCurrentStateValues: ItemCurrentStateData[],
+                                                itemCurrentStateTableHeaders: any) {
+             
+            for (const item of groupByStackDataSource) { 
+                let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
+
+                if(itemCategory === functionalityCategory){
+                    continue;
+                }
+
+                let itemCurrentStateData: ItemCurrentStateData =  getitemCurrentStateData(item.itemRef, 
+                    itemCurrentStateValues,
+                    itemCurrentStateTableHeaders);
+
+                let groupByStackCurrentCategory = new Map();
+                let groupByStackCurrentgroup = new Map();
+
+                for (const label of item.labels) {
+                    let categoryLabelIndex = groupByStackObject.categoryCodes.findIndex(categoryCode => categoryCode === label.label);
+                    let groupLabelIndex = groupByStackObject.groupByCodes.findIndex(groupCode => groupCode === label.label);
+
+                    if(categoryLabelIndex > -1 && (label.reset.length !== label.set.length)){
+                        groupByStackCurrentCategory.set(groupByStackObject.id,{label: label, labelIndex: categoryLabelIndex});
+                    }else if(groupLabelIndex > -1 && (label.reset.length !== label.set.length)){
+                        groupByStackCurrentgroup.set(groupByStackObject.id,{label: label, labelIndex: groupLabelIndex});
+                    }  
+                }
+
+                let categoryLabelData = groupByStackCurrentCategory.get(groupByStackObject.id);
+                let groupLabelData = groupByStackCurrentgroup.get(groupByStackObject.id);
+
+                let categoryLabelIndex = -1;
+                let groupLabelIndex = -1;
+
+                if(categoryLabelData && groupLabelData){
+                    categoryLabelIndex = categoryLabelData.labelIndex;
+                    groupLabelIndex = groupLabelData.labelIndex;
+                }
+
+
+                if(categoryLabelIndex >= 0 && groupLabelIndex >= 0){
+                    let groupDesc = groupByStackObject.groupByCodesDesc[groupLabelIndex];
+                    let categoryDesc = groupByStackObject.categoryDesc[categoryLabelIndex];
+                    
+                    groupByStackObject.groupByStackData.forEach(stackGroupData => {
+                        if(stackGroupData[0] == groupDesc){
+                            stackGroupData[categoryLabelIndex + 1] += 1;
+                        }
+                    });
+
+                    categoryLabelData.label.set.sort((a, b) => b.version - a.version);
+                    let currentLableSetDate = new Date(categoryLabelData.label.set[0].dateIso);
+                    itemCurrentStateData.InitiatedDate = currentLableSetDate;
+
+                    let groupByLabelCurrentData: groupByStackCurrentData = {
+                        id: item.itemRef,
+                        currentCategoryLabel: categoryDesc,
+                        currentgroupLabel: groupDesc,
+                        currentgroupLabelSetDate: currentLableSetDate
+                    };
+
+                    groupByStackObject.currentLabelData.push(groupByLabelCurrentData);
+                }
+            }    
         }
 
     }
