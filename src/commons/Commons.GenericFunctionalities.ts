@@ -211,5 +211,61 @@ namespace Commons {
             }    
         }
 
+        export function processGroupByStateData(groupByStateObject: groupByStateObject, 
+                                                groupByStateDataSource: XRLabelEntry[], 
+                                                functionalityCategory: string,
+                                                dateFilterEnablerMap: any,
+                                                itemCurrentStateTableHeaders: any,
+                                                itemCurrentStateValues: ItemCurrentStateData[]) {
+
+            
+            for (const item of groupByStateDataSource) {
+
+                let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
+
+                if(itemCategory === functionalityCategory){
+                    continue;
+                }
+
+                let itemCurrentStateData: ItemCurrentStateData =  getitemCurrentStateData(item.itemRef, 
+                                                                                          itemCurrentStateValues,
+                                                                                          itemCurrentStateTableHeaders);
+
+                for (const label of item.labels) {
+
+                    let stateIndex = groupByStateObject.stateCodes.findIndex(stateCode => stateCode === label.label);
+                    if(stateIndex > -1){
+                        if(label.reset.length !== label.set.length){    
+                            if(groupByStateObject.renderChart == 'Y'){
+                                groupByStateObject.stateWiseData[stateIndex][1] += 1;
+                            }
+                            groupByStateObject.currentState = label.label;
+                            itemCurrentStateData.currentState = label.label;
+                            if(groupByStateObject.showInTable == 'Y'){
+                                let headerIndex = itemCurrentStateTableHeaders.findIndex(header => header === groupByStateObject.tableHeader);
+                                itemCurrentStateData.tableValues[headerIndex] = groupByStateObject.stateDesc[stateIndex];
+                                itemCurrentStateData.attributes.push(groupByStateObject.stateDesc[stateIndex]);
+                            }
+
+                            if(this.dateFilterEnablerMap.get(groupByStateObject.id)){
+                                label.set.sort((a, b) => b.version - a.version);
+                                let currentLableSetDate = new Date(label.set[0].dateIso);
+                                itemCurrentStateData.InitiatedDate = currentLableSetDate;
+
+                                let groupByObjectcurrentLabelData: groupByObjectCurrentData = {
+                                    id: item.itemRef,
+                                    currentLabel: label.label,
+                                    currentLabelSetDate: currentLableSetDate
+                                };
+
+                                groupByStateObject.currentLabelData.push(groupByObjectcurrentLabelData);
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
     }
 }

@@ -765,9 +765,7 @@ namespace GenericDashboard {
 
                 //process groupBy functionality
                 ByCategoryLabelData.groupByData.forEach(groupByObject => {
-
                     let groupByObjectDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByObject.dataSourceType);
-
                     Commons.GenericFunctionalities.processGroupByObjectData(groupByObject,
                                                                             groupByObjectDataSource,
                                                                             ByCategoryLabelData.category,
@@ -780,9 +778,7 @@ namespace GenericDashboard {
 
                 //process groupBy-operands functionality
                 ByCategoryLabelData.groupByOperandsData.forEach(groupByOperandsObject => {
-
                     let groupByOperandsDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByOperandsObject.dataSourceType);
-
                     Commons.GenericFunctionalities.processGroupByOperandsData(groupByOperandsObject,
                                                                               groupByOperandsDataSource,
                                                                               ByCategoryLabelData.category
@@ -792,9 +788,7 @@ namespace GenericDashboard {
 
                  //process groupByStack functionality
                  ByCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
-
                     let groupByStackDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByStackObject.dataSourceType);
-
                     Commons.GenericFunctionalities.processGroupByStackData(groupByStackObject,
                                                                            groupByStackDataSource,
                                                                            ByCategoryLabelData.category,
@@ -802,6 +796,18 @@ namespace GenericDashboard {
                                                                            ByCategoryLabelData.itemCurrentStateValues
                                                                           );
 
+                });
+
+                //process groupByState functionality
+                ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
+                    let groupByStateDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByStateObject.dataSourceType);
+                    Commons.GenericFunctionalities.processGroupByStateData(groupByStateObject,
+                                                                           groupByStateDataSource,
+                                                                           ByCategoryLabelData.category,
+                                                                           that.dateFilterEnablerMap,
+                                                                           ByCategoryLabelData.itemCurrentStateTableHeaders,
+                                                                           ByCategoryLabelData.itemCurrentStateValues
+                                                                          );
                 });
             }
 
