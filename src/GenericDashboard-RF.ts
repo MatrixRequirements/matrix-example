@@ -3,6 +3,7 @@
 /// <reference path="api/Matrix.Labels.ts" />
 /// <reference path="commons/Commons.RenderTemplate.ts" />
 /// <reference path="commons/Commons.GenericFunctionalities.ts" />
+/// <reference path="commons/Commons.DateRangeFunctionalities.ts" />
 
 // Use a namespace to isolate your plugin code
 // This avoids conflicts with other plugins
@@ -39,9 +40,9 @@ namespace GenericDashboard {
                         control.initPage(pluginConfig);
                     },
                 });
-                
+
             });
-           
+
             return pages;
         }
 
@@ -69,12 +70,32 @@ namespace GenericDashboard {
 
         currentCat: string = "";
 
-
-        isOverDueFunctionalityEnabled : boolean = false;
-        overDueFunctionalityCategory : string = "";
-        overDueFunctionalityFiledId : Number = 0;
+        currentFilter: string = "";
 
         ByCategoryLabelDetails: ByCategoryLabelData[] = [];
+
+        labelHistoryData: XRLabelEntry[] = [];
+
+        dateRangeData : dateRangeData = {
+            currentWeekCategoryData: [],
+            currentMonthCategoryData: {},
+            threeMonthsCategoryData: [],
+            sixMonthsCategoryData: [],
+            twelveMonthsCategoryData: [],
+            ytdCategoryData: [],
+            moreThanYearCategoryData: [],
+            quarterlyCYCategoryData: {},
+            quarterlyFYCategoryData: {},
+            currentWeekColumnsData: [],
+            currentMonthColumnsData: [],
+            threeMonthsColumnsData: [],
+            sixMonthsColumnsData: [],
+            twelveMonthsColumnsData: [],
+            ytdColumnsData: [],
+            moreThanYearColumnsData: [],
+            quarterlyCYColumnsData: [],
+            quarterlyFYColumnsData: []
+        };
 
         destroy(): void { }
 
@@ -86,25 +107,25 @@ namespace GenericDashboard {
 
         resizeItem(newWidth?: number, force?: boolean): void { }
 
-        initPage(pluginConfig : any) {
+        initPage(pluginConfig: any) {
             let that = this;
             that.renderHTML(pluginConfig);
             that.initiateByCategoryLabelData(pluginConfig);
 
-             //Add a waiting spinning item
-             let spinningWait = ml.UI.getSpinningWait("Please wait...");
-             $("#waiting", that._root).append(spinningWait);
+            //Add a waiting spinning item
+            let spinningWait = ml.UI.getSpinningWait("Please wait...");
+            $("#waiting", that._root).append(spinningWait);
 
-             $(".spinningWait", that._root).show();
+            $(".spinningWait", that._root).show();
 
-             that.dateFilterEnablerMap.forEach((values,keys)=>{
+            that.dateFilterEnablerMap.forEach((values, keys) => {
                 that.initiateDateFilter(keys);
             });
 
             setTimeout(o => that.installCopyButtons(pluginConfig.title), 10);
 
             that.initiateDataSource(pluginConfig);
-  
+
         }
 
         instanceOfXRTrimNeedleItem(data: any): data is XRTrimNeedleItem {
@@ -115,7 +136,7 @@ namespace GenericDashboard {
             return 'itemRef' in data;
         }
 
-        initiateDataSource(pluginConfig : any) {
+        initiateDataSource(pluginConfig: any) {
             let that = this;
             let dataSources = pluginConfig.dataSources;
 
@@ -124,56 +145,57 @@ namespace GenericDashboard {
             let dashboardPluginSources: any[] = [];
 
             dataSources.forEach(dataSourceConfig => {
-                if(dataSourceConfig.type == "Needles"){
+                if (dataSourceConfig.type == "Needles") {
                     let needleSourceCategory;
                     let needleSourceFieldId;
                     dataSourceConfig.sourceAtrributes.forEach(sourceAttribute => {
-                        if(sourceAttribute.name == "category"){
+                        if (sourceAttribute.name == "category") {
                             needleSourceCategory = sourceAttribute.value;
-                        }else if(sourceAttribute.name == "fieldId"){
+                        } else if (sourceAttribute.name == "fieldId") {
                             needleSourceFieldId = sourceAttribute.value;
                         }
                     });
-                    if(needleSourceCategory && needleSourceFieldId){
+                    if (needleSourceCategory && needleSourceFieldId) {
                         dataSourcePromises.push(Matrix.Labels.getNeedlesByCategoryAndFiledId(needleSourceCategory,
                             needleSourceFieldId));
                     }
-                }else if(dataSourceConfig.type == "Labels"){
+                } else if (dataSourceConfig.type == "Labels") {
                     dataSourcePromises.push(Matrix.Labels.projectLabelHistory());
                 }
             });
 
             Promise.all(dataSourcePromises).then(dataSourcePromisesResults => {
 
-                dataSourcePromisesResults.forEach( dataSourcePromiseResult => {
+                dataSourcePromisesResults.forEach(dataSourcePromiseResult => {
 
-                    if(dataSourcePromiseResult.length > 0 && that.instanceOfXRTrimNeedleItem(dataSourcePromiseResult[0])){
+                    if (dataSourcePromiseResult.length > 0 && that.instanceOfXRTrimNeedleItem(dataSourcePromiseResult[0])) {
                         dashboardPluginSources.push({
-                            "type" : "Needles",
-                            "source" : dataSourcePromiseResult
+                            "type": "Needles",
+                            "source": dataSourcePromiseResult
                         })
-                    }else if(dataSourcePromiseResult.length > 0 && that.instanceOfXRLabelEntry(dataSourcePromiseResult[0])){
+                    } else if (dataSourcePromiseResult.length > 0 && that.instanceOfXRLabelEntry(dataSourcePromiseResult[0])) {
+                        that.labelHistoryData = dataSourcePromiseResult;
                         dashboardPluginSources.push({
-                            "type" : "Labels",
-                            "source" : dataSourcePromiseResult
+                            "type": "Labels",
+                            "source": dataSourcePromiseResult
                         })
                     }
 
                 });
 
-                //To do: call function to fill all functionalities data with data soruces
+                that.processFunctionalitiesData(dashboardPluginSources, pluginConfig);
 
             }).catch(() => {
                 //Remove the spinning wait
-                $(".spinningWait",that._root).hide();
+                $(".spinningWait", that._root).hide();
             });
 
         }
 
-        renderHTML(pluginConfig : any) {
+        renderHTML(pluginConfig: any) {
             let that = this;
 
-            const renderTemplateData : any = Commons.RenderTemplate.preparePluginHtmlTemplate(pluginConfig);
+            const renderTemplateData: any = Commons.RenderTemplate.preparePluginHtmlTemplate(pluginConfig);
 
             that.pluginTableId = renderTemplateData.pluginTableId;
 
@@ -184,10 +206,7 @@ namespace GenericDashboard {
             that.currentTimeRangeSelected = renderTemplateData.currentTimeRangeSelected;
 
             renderTemplateData.dateRangeData.forEach(dateRangeItem => {
-
-                //TODO call initiateDateRangeActions function
-                //that.initiateDateRangeActions(dateRange,contentConfig.id);
-
+                that.initiateDateRangeActions(dateRangeItem.range,dateRangeItem.contentId);
             });
 
 
@@ -220,8 +239,7 @@ namespace GenericDashboard {
 
                 if (ml.LabelTools.getLabelDefinitions([cat]).length > 0) {
                     let item = $(`<li class="cat" data-cat="${cat}"><a href="javascript:void(0)">${cat}</a></li>`).click(function () {
-                        //TODO call renderCategoryWiseData after refactoring
-                        //that.renderCategoryWiseData(cat);
+                        that.renderCategoryWiseData(cat);
                     });
                     $(".dropdown-menu", select).append(item);
                     if (index == 0) {
@@ -233,7 +251,7 @@ namespace GenericDashboard {
 
 
             //Table filter
-            if(that.pluginTableId !== ""){
+            if (that.pluginTableId !== "") {
                 $("#" + that.pluginTableId + "InputFilter").on("keyup", function (e) {
                     let inputValue = $(e.target).val().toString();
                     let value = inputValue.toLowerCase();
@@ -250,441 +268,174 @@ namespace GenericDashboard {
         }
 
 
-        initiateByCategoryLabelData(pluginConfig : any){
-
+        initiateByCategoryLabelData(pluginConfig: any) {
             let that = this;
+            Commons.GenericFunctionalities.initiateByCategoryLabelData(pluginConfig, that.ByCategoryLabelDetails);
+
             let categoriesFunctionalities = pluginConfig.categoriesFunctionalities;
 
             categoriesFunctionalities.forEach(category => {
-
-                let itemCurrentStateTableHeaders: any[] = ['Item'];
-                let itemCurrentStateValues: ItemCurrentStateData[] = [];
-                let groupByData: groupByObject[] = [];
-                let groupByOperandsData: groupByOperandsObject[] = [];
-                let groupByStateData: groupByStateObject[] = [];
-                let groupByStateOverdueData: groupByStateObject[] = [];
-                let groupByStackData: groupByStackObject[] = [];
-                let avgData: avgObject[] = [];
-                let closureData: closureObject[] = [];
-                let trackerData: trackerObject[] = [];
-                let dateRangeCompareData: dateRangeCompareObject[] = [];
-                let groupByStackCurrentLabelData: groupByStackCurrentData[] = [];
-                let groupByObjectCurrentLabelData: groupByObjectCurrentData[] = [];
-                let closureLabelCurrentData: closureObjectCurrentData[] = [];
-                let dateRangeCompareCurrentLabelData: groupByObjectCurrentData[] = [];
-                let trackerLabelCurrentData: Map<string, trackerObjectCurrentData> = new Map<string, trackerObjectCurrentData>();
-                let operandsData: Map<string, operandObjectData> = new Map<string, operandObjectData>();
-
                 category.functionalities.forEach(functionality => {
-
-                    switch (functionality.type) {
-                        case 'groupBy':
-                            let groupWiseInitials = Array(functionality.labels.length).fill(0);
-                            let groupByObject: groupByObject = {
-                                id: functionality.id,
-                                dataSourceType: functionality.dataSourceType,
-                                renderChart: functionality.renderChart,
-                                showInTable: functionality.showInTable,
-                                tableHeader: functionality.tableHeader,
-                                labels: functionality.labels,
-                                labelsDesc: functionality.labelsDesc,
-                                groupWiseData: [category.id + ' ' + functionality.title , ...groupWiseInitials],
-                                currentLabelData: JSON.parse(JSON.stringify(groupByObjectCurrentLabelData))
-                            };
-                            groupByData.push(groupByObject);
-                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
-                            break;
-                        case 'groupBy-operands':
-                            functionality.labels.forEach((label,index) => {
-                                    let labelsState : Map<string, Boolean> = new Map<string, Boolean>();
-                                    functionality.expressionLabels[index].forEach(operandLabel => {
-                                        labelsState.set(operandLabel,false);
-                                    });
-                                    let operandObjectData : operandObjectData =  {operand: label,
-                                                                                  labelsState: labelsState
-                                                                                 };
-                                    operandsData.set(functionality.labelsDesc[index],operandObjectData);                                         
-                                
-                            });
-                            let groupByoperandDataInitials = Array(functionality.labels.length).fill(0);
-                            let groupByOperandsObject: groupByOperandsObject = {
-                                id: functionality.id,
-                                dataSourceType: functionality.dataSourceType,
-                                renderChart: functionality.renderChart,
-                                showInTable: functionality.showInTable,
-                                tableHeader: functionality.tableHeader,
-                                labels: functionality.labels,
-                                labelsDesc: functionality.labelsDesc,
-                                groupWiseData: [category.id + ' ' + functionality.title , ...groupByoperandDataInitials],
-                                operandsData: operandsData
-                            };
-                            groupByOperandsData.push(groupByOperandsObject);
-                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
-                            break;    
-                        case 'statusOverdue':
-                        case 'groupByGapAnalysis':    
-                        case 'groupByState':
-                            let statusWiseData: any[] = [];
-
-                            functionality.labelsDesc.forEach(labelDesc => {
-                                statusWiseData.push([labelDesc, 0]);
-                            });
-
-                            let groupByStateObject: groupByStateObject = {
-                                id: functionality.id,
-                                dataSourceType: functionality.dataSourceType,
-                                type: functionality.type,
-                                renderChart: functionality.renderChart,
-                                showInTable: functionality.showInTable,
-                                tableHeader: functionality.tableHeader,
-                                stateCodes: functionality.labels,
-                                stateDesc: functionality.labelsDesc,
-                                stateColors: functionality.labelColors,
-                                openState: "",
-                                stateWiseInitialData: JSON.parse(JSON.stringify(statusWiseData)),
-                                stateWiseData: JSON.parse(JSON.stringify(statusWiseData)),
-                                currentState: "",
-                                currentLabelData: JSON.parse(JSON.stringify(groupByObjectCurrentLabelData))
-                            };
-
-                            if(functionality.type == "groupByState"){
-                                groupByStateData.push(groupByStateObject);
-                            }else if(functionality.type == "groupByState"){
-                                groupByStateObject.openState = functionality.openStateLabel;
-                                groupByStateOverdueData.push(groupByStateObject);
-                                that.isOverDueFunctionalityEnabled = true;
-                                that.overDueFunctionalityCategory = category.id;
-                                that.overDueFunctionalityFiledId = functionality.overDueFieldId;
-                            }else if(functionality.type == "groupByGapAnalysis"){
-                                groupByStateData.push(groupByStateObject);
-                            }
-                            
-                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
-                            break;
-                        case 'groupByStack':
-                            let groupByStackChartData: any[] = [];
-
-                            let emptyInitials = Array(functionality.categoryLabels.length).fill(0);
-
-                            functionality.groupByLabelsDesc.forEach(labelDesc => {
-                                groupByStackChartData.push([labelDesc, ...emptyInitials]);
-                            });
-
-                            let groupByStackObject: groupByStackObject = {
-                                id: functionality.id,
-                                dataSourceType: functionality.dataSourceType,
-                                renderChart: functionality.renderChart,
-                                showInTable: functionality.showInTable,
-                                tableHeader: functionality.tableHeader,
-                                categoryCodes: functionality.categoryLabels,
-                                categoryDesc: functionality.categoryLabelsDesc,
-                                groupByCodes: functionality.groupByLabels,
-                                groupByCodesDesc: functionality.groupByLabelsDesc,
-                                groupByCodeColors: functionality.groupByLabelColors,
-                                groupByStackInitialData: JSON.parse(JSON.stringify(groupByStackChartData)),
-                                groupByStackData: JSON.parse(JSON.stringify(groupByStackChartData)),
-                                currentLabelData: groupByStackCurrentLabelData
-                            };
-
-                            groupByStackData.push(groupByStackObject);
-                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
-                            break;    
-                        case 'avg':
-                            let SateWiseAvgInitials: any[] = [];
-                            let statusWiseTotalDaysData: any[] = [];
-
-                            functionality.labels.forEach(label => {
-                                SateWiseAvgInitials.push(0);
-                                statusWiseTotalDaysData.push([0,0]);
-                            });
-
-                            functionality.labelsDesc.push("Closure Time");
-                            SateWiseAvgInitials.push(0);
-                            statusWiseTotalDaysData.push([0,0]);
-
-                            let avgObject: avgObject = {
-                                id: functionality.id,
-                                dataSourceType: functionality.dataSourceType,
-                                renderChart: functionality.renderChart,
-                                stateCodes: functionality.labels,
-                                stateDesc: functionality.labelsDesc,
-                                allStateCodes: functionality.allLabels,
-                                allStateDesc: functionality.allLabelDesc,
-                                statusWiseTotalDaysData: statusWiseTotalDaysData,
-                                statusWiseAvgData: [category.id + ' ' + functionality.title , ...SateWiseAvgInitials],
-                                intialState: functionality.initialSateLabel,
-                                closedState: functionality.closedStateLabel,
-                                rejectedState: functionality.rejectedStateLabel,
-                                currentState: "",
-                                initiatedDate: null,
-                                closedDate: null
-                            };
-
-                            avgData.push(avgObject);
-
-                            break;
-                        case 'closure':
-                            let closedItemsData: any[] = [];
-                            let closureObject: closureObject = {
-                                id: functionality.id,
-                                dataSourceType: functionality.dataSourceType,
-                                renderChart: functionality.renderChart,
-                                showInTable: functionality.showInTable,
-                                tableHeader: functionality.tableHeader,
-                                allStateCodes: functionality.allLabels,
-                                allStateDesc: functionality.allLabelDesc,
-                                closedItemsData: closedItemsData,
-                                closureTimeData: [category.id + ' ' + functionality.title],
-                                intialState: functionality.initialSateLabel,
-                                closedState: functionality.closedStateLabel,
-                                rejectedState: functionality.rejectedStateLabel,
-                                currentState: "",
-                                initiatedDate: null,
-                                closedDate: null,
-                                currentLabelData: closureLabelCurrentData
-                            };
-
-                            closureData.push(closureObject);
-                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
-                            break; 
-                        case 'tracker':
-                            let stateTrackerData: any[] = [['x']];
-
-                            functionality.labelsDesc.forEach(labelDesc => {
-                                stateTrackerData.push([labelDesc]);
-                            });
-
-                            let trackerObject: trackerObject = {
-                                id: functionality.id,
-                                dataSourceType: functionality.dataSourceType,
-                                renderChart: functionality.renderChart,
-                                showInTable: functionality.showInTable,
-                                stateCodes: functionality.labels,
-                                stateDesc: functionality.labelsDesc,
-                                stateColors: functionality.labelColors,
-                                allStateCodes: functionality.allLabels,
-                                allStateDesc: functionality.allLabelDesc,
-                                stateTrackerInitialData: JSON.parse(JSON.stringify(stateTrackerData)),
-                                stateTrackerData: JSON.parse(JSON.stringify(stateTrackerData)),
-                                closedState: functionality.closedStateLabel,
-                                rejectedState: functionality.rejectedStateLabel,
-                                currentState: "",
-                                currentLabelData: trackerLabelCurrentData
-                            };
-
-                            trackerData.push(trackerObject);
-                            
-                            functionality.allLabelDesc.forEach(lableDesc => {
-                                itemCurrentStateTableHeaders.push(lableDesc);
-                            });
-
-                            break;  
-                        case 'dateRangeComapre':
-                            
-                            let dateRangeComapreObject: dateRangeCompareObject = {
-                                id: functionality.id,
-                                dataSourceType: functionality.dataSourceType,
-                                renderChart: functionality.renderChart,
-                                showInTable: functionality.showInTable,
-                                dateRanges: functionality.dateRanges,
-                                defaultDateRange: functionality.defaultDateRange,
-                                labels: functionality.labels,
-                                labelsDesc: functionality.labelsDesc,
-                                labelColors: functionality.labelColors,
-                                leastStatusSetDate: null,
-                                currentLabelData: dateRangeCompareCurrentLabelData
-                            };
-                            dateRangeCompareData.push(dateRangeComapreObject);
-                            functionality.dateRanges.forEach(dateRange => {
-                                //TODO call initiateDateRangeActions function
-                                //that.initiateDateRangeActions(dateRange,functionality.id);
-                            });
-                            break;      
-                    };     
-
+                    if(functionality.type === 'dateRangeComapre'){
+                        functionality.dateRanges.forEach(dateRange => {
+                            that.initiateDateRangeActions(dateRange,functionality.id);
+                        });
+                    }
                 });
-
-                let ByCategoryLabelData: ByCategoryLabelData = {
-                    category: category.id,
-                    groupByData: groupByData,
-                    groupByOperandsData: groupByOperandsData,
-                    groupByStateData: groupByStateData,
-                    groupByStateOverdueData: groupByStateOverdueData,
-                    groupByStackData: groupByStackData,
-                    avgData: avgData,
-                    closureData: closureData,
-                    trackerData: trackerData,
-                    dateRangeCompareData: dateRangeCompareData,
-                    itemCurrentStateTableHeaders: itemCurrentStateTableHeaders,
-                    itemCurrentStateValues: itemCurrentStateValues
-                }
-
-                this.ByCategoryLabelDetails.push(ByCategoryLabelData);
             });
-
-            // for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
-            //     console.log("ByCategoryLabelData:"+JSON.stringify(ByCategoryLabelData));
-            // }
+            
         }
 
 
         //copy button functionality
         installCopyButtons(title: string) {
             let that = this;
-            
+
             let savedWidth = 0;
 
-            that.allChartsMap.forEach((value,key)=>{
+            that.allChartsMap.forEach((value, key) => {
 
-                ml.UI.copyBuffer($(`#${key}-ChartTitle`,this._root), "copy  to clipboard", $(`.panel-body:has(#${key}-Chart)`), this._root, (copied: JQuery) => {
+                ml.UI.copyBuffer($(`#${key}-ChartTitle`, this._root), "copy  to clipboard", $(`.panel-body:has(#${key}-Chart)`), this._root, (copied: JQuery) => {
                     console.log("start");
-                    $(`#${key}-date-filter`,copied).remove();
-                    let title_ = $(`#${key}-ChartTitle`,this._root).text();
-                    $(".copyTitle",copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
-        
+                    $(`#${key}-date-filter`, copied).remove();
+                    let title_ = $(`#${key}-ChartTitle`, this._root).text();
+                    $(".copyTitle", copied).html(`<h1> ${title_}</h1><span> <b> Date:</b> ${ml.UI.DateTime.renderCustomerHumanDate(new Date())}</span>`);
+
                     ml.UI.fixC3ForCopy(copied);
 
                     console.log("end");
-        
-                },"",()=>{    
-                    savedWidth = $(`#${key}-Chart svg`,this._root).width();
+
+                }, "", () => {
+                    savedWidth = $(`#${key}-Chart svg`, this._root).width();
                     let chartObject = that.allChartsMap.get(key);
-                    chartObject.resize({width:590});
-                    
-                },()=>{     
+                    chartObject.resize({ width: 590 });
+
+                }, () => {
                     let chartObject = that.allChartsMap.get(key);
-                    chartObject.resize({width:savedWidth});
+                    chartObject.resize({ width: savedWidth });
                 });
-                
+
             });
-    
-            
 
-            ml.UI.copyBuffer($(`#${that.pluginTableId}TableHeader`,this._root), "copy list to clipboard", $("#currentStatusList",this._root), this._root, (copied: JQuery) => {
+
+
+            ml.UI.copyBuffer($(`#${that.pluginTableId}TableHeader`, this._root), "copy list to clipboard", $("#currentStatusList", this._root), this._root, (copied: JQuery) => {
                 $(".doNotCopy", copied).remove();
-    
-                var filter = $(`#${that.pluginTableId}InputFilter`,this._root).val();
-               
-                $(".hidden",copied).remove();
-           
-                $("#id", copied).each( (i,item)=>{ $(item).text($(item).data("ref") +"!")  } );
-    
-                $(`#${that.pluginTableId}InputFilter`,copied).remove();
 
-                $(`#${that.pluginTableId}-date-filter`,copied).remove();
+                var filter = $(`#${that.pluginTableId}InputFilter`, this._root).val();
+
+                $(".hidden", copied).remove();
+
+                $("#id", copied).each((i, item) => { $(item).text($(item).data("ref") + "!") });
+
+                $(`#${that.pluginTableId}InputFilter`, copied).remove();
+
+                $(`#${that.pluginTableId}-date-filter`, copied).remove();
 
                 $(`#${that.pluginTableId}TitleForCopy`, copied).html("<div><h1>" + title + "</h1> <span> <b> Date:</b> " + ml.UI.DateTime.renderCustomerHumanDate(new Date()) + "</span> <br/>" + (filter != "" ? "<b>Filter : </b>" + filter + "<br/>" : "") + "</div>");
             });
         }
 
         //date filter functionalities
-        initiateDateFilter(dateFilterId){
+        initiateDateFilter(dateFilterId) {
 
             let that = this;
             let enableDateFilter;
 
-            $("#"+dateFilterId+"-date-filter").hide();
+            $("#" + dateFilterId + "-date-filter").hide();
 
-            $("#"+dateFilterId+"-date-filter-icon").click(function () {
-                
+            $("#" + dateFilterId + "-date-filter-icon").click(function () {
+
                 let dateFileterData = that.dateFilterEnablerMap.get(dateFilterId);
                 enableDateFilter = !dateFileterData.dateFilterEnabled;
                 dateFileterData.dateFilterEnabled = enableDateFilter;
-                that.dateFilterEnablerMap.set(dateFilterId,dateFileterData);
+                that.dateFilterEnablerMap.set(dateFilterId, dateFileterData);
 
-                if(enableDateFilter){
-                    $("#"+dateFilterId+"-date-filter").show();
-                }else{
-                    $("#"+dateFilterId+"-date-filter").hide();
+                if (enableDateFilter) {
+                    $("#" + dateFilterId + "-date-filter").show();
+                } else {
+                    $("#" + dateFilterId + "-date-filter").hide();
 
                     let byCategoryLabelData = that.ByCategoryLabelDetails
-                    .find(({ category }) => category === that.currentCat);
+                        .find(({ category }) => category === that.currentCat);
 
                     switch (dateFileterData.functionality) {
                         case 'groupBy':
-                            if(byCategoryLabelData.groupByData.length > 0){
+                            if (byCategoryLabelData.groupByData.length > 0) {
                                 byCategoryLabelData.groupByData.forEach(groupByObject => {
-                                    if(dateFilterId == groupByObject.id){
-                                        //TODO call render functions
-                                        //that.renderGroupByChart(groupByObject.labelsDesc,groupByObject.groupWiseData,groupByObject.id);
+                                    if (dateFilterId == groupByObject.id) {
+                                        that.renderGroupByChart(groupByObject.labelsDesc,groupByObject.groupWiseData,groupByObject.id);
                                     }
                                 });
                             }
                             break;
                         case 'groupByState':
-                            if(byCategoryLabelData.groupByStateData.length > 0){
+                            if (byCategoryLabelData.groupByStateData.length > 0) {
                                 byCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
-                                    if(dateFilterId == groupByStateObject.id){
-                                        //TODO call render functions
-                                        //that.renderGroupByStateChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);
+                                    if (dateFilterId == groupByStateObject.id) {
+                                        that.renderGroupByStateChart(groupByStateObject.stateWiseData,groupByStateObject.stateColors,groupByStateObject.id);
                                     }
                                 });
                             }
                             break;
                         case 'statusOverdue':
-                            if(byCategoryLabelData.groupByStateOverdueData.length > 0){
+                            if (byCategoryLabelData.groupByStateOverdueData.length > 0) {
                                 byCategoryLabelData.groupByStateOverdueData.forEach(groupByStateOverdueObject => {
-                                    if(dateFilterId == groupByStateOverdueObject.id){
-                                        //TODO call render functions
-                                        //that.renderGroupByStateChart(groupByStateOverdueObject.stateWiseData,groupByStateOverdueObject.stateColors,groupByStateOverdueObject.id);
+                                    if (dateFilterId == groupByStateOverdueObject.id) {
+                                        that.renderGroupByStateChart(groupByStateOverdueObject.stateWiseData,groupByStateOverdueObject.stateColors,groupByStateOverdueObject.id);
                                     }
                                 });
                             }
-                            break;    
+                            break;
                         case 'groupByStack':
-                            if(byCategoryLabelData.groupByStackData.length > 0){
+                            if (byCategoryLabelData.groupByStackData.length > 0) {
                                 byCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
-                                    if(dateFilterId == groupByStackObject.id){
-                                        //TODO call render functions
-                                        //that.renderGroupByStackChart(groupByStackObject.groupByStackData,groupByStackObject.groupByCodesDesc,groupByStackObject.categoryDesc,groupByStackObject.groupByCodeColors,groupByStackObject.id);
+                                    if (dateFilterId == groupByStackObject.id) {
+                                        that.renderGroupByStackChart(groupByStackObject.groupByStackData,groupByStackObject.groupByCodesDesc,groupByStackObject.categoryDesc,groupByStackObject.groupByCodeColors,groupByStackObject.id);
                                     }
                                 });
                             }
-                            break;    
+                            break;
                         case 'avg':
-                            if(byCategoryLabelData.avgData.length > 0){
+                            if (byCategoryLabelData.avgData.length > 0) {
                                 byCategoryLabelData.avgData.forEach(avgObject => {
-                                    if(dateFilterId == avgObject.id){
-                                        //TODO call render functions
-                                        //that.renderAvgChart(avgObject.stateDesc,avgObject.statusWiseAvgData,avgObject.id);
+                                    if (dateFilterId == avgObject.id) {
+                                        that.renderAvgChart(avgObject.stateDesc,avgObject.statusWiseAvgData,avgObject.id);
                                     }
                                 });
                             }
                             break;
                         case 'closure':
-                            if(byCategoryLabelData.closureData.length > 0){
+                            if (byCategoryLabelData.closureData.length > 0) {
                                 byCategoryLabelData.closureData.forEach(closureObject => {
-                                    if(dateFilterId == closureObject.id){
-                                        //TODO call render functions
-                                        //that.renderClosureChart(closureObject.closedItemsData,closureObject.closureTimeData,closureObject.id);
+                                    if (dateFilterId == closureObject.id) {
+                                        that.renderClosureChart(closureObject.closedItemsData,closureObject.closureTimeData,closureObject.id);
                                     }
                                 });
-                            }
-                            break; 
-                        case 'tracker':
-                            if(byCategoryLabelData.trackerData.length > 0){
-                                byCategoryLabelData.trackerData.forEach(trackerObject => {
-                                    if(dateFilterId == trackerObject.id){
-                                        //TODO call render functions
-                                        //that.renderTrackerChart(trackerObject.stateDesc,trackerObject.stateTrackerData,trackerObject.stateColors,trackerObject.id);
-                                    }
-                                });
-                            }
-                            break; 
-                        case 'table':
-                            if(byCategoryLabelData.itemCurrentStateValues.length > 0){
-                                //TODO call render functions
-                                //that.renderPluginTable(byCategoryLabelData.itemCurrentStateTableHeaders,byCategoryLabelData.itemCurrentStateValues);
                             }
                             break;
-                   }
+                        case 'tracker':
+                            if (byCategoryLabelData.trackerData.length > 0) {
+                                byCategoryLabelData.trackerData.forEach(trackerObject => {
+                                    if (dateFilterId == trackerObject.id) {
+                                        that.renderTrackerChart(trackerObject.stateDesc,trackerObject.stateTrackerData,trackerObject.stateColors,trackerObject.id);
+                                    }
+                                });
+                            }
+                            break;
+                        case 'table':
+                            if (byCategoryLabelData.itemCurrentStateValues.length > 0) {
+                                that.renderPluginTable(byCategoryLabelData.itemCurrentStateTableHeaders,byCategoryLabelData.itemCurrentStateValues);
+                            }
+                            break;
+                    }
                 }
             });
 
             //Initiating date range selection section
-            let fromDate = $("#"+dateFilterId+"-fromdate", that._root);
-            let toDate = $("#"+dateFilterId+"-todate", that._root);
-            let goButton = $("#"+dateFilterId+"-gobutton", that._root);
+            let fromDate = $("#" + dateFilterId + "-fromdate", that._root);
+            let toDate = $("#" + dateFilterId + "-todate", that._root);
+            let goButton = $("#" + dateFilterId + "-gobutton", that._root);
 
             //MM/dd/YYYY 
             //ml.UI.DateTime.getSimpleDateTimeFormatMoment()
@@ -709,70 +460,988 @@ namespace GenericDashboard {
                 ml.UI.setEnabled(goButton, fromDate.data("DateTimePicker").date() && toDate.data("DateTimePicker").date());
             });
 
-            $("#"+dateFilterId+"-gobutton").click(function () {
+            $("#" + dateFilterId + "-gobutton").click(function () {
 
                 let fromDateSelected = fromDate.data("DateTimePicker").date();
                 let toDateSelected = toDate.data("DateTimePicker").date();
                 let dateFileterData = that.dateFilterEnablerMap.get(dateFilterId);
-                
+
                 let byCategoryLabelData = that.ByCategoryLabelDetails
-                .find(({ category }) => category === that.currentCat);
+                    .find(({ category }) => category === that.currentCat);
 
                 switch (dateFileterData.functionality) {
                     case 'groupBy':
-                        //TODO call render functions
-                        //that.renderGroupByChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        that.renderGroupByChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
                         break;
                     case 'groupByState':
-                        //TODO call render functions
-                        //that.renderGroupByStateChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        that.renderGroupByStateChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
                         break;
                     case 'statusOverdue':
-                        //TODO call render functions
-                        //that.renderGroupByStateOverdueChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
-                        break;    
+                        that.renderGroupByStateOverdueChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        break;
                     case 'groupByStack':
-                        //TODO call render functions
-                        //that.renderGroupByStackChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
-                        break;    
+                        that.renderGroupByStackChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        break;
                     case 'closure':
-                        //TODO call render functions
-                        //that.renderClosureChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
-                        break; 
+                        that.renderClosureChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        break;
                     case 'tracker':
-                        //TODO call render functions
-                        //that.renderTrackerChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
-                        break; 
+                        that.renderTrackerChartByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        break;
                     case 'dateRangeComapre':
-                        //TODO call render functions
-                        //that.renderDateRangeComapreDataByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
-                        break;      
+                        that.renderDateRangeComapreDataByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData, dateFilterId);
+                        break;
                     case 'table':
-                        //TODO call render functions
-                        //that.renderPluginTableByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
-                        break;  
+                        that.renderPluginTableByDateRanges(fromDateSelected, toDateSelected, byCategoryLabelData);
+                        break;
                 };
             });
 
         }
 
-        
-        processFunctionalitiesData(functionalityDataSources : any,pluginConfig : any){
+        initiateDateRangeActions(range,contentId){
+            let that = this;
+
+            $("#"+range+"Range").click(function () {
+
+                if(range == "dateCompare"){
+                    $("#"+contentId+"-date-filter").show();
+                }else{
+                    $("#"+contentId+"-date-filter").hide();
+                }
+                
+                if (that.currentTimeRangeSelected !== range) {
+                    $("#"+range+"Range").removeClass("timerangenormal");
+                    $("#"+range+"Range").addClass("timerangeselected");
+
+                    $('#' + that.currentTimeRangeSelected + 'Range').removeClass("timerangeselected");
+                    $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
+
+                    that.currentTimeRangeSelected = range;
+                    
+                    if(range !== "dateCompare"){
+                        that.renderDateRangeByAction(range,contentId);
+                    }
+                }
+
+            });
+
+        }
+
+        renderDateRangeByAction(range,contentId){
+            let that = this;
+            let columnData;
+            let categoryData;
+
+            switch (range) {
+                case 'week':
+                    columnData = that.dateRangeData.currentWeekColumnsData;
+                    categoryData = that.dateRangeData.currentWeekCategoryData;
+                    break;
+                case 'month':
+                    columnData = that.dateRangeData.currentMonthColumnsData;
+                    categoryData = that.dateRangeData.currentMonthCategoryData.categories;
+                    break;
+                case 'threeMonths':
+                    columnData = that.dateRangeData.threeMonthsColumnsData;
+                    categoryData = that.dateRangeData.threeMonthsCategoryData;
+                    break;    
+                case 'sixMonths':
+                    columnData = that.dateRangeData.sixMonthsColumnsData;
+                    categoryData = that.dateRangeData.sixMonthsCategoryData;
+                    break;    
+                case 'twelveMonths':
+                    columnData = that.dateRangeData.twelveMonthsColumnsData;
+                    categoryData = that.dateRangeData.twelveMonthsCategoryData;
+                    break; 
+                case 'ytd':
+                    columnData = that.dateRangeData.ytdColumnsData;
+                    categoryData = that.dateRangeData.ytdCategoryData;
+                    break; 
+                case 'moreThanYear':
+                    columnData = that.dateRangeData.moreThanYearColumnsData;
+                    categoryData = that.dateRangeData.moreThanYearCategoryData;
+                    break;  
+                case 'quarterlyCY':
+                    columnData = that.dateRangeData.quarterlyCYColumnsData;
+                    categoryData = that.dateRangeData.quarterlyCYCategoryData.categories;
+                    break;  
+                case 'quarterlyFY':
+                    columnData = that.dateRangeData.quarterlyFYColumnsData;
+                    categoryData = that.dateRangeData.quarterlyFYCategoryData.categories;
+                    break;                   
+            };
+
+            let ByCategoryLabelData = this.ByCategoryLabelDetails
+                .find(({ category }) => category === this.currentCat);
+
+            if(ByCategoryLabelData.dateRangeCompareData.length > 0){
+                ByCategoryLabelData.dateRangeCompareData.forEach(dateRangeCompareObject => {
+                    if(dateRangeCompareObject.id == contentId){
+                        that.renderDateRangeChart(columnData,categoryData,dateRangeCompareObject.labelsDesc,
+                            dateRangeCompareObject.labelColors,dateRangeCompareObject.id); 
+                    }   
+                });
+            }
+        }
+
+        renderCategoryWiseData(cat: string) {
+            let that = this;
+
+            if (cat == undefined) {
+                return;
+            }
+            if (cat == "")
+                cat = $("#itemSelectionLabelDashboard .dropdown-menu li:first").text();
+
+            this.currentCat = cat;
+
+            $("#selectedCat", this._root).text(cat);
+
+            let ByCategoryLabelData = this.ByCategoryLabelDetails
+                .find(({ category }) => category === this.currentCat);
+
+            if (ByCategoryLabelData.groupByData && ByCategoryLabelData.groupByData.length > 0) {
+                ByCategoryLabelData.groupByData.forEach(groupByObject => {
+                    that.renderGroupByChart(groupByObject.labelsDesc, groupByObject.groupWiseData, groupByObject.id);
+                });
+            }
+
+            if (ByCategoryLabelData.groupByOperandsData && ByCategoryLabelData.groupByOperandsData.length > 0) {
+                ByCategoryLabelData.groupByOperandsData.forEach(groupByOperandsObject => {
+                    that.renderGroupByChart(groupByOperandsObject.labelsDesc, groupByOperandsObject.groupWiseData, groupByOperandsObject.id);
+                });
+            }
+
+            if (ByCategoryLabelData.groupByStateData && ByCategoryLabelData.groupByStateData.length > 0) {
+                ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
+                    if (groupByStateObject.type == "groupByGapAnalysis") {
+                        that.renderGroupByStatePercentChart(groupByStateObject.stateWiseData, groupByStateObject.stateColors, groupByStateObject.id);
+                    } else {
+                        that.renderGroupByStateChart(groupByStateObject.stateWiseData, groupByStateObject.stateColors, groupByStateObject.id);
+                    }
+                });
+            }
+
+            if (ByCategoryLabelData.groupByStateOverdueData && ByCategoryLabelData.groupByStateOverdueData.length > 0) {
+                ByCategoryLabelData.groupByStateOverdueData.forEach(groupByStateOverDueObject => {
+                    that.renderGroupByStateChart(groupByStateOverDueObject.stateWiseData, groupByStateOverDueObject.stateColors, groupByStateOverDueObject.id);
+                });
+            }
+
+            if (ByCategoryLabelData.groupByStackData && ByCategoryLabelData.groupByStackData.length > 0) {
+                ByCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
+                    that.renderGroupByStackChart(groupByStackObject.groupByStackData, groupByStackObject.groupByCodesDesc, groupByStackObject.categoryDesc, groupByStackObject.groupByCodeColors, groupByStackObject.id);
+                });
+            }
+
+            if (ByCategoryLabelData.avgData && ByCategoryLabelData.avgData.length > 0) {
+                ByCategoryLabelData.avgData.forEach(avgObject => {
+                    that.renderAvgChart(avgObject.stateDesc, avgObject.statusWiseAvgData, avgObject.id);
+                });
+            }
+
+            if (ByCategoryLabelData.closureData && ByCategoryLabelData.closureData.length > 0) {
+                ByCategoryLabelData.closureData.forEach(closureObject => {
+                    that.renderClosureChart(closureObject.closedItemsData, closureObject.closureTimeData, closureObject.id);
+                });
+            }
+
+            if (ByCategoryLabelData.trackerData && ByCategoryLabelData.trackerData.length > 0) {
+                ByCategoryLabelData.trackerData.forEach(trackerObject => {
+                    that.renderTrackerChart(trackerObject.stateDesc, trackerObject.stateTrackerData, trackerObject.stateColors, trackerObject.id);
+                });
+            }
+
+            if (ByCategoryLabelData.dateRangeCompareData && ByCategoryLabelData.dateRangeCompareData.length > 0) {
+                ByCategoryLabelData.dateRangeCompareData.forEach(dateRangeCompareObject => {
+
+                    Commons.DateRangeFunctionalities.prepareDateRangeCompareChartData(
+                        dateRangeCompareObject.currentLabelData,
+                        dateRangeCompareObject.labelsDesc,
+                        dateRangeCompareObject.dateRanges,
+                        dateRangeCompareObject.leastStatusSetDate,
+                        that.dateRangeData);
+
+                    if (that.currentTimeRangeSelected !== dateRangeCompareObject.defaultDateRange) {
+                        $('#' + dateRangeCompareObject.defaultDateRange + 'Range').removeClass("timerangenormal");
+                        $('#' + dateRangeCompareObject.defaultDateRange + 'Range').addClass("timerangeselected");
+
+                        $('#' + that.currentTimeRangeSelected + 'Range').removeClass("timerangeselected");
+                        $('#' + that.currentTimeRangeSelected + 'Range').addClass("timerangenormal");
+
+                        that.currentTimeRangeSelected = dateRangeCompareObject.defaultDateRange;
+                    }
+
+                    that.renderDateRangeChart(that.dateRangeData.currentWeekColumnsData, that.dateRangeData.currentWeekCategoryData, dateRangeCompareObject.labelsDesc,
+                        dateRangeCompareObject.labelColors, dateRangeCompareObject.id);
+                });
+            }
+
+            if (ByCategoryLabelData.itemCurrentStateValues && ByCategoryLabelData.itemCurrentStateValues.length > 0) {
+                that.renderPluginTable(ByCategoryLabelData.itemCurrentStateTableHeaders, ByCategoryLabelData.itemCurrentStateValues);
+            }
+
+        }
+
+        filterByLabel(filter: any) {
+            this.currentFilter = filter.type;
+            let filterDataClass = "";
+            if (filter.type == "") {
+                //Show all
+                $(`#${this.pluginTableId}Table tbody tr`).show();
+            }
+            else {
+                filterDataClass = filter.type.split(' ').join('-').replaceAll('&', '-');
+                $(`#${this.pluginTableId}Table tbody tr`).hide();
+                $(`#${this.pluginTableId}Table tbody tr.${filterDataClass}`).show();
+            }
+        }
+
+
+        renderDateRangeComapreDataByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            let formattedFromDate = new Date(fromDate.setDate(fromDate.getDate() + 1)).toISOString().slice(0, 10);
+            let formattedToDate = new Date(toDate.setDate(toDate.getDate() + 1)).toISOString().slice(0, 10);
+
+            let daterangeCompareLabels = [];
+            let dateFilterChartCategoryData = [];
+            let dateFilterChartColumnsData: any = [];
+
+            if (byCategoryLabelData.dateRangeCompareData.length > 0) {
+                byCategoryLabelData.dateRangeCompareData.forEach(dateRangeCompareObject => {
+                    if (dateRangeCompareObject.id == groupId) {
+                        dateFilterChartCategoryData = dateRangeCompareObject.labelsDesc;
+                        daterangeCompareLabels = dateRangeCompareObject.labels;
+                        let daterangeCompareLabelInitials = Array(dateRangeCompareObject.labels.length).fill(0);
+                        dateFilterChartColumnsData = [
+                            ['From:' + formattedFromDate, ...daterangeCompareLabelInitials],
+                            ['To:' + formattedToDate, ...daterangeCompareLabelInitials]
+                        ];
+                    }
+                });
+            }
+
+            this.labelHistoryData.forEach(
+                (labelHistoryRecord) => {
+                    let itemCategory = labelHistoryRecord.itemRef.substring(0, labelHistoryRecord.itemRef.indexOf('-'));
+                    if (itemCategory == this.currentCat) {
+                        let labelHistoryData_ = { ...labelHistoryRecord };
+                        let fromDateLabels: XRLabelChange[] = [];
+                        let toDateLabels: XRLabelChange[] = [];
+
+                        labelHistoryData_.labels.forEach(
+                            (labelStatusHistoryrecord) => {
+                                let fromDateLabelStatusData = { ...labelStatusHistoryrecord };
+                                let toDateLabelStatusData = { ...labelStatusHistoryrecord };
+
+                                fromDateLabelStatusData.set = [];
+                                fromDateLabelStatusData.reset = [];
+
+                                toDateLabelStatusData.set = [];
+                                toDateLabelStatusData.reset = [];
+
+                                labelStatusHistoryrecord.set.forEach(
+                                    (setDateRecord) => {
+                                        let dateRecord = new Date(setDateRecord.dateIso);
+
+                                        if (dateRecord <= fromDate) {
+                                            fromDateLabelStatusData.set.push(setDateRecord);
+                                        }
+
+                                        if (dateRecord <= toDate) {
+                                            toDateLabelStatusData.set.push(setDateRecord);
+                                        }
+                                    }
+                                );
+
+                                labelStatusHistoryrecord.reset.forEach(
+                                    (resetDateRecord) => {
+                                        let dateRecord = new Date(resetDateRecord.dateIso);
+
+                                        if (dateRecord <= fromDate) {
+                                            fromDateLabelStatusData.reset.push(resetDateRecord);
+                                        }
+
+                                        if (dateRecord <= toDate) {
+                                            toDateLabelStatusData.reset.push(resetDateRecord);
+                                        }
+                                    }
+                                );
+
+                                if (fromDateLabelStatusData.set.length > 0 || fromDateLabelStatusData.reset.length > 0) {
+                                    fromDateLabels.push(fromDateLabelStatusData);
+                                }
+
+                                if (toDateLabelStatusData.set.length > 0 || toDateLabelStatusData.reset.length > 0) {
+                                    toDateLabels.push(toDateLabelStatusData);
+                                }
+
+                            }
+                        );
+
+                        if (fromDateLabels.length > 0) {
+                            fromDateLabels.forEach((fromDateLabel) => {
+                                let labelIndex = daterangeCompareLabels.findIndex(labelCode => labelCode === fromDateLabel.label);
+
+                                if (labelIndex > -1 && (fromDateLabel.reset.length !== fromDateLabel.set.length)) {
+                                    dateFilterChartColumnsData[0][labelIndex + 1] += 1;
+                                }
+                            });
+                        }
+
+                        if (toDateLabels.length > 0) {
+                            toDateLabels.forEach((toDateLabel) => {
+                                let labelIndex = daterangeCompareLabels.findIndex(labelCode => labelCode === toDateLabel.label);
+
+                                if (labelIndex > -1 && (toDateLabel.reset.length !== toDateLabel.set.length)) {
+                                    dateFilterChartColumnsData[1][labelIndex + 1] += 1;
+                                }
+                            });
+                        }
+                    }
+                }
+            );
+
+
+            this.renderDateRangeCompareChart(dateFilterChartColumnsData, dateFilterChartCategoryData, groupId);
+        }
+
+        renderDateRangeCompareChart(chartColumnsData, chartCategoryData, groupId) {
+            let that = this;
+            let dateRangeCompareChartParams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    columns: chartColumnsData,
+                    type: 'bar'
+                },
+                axis: {
+                    x: {
+                        type: 'category',
+                        categories: chartCategoryData
+
+                    },
+                    y: {
+                        show: false
+                    }
+                },
+                color: {
+                    pattern: ['#17becf', '#9467bd']
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let dateRangeChart = c3.generate(dateRangeCompareChartParams);
+
+            that.allChartsMap.set(groupId, dateRangeChart);
+
+            $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+            });
+        }
+
+
+        renderDateRangeChart(chartColumnsData, chartCategoryData, groupLabels, groupColors, groupId) {
+            let that = this;
+            //prepare template
+            let dateRangeChartparams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    columns: chartColumnsData,
+                    type: 'bar',
+                    groups: [
+                        groupLabels
+                    ]
+                },
+                axis: {
+                    x: {
+                        type: 'category',
+                        categories: chartCategoryData
+
+                    },
+                    y: {
+                        show: false
+                    }
+                },
+                color: {
+                    pattern: groupColors
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let dateRangeChart = c3.generate(dateRangeChartparams);
+
+            that.allChartsMap.set(groupId, dateRangeChart);
+
+            $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+            });
+
+        }
+
+        renderGroupByChartByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            if (byCategoryLabelData.groupByData.length > 0) {
+                byCategoryLabelData.groupByData.forEach(groupByObject => {
+
+                    if (groupByObject.id == groupId) {
+
+                        let groupWiseInitials = Array(groupByObject.labels.length).fill(0);
+                        let groupWiseData = [groupByObject.groupWiseData[0], ...groupWiseInitials];
+
+                        groupByObject.currentLabelData.forEach(
+                            (itemCurrentStateData) => {
+
+                                if (itemCurrentStateData.currentLabelSetDate &&
+                                    (itemCurrentStateData.currentLabelSetDate >= fromDate && itemCurrentStateData.currentLabelSetDate <= toDate)) {
+                                    let groupByLabelIndex = groupByObject.labels.findIndex(labelCode => labelCode === itemCurrentStateData.currentLabel);
+                                    groupWiseData[groupByLabelIndex + 1] += 1;
+                                }
+
+                            });
+
+                        this.renderGroupByChart(groupByObject.labelsDesc, groupWiseData, groupByObject.id);
+                    }
+                });
+            }
+        }
+
+        renderGroupByChart(labels, grouoWiseData, groupId) {
+            let that = this;
+            //prepare template "${contentConfig.id}-Chart"
+            let groupByChartparams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    x: 'x',
+                    columns: [
+                        ['x', ...labels],
+                        grouoWiseData
+                    ],
+                    type: 'bar',
+                    onclick: function (d, i) {
+                        setTimeout(() => {
+                            that.filterByLabel({ type: labels[d.x] });
+                        }, 100);
+                    }
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let groupByChart = c3.generate(groupByChartparams);
+
+            that.allChartsMap.set(groupId, groupByChart);
+
+            $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+            });
+        }
+
+        renderGroupByStateChartByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            if (byCategoryLabelData.groupByStateData.length > 0) {
+                byCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
+
+                    if (groupByStateObject.id == groupId) {
+                        let statusWiseData: any = JSON.parse(JSON.stringify(groupByStateObject.stateWiseInitialData));
+
+                        groupByStateObject.currentLabelData.forEach(
+                            (itemCurrentStateData) => {
+
+                                if (itemCurrentStateData.currentLabelSetDate &&
+                                    (itemCurrentStateData.currentLabelSetDate >= fromDate && itemCurrentStateData.currentLabelSetDate <= toDate)) {
+                                    let groupByStateLabelIndex = groupByStateObject.stateCodes.findIndex(labelCode => labelCode === itemCurrentStateData.currentLabel);
+                                    statusWiseData[groupByStateLabelIndex][1] += 1;
+                                }
+
+                            });
+
+                        this.renderGroupByStateChart(statusWiseData, groupByStateObject.stateColors, groupByStateObject.id);
+
+                    }
+                });
+            }
+        }
+
+        renderGroupByStateOverdueChartByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            if (byCategoryLabelData.groupByStateOverdueData.length > 0) {
+                byCategoryLabelData.groupByStateOverdueData.forEach(groupByStateOverdueObject => {
+
+                    if (groupByStateOverdueObject.id == groupId) {
+                        let statusWiseData: any = JSON.parse(JSON.stringify(groupByStateOverdueObject.stateWiseInitialData));
+
+                        groupByStateOverdueObject.currentLabelData.forEach(
+                            (itemCurrentStateData) => {
+
+                                if (itemCurrentStateData.currentLabelSetDate &&
+                                    (itemCurrentStateData.currentLabelSetDate >= fromDate && itemCurrentStateData.currentLabelSetDate <= toDate)) {
+                                    let groupByStateLabelIndex = groupByStateOverdueObject.stateCodes.findIndex(labelCode => labelCode === itemCurrentStateData.currentLabel);
+
+                                    if (itemCurrentStateData.currentLabel == groupByStateOverdueObject.openState) {
+                                        let itemDueDate = groupByStateOverdueObject.OpenItemsDueDateMap.get(itemCurrentStateData.id);
+                                        //check for overdue
+                                        if (new Date(itemDueDate) < new Date()) {
+                                            statusWiseData[groupByStateOverdueObject.stateDesc.length - 1][1] += 1;
+                                        } else {
+                                            statusWiseData[groupByStateLabelIndex][1] += 1;
+                                        }
+                                    } else {
+                                        statusWiseData[groupByStateLabelIndex][1] += 1;
+                                    }
+                                }
+
+                            });
+
+                        this.renderGroupByStateChart(statusWiseData, groupByStateOverdueObject.stateColors, groupByStateOverdueObject.id);
+
+                    }
+                });
+            }
+        }
+
+        renderGroupByStateChart(stateWiseData, stateColors, groupId) {
+            let that = this;
+            //prepare template
+            let groupByStateChartParams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    columns: stateWiseData,
+                    type: 'pie',
+                    onclick: function (d, i) {
+                        setTimeout(() => {
+                            that.filterByLabel({ type: d.id });
+                        }, 100);
+                    }
+                },
+                color: {
+                    pattern: stateColors
+                },
+                pie: {
+                    label: {
+                        format: function (value: any, ratio: any, id: any) {
+                            return (value);
+                        }
+                    }
+                },
+                tooltip: {
+                    format: {
+                        value: function (value: any, ratio: any, id: any, index: any) { return value; }
+                    }
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let groupByStateChart = c3.generate(groupByStateChartParams);
+
+            that.allChartsMap.set(groupId, groupByStateChart);
+
+            $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+            });
+        }
+
+        renderGroupByStatePercentChart(stateWiseData, stateColors, groupId) {
+            let that = this;
+            //prepare template
+            let groupByStateChartParams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    columns: stateWiseData,
+                    type: 'pie',
+                    onclick: function (d, i) {
+                        setTimeout(() => {
+                            that.filterByLabel({ type: d.id });
+                        }, 100);
+                    }
+                },
+                color: {
+                    pattern: stateColors
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let groupByStateChart = c3.generate(groupByStateChartParams);
+
+            that.allChartsMap.set(groupId, groupByStateChart);
+
+            $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+            });
+        }
+
+        renderGroupByStackChartByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            if (byCategoryLabelData.groupByStackData.length > 0) {
+                byCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
+
+                    if (groupByStackObject.id == groupId) {
+                        let stackWiseData: any = JSON.parse(JSON.stringify(groupByStackObject.groupByStackInitialData));
+
+                        groupByStackObject.currentLabelData.forEach((itemCurrentLabelData) => {
+                            if (itemCurrentLabelData.currentgroupLabelSetDate &&
+                                (itemCurrentLabelData.currentgroupLabelSetDate >= fromDate && itemCurrentLabelData.currentgroupLabelSetDate <= toDate)) {
+
+                                let categoryLabelIndex = groupByStackObject.categoryDesc.findIndex(labelDesc => labelDesc === itemCurrentLabelData.currentCategoryLabel);
+
+                                stackWiseData.forEach(stackGroupData => {
+                                    if (stackGroupData[0] == itemCurrentLabelData.currentgroupLabel) {
+                                        stackGroupData[categoryLabelIndex + 1] += 1;
+                                    }
+                                });
+                            }
+                        });
+
+                        this.renderGroupByStackChart(stackWiseData, groupByStackObject.groupByCodesDesc, groupByStackObject.categoryDesc, groupByStackObject.groupByCodeColors, groupByStackObject.id);
+
+                    }
+                });
+            }
+        }
+
+        renderGroupByStackChart(stackColumnData, stackGroupLabels, stackCategories, stackColors, groupId) {
+            let that = this;
+            //prepare template
+            let groupByStackChartParams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    columns: stackColumnData,
+                    type: 'bar',
+                    groups: [
+                        stackGroupLabels
+                    ]
+                },
+                axis: {
+                    x: {
+                        type: 'category',
+                        categories: stackCategories
+                    },
+                    y: {
+                        show: true
+                    }
+                },
+                color: {
+                    pattern: stackColors
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let groupByStackChart = c3.generate(groupByStackChartParams);
+
+            that.allChartsMap.set(groupId, groupByStackChart);
+        }
+
+        renderAvgChart(states, statusWiseAvgData, groupId) {
+            let that = this;
+            //prepare template
+            let avgChartparams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    x: 'x',
+                    columns: [
+                        ['x', ...states],
+                        statusWiseAvgData
+                    ],
+                    type: 'bar'
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let avgChart = c3.generate(avgChartparams);
+
+            that.allChartsMap.set(groupId, avgChart);
+        }
+
+        renderClosureChartByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            if (byCategoryLabelData.closureData.length > 0) {
+                byCategoryLabelData.closureData.forEach(closureObject => {
+                    if (closureObject.id == groupId) {
+
+                        let closedItemsData = [];
+                        let closureTimeData: any[] = [closureObject.closureTimeData[0]];
+
+                        closureObject.currentLabelData.forEach(
+                            (itemCurrentStateData) => {
+
+                                if (itemCurrentStateData.closedDate &&
+                                    (itemCurrentStateData.closedDate >= fromDate && itemCurrentStateData.closedDate <= toDate)) {
+                                    closedItemsData.push(itemCurrentStateData.id);
+                                    closureTimeData.push(itemCurrentStateData.daysToClose);
+
+                                }
+
+                            });
+
+                        this.renderClosureChart(closedItemsData, closureTimeData, closureObject.id);
+                    }
+                });
+            }
+        }
+
+        renderClosureChart(closedItemsData, closureTimeData, groupId) {
+            let that = this;
+            //prepare template
+            let closureChartparams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                data: {
+                    x: 'x',
+                    columns: [
+                        ['x', ...closedItemsData],
+                        closureTimeData
+                    ],
+                    type: 'bar',
+                    onclick: function (d, i) {
+                        setTimeout(() => {
+                            that.filterByLabel({ type: closedItemsData[d.x] });
+                        }, 100);
+                    }
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let closureChart = c3.generate(closureChartparams);
+
+            that.allChartsMap.set(groupId, closureChart);
+
+            $(`#${groupId}-Chart svg`).click(function () {
+                that.filterByLabel({ type: "" })
+            });
+        }
+
+        renderTrackerChartByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData, groupId: String) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+
+            if (byCategoryLabelData.trackerData.length > 0) {
+                byCategoryLabelData.trackerData.forEach(trackerObject => {
+                    if (trackerObject.id == groupId) {
+                        let stateTrackerData: any[] = [['x']];
+
+                        trackerObject.stateDesc.forEach(labelDesc => {
+                            stateTrackerData.push([labelDesc]);
+                        });
+
+                        trackerObject.currentLabelData.forEach(
+                            (itemCurrentStateData, itemId) => {
+                                if (itemCurrentStateData.currentStateSetDate && itemCurrentStateData.currentState !== trackerObject.closedState
+                                    && (itemCurrentStateData.currentStateSetDate >= fromDate && itemCurrentStateData.currentStateSetDate <= toDate)) {
+                                    stateTrackerData[0].push(itemCurrentStateData.id);
+                                    trackerObject.stateCodes.forEach(
+                                        (trackState, stateIndex) => {
+                                            let stateDays = itemCurrentStateData.itemStateDays.get(trackState);
+                                            if (stateDays) {
+                                                stateTrackerData[stateIndex + 1].push(stateDays);
+                                            } else {
+                                                stateTrackerData[stateIndex + 1].push("");
+                                            }
+                                        });
+                                }
+                            });
+
+                        this.renderTrackerChart(trackerObject.stateDesc, stateTrackerData, trackerObject.stateColors, trackerObject.id);
+                    }
+                });
+            }
+        }
+
+        renderTrackerChart(trackerStates, stateTrackerData, stateColors, groupId) {
+            let that = this;
+            //prepare template
+            let trackerChartparams: c3.ChartConfiguration = {
+                bindto: `#${groupId}Graph`,
+                size: {
+                    height: 900
+                },
+                data: {
+                    x: 'x',
+                    columns: stateTrackerData,
+                    type: 'bar',
+                    groups: [
+                        trackerStates
+                    ],
+                    order: null
+                },
+                color: {
+                    pattern: stateColors
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    },
+                    rotated: true
+                }
+            };
+
+            //prepare chart config and render
+            $(`#${groupId}-Chart div`).remove();
+
+            $(`#${groupId}-Chart`).append(`<div id='${groupId}Graph'>`);
+
+            let trackerChart = c3.generate(trackerChartparams);
+
+            that.allChartsMap.set(groupId, trackerChart);
+        }
+
+        renderPluginTableByDateRanges(fromDateVal: any, toDateVal: any, byCategoryLabelData: ByCategoryLabelData) {
+
+            let fromDate = new Date(fromDateVal);
+            let toDate = new Date(toDateVal);
+            let itemCurrentStateDetailsByDateRange: ItemCurrentStateData[] = [];
+
+            byCategoryLabelData.itemCurrentStateValues.forEach(
+                (itemCurrentStateData) => {
+
+                    if (
+                        (itemCurrentStateData.InitiatedDate &&
+                            (itemCurrentStateData.InitiatedDate >= fromDate && itemCurrentStateData.InitiatedDate <= toDate))
+                        ||
+                        (itemCurrentStateData.ClosedDate &&
+                            (itemCurrentStateData.ClosedDate >= fromDate && itemCurrentStateData.ClosedDate <= toDate))
+                    ) {
+
+                        itemCurrentStateDetailsByDateRange.push(itemCurrentStateData);
+                    }
+                });
+
+            this.renderPluginTable(byCategoryLabelData.itemCurrentStateTableHeaders, itemCurrentStateDetailsByDateRange);
+        }
+
+        renderPluginTable(itemCurrentStateTableHeaders: any[], itemCurrentStateValues: ItemCurrentStateData[]) {
+            let that = this;
+
+            let table = $(`#${that.pluginTableId}Table`);
+            $(".addedItem", table).remove();
+            $(".addedHeader", table).remove();
+
+            let tableHeader = $('<tr />');
+            tableHeader.attr("class", "addedHeader");
+
+            itemCurrentStateTableHeaders.forEach(
+                (headerLabel) => {
+                    tableHeader.append('<th>' + headerLabel + '</th>');
+                }
+            );
+
+            $(`#${that.pluginTableId}-TableHeader`).append(tableHeader);
+
+            itemCurrentStateValues.forEach(
+                (itemCurrentStateData) => {
+                    let tableRow = $(`<tr/>`);
+                    let classAttr = "addedItem";
+
+                    itemCurrentStateData.attributes.forEach((attribute) => {
+                        classAttr += " " + attribute.split(' ').join('-').replaceAll('&', '-');
+                    });
+
+                    tableRow.attr("class", classAttr);
+
+                    let itemRowData = $("<td/>");
+                    tableRow.append(itemRowData);
+                    itemRowData.text(itemCurrentStateData.id + "!");
+                    itemRowData.data("ref", itemCurrentStateData.id + "!");
+
+                    itemCurrentStateData.tableValues.forEach(
+                        (rowValue, rowIndex) => {
+                            if (rowIndex != 0) {
+                                let labelRowData = $("<td>" + rowValue + "</td>");
+                                tableRow.append(labelRowData);
+                            }
+                        }
+                    );
+
+                    $(`#${that.pluginTableId}RowList`).append(tableRow);
+                }
+            );
+
+            $(`table#${that.pluginTableId}Table`).highlightReferences();
+            $(`table#${that.pluginTableId}Table`).tablesorter();
+
+            this.filterByLabel({ type: "" });
+
+        }
+
+
+        processFunctionalitiesData(functionalityDataSources: any, pluginConfig: any) {
 
             let that = this;
 
-            for(const ByCategoryLabelData of this.ByCategoryLabelDetails){
+            for (const ByCategoryLabelData of this.ByCategoryLabelDetails) {
 
                 //process groupBy functionality
                 ByCategoryLabelData.groupByData.forEach(groupByObject => {
                     let groupByObjectDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByObject.dataSourceType);
                     Commons.GenericFunctionalities.processGroupByObjectData(groupByObject,
-                                                                            groupByObjectDataSource,
-                                                                            ByCategoryLabelData.category,
-                                                                            that.dateFilterEnablerMap,
-                                                                            ByCategoryLabelData.itemCurrentStateTableHeaders,
-                                                                            ByCategoryLabelData.itemCurrentStateValues
-                                                                           );
+                        groupByObjectDataSource,
+                        ByCategoryLabelData.category,
+                        that.dateFilterEnablerMap,
+                        ByCategoryLabelData.itemCurrentStateTableHeaders,
+                        ByCategoryLabelData.itemCurrentStateValues
+                    );
 
                 });
 
@@ -780,21 +1449,21 @@ namespace GenericDashboard {
                 ByCategoryLabelData.groupByOperandsData.forEach(groupByOperandsObject => {
                     let groupByOperandsDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByOperandsObject.dataSourceType);
                     Commons.GenericFunctionalities.processGroupByOperandsData(groupByOperandsObject,
-                                                                              groupByOperandsDataSource,
-                                                                              ByCategoryLabelData.category
-                                                                             );
+                        groupByOperandsDataSource,
+                        ByCategoryLabelData.category
+                    );
 
                 });
 
-                 //process groupByStack functionality
-                 ByCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
+                //process groupByStack functionality
+                ByCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
                     let groupByStackDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByStackObject.dataSourceType);
                     Commons.GenericFunctionalities.processGroupByStackData(groupByStackObject,
-                                                                           groupByStackDataSource,
-                                                                           ByCategoryLabelData.category,
-                                                                           ByCategoryLabelData.itemCurrentStateTableHeaders,
-                                                                           ByCategoryLabelData.itemCurrentStateValues
-                                                                          );
+                        groupByStackDataSource,
+                        ByCategoryLabelData.category,
+                        ByCategoryLabelData.itemCurrentStateTableHeaders,
+                        ByCategoryLabelData.itemCurrentStateValues
+                    );
 
                 });
 
@@ -802,12 +1471,79 @@ namespace GenericDashboard {
                 ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
                     let groupByStateDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByStateObject.dataSourceType);
                     Commons.GenericFunctionalities.processGroupByStateData(groupByStateObject,
-                                                                           groupByStateDataSource,
-                                                                           ByCategoryLabelData.category,
-                                                                           that.dateFilterEnablerMap,
-                                                                           ByCategoryLabelData.itemCurrentStateTableHeaders,
-                                                                           ByCategoryLabelData.itemCurrentStateValues
-                                                                          );
+                        groupByStateDataSource,
+                        ByCategoryLabelData.category,
+                        that.dateFilterEnablerMap,
+                        ByCategoryLabelData.itemCurrentStateTableHeaders,
+                        ByCategoryLabelData.itemCurrentStateValues
+                    );
+                });
+
+                //process groupByStateOverDue functionality
+                ByCategoryLabelData.groupByStateOverdueData.forEach(groupByStateOverDueObject => {
+
+                    let labelsDataSource: XRLabelEntry[];
+                    let needlesDataSource: XRTrimNeedleItem[];
+
+                    for (const dataSourceType of groupByStateOverDueObject.dataSources) {
+
+                        let dataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === dataSourceType);
+                        if (dataSourceType === "Labels") {
+                            labelsDataSource = dataSource;
+                        } else if (dataSourceType === "Needles") {
+                            needlesDataSource = dataSource;
+                        }
+
+                    }
+
+                    Commons.GenericFunctionalities.processGroupByStateOverDueData(groupByStateOverDueObject,
+                        labelsDataSource,
+                        needlesDataSource,
+                        ByCategoryLabelData.category,
+                        that.dateFilterEnablerMap,
+                        ByCategoryLabelData.itemCurrentStateTableHeaders,
+                        ByCategoryLabelData.itemCurrentStateValues
+                    );
+                });
+
+                //process avg functionality
+                ByCategoryLabelData.avgData.forEach(avgObject => {
+                    let avgDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === avgObject.dataSourceType);
+                    Commons.GenericFunctionalities.processAvgData(avgObject,
+                        avgDataSource,
+                        ByCategoryLabelData.category
+                    );
+                });
+
+                //process closure functionality
+                ByCategoryLabelData.closureData.forEach(closureObject => {
+                    let closureDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === closureObject.dataSourceType);
+                    Commons.GenericFunctionalities.processClosureData(closureObject,
+                        closureDataSource,
+                        ByCategoryLabelData.category,
+                        ByCategoryLabelData.itemCurrentStateTableHeaders,
+                        ByCategoryLabelData.itemCurrentStateValues
+                    );
+                });
+
+                //process dateRangeComapre functionality
+                ByCategoryLabelData.dateRangeCompareData.forEach(dateRangeCompareObject => {
+                    let dateRangeCompareDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === dateRangeCompareObject.dataSourceType);
+                    Commons.GenericFunctionalities.processDateRangeCompareData(dateRangeCompareObject,
+                        dateRangeCompareDataSource,
+                        ByCategoryLabelData.category
+                    );
+                });
+
+                //process tracker functionality
+                ByCategoryLabelData.trackerData.forEach(trackerObject => {
+                    let trackerDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === trackerObject.dataSourceType);
+                    Commons.GenericFunctionalities.processTrackerData(trackerObject,
+                        trackerDataSource,
+                        ByCategoryLabelData.category,
+                        ByCategoryLabelData.itemCurrentStateTableHeaders,
+                        ByCategoryLabelData.itemCurrentStateValues
+                    );
                 });
             }
 

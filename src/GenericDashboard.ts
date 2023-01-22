@@ -747,7 +747,7 @@ namespace GenericDashboard {
 
                             if(functionality.type == "groupByState"){
                                 groupByStateData.push(groupByStateObject);
-                            }else if(functionality.type == "groupByState"){
+                            }else if(functionality.type == "statusOverdue"){
                                 groupByStateObject.openState = functionality.openStateLabel;
                                 groupByStateOverdueData.push(groupByStateObject);
                                 that.isOverDueFunctionalityEnabled = true;

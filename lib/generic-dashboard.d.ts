@@ -79,6 +79,11 @@ interface groupByStateObject {
     currentLabelData: groupByObjectCurrentData[];
 }
 
+interface groupByStateOverDueObject extends groupByStateObject {
+    dataSources: any[];
+    OpenItemsDueDateMap: Map;
+}
+
 interface groupByStackObject {
     id: string;
     dataSourceType: string;
@@ -170,7 +175,7 @@ interface ByCategoryLabelData {
     groupByOperandsData: groupByOperandsObject[];
     groupByStateData: groupByStateObject[];
     groupByStackData: groupByStackObject[];
-    groupByStateOverdueData: groupByStateObject[];
+    groupByStateOverdueData: groupByStateOverDueObject[];
     avgData: avgObject[];
     closureData: closureObject[];
     trackerData: trackerObject[];
@@ -178,3 +183,25 @@ interface ByCategoryLabelData {
     itemCurrentStateTableHeaders: any[];
     itemCurrentStateValues: ItemCurrentStateData[];
 }
+
+interface dateRangeData {
+    currentWeekCategoryData: any[];
+    currentMonthCategoryData: any;
+    threeMonthsCategoryData: any[];
+    sixMonthsCategoryData: any[];
+    twelveMonthsCategoryData: any[];
+    ytdCategoryData: any[];
+    moreThanYearCategoryData: any[];
+    quarterlyCYCategoryData: any;
+    quarterlyFYCategoryData: any;
+    currentWeekColumnsData: any[];
+    currentMonthColumnsData: any[];
+    threeMonthsColumnsData: any[];
+    sixMonthsColumnsData: any[];
+    twelveMonthsColumnsData: any[];
+    ytdColumnsData: any[];
+    moreThanYearColumnsData: any[];
+    quarterlyCYColumnsData: any[];
+    quarterlyFYColumnsData: any[];
+}
+
