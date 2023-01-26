@@ -1,4 +1,4 @@
-/// <reference path="../../lib/generic-dashboard.d.ts" />
+/// <reference path="../interfaces/generic-dashboard.d.ts" />
 
 namespace Commons {
     export namespace RenderTemplate {
