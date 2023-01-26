@@ -7,13 +7,13 @@
 
 // Use a namespace to isolate your plugin code
 // This avoids conflicts with other plugins
-namespace GenericDashboard {
+namespace GenericDashboardRF {
 
     // These will be replaced by the build
     const PLUGIN_NAME = "<PLUGIN_NAME_PLACEHOLDER>";
     const PLUGIN_VERSION = "<PLUGIN_VERSION_PLACEHOLDER>";
 
-    export class GenericDashboard implements IPlugin {
+    export class GenericDashboard_RF implements IPlugin {
 
         pluginsConfig: any;
 
@@ -1555,5 +1555,5 @@ namespace GenericDashboard {
 
 // Register the plugin
 $(function () {
-    plugins.register(new GenericDashboard.GenericDashboard());
+    plugins.register(new GenericDashboardRF.GenericDashboard_RF());
 });
