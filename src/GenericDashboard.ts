@@ -1479,6 +1479,8 @@ namespace GenericDashboard {
                         ByCategoryLabelData.itemCurrentStateTableHeaders,
                         ByCategoryLabelData.itemCurrentStateValues
                     );
+
+                    console.log("debug");
                 });
 
                 //process groupByStateOverDue functionality
@@ -1549,7 +1551,7 @@ namespace GenericDashboard {
                 });
             }
 
-            console.log("debug");
+            
 
         }
 
