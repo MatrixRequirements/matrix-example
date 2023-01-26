@@ -1472,7 +1472,7 @@ namespace GenericDashboard {
                 //process groupByState functionality
                 ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
                     let groupByStateDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByStateObject.dataSourceType);
-                    Commons.GenericFunctionalities.processGroupByStateData(groupByStateObject,
+                    let groupByStateObject_debug = Commons.GenericFunctionalities.processGroupByStateData(groupByStateObject,
                         groupByStateDataSource,
                         ByCategoryLabelData.category,
                         that.dateFilterEnablerMap,

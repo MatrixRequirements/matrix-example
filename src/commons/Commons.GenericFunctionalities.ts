@@ -557,7 +557,7 @@ namespace Commons {
             functionalityCategory: string,
             dateFilterEnablerMap: any,
             itemCurrentStateTableHeaders: any,
-            itemCurrentStateValues: ItemCurrentStateData[]) {
+            itemCurrentStateValues: ItemCurrentStateData[]) :groupByStateObject  {
 
 
             for (const item of groupByStateDataSource) {
@@ -613,6 +613,8 @@ namespace Commons {
                     itemCurrentStateValues.push(itemCurrentStateData);
                 }
             }
+
+            return groupByStateObject;
 
         }
 
