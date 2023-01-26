@@ -1549,6 +1549,8 @@ namespace GenericDashboard {
                 });
             }
 
+            console.log("debug");
+
         }
 
     }
