@@ -184,6 +184,7 @@ namespace GenericDashboard {
                 });
 
                 that.processFunctionalitiesData(dashboardPluginSources, pluginConfig);
+                that.renderCategoryWiseData("");
 
             }).catch(() => {
                 //Remove the spinning wait
@@ -591,8 +592,9 @@ namespace GenericDashboard {
             if (cat == undefined) {
                 return;
             }
-            if (cat == "")
+            if (cat == ""){
                 cat = $("#itemSelectionLabelDashboard .dropdown-menu li:first").text();
+            }
 
             this.currentCat = cat;
 

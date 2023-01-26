@@ -40,32 +40,6 @@
                                     "dateFilterRequired": "Y",
                                     "contentClass": "chart"
                                 }
-                            },
-                            {
-                                "size": 6,
-                                "contentType": "chart",
-                                "contentConfig": {
-                                    "id": "status-stack",
-                                    "functionality": "groupByStack",
-                                    "title": "Classfication wise CR status count overview",
-                                    "dateFilterRequired": "Y",
-                                    "contentClass": "chart"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "columnConfig": [
-                            {
-                                "size": 12,
-                                "contentType": "chart",
-                                "contentConfig": {
-                                    "id": "status-overdue",
-                                    "functionality": "statusOverdue",
-                                    "title": "Status wise CR count overview",
-                                    "dateFilterRequired": "Y",
-                                    "contentClass": "chart"
-                                }
                             }
                         ]
                     }
@@ -118,79 +92,6 @@
                                 "#d62728",
                                 "#ff9896",
                                 "#9467bd"
-                            ]
-                        },
-                        {
-                            "id": "status-stack",
-                            "type": "groupByStack",
-                            "dataSourceType": "Labels",
-                            "renderChart": "Y",
-                            "showInTable": "N",
-                            "tableHeader": "",
-                            "categoryLabels": [
-                                "Management",
-                                "Regulatory",
-                                "Design",
-                                "Customer",
-                                "Purchasing",
-                                "CAPA",
-                                "Production",
-                                "Change",
-                                "Document"
-                            ],
-                            "categoryLabelsDesc": [
-                                "Management",
-                                "Regulatory",
-                                "Design",
-                                "Customer Focus",
-                                "Purchasing",
-                                "CAPA and Complaints",
-                                "Production",
-                                "Change Management",
-                                "Document Control"
-                            ],
-                            "groupByLabels": [
-                                "CRO",
-                                "Approved",
-                                "Closed"
-                            ],
-                            "groupByLabelsDesc": [
-                                "Open",
-                                "Approved",
-                                "Closed"
-                            ],
-                            "groupByLabelColors": [
-                                "#d62728",
-                                "#1f77b4",
-                                "#2ca02c"
-                            ]
-                        },
-                        {
-                            "id": "status-overdue",
-                            "type": "statusOverdue",
-                            "dataSourceType": "",
-                            "dataSources": ["Labels","Needles"],
-                            "renderChart": "Y",
-                            "showInTable": "Y",
-                            "tableHeader": "Current State",
-                            "overDueFieldId": 1618,
-                            "openStateLabel": "CRO",
-                            "labels": [
-                                "CRO",
-                                "Approved",
-                                "Closed"
-                            ],
-                            "labelsDesc": [
-                                "Open",
-                                "Approved",
-                                "Closed",
-                                "Open and Overdue"
-                            ],
-                            "labelColors": [
-                                "#d62728",
-                                "#1f77b4",
-                                "#2ca02c",
-                                "#8c564b"
                             ]
                         }
                     ]
