@@ -13,7 +13,7 @@ namespace GenericDashboard {
     const PLUGIN_NAME = "<PLUGIN_NAME_PLACEHOLDER>";
     const PLUGIN_VERSION = "<PLUGIN_VERSION_PLACEHOLDER>";
 
-    export class GenericDashboard_RF implements IPlugin {
+    export class GenericDashboard implements IPlugin {
 
         pluginsConfig: any;
 
