@@ -1472,6 +1472,9 @@ namespace GenericDashboard {
                 //process groupByState functionality
                 ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
                     let groupByStateDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByStateObject.dataSourceType);
+                    
+                    Matrix.Labels.testNameSpaceFunction("Test");
+                    
                     let groupByStateObject_debug = Commons.GenericFunctionalities.processGroupByStateData(groupByStateObject,
                         groupByStateDataSource,
                         ByCategoryLabelData.category,

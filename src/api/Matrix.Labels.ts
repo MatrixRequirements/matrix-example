@@ -28,5 +28,10 @@ namespace Matrix {
             });
         }
 
+        export function testNameSpaceFunction(category: string) {
+            console.log("Debug:"+category);
+        }
+
+
     }
 }

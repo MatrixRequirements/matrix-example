@@ -560,6 +560,8 @@ namespace Commons {
             itemCurrentStateValues: ItemCurrentStateData[]) :groupByStateObject  {
 
 
+            console.log("debug");   
+            
             for (const item of groupByStateDataSource) {
 
                 let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
