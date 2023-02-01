@@ -1474,9 +1474,9 @@ namespace GenericDashboard {
                     let groupByStateDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByStateObject.dataSourceType);
                     
                     Matrix.Labels.testNameSpaceFunction("Test");
-                    
+
                     let groupByStateObject_debug = Commons.GenericFunctionalities.processGroupByStateData(groupByStateObject,
-                        groupByStateDataSource,
+                        groupByStateDataSource.source,
                         ByCategoryLabelData.category,
                         that.dateFilterEnablerMap,
                         ByCategoryLabelData.itemCurrentStateTableHeaders,
