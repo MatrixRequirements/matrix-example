@@ -366,7 +366,7 @@ namespace Commons {
 
                 let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
 
-                if (itemCategory === functionalityCategory) {
+                if (itemCategory !== functionalityCategory) {
                     continue;
                 }
 
@@ -425,7 +425,7 @@ namespace Commons {
             for (const item of groupByOperandsDataSource) {
                 let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
 
-                if (itemCategory === functionalityCategory) {
+                if (itemCategory !== functionalityCategory) {
                     continue;
                 }
 
@@ -484,7 +484,7 @@ namespace Commons {
             for (const item of groupByStackDataSource) {
                 let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
 
-                if (itemCategory === functionalityCategory) {
+                if (itemCategory !== functionalityCategory) {
                     continue;
                 }
 
@@ -557,10 +557,7 @@ namespace Commons {
             functionalityCategory: string,
             dateFilterEnablerMap: any,
             itemCurrentStateTableHeaders: any,
-            itemCurrentStateValues: ItemCurrentStateData[]) :groupByStateObject  {
-
-
-            console.log("debug");   
+            itemCurrentStateValues: ItemCurrentStateData[]){
 
             for (const item of groupByStateDataSource) {
 
@@ -616,8 +613,6 @@ namespace Commons {
                 }
             }
 
-            return groupByStateObject;
-
         }
 
 
@@ -644,7 +639,7 @@ namespace Commons {
 
                 let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
 
-                if (itemCategory === functionalityCategory) {
+                if (itemCategory !== functionalityCategory) {
                     continue;
                 }
 
@@ -727,7 +722,7 @@ namespace Commons {
 
                 let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
 
-                if (itemCategory === functionalityCategory) {
+                if (itemCategory !== functionalityCategory) {
                     continue;
                 }
 
@@ -803,7 +798,7 @@ namespace Commons {
 
                 let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
 
-                if (itemCategory === functionalityCategory) {
+                if (itemCategory !== functionalityCategory) {
                     continue;
                 }
 
@@ -882,7 +877,7 @@ namespace Commons {
 
                 let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
 
-                if (itemCategory === functionalityCategory) {
+                if (itemCategory !== functionalityCategory) {
                     continue;
                 }
 
@@ -922,7 +917,7 @@ namespace Commons {
 
                 let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
 
-                if (itemCategory === functionalityCategory) {
+                if (itemCategory !== functionalityCategory) {
                     continue;
                 }
 

@@ -1438,7 +1438,7 @@ namespace GenericDashboard {
                 ByCategoryLabelData.groupByData.forEach(groupByObject => {
                     let groupByObjectDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByObject.dataSourceType);
                     Commons.GenericFunctionalities.processGroupByObjectData(groupByObject,
-                        groupByObjectDataSource,
+                        groupByObjectDataSource.source,
                         ByCategoryLabelData.category,
                         that.dateFilterEnablerMap,
                         ByCategoryLabelData.itemCurrentStateTableHeaders,
@@ -1451,7 +1451,7 @@ namespace GenericDashboard {
                 ByCategoryLabelData.groupByOperandsData.forEach(groupByOperandsObject => {
                     let groupByOperandsDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByOperandsObject.dataSourceType);
                     Commons.GenericFunctionalities.processGroupByOperandsData(groupByOperandsObject,
-                        groupByOperandsDataSource,
+                        groupByOperandsDataSource.source,
                         ByCategoryLabelData.category
                     );
 
@@ -1461,7 +1461,7 @@ namespace GenericDashboard {
                 ByCategoryLabelData.groupByStackData.forEach(groupByStackObject => {
                     let groupByStackDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByStackObject.dataSourceType);
                     Commons.GenericFunctionalities.processGroupByStackData(groupByStackObject,
-                        groupByStackDataSource,
+                        groupByStackDataSource.source,
                         ByCategoryLabelData.category,
                         ByCategoryLabelData.itemCurrentStateTableHeaders,
                         ByCategoryLabelData.itemCurrentStateValues
@@ -1472,18 +1472,13 @@ namespace GenericDashboard {
                 //process groupByState functionality
                 ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
                     let groupByStateDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByStateObject.dataSourceType);
-                    
-                    Matrix.Labels.testNameSpaceFunction("Test");
-
-                    let groupByStateObject_debug = Commons.GenericFunctionalities.processGroupByStateData(groupByStateObject,
+                   Commons.GenericFunctionalities.processGroupByStateData(groupByStateObject,
                         groupByStateDataSource.source,
                         ByCategoryLabelData.category,
                         that.dateFilterEnablerMap,
                         ByCategoryLabelData.itemCurrentStateTableHeaders,
                         ByCategoryLabelData.itemCurrentStateValues
                     );
-
-                    console.log("debug");
                 });
 
                 //process groupByStateOverDue functionality
@@ -1496,9 +1491,9 @@ namespace GenericDashboard {
 
                         let dataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === dataSourceType);
                         if (dataSourceType === "Labels") {
-                            labelsDataSource = dataSource;
+                            labelsDataSource = dataSource.source;
                         } else if (dataSourceType === "Needles") {
-                            needlesDataSource = dataSource;
+                            needlesDataSource = dataSource.source;
                         }
 
                     }
@@ -1517,7 +1512,7 @@ namespace GenericDashboard {
                 ByCategoryLabelData.avgData.forEach(avgObject => {
                     let avgDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === avgObject.dataSourceType);
                     Commons.GenericFunctionalities.processAvgData(avgObject,
-                        avgDataSource,
+                        avgDataSource.source,
                         ByCategoryLabelData.category
                     );
                 });
@@ -1526,7 +1521,7 @@ namespace GenericDashboard {
                 ByCategoryLabelData.closureData.forEach(closureObject => {
                     let closureDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === closureObject.dataSourceType);
                     Commons.GenericFunctionalities.processClosureData(closureObject,
-                        closureDataSource,
+                        closureDataSource.source,
                         ByCategoryLabelData.category,
                         ByCategoryLabelData.itemCurrentStateTableHeaders,
                         ByCategoryLabelData.itemCurrentStateValues
@@ -1537,7 +1532,7 @@ namespace GenericDashboard {
                 ByCategoryLabelData.dateRangeCompareData.forEach(dateRangeCompareObject => {
                     let dateRangeCompareDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === dateRangeCompareObject.dataSourceType);
                     Commons.GenericFunctionalities.processDateRangeCompareData(dateRangeCompareObject,
-                        dateRangeCompareDataSource,
+                        dateRangeCompareDataSource.source,
                         ByCategoryLabelData.category
                     );
                 });
@@ -1546,20 +1541,15 @@ namespace GenericDashboard {
                 ByCategoryLabelData.trackerData.forEach(trackerObject => {
                     let trackerDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === trackerObject.dataSourceType);
                     Commons.GenericFunctionalities.processTrackerData(trackerObject,
-                        trackerDataSource,
+                        trackerDataSource.source,
                         ByCategoryLabelData.category,
                         ByCategoryLabelData.itemCurrentStateTableHeaders,
                         ByCategoryLabelData.itemCurrentStateValues
                     );
                 });
             }
-
-            
-
         }
-
     }
-
 }
 
 // Register the plugin

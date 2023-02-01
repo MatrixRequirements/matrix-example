@@ -27,11 +27,5 @@ namespace Matrix {
                     .catch((error) => reject(error));
             });
         }
-
-        export function testNameSpaceFunction(category: string) {
-            console.log("Debug:"+category);
-        }
-
-
     }
 }
