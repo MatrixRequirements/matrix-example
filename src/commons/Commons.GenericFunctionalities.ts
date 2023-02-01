@@ -561,12 +561,12 @@ namespace Commons {
 
 
             console.log("debug");   
-            
+
             for (const item of groupByStateDataSource) {
 
                 let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
 
-                if (itemCategory === functionalityCategory) {
+                if (itemCategory !== functionalityCategory) {
                     continue;
                 }
 
