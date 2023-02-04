@@ -478,8 +478,8 @@ namespace Commons {
         export function processGroupByStackData(groupByStackObject: groupByStackObject,
             groupByStackDataSource: XRLabelEntry[],
             functionalityCategory: string,
-            itemCurrentStateValues: ItemCurrentStateData[],
-            itemCurrentStateTableHeaders: any) {
+            itemCurrentStateTableHeaders: any,
+            itemCurrentStateValues: ItemCurrentStateData[]) {
 
             for (const item of groupByStackDataSource) {
                 let itemCategory: string = item.itemRef.substring(0, item.itemRef.indexOf('-'));
