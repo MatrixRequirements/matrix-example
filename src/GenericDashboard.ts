@@ -1467,19 +1467,24 @@ namespace GenericDashboard {
                         ByCategoryLabelData.itemCurrentStateTableHeaders,
                         ByCategoryLabelData.itemCurrentStateValues
                     );
-
                 });
 
                 //process groupByState functionality
                 ByCategoryLabelData.groupByStateData.forEach(groupByStateObject => {
                     let groupByStateDataSource = functionalityDataSources.find((functionalityDataSource) => functionalityDataSource.type === groupByStateObject.dataSourceType);
-                   Commons.GenericFunctionalities.processGroupByStateData(groupByStateObject,
-                        groupByStateDataSource.source,
-                        ByCategoryLabelData.category,
-                        that.dateFilterEnablerMap,
-                        ByCategoryLabelData.itemCurrentStateTableHeaders,
-                        ByCategoryLabelData.itemCurrentStateValues
-                    );
+                    if(groupByStateDataSource.type === "Labels"){
+                        Commons.GenericFunctionalities.processGroupByStateData(groupByStateObject,
+                            groupByStateDataSource.source,
+                            ByCategoryLabelData.category,
+                            that.dateFilterEnablerMap,
+                            ByCategoryLabelData.itemCurrentStateTableHeaders,
+                            ByCategoryLabelData.itemCurrentStateValues
+                        );
+                    }else if(groupByStateDataSource.type === "Needles"){
+                        Commons.GenericFunctionalities.processGroupByStateNeedleData(groupByStateObject,
+                            groupByStateDataSource.source
+                        );
+                    }
                 });
 
                 //process groupByStateOverDue functionality

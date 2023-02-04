@@ -107,7 +107,9 @@ namespace Commons {
                                 currentLabelData: JSON.parse(JSON.stringify(groupByObjectCurrentLabelData))
                             };
                             groupByData.push(groupByObject);
-                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            if(functionality.showInTable){
+                                itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            }
                             break;
                         case 'groupBy-operands':
                             functionality.labels.forEach((label, index) => {
@@ -135,7 +137,9 @@ namespace Commons {
                                 operandsData: operandsData
                             };
                             groupByOperandsData.push(groupByOperandsObject);
-                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            if(functionality.showInTable){
+                                itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            }
                             break;
                         case 'statusOverdue':
                         case 'groupByGapAnalysis':
@@ -163,9 +167,7 @@ namespace Commons {
                                 currentLabelData: JSON.parse(JSON.stringify(groupByObjectCurrentLabelData))
                             };
 
-                            if (functionality.type == "groupByState") {
-                                groupByStateData.push(groupByStateObject);
-                            } else if (functionality.type == "statusOverdue") {
+                            if (functionality.type == "statusOverdue") {
                                 groupByStateObject.openState = functionality.openStateLabel;
                                 let OpenItemsDueDateMap = new Map();
                                 let groupByStateOverDueObject: groupByStateOverDueObject = {
@@ -187,11 +189,13 @@ namespace Commons {
                                     OpenItemsDueDateMap: OpenItemsDueDateMap
                                 };
                                 groupByStateOverdueData.push(groupByStateOverDueObject);
-                            } else if (functionality.type == "groupByGapAnalysis") {
+                            } else{
                                 groupByStateData.push(groupByStateObject);
                             }
 
-                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            if(functionality.showInTable){
+                                itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            }
                             break;
                         case 'groupByStack':
                             let groupByStackChartData: any[] = [];
@@ -219,7 +223,9 @@ namespace Commons {
                             };
 
                             groupByStackData.push(groupByStackObject);
-                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            if(functionality.showInTable){
+                                itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            }
                             break;
                         case 'avg':
                             let SateWiseAvgInitials: any[] = [];
@@ -277,7 +283,9 @@ namespace Commons {
                             };
 
                             closureData.push(closureObject);
-                            itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            if(functionality.showInTable){
+                                itemCurrentStateTableHeaders.push(functionality.tableHeader);
+                            }
                             break;
                         case 'tracker':
                             let stateTrackerData: any[] = [['x']];
@@ -306,10 +314,11 @@ namespace Commons {
 
                             trackerData.push(trackerObject);
 
-                            functionality.allLabelDesc.forEach(lableDesc => {
-                                itemCurrentStateTableHeaders.push(lableDesc);
-                            });
-
+                            if(functionality.showInTable){
+                                functionality.allLabelDesc.forEach(lableDesc => {
+                                    itemCurrentStateTableHeaders.push(lableDesc);
+                                });
+                            }
                             break;
                         case 'dateRangeComapre':
 
@@ -610,6 +619,26 @@ namespace Commons {
                     itemCurrentStateValues[itemCurrentStateDataIndex] = itemCurrentStateData;
                 }else{
                     itemCurrentStateValues.push(itemCurrentStateData);
+                }
+            }
+
+        }
+
+        export function processGroupByStateNeedleData(groupByStateObject: groupByStateObject,
+            groupByStateDataSource: XRTrimNeedleItem[]){
+
+            for (const item of groupByStateDataSource) {
+                if(item.fieldVal.length > 0){
+
+                    let fieldValue = item.fieldVal[0].value;
+
+                    let stateIndex = groupByStateObject.stateCodes.findIndex(stateCode => stateCode === fieldValue);
+                            
+                    if(stateIndex > -1){
+                        if(groupByStateObject.renderChart == 'Y'){
+                            groupByStateObject.stateWiseData[stateIndex][1] += 1;
+                        }
+                    }
                 }
             }
 

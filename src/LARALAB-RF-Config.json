@@ -187,7 +187,6 @@
                             "renderChart": "Y",
                             "showInTable": "Y",
                             "tableHeader": "Current State",
-                            "overDueFieldId": 1618,
                             "openStateLabel": "CRO",
                             "labels": [
                                 "CRO",
