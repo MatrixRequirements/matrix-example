@@ -185,6 +185,7 @@ namespace GenericDashboard {
 
                 that.processFunctionalitiesData(dashboardPluginSources, pluginConfig);
                 that.renderCategoryWiseData("");
+                $(".spinningWait", that._root).hide();
 
             }).catch(() => {
                 //Remove the spinning wait
