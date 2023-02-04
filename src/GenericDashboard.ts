@@ -184,7 +184,7 @@ namespace GenericDashboard {
                 });
 
                 that.processFunctionalitiesData(dashboardPluginSources, pluginConfig);
-                that.renderCategoryWiseData("");
+                that.renderCategoryWiseData(that.currentCat);
                 $(".spinningWait", that._root).hide();
 
             }).catch(() => {
@@ -1484,6 +1484,10 @@ namespace GenericDashboard {
                         Commons.GenericFunctionalities.processGroupByStateNeedleData(groupByStateObject,
                             groupByStateDataSource.source
                         );
+                    }
+
+                    if(groupByStateObject.type === "groupByGapAnalysis"){
+                        that.currentCat = "QMS";
                     }
                 });
 
