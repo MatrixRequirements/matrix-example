@@ -1040,6 +1040,8 @@ namespace Commons {
                 }
             }
 
+            console.log("debug");
+
         }
 
     }
