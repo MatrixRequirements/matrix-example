@@ -1533,6 +1533,7 @@ namespace GenericDashboard {
                     Commons.GenericFunctionalities.processClosureData(closureObject,
                         closureDataSource.source,
                         ByCategoryLabelData.category,
+                        that.dateFilterEnablerMap,
                         ByCategoryLabelData.itemCurrentStateTableHeaders,
                         ByCategoryLabelData.itemCurrentStateValues
                     );
@@ -1553,6 +1554,7 @@ namespace GenericDashboard {
                     Commons.GenericFunctionalities.processTrackerData(trackerObject,
                         trackerDataSource.source,
                         ByCategoryLabelData.category,
+                        that.dateFilterEnablerMap,
                         ByCategoryLabelData.itemCurrentStateTableHeaders,
                         ByCategoryLabelData.itemCurrentStateValues
                     );

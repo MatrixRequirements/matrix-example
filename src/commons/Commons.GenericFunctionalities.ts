@@ -820,6 +820,7 @@ namespace Commons {
         export function processClosureData(closureObject: closureObject,
             closureDataSource: XRLabelEntry[],
             functionalityCategory: string,
+            dateFilterEnablerMap: any,
             itemCurrentStateTableHeaders: any,
             itemCurrentStateValues: ItemCurrentStateData[]) {
 
@@ -875,7 +876,7 @@ namespace Commons {
                             let headerIndex = itemCurrentStateTableHeaders.findIndex(header => header === closureObject.tableHeader);
                             itemCurrentStateData.tableValues[headerIndex] = daysToCloseItem;
                         }
-                        if (this.dateFilterEnablerMap.get(closureObject.id) && closureObject.closedDate) {
+                        if (dateFilterEnablerMap.get(closureObject.id) && closureObject.closedDate) {
 
                             let closureItemsCurrentData: closureObjectCurrentData = {
                                 id: item.itemRef,
@@ -939,6 +940,7 @@ namespace Commons {
         export function processTrackerData(trackerObject: trackerObject,
             trackerDataSource: XRLabelEntry[],
             functionalityCategory: string,
+            dateFilterEnablerMap: any,
             itemCurrentStateTableHeaders: any,
             itemCurrentStateValues: ItemCurrentStateData[]) {
 
@@ -980,7 +982,7 @@ namespace Commons {
                                 trackerObject.stateTrackerData[trackerStateIndex + 1][itemIndex + 1] = labelstateDaysCount;
                             }
 
-                            if (this.dateFilterEnablerMap.get(trackerObject.id)) {
+                            if (dateFilterEnablerMap.get(trackerObject.id)) {
                                 let currentLableSetDate = null;
                                 let currentState = null;
                                 if (label.reset.length !== label.set.length) {
@@ -1012,7 +1014,7 @@ namespace Commons {
                         }
                     }
 
-                    if (trackerObject.showInTable == 'Y') {
+                    if (stateIndex > -1 && trackerObject.showInTable == 'Y') {
 
                         let stateDesc = trackerObject.allStateDesc[stateIndex];
                         let headerIndex = itemCurrentStateTableHeaders.findIndex(header => header === stateDesc);
@@ -1039,8 +1041,6 @@ namespace Commons {
                     itemCurrentStateValues.push(itemCurrentStateData);
                 }
             }
-
-            console.log("debug");
 
         }
 
