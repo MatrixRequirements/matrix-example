@@ -1,0 +1,883 @@
+{
+    "plugins" : [
+        {
+            "id": "CAPAO",
+            "title": "CAPA Status Overview",
+            "folder": "DASHBOARDS",
+            "order": 3000,
+            "icon": "fal fa-chart-bar",
+            "name": "CAPA Status Overview",
+            "version": "1.11.0",
+            "dataSources": [
+                {
+                    "type": "Labels"
+                }
+            ],
+            "layoutConfig": {
+                "rowConfig": [
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "dept",
+                                    "functionality" : "groupBy",
+                                    "title" : "Department wise CAPA count overview",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "chart"
+                                }
+                            },
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "cat",
+                                    "functionality" : "groupBy",
+                                    "title" : "Category wise CAPA count overview",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "chart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "status",
+                                    "functionality" : "groupByState",
+                                    "title" : "Status wise CAPA count overview",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "chart"
+                                }
+                            },
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "avg",
+                                    "functionality" : "avg",
+                                    "title" : "Average time state wise overview",
+                                    "dateFilterRequired" : "N",
+                                    "contentClass" : "chart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 12,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "closure",
+                                    "functionality" : "closure",
+                                    "title" : "CAPA closure time overview",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "closureTimeChart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 12,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "tracker",
+                                    "functionality" : "tracker",
+                                    "title" : "CAPA Tracker",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "bigChart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 12,
+                                "contentType": "table",
+                                "contentConfig": {
+                                    "id" : "CCSO",
+                                    "functionality" : "table",
+                                    "title" : "CAPA current status list",
+                                    "dateFilterRequired" : "Y"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "layoutDomStyle":" .chart { width: 90%; min-height: 350px; cursor:pointer; } .dateFilter{ display:flex; margin-left: 45px; } .filterDates { width: 115px; margin: 0 6px; } .date-filter-form-control { height: 20px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; } .date-filter-btn { margin-bottom: 0; margin-left: 12px; font-weight: 400; text-align: center; white-space: nowrap; vertical-align: middle; touch-action: manipulation; cursor: pointer; background-image: none; border: 1px solid transparent; padding: 0px 5px; font-size: 12px; line-height: 1.42857143; border-radius: 4px; } .tableDateFilter{ display:flex; margin-left: 350px; } .closureTimeChart{ width: 90%; min-height: 315px; cursor:pointer; } .bigChart{ width: 90%; min-height: 900px; cursor:pointer; }",
+            },
+            "categories":["CA","PA"],
+            "categoriesFunctionalities":[
+                {
+                    "id":"CA",
+                    "functionalities": [
+                        {
+                            "id": "dept",
+                            "type": "groupBy",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Department",
+                            "title": "count by department",
+                            "labels": ["PROD-AB", "PROD-C", "QC-AB", "QC-C", "QA", "RA", "SCM", "MICRO", "PUR", "Packaging", "HR", "ENG", "ST", "UT", "NDLP"],
+                            "labelsDesc": ["PAB", "PC", "QCAB", "QCC", "QA", "RA", "SCM", "MI", "PUR", "PKG", "HR", "ENG","ST", "UT", "NDL"]
+                        },
+                        {
+                            "id": "cat",
+                            "type": "groupBy",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Category",
+                            "title": "count by category",
+                            "labels": ["IA", "EXA", "COMP", "IP", "PRO"],
+                            "labelsDesc": ["Internal Audit", "External Audit", "Complaint", "Process", "Product"]
+                        },
+                        {
+                            "id": "status",
+                            "type": "groupByState",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Current State",
+                            "labels": ["CAN1", "CAN2", "CAN5", "CAN3", "CN6", "CAR"],
+                            "labelsDesc": ["CA Initiated", "CA Approved", "RCA Approved", "WFEC", "CA Closed", "CA Rejected"],
+                            "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4", "#2ca02c", "#8c564b"]
+                        },
+                        {
+                            "id": "avg",
+                            "type": "avg",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "title": "average time spent in state",
+                            "labels": ["CAN1", "CAN2", "CAN5", "CAN3"],
+                            "labelsDesc": ["CA Initiated", "CA Approved", "RCA Approved", "WFEC"],
+                            "allLabels": ["CAN1", "CAN2", "CAN5", "CAN3", "CN6", "CAR"],
+                            "allLabelDesc": ["CA Initiated", "CA Approved", "RCA Approved", "WFEC", "CA Closed", "CA Rejected"],
+                            "initialSateLabel": "CAN1",
+                            "closedStateLabel": "CN6",
+                            "rejectedStateLabel": "CAR"
+                        },
+                        {
+                            "id": "tracker",
+                            "type": "tracker",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "labels": ["CAN1", "CAN2", "CAN5", "CAN3"],
+                            "labelsDesc": ["CA Initiated", "CA Approved", "RCA Approved", "WFEC"],
+                            "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4"],
+                            "allLabels": ["CAN1", "CAN2", "CAN5", "CAN3", "CN6", "CAR"],
+                            "allLabelDesc": ["CA Initiated", "CA Approved", "RCA Approved", "WFEC", "CA Closed", "CA Rejected"],
+                            "closedStateLabel": "CN6",
+                            "rejectedStateLabel": "CAR"
+                        },
+                        {
+                            "id": "closure",
+                            "type": "closure",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Closure Time",
+                            "title": "closure time(in days)",
+                            "allLabels": ["CAN1", "CAN2", "CAN5", "CAN3", "CN6", "CAR"],
+                            "allLabelDesc": ["CA Initiated", "CA Approved", "RCA Approved", "WFEC", "CA Closed", "CA Rejected"],
+                            "initialSateLabel": "CAN1",
+                            "closedStateLabel": "CN6",
+                            "rejectedStateLabel": "CAR"
+                        }
+                    ]
+        
+                },
+                {
+                    "id":"PA",
+                    "functionalities": [
+                        {
+                            "id": "dept",
+                            "type": "groupBy",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Department",
+                            "title": "count by department",
+                            "labels": ["PROD-AB", "PROD-C", "QC-AB", "QC-C", "QA", "RA", "SCM", "MICRO", "PUR", "Packaging", "HR", "ENG", "ST", "UT", "NDLP"],
+                            "labelsDesc": ["PAB", "PC", "QCAB", "QCC", "QA", "RA", "SCM", "MI", "PUR", "PKG", "HR", "ENG","ST", "UT", "NDL"]
+                        },
+                        {
+                            "id": "cat",
+                            "type": "groupBy",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Category",
+                            "title": "count by category",
+                            "labels": ["IA", "EXA", "COMP", "IP", "PRO"],
+                            "labelsDesc": ["Internal Audit", "External Audit", "Complaint", "Process", "Product"]
+                        },
+                        {
+                            "id": "status",
+                            "type": "groupByState",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Current State",
+                            "labels": ["PN1", "PN2", "PN3", "PN4", "PN5", "PAR"],
+                            "labelsDesc": ["PA Initiated", "PA Approved", "RCA Approved", "WFEC", "PA Closed", "PA Rejected"],
+                            "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4", "#2ca02c", "#8c564b"]
+                        },
+                        {
+                            "id": "avg",
+                            "type": "avg",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "title": "average time spent in state",
+                            "labels": ["PN1", "PN2", "PN3", "PN4"],
+                            "labelsDesc": ["PA Initiated", "PA Approved", "RCA Approved", "WFEC"],
+                            "allLabels": ["PN1", "PN2", "PN3", "PN4", "PN5", "PAR"],
+                            "allLabelDesc": ["PA Initiated", "PA Approved", "RCA Approved", "WFEC", "PA Closed", "PA Rejected"],
+                            "initialSateLabel": "PN1",
+                            "closedStateLabel": "PN5",
+                            "rejectedStateLabel": "PAR"
+                        },
+                        {
+                            "id": "tracker",
+                            "type": "tracker",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "labels": ["PN1", "PN2", "PN3", "PN4"],
+                            "labelsDesc": ["PA Initiated", "PA Approved", "RCA Approved", "WFEC"],
+                            "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4"],
+                            "allLabels": ["PN1", "PN2", "PN3", "PN4", "PN5", "PAR"],
+                            "allLabelDesc": ["PA Initiated", "PA Approved", "RCA Approved", "WFEC", "PA Closed", "PA Rejected"],
+                            "closedStateLabel": "PN5",
+                            "rejectedStateLabel": "PAR"
+                        },
+                        {
+                            "id": "closure",
+                            "type": "closure",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Closure Time",
+                            "title": "closure time(in days)",
+                            "allLabels": ["PN1", "PN2", "PN3", "PN4", "PN5", "PAR"],
+                            "allLabelDesc": ["PA Initiated", "PA Approved", "RCA Approved", "WFEC", "PA Closed", "PA Rejected"],
+                            "initialSateLabel": "PN1",
+                            "closedStateLabel": "PN5",
+                            "rejectedStateLabel": "PAR"
+                        }
+                    ]
+        
+                }
+            ]
+           
+        },
+        {
+            "id": "CCSO",
+            "title": "Change Control Status Overview",
+            "folder": "DASHBOARDS",
+            "order": 3000,
+            "icon": "fal fa-chart-line",
+            "name": "CC/CCA/DC Status Overview",
+            "version": "1.0.0",
+            "dataSources": [
+                {
+                    "type": "Labels"
+                }
+            ],
+            "layoutConfig": {
+                "rowConfig": [
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 12,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "dept",
+                                    "functionality" : "groupBy",
+                                    "title" : "Department wise CC/DC count overview",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "chart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "status",
+                                    "functionality" : "groupByState",
+                                    "title" : "Status wise CC/DC overview",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "chart"
+                                }
+                            },
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "avg",
+                                    "functionality" : "avg",
+                                    "title" : "Average time state wise overview",
+                                    "dateFilterRequired" : "N",
+                                    "contentClass" : "chart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 12,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "tracker",
+                                    "functionality" : "tracker",
+                                    "title" : "CC/DC Tracker",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "bigChart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 12,
+                                "contentType": "table",
+                                "contentConfig": {
+                                    "id" : "CCDCO",
+                                    "functionality" : "table",
+                                    "title" : "CCDC current status list",
+                                    "dateFilterRequired" : "Y"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "layoutDomStyle":" .chart { width: 90%; min-height: 350px; cursor:pointer; } .dateFilter{ display:flex; margin-left: 45px; } .filterDates { width: 115px; margin: 0 6px; } .date-filter-form-control { height: 20px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; } .date-filter-btn { margin-bottom: 0; margin-left: 12px; font-weight: 400; text-align: center; white-space: nowrap; vertical-align: middle; touch-action: manipulation; cursor: pointer; background-image: none; border: 1px solid transparent; padding: 0px 5px; font-size: 12px; line-height: 1.42857143; border-radius: 4px; } .tableDateFilter{ display:flex; margin-left: 350px; } .closureTimeChart{ width: 90%; min-height: 315px; cursor:pointer; } .bigChart{ width: 90%; min-height: 900px; cursor:pointer; }",
+            },
+            "categories":["CC","CCA","DC"],
+            "categoriesFunctionalities":[
+                {
+                    "id":"CC",
+                    "functionalities": [
+                        {
+                            "id": "dept",
+                            "type": "groupBy",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Department",
+                            "title": "count by department",
+                            "labels": ["PROD-AB", "PROD-C", "QC-AB", "QC-C", "QA", "RA", "SCM", "MICRO", "PUR", "Packaging", "HR", "ENG", "ST", "UT", "NDLP"],
+                            "labelsDesc": ["PAB", "PC", "QCAB", "QCC", "QA", "RA", "SCM", "MI", "PUR", "PKG", "HR", "ENG","ST", "UT", "NDL"]
+                        },
+                        {
+                            "id": "status",
+                            "type": "groupByState",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Current State",
+                            "labels": ["CN2", "CC1", "CN3", "CN4", "CN5", "CCR"],
+                            "labelsDesc": ["CC Initiated", "CC Approved", "UI", "IV", "CC Closed", "CC Rejected"],
+                            "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4", "#2ca02c", "#8c564b"]
+                        },
+                        {
+                            "id": "avg",
+                            "type": "avg",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "title": "average time spent in state",
+                            "labels": ["CN2", "CC1", "CN3", "CN4"],
+                            "labelsDesc": ["CC Initiated", "CC Approved", "UI", "IV"],
+                            "allLabels": ["CN2", "CC1", "CN3", "CN4", "CN5", "CCR"],
+                            "allLabelDesc": ["CC Initiated", "CC Approved", "UI", "IV", "CC Closed", "CC Rejected"],
+                            "initialSateLabel": "CN2",
+                            "closedStateLabel": "CN5",
+                            "rejectedStateLabel": "CCR"
+                        },
+                        {
+                            "id": "tracker",
+                            "type": "tracker",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "labels": ["CN2", "CC1", "CN3", "CN4"],
+                            "labelsDesc": ["CC Initiated", "CC Approved", "UI", "IV"],
+                            "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4"],
+                            "allLabels": ["CN2", "CC1", "CN3", "CN4", "CN5", "CCR"],
+                            "allLabelDesc": ["CC Initiated", "CC Approved", "UI", "IV", "CC Closed", "CC Rejected"],
+                            "closedStateLabel": "CN5",
+                            "rejectedStateLabel": "CCR"
+                        }
+                    ]
+                },
+                {
+                    "id":"CCA",
+                    "functionalities": [
+                        {
+                            "id": "dept",
+                            "type": "groupBy",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Department",
+                            "title": "count by department",
+                            "labels": ["PROD-AB", "PROD-C", "QC-AB", "QC-C", "QA", "RA", "SCM", "MICRO", "PUR", "Packaging", "HR", "ENG", "ST", "UT", "NDLP"],
+                            "labelsDesc": ["PAB", "PC", "QCAB", "QCC", "QA", "RA", "SCM", "MI", "PUR", "PKG", "HR", "ENG","ST", "UT", "NDL"]
+                        },
+                        {
+                            "id": "status",
+                            "type": "groupByState",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Current State",
+                            "labels": ["CN2", "CC1", "CN3", "CN4", "CN5", "CCR"],
+                            "labelsDesc": ["CC Initiated", "CC Approved", "UI", "IV", "CC Closed", "CC Rejected"],
+                            "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4", "#2ca02c", "#8c564b"]
+                        },
+                        {
+                            "id": "avg",
+                            "type": "avg",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "title": "average time spent in state",
+                            "labels": ["CN2", "CC1", "CN3", "CN4"],
+                            "labelsDesc": ["CC Initiated", "CC Approved", "UI", "IV"],
+                            "allLabels": ["CN2", "CC1", "CN3", "CN4", "CN5", "CCR"],
+                            "allLabelDesc": ["CC Initiated", "CC Approved", "UI", "IV", "CC Closed", "CC Rejected"],
+                            "initialSateLabel": "CN2",
+                            "closedStateLabel": "CN5",
+                            "rejectedStateLabel": "CCR"
+                        },
+                        {
+                            "id": "tracker",
+                            "type": "tracker",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "labels": ["CN2", "CC1", "CN3", "CN4"],
+                            "labelsDesc": ["CC Initiated", "CC Approved", "UI", "IV"],
+                            "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#1f77b4"],
+                            "allLabels": ["CN2", "CC1", "CN3", "CN4", "CN5", "CCR"],
+                            "allLabelDesc": ["CC Initiated", "CC Approved", "UI", "IV", "CC Closed", "CC Rejected"],
+                            "closedStateLabel": "CN5",
+                            "rejectedStateLabel": "CCR"
+                        }
+                    ]
+                },
+                {
+                    "id":"DC",
+                    "functionalities": [
+                        {
+                            "id": "dept",
+                            "type": "groupBy",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Department",
+                            "title": "count by department",
+                            "labels": ["PROD-AB", "PROD-C", "QC-AB", "QC-C", "QA", "RA", "SCM", "MICRO", "PUR", "Packaging", "HR", "ENG", "ST", "UT", "NDLP"],
+                            "labelsDesc": ["PAB", "PC", "QCAB", "QCC", "QA", "RA", "SCM", "MI", "PUR", "PKG", "HR", "ENG","ST", "UT", "NDL"]
+                        },
+                        {
+                            "id": "status",
+                            "type": "groupByState",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Current State",
+                            "labels": ["DN1", "DN2", "DN3", "DN4", "DCR"],
+                            "labelsDesc": ["DC Initiated", "Approved by HOD", "DC Approved", "DC Closed", "DC Rejected"],
+                            "labelColors": ["#d62728", "#ff7f0e", "#9467bd", "#2ca02c", "#8c564b"]
+                        },
+                        {
+                            "id": "avg",
+                            "type": "avg",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "title": "average time spent in state",
+                            "labels": ["DN1", "DN2", "DN3"],
+                            "labelsDesc": ["DC Initiated", "Approved by HOD", "DC Approved"],
+                            "allLabels": ["DN1", "DN2", "DN3", "DN4","DCR"],
+                            "allLabelDesc": ["DC Initiated", "Approved by HOD", "DC Approved", "DC Closed", "DC Rejected"],
+                            "initialSateLabel": "DN1",
+                            "closedStateLabel": "DN4",
+                            "rejectedStateLabel": "DCR"
+                        },
+                        {
+                            "id": "tracker",
+                            "type": "tracker",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "labels": ["DN1", "DN2", "DN3"],
+                            "labelsDesc": ["DC Initiated", "Approved by HOD", "DC Approved"],
+                            "labelColors": ["#d62728", "#ff7f0e", "#9467bd"],
+                            "allLabels": ["DN1", "DN2", "DN3", "DN4","DCR"],
+                            "allLabelDesc": ["DC Initiated", "Approved by HOD", "DC Approved", "DC Closed", "DC Rejected"],
+                            "closedStateLabel": "DN4",
+                            "rejectedStateLabel": "DCR"
+                        }
+                    ]
+                }
+            ]
+           
+        },
+        {
+            "id": "NCRO",
+            "title": "NCR Status Overview",
+            "folder": "DASHBOARDS",
+            "order": 3000,
+            "icon": "fal fa-chart-pie-alt",
+            "name": "NCR Status Overview",
+            "version": "1.0.0",
+            "dataSources": [
+                {
+                    "type": "Labels"
+                }
+            ],
+            "layoutConfig": {
+                "rowConfig": [
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "dept",
+                                    "functionality" : "groupBy",
+                                    "title" : "Department wise NCR count overview",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "chart"
+                                }
+                            },
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "cat",
+                                    "functionality" : "groupBy",
+                                    "title" : "Category wise NCR count overview",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "chart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "status",
+                                    "functionality" : "groupByState",
+                                    "title" : "Status wise NCR overview",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "chart"
+                                }
+                            },
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "avg",
+                                    "functionality" : "avg",
+                                    "title" : "Average time state wise overview",
+                                    "dateFilterRequired" : "N",
+                                    "contentClass" : "chart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 12,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "tracker",
+                                    "functionality" : "tracker",
+                                    "title" : "NCR Tracker",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "bigChart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 12,
+                                "contentType": "table",
+                                "contentConfig": {
+                                    "id" : "NCRO",
+                                    "functionality" : "table",
+                                    "title" : "NCR current status list",
+                                    "dateFilterRequired" : "Y"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "layoutDomStyle":" .chart { width: 90%; min-height: 350px; cursor:pointer; } .dateFilter{ display:flex; margin-left: 45px; } .filterDates { width: 115px; margin: 0 6px; } .date-filter-form-control { height: 20px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; } .date-filter-btn { margin-bottom: 0; margin-left: 12px; font-weight: 400; text-align: center; white-space: nowrap; vertical-align: middle; touch-action: manipulation; cursor: pointer; background-image: none; border: 1px solid transparent; padding: 0px 5px; font-size: 12px; line-height: 1.42857143; border-radius: 4px; } .tableDateFilter{ display:flex; margin-left: 350px; } .closureTimeChart{ width: 90%; min-height: 315px; cursor:pointer; } .bigChart{ width: 90%; min-height: 900px; cursor:pointer; }",
+            },
+            "categories":["NCR"],
+            "categoriesFunctionalities":[
+                {
+                    "id":"NCR",
+                    "functionalities": [
+                        {
+                            "id": "dept",
+                            "type": "groupBy",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Department",
+                            "title": "count by department",
+                            "labels": ["PROD-AB", "PROD-C", "QC-AB", "QC-C", "QA", "RA", "SCM", "MICRO", "PUR", "Packaging", "HR", "ENG", "ST", "UT", "NDLP"],
+                            "labelsDesc": ["PAB", "PC", "QCAB", "QCC", "QA", "RA", "SCM", "MI", "PUR", "PKG", "HR", "ENG","ST", "UT", "NDL"]
+                        },
+                        {
+                            "id": "cat",
+                            "type": "groupBy",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Category",
+                            "title": "count by category",
+                            "labels": ["INRM", "INP", "MFG", "QCN"],
+                            "labelsDesc": ["Incoming - RM", "Incoming - PM", "Manufacturing", "QC"]
+                        },
+                        {
+                            "id": "status",
+                            "type": "groupByState",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Current State",
+                            "labels": ["NN1", "NN2", "NN3"],
+                            "labelsDesc": ["NCR Initiated", "NCR Approved", "NCR Closed"],
+                            "labelColors": ["#d62728", "#ff7f0e","#2ca02c"]
+                        },
+                        {
+                            "id": "avg",
+                            "type": "avg",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "title": "average time spent in state",
+                            "labels": ["NN1", "NN2"],
+                            "labelsDesc": ["NCR Initiated", "NCR Approved"],
+                            "allLabels": ["NN1", "NN2", "NN3"],
+                            "allLabelDesc": ["NCR Initiated", "NCR Approved", "NCR Closed"],
+                            "initialSateLabel": "NN1",
+                            "closedStateLabel": "NN3",
+                            "rejectedStateLabel": ""
+                        },
+                        {
+                            "id": "tracker",
+                            "type": "tracker",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "labels": ["NN1", "NN2"],
+                            "labelsDesc": ["NCR Initiated", "NCR Approved"],
+                            "labelColors": ["#d62728", "#ff7f0e"],
+                            "allLabels": ["NN1", "NN2", "NN3"],
+                            "allLabelDesc": ["NCR Initiated", "NCR Approved", "NCR Closed"],
+                            "closedStateLabel": "NN3",
+                            "rejectedStateLabel": ""
+                        }
+                    ]
+                }
+            ]
+           
+        },
+        {
+            "id": "DEVO",
+            "title": "Deviation Status Overview",
+            "folder": "DASHBOARDS",
+            "order": 3000,
+            "icon": "fal fa-chart-scatter",
+            "name": "DEV Status Overview",
+            "version": "1.0.0",
+            "dataSources": [
+                {
+                    "type": "Labels"
+                }
+            ],
+            "layoutConfig": {
+                "rowConfig": [
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "dept",
+                                    "functionality" : "groupBy",
+                                    "title" : "Department wise Deviation count overview",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "chart"
+                                }
+                            },
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "cat",
+                                    "functionality" : "groupBy",
+                                    "title" : "Category wise Deviation count overview",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "chart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "status",
+                                    "functionality" : "groupByState",
+                                    "title" : "Status wise Deviation overview",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "chart"
+                                }
+                            },
+                            {
+                                "size": 6,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "avg",
+                                    "functionality" : "avg",
+                                    "title" : "Average time state wise overview",
+                                    "dateFilterRequired" : "N",
+                                    "contentClass" : "chart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 12,
+                                "contentType": "chart",
+                                "contentConfig": {
+                                    "id" : "tracker",
+                                    "functionality" : "tracker",
+                                    "title" : "Deviation Tracker",
+                                    "dateFilterRequired" : "Y",
+                                    "contentClass" : "bigChart"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "columnConfig": [
+                            {
+                                "size": 12,
+                                "contentType": "table",
+                                "contentConfig": {
+                                    "id" : "DEVO",
+                                    "functionality" : "table",
+                                    "title" : "Deviation current status list",
+                                    "dateFilterRequired" : "Y"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "layoutDomStyle":" .chart { width: 90%; min-height: 350px; cursor:pointer; } .dateFilter{ display:flex; margin-left: 45px; } .filterDates { width: 115px; margin: 0 6px; } .date-filter-form-control { height: 20px; padding: 6px 12px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; } .date-filter-btn { margin-bottom: 0; margin-left: 12px; font-weight: 400; text-align: center; white-space: nowrap; vertical-align: middle; touch-action: manipulation; cursor: pointer; background-image: none; border: 1px solid transparent; padding: 0px 5px; font-size: 12px; line-height: 1.42857143; border-radius: 4px; } .tableDateFilter{ display:flex; margin-left: 350px; } .closureTimeChart{ width: 90%; min-height: 315px; cursor:pointer; } .bigChart{ width: 90%; min-height: 900px; cursor:pointer; }",
+            },
+            "categories":["DEV"],
+            "categoriesFunctionalities":[
+                {
+                    "id":"DEV",
+                    "functionalities": [
+                        {
+                            "id": "dept",
+                            "type": "groupBy",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Department",
+                            "title": "count by department",
+                            "labels": ["PROD-AB", "PROD-C", "QC-AB", "QC-C", "QA", "RA", "SCM", "MICRO", "PUR", "Packaging", "HR", "ENG", "ST", "UT", "NDLP"],
+                            "labelsDesc": ["PAB", "PC", "QCAB", "QCC", "QA", "RA", "SCM", "MI", "PUR", "PKG", "HR", "ENG","ST", "UT", "NDL"]
+                        },
+                        {
+                            "id": "cat",
+                            "type": "groupBy",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Category",
+                            "title": "count by category",
+                            "labels": ["DEVP", "DEVPR", "DEVPRO", "DEVOT"],
+                            "labelsDesc": ["Procedural", "Process", "Product", "Other"]
+                        },
+                        {
+                            "id": "status",
+                            "type": "groupByState",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "tableHeader": "Current State",
+                            "labels": ["DEVN1", "DEVN2", "DEVN3"],
+                            "labelsDesc": ["Deviation Initiated", "Deviation Approved", "Deviation Closed"],
+                            "labelColors": ["#d62728", "#ff7f0e","#2ca02c","#8c564b"]
+                        },
+                        {
+                            "id": "avg",
+                            "type": "avg",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "title": "average time spent in state",
+                            "labels": ["EV1", "EN2"],
+                            "labelsDesc": ["Deviation Initiated", "Deviation Approved"],
+                            "allLabels": ["DEVN1", "DEVN2", "DEVN3"],
+                            "allLabelDesc": ["Deviation Initiated", "Deviation Approved", "Deviation Closed"],
+                            "initialSateLabel": "DEVN1",
+                            "closedStateLabel": "DEVN3",
+                            "rejectedStateLabel": ""
+                        },
+                        {
+                            "id": "tracker",
+                            "type": "tracker",
+                            "dataSourceType": "Labels",
+                            "renderChart": "Y",
+                            "showInTable": "Y",
+                            "labels": ["EV1", "EN2"],
+                            "labelsDesc": ["Deviation Initiated", "Deviation Approved"],
+                            "labelColors": ["#d62728", "#ff7f0e"],
+                            "allLabels": ["DEVN1", "DEVN2", "DEVN3"],
+                            "allLabelDesc": ["Deviation Initiated", "Deviation Approved", "Deviation Closed"],
+                            "closedStateLabel": "DEVN3",
+                            "rejectedStateLabel": ""
+                        }
+                    ]
+                }
+            ]
+           
+        }
+    ]
+}
